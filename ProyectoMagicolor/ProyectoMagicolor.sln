@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoMagicolor", "ProyectoMagicolor\ProyectoMagicolor.csproj", "{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1F2CBF1-C162-4E13-971D-A82FB28EDBE0}
+	EndGlobalSection
+EndGlobal
