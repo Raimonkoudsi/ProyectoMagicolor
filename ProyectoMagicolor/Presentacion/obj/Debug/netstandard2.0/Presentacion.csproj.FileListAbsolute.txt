@@ -1,0 +1,5 @@
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Presentacion\bin\Debug\netstandard2.0\Datos.dll
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Presentacion\bin\Debug\netstandard2.0\Logica.dll
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Presentacion\obj\Debug\netstandard2.0\Presentacion.csprojAssemblyReference.cache
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Presentacion\obj\Debug\netstandard2.0\Presentacion.AssemblyInfoInputs.cache
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Presentacion\obj\Debug\netstandard2.0\Presentacion.AssemblyInfo.cs

@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoMagicolor", "ProyectoMagicolor\ProyectoMagicolor.csproj", "{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datos", "Datos\Datos.csproj", "{5B4AF341-1BFD-40AA-93EA-90F554CE79C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logica", "Logica\Logica.csproj", "{B7EB92A4-FDDB-4CC7-B72A-A7B7073784E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBE28F52-13D4-43B1-8B36-57B70C6F6CAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4AF341-1BFD-40AA-93EA-90F554CE79C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4AF341-1BFD-40AA-93EA-90F554CE79C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4AF341-1BFD-40AA-93EA-90F554CE79C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4AF341-1BFD-40AA-93EA-90F554CE79C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7EB92A4-FDDB-4CC7-B72A-A7B7073784E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7EB92A4-FDDB-4CC7-B72A-A7B7073784E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7EB92A4-FDDB-4CC7-B72A-A7B7073784E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7EB92A4-FDDB-4CC7-B72A-A7B7073784E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

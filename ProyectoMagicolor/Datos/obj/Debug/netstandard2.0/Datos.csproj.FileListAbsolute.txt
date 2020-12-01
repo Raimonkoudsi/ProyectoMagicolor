@@ -1,0 +1,9 @@
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\bin\Debug\netstandard2.0\Datos.deps.json
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\bin\Debug\netstandard2.0\Datos.dll
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\bin\Debug\netstandard2.0\Datos.pdb
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\obj\Debug\netstandard2.0\Datos.csprojAssemblyReference.cache
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\obj\Debug\netstandard2.0\Datos.AssemblyInfoInputs.cache
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\obj\Debug\netstandard2.0\Datos.AssemblyInfo.cs
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\obj\Debug\netstandard2.0\Datos.csproj.CoreCompileInputs.cache
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\obj\Debug\netstandard2.0\Datos.dll
+C:\Users\ramon\Desktop\ProyectoMagicolor\ProyectoMagicolor\Datos\obj\Debug\netstandard2.0\Datos.pdb
