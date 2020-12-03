@@ -8,6 +8,6 @@ namespace Datos
 {
     public class Conexion
     {
-        protected static string CadenaConexion = "Data Source= DESKTOP-2185U8G\\SQLEXPRESS; Initial Catalog= dbMagicolor; Integrated Security= true";
+        protected static string CadenaConexion = "Data Source= DESKTOP-KOFID31\\SQLEXPRESS01; Initial Catalog= dbMagicolor; Integrated Security= true";
     }
 }

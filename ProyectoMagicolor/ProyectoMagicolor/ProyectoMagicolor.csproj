@@ -93,6 +93,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Vistas\FTrabajadores.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vistas\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -104,6 +108,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Vistas\FTrabajadores.xaml.cs">
+      <DependentUpon>FTrabajadores.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
