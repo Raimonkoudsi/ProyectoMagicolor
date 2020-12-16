@@ -36,8 +36,8 @@
     </Window.Resources>
 
 
-    <Grid Background="#090C0F" Margin="0,0,2,0">
-        <Border  Width="460" Height="250" BorderThickness="0" BorderBrush="White" Margin="55,97,275,72">
+    <StackPanel Background="#090C0F" VerticalAlignment="Center">
+        <Border  Width="460" Height="250" BorderThickness="0" BorderBrush="White">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
