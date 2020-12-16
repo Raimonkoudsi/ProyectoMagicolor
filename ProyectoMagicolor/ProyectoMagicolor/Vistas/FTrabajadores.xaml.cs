@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using Datos;
+using Logica;
+
 namespace ProyectoMagicolor.Vistas
 {
     /// <summary>
@@ -19,7 +22,6 @@ namespace ProyectoMagicolor.Vistas
     /// </summary>
     public partial class FTrabajadores : Window
     {
-        public List<Trabajador> Trabajadores = new List<Trabajador>();
         public FTrabajadores()
         {
             InitializeComponent();
@@ -45,7 +47,7 @@ namespace ProyectoMagicolor.Vistas
             return bord;
         }
 
-        public Grid CreateRow(string id, string nombre, string apellidos, string sexo, string FechaNacimiento, string cedula, string direccion, string telefono, bool LastRow)
+        public Grid CreateRow(string cedula, string nombre, string apellidos, string direccion, string telefono, string email, string usuario, bool LastRow)
         {
             Grid grd = new Grid();
 
@@ -56,7 +58,7 @@ namespace ProyectoMagicolor.Vistas
                 });
             }
 
-            Border brd1 = CreateCell(id);
+            Border brd1 = CreateCell(cedula);
             brd1.SetValue(Grid.ColumnProperty, 0);
             brd1.BorderThickness = new Thickness(0, 1, 0, LastRow ? 1 : 0);
             grd.Children.Add(brd1);
@@ -71,30 +73,25 @@ namespace ProyectoMagicolor.Vistas
             brd3.BorderThickness = new Thickness(1, 1, 0, LastRow ? 1 : 0);
             grd.Children.Add(brd3);
 
-            Border brd4 = CreateCell(sexo);
+            Border brd4 = CreateCell(direccion);
             brd4.SetValue(Grid.ColumnProperty, 3);
             brd4.BorderThickness = new Thickness(1, 1, 0, LastRow ? 1 : 0);
             grd.Children.Add(brd4);
 
-            Border brd5 = CreateCell(FechaNacimiento);
+            Border brd5 = CreateCell(telefono);
             brd5.SetValue(Grid.ColumnProperty, 4);
             brd5.BorderThickness = new Thickness(1, 1, 0, LastRow ? 1 : 0);
             grd.Children.Add(brd5);
 
-            Border brd6 = CreateCell(cedula);
+            Border brd6 = CreateCell(email);
             brd6.SetValue(Grid.ColumnProperty, 5);
             brd6.BorderThickness = new Thickness(1, 1, 0, LastRow ? 1 : 0);
             grd.Children.Add(brd6);
 
-            Border brd7 = CreateCell(direccion);
+            Border brd7 = CreateCell(usuario);
             brd7.SetValue(Grid.ColumnProperty, 6);
             brd7.BorderThickness = new Thickness(1, 1, 0, LastRow ? 1 : 0);
             grd.Children.Add(brd7);
-
-            Border brd8 = CreateCell(telefono);
-            brd8.SetValue(Grid.ColumnProperty, 7);
-            brd8.BorderThickness = new Thickness(1, 1, 0, LastRow ? 1 : 0);
-            grd.Children.Add(brd8);
 
             return grd;
         }
@@ -103,55 +100,23 @@ namespace ProyectoMagicolor.Vistas
         {
             contentsp.Children.Clear();
 
-            Trabajadores.Clear();
-
-            Trabajadores.Add(new Trabajador()
-            {
-                id = 0,
-                nombre = "José",
-                apellidos = "Pereira",
-                sexo = "M",
-                FechaNacimiento = "18/06/2002",
-                cedula = "26866008",
-                direccion = "Maracay",
-                telefono = "04243094204"
-            });
-            Trabajadores.Add(new Trabajador()
-            {
-                id = 1,
-                nombre = "Raimon",
-                apellidos = "Koudsi",
-                sexo = "M",
-                FechaNacimiento = "18/06/2002",
-                cedula = "26866008",
-                direccion = "Maracay",
-                telefono = "04243094204"
-            });
             int i = 0;
-            foreach(Trabajador it in Trabajadores)
+
+            LTrabajador metodosUsuario = new LTrabajador();
+
+            foreach (DTrabajador it in metodosUsuario.Mostrar(""))
             {
-                contentsp.Children.Add(CreateRow(it.id.ToString(),
+                contentsp.Children.Add(CreateRow(it.cedula,
                                                 it.nombre,
                                                 it.apellidos,
-                                                it.sexo,
-                                                it.FechaNacimiento,
-                                                it.cedula,
                                                 it.direccion,
-                                                it.direccion,
-                                                i == Trabajadores.Count - 1));
+                                                it.telefono,
+                                                it.email,
+                                                it.usuario,
+                                                i == metodosUsuario.Mostrar("").Count - 1));
                 i++;
             }
         }
     }
-    public class Trabajador
-    {
-        public int id { get; set; }
-        public string nombre { get; set; }
-        public string apellidos { get; set; }
-        public string sexo { get; set; }
-        public string FechaNacimiento { get; set; }
-        public string cedula { get; set; }
-        public string direccion { get; set; }
-        public string telefono { get; set; }
-    }
+
 }

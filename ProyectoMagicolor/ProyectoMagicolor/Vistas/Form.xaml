@@ -1,0 +1,27 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.FTrabajadores"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+      Title="Form" Height="450" Width="800">
+
+    <Grid>
+        <Border CornerRadius="10" Grid.RowSpan="2">
+            <Border.Background>
+                <LinearGradientBrush>
+                    <GradientStop Color="#3C99DC" Offset="0.0"/>
+                    <GradientStop Color="#3C99DC" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <Label Content="Registro de Nuevo Trabajador" Margin="194,27,193,359" FontSize="40" FontFamily="Agency FB Bold" RenderTransformOrigin="0.494,0.437"/>
+        <TextBox HorizontalAlignment="Left" Height="24" Margin="194,114,0,0" TextWrapping="Wrap" Text="Cedula" VerticalAlignment="Top" Width="120"/>
+        
+
+
+    </Grid>
+</Page>

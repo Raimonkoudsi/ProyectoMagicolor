@@ -35,8 +35,8 @@
     </Window.Resources>
 
 
-    <Grid Background="#090C0F">
-        <Border  Width="460" Height="250" BorderThickness="0" BorderBrush="White">
+    <Grid Background="#090C0F" Margin="0,0,2,0">
+        <Border  Width="460" Height="250" BorderThickness="0" BorderBrush="White" Margin="55,97,275,72">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>

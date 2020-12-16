@@ -6,6 +6,13 @@ namespace Datos
 {
     public class DTrabajador : Conexion
     {
+        private int _idTrabajador;
+        public int idTrabajador
+        {
+            get { return _idTrabajador; }
+            set { _idTrabajador = value; }
+        }
+
         private string _Nombre;
         public string nombre
         {
@@ -110,8 +117,9 @@ namespace Datos
 
         }
 
-        public DTrabajador(string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion, string Email, string Acceso, string Usuario, string Contraseña, string Pregunta, string Respuesta, string Estado)
+        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion, string Email, string Acceso, string Usuario, string Contraseña, string Pregunta, string Respuesta, string Estado)
         {
+            this.idTrabajador = IdTrabajador;
             this.nombre = Nombre;
             this.apellidos = Apellidos;
             this.sexo = Sexo;
