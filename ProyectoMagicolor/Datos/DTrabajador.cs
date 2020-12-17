@@ -117,7 +117,7 @@ namespace Datos
 
         }
 
-        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion, string Email, string Acceso, string Usuario, string Contraseña, string Pregunta, string Respuesta, string Estado)
+        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion,string Telefono, string Email, string Acceso, string Usuario, string Contraseña, string Pregunta, string Respuesta, string Estado)
         {
             this.idTrabajador = IdTrabajador;
             this.nombre = Nombre;
@@ -126,6 +126,7 @@ namespace Datos
             this.fechaNacimiento = FechaNacimiento;
             this.cedula = Cedula;
             this.direccion = Direccion;
+            this.telefono = Telefono;
             this.email = Email;
             this.acceso = Acceso;
             this.usuario = Usuario;

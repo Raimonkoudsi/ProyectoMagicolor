@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using Datos;
+using Logica;
+
 namespace ProyectoMagicolor.Vistas
 {
     /// <summary>
@@ -26,7 +29,25 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            DTrabajador trabajador = new DTrabajador(0,
+                                                    txt1.Text,
+                                                    txt2.Text,
+                                                    txt3.Text,
+                                                    txt4.DisplayDate,
+                                                    txt5.Text,
+                                                    txt6.Text,
+                                                    txt7.Text,
+                                                    txt8.Text,
+                                                    txt9.Text,
+                                                    txt10.Text,
+                                                    txt11.Text,
+                                                    txt12.Text,
+                                                    txt13.Text,
+                                                    txt14.Text);
 
+            LTrabajador lTrabajador = new LTrabajador();
+
+            lTrabajador.Insertar(trabajador); 
         }
     }
 }

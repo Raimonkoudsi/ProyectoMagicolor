@@ -117,6 +117,12 @@ namespace ProyectoMagicolor.Vistas
                 i++;
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            FormTrabajadores frmTrab = new FormTrabajadores();
+            frmTrab.ShowDialog();
+        }
     }
 
 }
