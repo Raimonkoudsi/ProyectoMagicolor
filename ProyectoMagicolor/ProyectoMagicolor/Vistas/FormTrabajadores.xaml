@@ -6,8 +6,58 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
         Title="FormTrabajadores" Height="450" Width="800">
-    
-    <Grid>
-        
-    </Grid>
+
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Nombre:"/>
+            <TextBox Grid.Column="1" Grid.Row="0" />
+            <Label Grid.Column="0" Grid.Row="1" Content="Apellido:"/>
+            <TextBox Grid.Column="1" Grid.Row="1" />
+            <Label Grid.Column="0" Grid.Row="2" Content="Sexo:"/>
+            <TextBox Grid.Column="1" Grid.Row="2" />
+            <Label Grid.Column="0" Grid.Row="3" Content="Nacimiento:"/>
+            <DatePicker Grid.Column="1" Grid.Row="3" />
+            <Label Grid.Column="0" Grid.Row="4" Content="Cedula:"/>
+            <TextBox Grid.Column="1" Grid.Row="4" />
+            <Label Grid.Column="0" Grid.Row="5" Content="Direccion:"/>
+            <TextBox Grid.Column="1" Grid.Row="5" />
+            <Label Grid.Column="0" Grid.Row="6" Content="tlf:"/>
+            <TextBox Grid.Column="1" Grid.Row="6" />
+            <Label Grid.Column="0" Grid.Row="7" Content="email:"/>
+            <TextBox Grid.Column="1" Grid.Row="7" />
+            <Label Grid.Column="0" Grid.Row="8" Content="Acceso:"/>
+            <TextBox Grid.Column="1" Grid.Row="8" />
+            <Label Grid.Column="0" Grid.Row="9" Content="Usuario:"/>
+            <TextBox Grid.Column="1" Grid.Row="9" />
+            <Label Grid.Column="0" Grid.Row="10" Content="Contraseña:"/>
+            <TextBox Grid.Column="1" Grid.Row="10" />
+            <Label Grid.Column="0" Grid.Row="11" Content="Pregunta:"/>
+            <TextBox Grid.Column="1" Grid.Row="11" />
+            <Label Grid.Column="0" Grid.Row="12" Content="Respuesta:"/>
+            <TextBox Grid.Column="1" Grid.Row="12" />
+            <Label Grid.Column="0" Grid.Row="13" Content="Estado:"/>
+            <TextBox Grid.Column="1" Grid.Row="13" />
+        </Grid>
+        <Button Width="auto" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+    </StackPanel>
 </Window>
