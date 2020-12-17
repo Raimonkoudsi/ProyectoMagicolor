@@ -241,7 +241,7 @@ namespace Logica
                         using (SqlDataReader reader = comm.ExecuteReader())
                         {
 
-                            if (reader.Read())
+                            while (reader.Read())
                             {
                                 ListaGenerica.Add(new DTrabajador
                                 {

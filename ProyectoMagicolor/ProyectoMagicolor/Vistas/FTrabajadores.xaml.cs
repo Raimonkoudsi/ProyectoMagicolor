@@ -116,6 +116,8 @@ namespace ProyectoMagicolor.Vistas
                                                 i == metodosUsuario.Mostrar("").Count - 1));
                 i++;
             }
+
+            MessageBox.Show(metodosUsuario.Mostrar("").Count.ToString());
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -47,7 +47,9 @@ namespace ProyectoMagicolor.Vistas
 
             LTrabajador lTrabajador = new LTrabajador();
 
-            lTrabajador.Insertar(trabajador); 
+            string respuesta = lTrabajador.Insertar(trabajador);
+
+            MessageBox.Show(respuesta);
         }
     }
 }
