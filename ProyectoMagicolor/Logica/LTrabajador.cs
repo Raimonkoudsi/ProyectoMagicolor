@@ -314,7 +314,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        respuesta = e.Message;
+                        //error
                     }
                     finally
                     {
