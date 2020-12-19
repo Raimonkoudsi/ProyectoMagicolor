@@ -63,7 +63,7 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE cliente SET (
+                        UPDATE categoria SET (
                             nombre,
                             descripcion
                         ) VALUES(
@@ -109,7 +109,7 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        DELETE FROM cliente WHERE idCategoria=@idCategoria
+                        DELETE FROM categoria WHERE idCategoria=@idCategoria
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
