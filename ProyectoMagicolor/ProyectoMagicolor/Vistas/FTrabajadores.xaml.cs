@@ -40,7 +40,7 @@ namespace ProyectoMagicolor.Vistas
             txtblock.HorizontalAlignment = HorizontalAlignment.Center;
             txtblock.VerticalAlignment = VerticalAlignment.Center;
             txtblock.Margin = new Thickness(0, 10, 0, 10);
-            txtblock.TextWrapping = TextWrapping.Wrap;
+            //txtblock.TextWrapping = TextWrapping.Wrap;
 
             bord.Child = txtblock;
 
