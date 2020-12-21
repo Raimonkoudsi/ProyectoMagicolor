@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" Loaded="UserControl_Loaded" >
 
-    <Grid>
-        <TextBox x:Name="txt"></TextBox>
-    </Grid>
+    <TextBox x:Name="txt" Text="{Binding Placeholder}" 
+             Foreground="Gray"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="txt_TextChanged"/>
 </UserControl>

@@ -71,7 +71,7 @@ namespace Logica
                     comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
                     comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
                     comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
-                    comm.Parameters.AddWithValue("@estado", Trabajador.estado);
+                    comm.Parameters.AddWithValue("@estado", 0);
 
                     try
                     {
