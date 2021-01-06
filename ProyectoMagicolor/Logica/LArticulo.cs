@@ -210,7 +210,7 @@ namespace Logica
                             }
                         }
                     }
-                    catch (SqlException e)
+                    catch
                     {
                         //error
                     }

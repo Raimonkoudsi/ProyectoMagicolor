@@ -100,7 +100,7 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE trabajador SET 
+                        UPDATE trabajador SET( 
                             nombre,
                             apellidos,
                             sexo,
@@ -115,7 +115,7 @@ namespace Logica
                             pregunta,
                             respuesta,
                             estado
-                         VALUES
+                         )VALUES(
                             @nombre,
                             @apellidos,
                             @sexo,
@@ -129,7 +129,7 @@ namespace Logica
                             @contraseña,
                             @pregunta,
                             @respuesta,
-                            @estado
+                            @estado)
                         WHERE idTrabajador = @idTrabajador;
 	        ";
 
@@ -312,7 +312,7 @@ namespace Logica
                             }
                         }
                     }
-                    catch (SqlException e)
+                    catch
                     {
                         //error
                     }
