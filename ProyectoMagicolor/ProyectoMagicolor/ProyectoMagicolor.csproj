@@ -71,6 +71,7 @@
       <HintPath>..\packages\MaterialDesignThemes.3.2.0\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SqlClient, Version=4.6.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SqlClient.4.8.2\lib\net461\System.Data.SqlClient.dll</HintPath>
@@ -93,9 +94,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Vistas\TextInput.xaml.cs">
+      <DependentUpon>TextInput.xaml</DependentUpon>
+    </Compile>
     <Page Include="Vistas\FormTrabajadores.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vistas\DemoDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Vistas\FTrabajadores.xaml">
       <SubType>Designer</SubType>
@@ -116,6 +124,9 @@
     <Compile Include="Vistas\FormTrabajadores.xaml.cs">
       <DependentUpon>FormTrabajadores.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\DemoDG.xaml.cs">
+      <DependentUpon>DemoDG.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\FTrabajadores.xaml.cs">
       <DependentUpon>FTrabajadores.xaml</DependentUpon>
     </Compile>
@@ -126,6 +137,10 @@
       <DependentUpon>Menu.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Vistas\TextInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -179,6 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imagenes\loupe.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.3.2.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.2.0\build\MaterialDesignThemes.targets')" />

@@ -5,59 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="FormTrabajadores" Height="450" Width="800">
+        Title="FormTrabajadores" Height="810" Width="800" Loaded="Window_Loaded">
 
-    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="200"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Label Grid.Column="0" Grid.Row="0" Content="Nombre:"/>
-            <TextBox Grid.Column="1" Grid.Row="0" Name="txt1"/>
-            <Label Grid.Column="0" Grid.Row="1" Content="Apellido:"/>
-            <TextBox Grid.Column="1" Grid.Row="1" Name="txt2"/>
-            <Label Grid.Column="0" Grid.Row="2" Content="Sexo:"/>
-            <TextBox Grid.Column="1" Grid.Row="2" Name="txt3"/>
-            <Label Grid.Column="0" Grid.Row="3" Content="Nacimiento:"/>
-            <DatePicker Grid.Column="1" Grid.Row="3" Name="txt4"/>
-            <Label Grid.Column="0" Grid.Row="4" Content="Cedula:"/>
-            <TextBox Grid.Column="1" Grid.Row="4" Name="txt5"/>
-            <Label Grid.Column="0" Grid.Row="5" Content="Direccion:"/>
-            <TextBox Grid.Column="1" Grid.Row="5" Name="txt6"/>
-            <Label Grid.Column="0" Grid.Row="6" Content="tlf:"/>
-            <TextBox Grid.Column="1" Grid.Row="6" Name="txt7"/>
-            <Label Grid.Column="0" Grid.Row="7" Content="email:"/>
-            <TextBox Grid.Column="1" Grid.Row="7" Name="txt8"/>
-            <Label Grid.Column="0" Grid.Row="8" Content="Acceso:"/>
-            <TextBox Grid.Column="1" Grid.Row="8" Name="txt9"/>
-            <Label Grid.Column="0" Grid.Row="9" Content="Usuario:"/>
-            <TextBox Grid.Column="1" Grid.Row="9" Name="txt10"/>
-            <Label Grid.Column="0" Grid.Row="10" Content="Contraseña:"/>
-            <TextBox Grid.Column="1" Grid.Row="10" Name="txt11"/>
-            <Label Grid.Column="0" Grid.Row="11" Content="Pregunta:"/>
-            <TextBox Grid.Column="1" Grid.Row="11" Name="txt12"/>
-            <Label Grid.Column="0" Grid.Row="12" Content="Respuesta:"/>
-            <TextBox Grid.Column="1" Grid.Row="12" Name="txt13"/>
-            <Label Grid.Column="0" Grid.Row="13" Content="Estado:"/>
-            <TextBox Grid.Column="1" Grid.Row="13" Name="txt14"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="#f0f0f0">
+            <TextBlock Text="Insertar Trabajador" 
+                       HorizontalAlignment="Center"
+                       FontWeight="Bold"
+                       FontSize="25"
+                       Margin="0 10"/>
         </Grid>
-        <Button Width="auto" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
-    </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
+            <StackPanel Width="350">
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:TextInput Grid.Column="0" x:Name="txtNombre" Placeholder="Nombre" Margin="0 0 5 0" FontSize="15"/>
+                    <local:TextInput Grid.Column="1" x:Name="txtApellidos" Placeholder="Apellidos" Margin="5 0 0 0" FontSize="15"/>
+                </Grid>
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Margin="0 0 5 0">
+                        <TextBlock x:Name="CbSexoPlaceholder" Text="Sexo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                        <ComboBox x:Name="CbSexo" Text="Sexo" FontSize="15" SelectionChanged="CbSexo_SelectionChanged">
+                            <ComboBoxItem>Hombre</ComboBoxItem>
+                            <ComboBoxItem>Mujer</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="1" Margin="5 0 0 0">
+                        <TextBlock x:Name="dpNacPlaceholder" Text="Fecha de Nacimiento" FontSize="15" VerticalAlignment="Center" Foreground="Gray" Grid.ColumnSpan="2"/>
+                        <DatePicker x:Name="DpNacimiento" Text="Fecha Nacimiento" FontSize="15" Focusable="False" SelectedDateChanged="DpNacimiento_SelectedDateChanged"/>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:TextInput Grid.Column="0" x:Name="txtCedula" Placeholder="Cedula" Margin="0 0 5 0" FontSize="15"/>
+                    <local:TextInput Grid.Column="1" x:Name="txtTelefono" Placeholder="Telefono" Margin="5 0 0 0" FontSize="15"/>
+                </Grid>
+                <local:TextInput x:Name="txtDireccion" Placeholder="Direccion" Margin="0 10" FontSize="15"/>
+                <local:TextInput x:Name="txtEmail" Placeholder="Email" Margin="0 10" FontSize="15"/>
+                <GroupBox Header="Perfil" FontSize="15" >
+                    <StackPanel>
+                        <local:TextInput x:Name="txtUsuario" Placeholder="Usuario" Margin="0 10" FontSize="13"/>
+                        <Grid>
+                            <TextBlock x:Name="CbAccesoPlaceholder" Text="Acceso" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                            <ComboBox x:Name="CbAcceso" Text="Sexo" Margin="0 10" FontSize="13" SelectionChanged="CbAcceso_SelectionChanged">
+                                <ComboBoxItem>Admin</ComboBoxItem>
+                                <ComboBoxItem>Encargado</ComboBoxItem>
+                                <ComboBoxItem>Trabajador</ComboBoxItem>
+                            </ComboBox>
+                        </Grid>
+
+                        <Grid>
+                            <TextBlock x:Name="txtPassPlaceholder" Text="Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                            <PasswordBox x:Name="txtPassword" FontSize="13" Margin="0 10" GotFocus="txtPassword_GotFocus" LostFocus="txtPassword_LostFocus"/>
+                        </Grid>
+                        <Grid>
+                            <TextBlock x:Name="txtCPassPlaceholder" Text="Confirmar Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                            <PasswordBox x:Name="txtCPassword" FontSize="13" Margin="0 10" GotFocus="txtCPassword_GotFocus" LostFocus="txtCPassword_LostFocus"/>
+                        </Grid>
+                        <local:TextInput x:Name="txtPregunta" Placeholder="Pregunta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtRespuesta" Placeholder="Respuesta" Margin="0 10" FontSize="13"/>
+                    </StackPanel>
+                </GroupBox>
+                <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
+                
+                <Button Width="300" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Window>

@@ -71,7 +71,7 @@ namespace Logica
                     comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
                     comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
                     comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
-                    comm.Parameters.AddWithValue("@estado", Trabajador.estado);
+                    comm.Parameters.AddWithValue("@estado", 0);
 
                     try
                     {
@@ -81,6 +81,7 @@ namespace Logica
                     catch(SqlException e)
                     {
                         respuesta = e.Message;
+                        Console.WriteLine(e.Message);
                     }
                     finally
                     {
@@ -152,7 +153,6 @@ namespace Logica
                     comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
                     comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
                     comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
-                    comm.Parameters.AddWithValue("@estado", Trabajador.estado);
                     comm.Parameters.AddWithValue("@idTrabajador", Trabajador.idTrabajador);
 
                     try
@@ -177,7 +177,7 @@ namespace Logica
         }
 
 
-        public string Eiminar(DTrabajador Trabajador)
+        public string Eliminar(DTrabajador Trabajador)
         {
             string respuesta = "";
 
@@ -228,7 +228,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT cedula, nombre, apellidos, direccion, telefono, email, usuario from [trabajador] where cedula like '" + Buscar + "%' order by cedula";
+                    comm.CommandText = "SELECT idTrabajador, cedula, nombre, apellidos, direccion, telefono, email, usuario from [trabajador] where cedula like '" + Buscar + "%' order by cedula";
 
 
                     //comm.Parameters.AddWithValue("@textoBuscar", "");
@@ -245,13 +245,14 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DTrabajador
                                 {
-                                    cedula = reader.GetString(0),
-                                    nombre = reader.GetString(1),
-                                    apellidos = reader.GetString(2),
-                                    direccion = reader.GetString(3),
-                                    telefono = reader.GetString(4),
-                                    email = reader.GetString(5),
-                                    usuario = reader.GetString(6)
+                                    idTrabajador = reader.GetInt32(0),
+                                    cedula = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    apellidos = reader.GetString(3),
+                                    direccion = reader.GetString(4),
+                                    telefono = reader.GetString(5),
+                                    email = reader.GetString(6),
+                                    usuario = reader.GetString(7)
                                 });
                             }
                         }
@@ -315,6 +316,70 @@ namespace Logica
                     catch
                     {
                         //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+        public List<DTrabajador> Encontrar(int Buscar)
+        {
+            List<DTrabajador> ListaGenerica = new List<DTrabajador>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [trabajador] where idTrabajador = " + Buscar + " ";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                int state = reader.GetInt32(14);
+                                ListaGenerica.Add(new DTrabajador
+                                    (
+                                        reader.GetInt32(0),
+                                        reader.GetString(1),
+                                        reader.GetString(2),
+                                        reader.GetString(3),
+                                        reader.GetDateTime(4),
+                                        reader.GetString(5),
+                                        reader.GetString(6),
+                                        reader.GetString(7),
+                                        reader.GetString(8),
+                                        reader.GetString(9),
+                                        reader.GetString(10),
+                                        reader.GetString(11),
+                                        reader.GetString(12),
+                                        reader.GetString(13),
+                                        state.ToString()
+                                    ));
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        respuesta = e.Message;
                     }
                     finally
                     {

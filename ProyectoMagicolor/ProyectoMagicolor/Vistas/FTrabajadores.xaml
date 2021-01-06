@@ -37,7 +37,7 @@
 
 
     <StackPanel Background="#090C0F" VerticalAlignment="Center">
-        <Border  Width="460" Height="250" BorderThickness="0" BorderBrush="White">
+        <Border  Width="500" Height="250" BorderThickness="0" BorderBrush="White">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -53,10 +53,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" BorderBrush="White" BorderThickness="0 0 0 0">
-                            <TextBlock Text="Id" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="Cedula" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border Grid.Column="1" BorderBrush="White" BorderThickness="1 0 0 0">
                             <TextBlock Text="Nombre" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
@@ -65,28 +64,24 @@
                             <TextBlock Text="Apellido" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                         </Border>
                         <Border Grid.Column="3" BorderBrush="White" BorderThickness="1 0 0 0">
-                            <TextBlock Text="Sexo" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
-                        </Border>
-                        <Border Grid.Column="4" BorderBrush="White" BorderThickness="1 0 0 0">
-                            <TextBlock Text="Fecha Nac" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
-                        </Border>
-                        <Border Grid.Column="5" BorderBrush="White" BorderThickness="1 0 0 0">
-                            <TextBlock Text="Cedula" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
-                        </Border>
-                        <Border Grid.Column="6" BorderBrush="White" BorderThickness="1 0 0 0">
                             <TextBlock Text="Direccion" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                         </Border>
-                        <Border Grid.Column="7" BorderBrush="White" BorderThickness="1 0 0 0">
+                        <Border Grid.Column="4" BorderBrush="White" BorderThickness="1 0 0 0">
                             <TextBlock Text="Telefono" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
+                        </Border>
+                        <Border Grid.Column="5" BorderBrush="White" BorderThickness="1 0 0 0">
+                            <TextBlock Text="Email" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
+                        </Border>
+                        <Border Grid.Column="6" BorderBrush="White" BorderThickness="1 0 0 0">
+                            <TextBlock Text="Usuario" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                         </Border>
                     </Grid>
                 </Border>
                 <Border Grid.Row="1" BorderThickness="1 0 1 1" BorderBrush="White" CornerRadius="0 0 10 10" Background="#434445">
                     <ScrollViewer HorizontalScrollBarVisibility="Hidden">
-                        <StackPanel Name="contentsp">
+                        <StackPanel Name="contentsp" Width="500">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
@@ -105,7 +100,7 @@
                                     <TextBlock Text="BUY" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                                 </Border>
                                 <Border Grid.Column="3" BorderBrush="White" BorderThickness="1 1 0 0">
-                                    <TextBlock Text="Equipo A" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
+                                    <TextBlock Text="Equqweqweipo A" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                                 </Border>
                                 <Border Grid.Column="4" BorderBrush="White" BorderThickness="1 1 0 0">
                                     <TextBlock Text="Equipo A" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
@@ -115,9 +110,6 @@
                                 </Border>
                                 <Border Grid.Column="6" BorderBrush="White" BorderThickness="1 1 0 0">
                                     <TextBlock Text="SI" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
-                                </Border>
-                                <Border Grid.Column="7" BorderBrush="White" BorderThickness="1 1 0 0">
-                                    <TextBlock Text="Porcesada" Foreground="White" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                                 </Border>
                                 <DataGrid x:Name="dgOperaciones" AutoGenerateColumns="True" IsReadOnly="true" Background="Gray" Visibility="Collapsed">
                                 </DataGrid>
