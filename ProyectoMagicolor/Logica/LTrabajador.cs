@@ -101,36 +101,21 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE trabajador SET( 
-                            nombre,
-                            apellidos,
-                            sexo,
-                            fechaNacimiento,
-                            cedula,
-                            direccion,
-                            telefono,
-                            email,
-                            acceso,
-                            usuario,
-                            contraseña,
-                            pregunta,
-                            respuesta,
-                            estado
-                         )VALUES(
-                            @nombre,
-                            @apellidos,
-                            @sexo,
-                            @fechaNacimiento,
-                            @cedula,
-                            @direccion,
-                            @telefono,
-                            @email,
-                            @acceso,
-                            @usuario,
-                            @contraseña,
-                            @pregunta,
-                            @respuesta,
-                            @estado)
+                        UPDATE trabajador SET
+                            nombre = @nombre,
+                            apellidos = @apellidos,
+                            sexo = @sexo,
+                            fechaNacimiento = @fechaNacimiento,
+                            cedula = @cedula,
+                            direccion = @direccion,
+                            telefono = @telefono,
+                            email = @email,
+                            acceso = @acceso,
+                            usuario = @usuario,
+                            contraseña = @contraseña,
+                            pregunta = @pregunta,
+                            respuesta = @respuesta,
+                            estado = @estado
                         WHERE idTrabajador = @idTrabajador;
 	        ";
 
