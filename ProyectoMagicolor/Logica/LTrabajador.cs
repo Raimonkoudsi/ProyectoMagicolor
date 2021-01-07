@@ -71,7 +71,7 @@ namespace Logica
                     comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
                     comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
                     comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
-                    comm.Parameters.AddWithValue("@estado", 0);
+                    comm.Parameters.AddWithValue("@estado", 1);
 
                     try
                     {
@@ -114,8 +114,7 @@ namespace Logica
                             usuario = @usuario,
                             contraseña = @contraseña,
                             pregunta = @pregunta,
-                            respuesta = @respuesta,
-                            estado = @estado
+                            respuesta = @respuesta
                         WHERE idTrabajador = @idTrabajador;
 	        ";
 

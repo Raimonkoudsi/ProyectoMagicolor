@@ -16,7 +16,8 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="70 10">
-            <TextBox Name="txtBuscar" Text="Buscar..." FontSize="15" Margin="0" Foreground="Gray" KeyDown="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+            <TextBlock Name="txtBucarPlaceH" Text="Buscar..." FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+            <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
             <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
         </Grid>
 

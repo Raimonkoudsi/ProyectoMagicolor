@@ -50,7 +50,7 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
-            Refresh("");
+            Refresh(txtBuscar.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -65,13 +65,20 @@ namespace ProyectoMagicolor.Vistas
             //else
             //    MessageBox.Show("no hay");
             FormTrabajadores frmTrab = new FormTrabajadores();
-            frmTrab.ShowDialog();
+            bool Resp = frmTrab.ShowDialog() ?? false;
+            Refresh(txtBuscar.Text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Button btn = (Button)sender;
-            MessageBox.Show(btn.Content.ToString() +"("+ ((int)btn.CommandParameter).ToString() + ")");
+            int id = (int)((Button)sender).CommandParameter;
+            var response = MetodosUsuario.Encontrar(id);
+
+            FormTrabajadores frmTrab = new FormTrabajadores();
+            frmTrab.Type = TypeForm.Update;
+            frmTrab.DataFill = response[0];
+            bool Resp = frmTrab.ShowDialog() ?? false;
+            Refresh(txtBuscar.Text);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -81,6 +88,9 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (Resp != MessageBoxResult.Yes)
+                return;
             int id = (int)((Button)sender).CommandParameter;
             DTrabajador item = new DTrabajador()
             {
@@ -92,12 +102,20 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtBuscar.Text = "";
+            if(txtBuscar.Text == "")
+            {
+               txtBucarPlaceH.Text = "";
+            }
+            
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            txtBuscar.Text = "Buscar...";
+            if(txtBuscar.Text == "")
+            {
+                txtBucarPlaceH.Text = "Buscar...";
+            }
+            
         }
 
         private void txtVer_Click(object sender, RoutedEventArgs e)
@@ -105,7 +123,13 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = MetodosUsuario.Encontrar(id);
 
-            MessageBox.Show(response[0].fechaNacimiento.ToString());
+            FormTrabajadores frmTrab = new FormTrabajadores();
+            frmTrab.Type = TypeForm.Read;
+            frmTrab.DataFill = response[0];
+            bool Resp = frmTrab.ShowDialog() ?? false;
+            Refresh(txtBuscar.Text);
+
+            //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
     }
 

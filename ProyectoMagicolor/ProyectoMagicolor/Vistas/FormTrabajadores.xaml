@@ -13,7 +13,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="#f0f0f0">
-            <TextBlock Text="Insertar Trabajador" 
+            <TextBlock Name="txtTitulo"
+                       Text="Insertar Trabajador" 
                        HorizontalAlignment="Center"
                        FontWeight="Bold"
                        FontSize="25"
@@ -68,11 +69,11 @@
                             </ComboBox>
                         </Grid>
 
-                        <Grid>
+                        <Grid x:Name="Password">
                             <TextBlock x:Name="txtPassPlaceholder" Text="Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
                             <PasswordBox x:Name="txtPassword" FontSize="13" Margin="0 10" GotFocus="txtPassword_GotFocus" LostFocus="txtPassword_LostFocus"/>
                         </Grid>
-                        <Grid>
+                        <Grid x:Name="CPassword">
                             <TextBlock x:Name="txtCPassPlaceholder" Text="Confirmar Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
                             <PasswordBox x:Name="txtCPassword" FontSize="13" Margin="0 10" GotFocus="txtCPassword_GotFocus" LostFocus="txtCPassword_LostFocus"/>
                         </Grid>
@@ -82,7 +83,7 @@
                 </GroupBox>
                 <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
                 
-                <Button Width="300" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+                <Button Name="btnEnviar" Width="300" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
