@@ -221,6 +221,7 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
+            UForm.idTrabajador = DataFill.idTrabajador;
             string response = MetodosUsuario.Editar(UForm);
             MessageBox.Show(response);
             if(response == "OK")

@@ -8,5 +8,5 @@
 
     <TextBox x:Name="txt" Text="{Binding Placeholder}" 
              Foreground="Gray"
-             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="txt_TextChanged"/>
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="txt_TextChanged" KeyUp="txt_KeyUp"/>
 </UserControl>
