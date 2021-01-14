@@ -94,14 +94,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Vistas\MenuItem.xaml.cs">
+      <DependentUpon>MenuItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\TextInput.xaml.cs">
       <DependentUpon>TextInput.xaml</DependentUpon>
     </Compile>
-    <Page Include="Vistas\FormTrabajadores.xaml">
+    <Page Include="Vistas\CategoriaDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\CategoriaFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\TrabajadoresFrm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Vistas\DemoDG.xaml">
+    <Page Include="Vistas\TrabajadoresDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -121,11 +132,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Vistas\FormTrabajadores.xaml.cs">
-      <DependentUpon>FormTrabajadores.xaml</DependentUpon>
+    <Compile Include="Vistas\CategoriaDG.xaml.cs">
+      <DependentUpon>CategoriaDG.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Vistas\DemoDG.xaml.cs">
-      <DependentUpon>DemoDG.xaml</DependentUpon>
+    <Compile Include="Vistas\CategoriaFrm.xaml.cs">
+      <DependentUpon>CategoriaFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\TrabajadoresFrm.xaml.cs">
+      <DependentUpon>TrabajadoresFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\TrabajadoresDG.xaml.cs">
+      <DependentUpon>TrabajadoresDG.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\FTrabajadores.xaml.cs">
       <DependentUpon>FTrabajadores.xaml</DependentUpon>
@@ -137,6 +154,10 @@
       <DependentUpon>Menu.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Vistas\MenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vistas\TextInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -197,6 +218,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\loupe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Vistas\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.3.2.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.2.0\build\MaterialDesignThemes.targets')" />

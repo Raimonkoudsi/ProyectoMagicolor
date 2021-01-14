@@ -117,11 +117,11 @@ namespace ProyectoMagicolor.Vistas
     /// <summary>
     /// Interaction logic for FormTrabajadores.xaml
     /// </summary>
-    public partial class FormTrabajadores : Window
+    public partial class TrabajadoresFrm : Window
     {
 
 
-        public FormTrabajadores()
+        public TrabajadoresFrm()
         {
             InitializeComponent();
             txtCedula.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);

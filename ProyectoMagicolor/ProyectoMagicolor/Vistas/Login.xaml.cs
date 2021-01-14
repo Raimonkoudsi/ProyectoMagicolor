@@ -48,7 +48,15 @@ namespace ProyectoMagicolor.Vistas
 
                 String[] respuesta = metodosUsuario.Login(txtUsuario.txt.Text, txtContraseña.Password);
 
-                MessageBox.Show(respuesta[0] + respuesta[1] + respuesta[2] + respuesta[3]);
+                if(respuesta[0] != "")
+                {
+                    var MainFrm = new MainWindow();
+                    this.Hide();
+                    MainFrm.ShowDialog();
+                    this.Close();
+                }
+
+                //MessageBox.Show(respuesta[0] + respuesta[1] + respuesta[2] + respuesta[3]);
             }
             catch
             {

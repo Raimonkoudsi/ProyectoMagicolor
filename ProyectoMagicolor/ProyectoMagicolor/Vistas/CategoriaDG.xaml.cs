@@ -20,12 +20,12 @@ namespace ProyectoMagicolor.Vistas
     /// <summary>
     /// Interaction logic for FTrabajadores.xaml
     /// </summary>
-    public partial class DemoDG : Window
+    public partial class CategoriaDG : Page
     {
 
-        public LTrabajador MetodosUsuario = new LTrabajador();
+        public LCategoria Metodos = new LCategoria();
 
-        public DemoDG()
+        public CategoriaDG()
         {
             InitializeComponent();
         }
@@ -34,16 +34,10 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DTrabajador> items = MetodosUsuario.Mostrar(search);
+            List<DCategoria> items = Metodos.Mostrar(search);
 
-            List<TablaTrabajadores> tablaTrabajadores = new List<TablaTrabajadores>();
 
-            foreach (DTrabajador it in items)
-            {
-                tablaTrabajadores.Add(new TablaTrabajadores(it.idTrabajador, it.cedula, it.nombre, it.apellidos, it.direccion, it.telefono, it.email));
-            }
-
-            dgOperaciones.ItemsSource = tablaTrabajadores;
+            dgOperaciones.ItemsSource = items;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -64,7 +58,7 @@ namespace ProyectoMagicolor.Vistas
             //}
             //else
             //    MessageBox.Show("no hay");
-            FormTrabajadores frmTrab = new FormTrabajadores();
+            CategoriaFrm frmTrab = new CategoriaFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
         }
@@ -72,12 +66,12 @@ namespace ProyectoMagicolor.Vistas
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var response = MetodosUsuario.Encontrar(id);
+            var response = Metodos.Encontrar(id);
 
-            FormTrabajadores frmTrab = new FormTrabajadores();
-            frmTrab.Type = TypeForm.Update;
-            frmTrab.DataFill = response[0];
-            bool Resp = frmTrab.ShowDialog() ?? false;
+            CategoriaFrm frm = new CategoriaFrm();
+            frm.Type = TypeForm.Update;
+            frm.DataFill = response[0];
+            bool Resp = frm.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
         }
 
@@ -92,11 +86,11 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DTrabajador item = new DTrabajador()
+            DCategoria item = new DCategoria()
             {
-                idTrabajador = id
+                idCategoria = id
             };
-            MetodosUsuario.Eliminar(item);
+            Metodos.Eliminar(item);
             Refresh(txtBuscar.Text);
         }
 
@@ -121,9 +115,9 @@ namespace ProyectoMagicolor.Vistas
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var response = MetodosUsuario.Encontrar(id);
+            var response = Metodos.Encontrar(id);
 
-            FormTrabajadores frmTrab = new FormTrabajadores();
+            CategoriaFrm frmTrab = new CategoriaFrm();
             frmTrab.Type = TypeForm.Read;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
@@ -131,28 +125,6 @@ namespace ProyectoMagicolor.Vistas
 
             //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
-    }
-
-    public class TablaTrabajadores
-    {
-        public TablaTrabajadores(int id, string cedula, string nombre, string apellidos, string direccion, string telefono, string email)
-        {
-            Id = id;
-            Cedula = cedula;
-            Nombre = nombre;
-            Apellidos = apellidos;
-            Direccion = direccion;
-            Telefono = telefono;
-            Email = email;
-        }
-
-        public int Id { get; set; }
-        public string Cedula { get; set; }
-        public string Nombre { get; set; }
-        public string Apellidos { get; set; }
-        public string Direccion { get; set; }
-        public string Telefono { get; set; }
-        public string Email { get; set; }
     }
 
 }
