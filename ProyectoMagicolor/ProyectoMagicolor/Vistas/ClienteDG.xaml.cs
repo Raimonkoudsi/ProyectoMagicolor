@@ -20,12 +20,12 @@ namespace ProyectoMagicolor.Vistas
     /// <summary>
     /// Interaction logic for FTrabajadores.xaml
     /// </summary>
-    public partial class ClienteaDG : Page
+    public partial class ClienteDG : Page
     {
 
-        public LCategoria Metodos = new LCategoria();
+        public LCliente Metodos = new LCliente();
 
-        public ClienteaDG()
+        public ClienteDG()
         {
             InitializeComponent();
         }
@@ -34,7 +34,7 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DCategoria> items = Metodos.Mostrar(search);
+            List<DCliente> items = Metodos.Mostrar(search);
 
 
             dgOperaciones.ItemsSource = items;
@@ -58,7 +58,7 @@ namespace ProyectoMagicolor.Vistas
             //}
             //else
             //    MessageBox.Show("no hay");
-            CategoriaFrm frmTrab = new CategoriaFrm();
+            ClienteFrm frmTrab = new ClienteFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
         }
@@ -68,7 +68,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.Encontrar(id);
 
-            CategoriaFrm frm = new CategoriaFrm();
+            ClienteFrm frm = new ClienteFrm();
             frm.Type = TypeForm.Update;
             frm.DataFill = response[0];
             bool Resp = frm.ShowDialog() ?? false;
@@ -86,9 +86,9 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DCategoria item = new DCategoria()
+            DCliente item = new DCliente()
             {
-                idCategoria = id
+                idCliente = id
             };
             Metodos.Eliminar(item);
             Refresh(txtBuscar.Text);
@@ -117,7 +117,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.Encontrar(id);
 
-            CategoriaFrm frmTrab = new CategoriaFrm();
+            ClienteFrm frmTrab = new ClienteFrm();
             frmTrab.Type = TypeForm.Read;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;

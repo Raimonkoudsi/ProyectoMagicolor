@@ -43,7 +43,7 @@ namespace ProyectoMagicolor
 
             var menuReports = new List<SubItem>();
             menuReports.Add(new SubItem("Trabajadores", new TrabajadoresDG()));
-            menuReports.Add(new SubItem("Providers"));
+            menuReports.Add(new SubItem("Cliente", new ClienteDG()));
             menuReports.Add(new SubItem("Products"));
             menuReports.Add(new SubItem("Stock"));
             menuReports.Add(new SubItem("Sales"));

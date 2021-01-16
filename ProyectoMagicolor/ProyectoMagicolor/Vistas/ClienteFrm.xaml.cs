@@ -27,19 +27,21 @@ namespace ProyectoMagicolor.Vistas
     {
 
 
-        public ClienteaDG()
+        public ClienteFrm()
         {
             InitializeComponent();
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+            txtTelefono.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
 
         
 
         public TypeForm Type;
-        public DCategoria DataFill;
+        public DCliente DataFill;
 
-        public DCategoria UForm;
+        public DCliente UForm;
 
-        public LCategoria Metodos = new LCategoria();
+        public LCliente Metodos = new LCliente();
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -52,14 +54,14 @@ namespace ProyectoMagicolor.Vistas
         {
             if(Type == TypeForm.Read)
             {
-                txtTitulo.Text = "Leer Categoria";
+                txtTitulo.Text = "Leer Cliente";
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
             }
             else if(Type == TypeForm.Update)
             {
-                txtTitulo.Text = "Editar Categoria";
+                txtTitulo.Text = "Editar Cliente";
                 fillForm(DataFill);
             }
         }
@@ -75,9 +77,21 @@ namespace ProyectoMagicolor.Vistas
             }
 
             string nombre = txtNombre.txt.Text;
-            string descripcion = txtDescripcion.Text;
+            string apellidos = txtApellidos.txt.Text;
+            string tipoDocumento = CbTipoDocumento.Text;
+            string documento = txtDocumento.txt.Text;
+            string direccion = txtDireccion.Text;
+            string telefono = txtTelefono.Changed ? txtTelefono.txt.Text : "";
+            string email = txtEmail.Changed ? txtEmail.txt.Text : "";
 
-            UForm = new DCategoria(0, nombre, descripcion);
+            UForm = new DCliente(0,
+                                 nombre,
+                                 apellidos,
+                                 tipoDocumento,
+                                 documento,
+                                 direccion,
+                                 telefono,
+                                 email); //Datos
         }
 
         void Create()
@@ -100,7 +114,7 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
-            UForm.idCategoria = DataFill.idCategoria;
+            UForm.idCliente = DataFill.idCliente;
             string response = Metodos.Editar(UForm);
             MessageBox.Show(response);
             if(response == "OK")
@@ -112,32 +126,53 @@ namespace ProyectoMagicolor.Vistas
 
         private void PlaceDescripcion_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(txtDescripcion.Text == "")
+            if(txtDireccion.Text == "")
             {
-                PlaceDescripcion.Text = "";
+                PlaceDireccion.Text = "";
             }
         }
 
         private void PlaceDescripcion_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (txtDescripcion.Text == "")
+            if (txtDireccion.Text == "")
             {
-                PlaceDescripcion.Text = "Descripción";
+                PlaceDireccion.Text = "Dirección";
             }
+        }
+
+
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbTipoDocumento.SelectedIndex > -1)
+                PlaceTipoDocumento.Text = "";
+            else
+                PlaceTipoDocumento.Text = "Tipo";
         }
 
         void SetEnable(bool Enable)
         {
             txtNombre.IsEnabled = Enable;
-            txtDescripcion.IsEnabled = Enable;
+            txtApellidos.IsEnabled = Enable;
+            CbTipoDocumento.IsEnabled = Enable;
+            txtDocumento.IsEnabled = Enable;
+            txtDireccion.IsEnabled = Enable;
+            txtTelefono.IsEnabled = Enable;
+            txtEmail.IsEnabled = Enable;
         }
-        void fillForm(DCategoria Data)
+        void fillForm(DCliente Data)
         {
             if(Data != null)
             {
                 txtNombre.SetText(Data.nombre);
-                txtDescripcion.Text = Data.descripcion;
-                PlaceDescripcion.Text = "";
+                txtApellidos.SetText(Data.apellidos);
+                CbTipoDocumento.SelectedIndex = Data.tipoDocumento == "V" ? 0 :
+                                                Data.tipoDocumento == "E" ? 1 : 
+                                                Data.tipoDocumento == "J" ? 2 : -1;
+                txtDocumento.SetText(Data.numeroDocumento);
+                txtTelefono.SetText(Data.telefono);
+                txtEmail.SetText(Data.email);
+                txtDireccion.Text = Data.direccion;
+                PlaceDireccion.Text = Data.direccion != "" ? "" : "Dirección";
             }
         }
         #region Validation
@@ -149,11 +184,41 @@ namespace ProyectoMagicolor.Vistas
                 txtNombre.txt.Focus();
                 return true;
             }
+            if (!txtApellidos.Changed)
+            {
+                MessageBox.Show("Debes llenar el campo Apellidos!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtApellidos.txt.Focus();
+                return true;
+            }
+            if (CbTipoDocumento.SelectedIndex == -1)
+            {
+                MessageBox.Show("Debes seleccionar un Tipo de Documento!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                CbTipoDocumento.Focus();
+                return true;
+            }
+            if (!txtDocumento.Changed)
+            {
+                MessageBox.Show("Debes llenar el campo Documento!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtDocumento.txt.Focus();
+                return true;
+            }
+            if(txtTelefono.txt.Text.Contains(" ") && txtTelefono.Changed)
+            {
+                MessageBox.Show("El campo de telefono no debe tener espacios!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtTelefono.txt.Focus();
+                return true;
+            }
+            if (txtEmail.Changed && !Validaciones.IsValidEmail(txtEmail.txt.Text))
+            {
+                MessageBox.Show("El correo electronico es incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtEmail.txt.Focus();
+                return true;
+            }
 
             return false;
         }
-        #endregion
 
+        #endregion
 
     }
 }

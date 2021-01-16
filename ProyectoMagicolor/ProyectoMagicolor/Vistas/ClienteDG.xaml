@@ -1,4 +1,4 @@
-﻿<Page x:Class="ProyectoMagicolor.Vistas.ClienteaDG"
+﻿<Page x:Class="ProyectoMagicolor.Vistas.ClienteDG"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -36,14 +36,35 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Nombre" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="auto" Header="Documento" Binding="{Binding numeroDocumento}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Descripción" Binding="{Binding descripcion}">
+                <DataGridTextColumn Width="auto" Header="Apellidos" Binding="{Binding apellidos}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Telefono" Binding="{Binding telefono}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="*" Header="Email" Binding="{Binding email}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -54,17 +75,17 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="auto">
-                                <Button CommandParameter="{Binding idCategoria}"
+                                <Button CommandParameter="{Binding idCliente}"
                                         Click="Button_Click_1"
                                         Margin="0 0 5 0"
                                         Padding="5">Editar</Button>
                                 <Button Name="txtVer"
-                                        CommandParameter="{Binding idCategoria}"
+                                        CommandParameter="{Binding idCliente}"
                                         Click="txtVer_Click"
                                         Margin="5 0"
                                         Padding="5">Ver</Button>
                                 <Button x:Name="btnEliminar"
-                                        CommandParameter="{Binding idCategoria}" 
+                                        CommandParameter="{Binding idCliente}" 
                                         Click="btnEliminar_Click"
                                         Background="OrangeRed" BorderBrush="OrangeRed"
                                         Margin="5 0 0 0"

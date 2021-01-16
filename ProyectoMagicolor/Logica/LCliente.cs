@@ -34,7 +34,7 @@ namespace Logica
                             @numeroDocumento,
                             @direccion,
                             @telefono,
-                            @email,
+                            @email
                         );
 	        ";
 
@@ -78,23 +78,15 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE cliente SET (
-                            nombre,
-                            apellidos,
-                            tipoDocumento,
-                            numeroDocumento,
-                            direccion,
-                            telefono,
-                            email
-                        ) VALUES(
-                            @nombre,
-                            @apellidos,
-                            @tipoDocumento,
-                            @numeroDocumento,
-                            @direccion,
-                            @telefono,
-                            @email
-                        ) WHERE idCliente = @idCliente;
+                        UPDATE cliente SET 
+                            nombre = @nombre,
+                            apellidos = @apellidos,
+                            tipoDocumento = @tipoDocumento,
+                            numeroDocumento = @numeroDocumento,
+                            direccion = @direccion,
+                            telefono = @telefono,
+                            email = @email
+                            WHERE idCliente = @idCliente;
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -134,7 +126,7 @@ namespace Logica
         }
 
 
-        public string Eiminar(DCliente Cliente)
+        public string Eliminar(DCliente Cliente)
         {
             string respuesta = "";
 
@@ -202,13 +194,71 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DCliente
                                 {
-                                    nombre = reader.GetString(0),
-                                    apellidos = reader.GetString(1),
-                                    tipoDocumento = reader.GetString(2),
-                                    numeroDocumento = reader.GetString(3),
-                                    direccion = reader.GetString(4),
-                                    telefono = reader.GetString(5),
-                                    email = reader.GetString(6),
+                                    idCliente = reader.GetInt32(0),
+                                    nombre = reader.GetString(1),
+                                    apellidos = reader.GetString(2),
+                                    tipoDocumento = reader.GetString(3),
+                                    numeroDocumento = reader.GetString(4),
+                                    direccion = reader.GetString(5),
+                                    telefono = reader.GetString(6),
+                                    email = reader.GetString(7),
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        public List<DCliente> Encontrar(int Buscar)
+        {
+            List<DCliente> ListaGenerica = new List<DCliente>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [cliente] WHERE idCliente= " + Buscar + "";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DCliente
+                                {
+                                    idCliente = reader.GetInt32(0),
+                                    nombre = reader.GetString(1),
+                                    apellidos = reader.GetString(2),
+                                    tipoDocumento = reader.GetString(3),
+                                    numeroDocumento = reader.GetString(4),
+                                    direccion = reader.GetString(5),
+                                    telefono = reader.GetString(6),
+                                    email = reader.GetString(7),
                                 });
                             }
                         }
