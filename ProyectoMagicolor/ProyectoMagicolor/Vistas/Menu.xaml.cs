@@ -37,17 +37,17 @@ namespace ProyectoMagicolor
             
             
             var menuSchedule = new List<SubItem>();
-            menuSchedule.Add(new SubItem("Services"));
-            menuSchedule.Add(new SubItem("Meetings"));
-            var item1 = new ItemMenu("Appointments", menuSchedule, PackIconKind.Schedule);
+            menuSchedule.Add(new SubItem("Articulos", new ArticuloDG()));
+            menuSchedule.Add(new SubItem("Categorias", new CategoriaDG()));
+            var item1 = new ItemMenu("Articulos", menuSchedule, PackIconKind.Schedule);
 
             var menuReports = new List<SubItem>();
-            menuReports.Add(new SubItem("Customers"));
+            menuReports.Add(new SubItem("Trabajadores", new TrabajadoresDG()));
             menuReports.Add(new SubItem("Providers"));
             menuReports.Add(new SubItem("Products"));
             menuReports.Add(new SubItem("Stock"));
             menuReports.Add(new SubItem("Sales"));
-            var item2 = new ItemMenu("Reports", menuReports, PackIconKind.FileReport);
+            var item2 = new ItemMenu("Pruebas", menuReports, PackIconKind.FileReport);
 
             var menuExpenses = new List<SubItem>();
             menuExpenses.Add(new SubItem("Fixed"));
@@ -58,7 +58,7 @@ namespace ProyectoMagicolor
             menuFinancial.Add(new SubItem("Cash Flow"));
             var item4 = new ItemMenu("Expenses", menuFinancial, PackIconKind.ScaleBalance);
 
-            var item0 = new ItemMenu("Dashboard", new Page(), PackIconKind.ViewDashboard);
+            var item0 = new ItemMenu("Dashboard", new ArticuloDG(), PackIconKind.ViewDashboard);
 
             Menu.Children.Add(new MenuItemX(item0, this));
             Menu.Children.Add(new MenuItemX(item1, this));
@@ -71,7 +71,7 @@ namespace ProyectoMagicolor
             ContentFrame.Content = Frm;
         }
 
-        internal void SwitchScreen(object sender)
+        public void SwitchScreen(object sender)
         {
             var screen = (Page)sender;
 

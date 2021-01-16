@@ -36,14 +36,35 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Nombre" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="auto" Header="Código" Binding="{Binding codigo}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Descripción" Binding="{Binding descripcion}">
+                <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Stock Mínimo" Binding="{Binding stockMinimo}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Stock Máximo" Binding="{Binding stockMaximo}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="2*" Header="Descripción" Binding="{Binding descripcion}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -54,17 +75,17 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="auto">
-                                <Button CommandParameter="{Binding idCategoria}"
+                                <Button CommandParameter="{Binding idArticulo}"
                                         Click="Button_Click_1"
                                         Margin="0 0 5 0"
                                         Padding="5">Editar</Button>
                                 <Button Name="txtVer"
-                                        CommandParameter="{Binding idCategoria}"
+                                        CommandParameter="{Binding idArticulo}"
                                         Click="txtVer_Click"
                                         Margin="5 0"
                                         Padding="5">Ver</Button>
                                 <Button x:Name="btnEliminar"
-                                        CommandParameter="{Binding idCategoria}" 
+                                        CommandParameter="{Binding idArticulo}" 
                                         Click="btnEliminar_Click"
                                         Background="OrangeRed" BorderBrush="OrangeRed"
                                         Margin="5 0 0 0"

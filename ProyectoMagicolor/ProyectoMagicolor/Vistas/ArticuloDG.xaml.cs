@@ -23,7 +23,7 @@ namespace ProyectoMagicolor.Vistas
     public partial class ArticuloDG : Page
     {
 
-        public LCategoria Metodos = new LCategoria();
+        public LArticulo Metodos = new LArticulo();
 
         public ArticuloDG()
         {
@@ -34,7 +34,7 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DCategoria> items = Metodos.Mostrar(search);
+            List<DArticulo> items = Metodos.Mostrar(search);
 
 
             dgOperaciones.ItemsSource = items;
@@ -58,7 +58,7 @@ namespace ProyectoMagicolor.Vistas
             //}
             //else
             //    MessageBox.Show("no hay");
-            CategoriaFrm frmTrab = new CategoriaFrm();
+            ArticuloFrm frmTrab = new ArticuloFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
         }
@@ -68,7 +68,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.Encontrar(id);
 
-            CategoriaFrm frm = new CategoriaFrm();
+            ArticuloFrm frm = new ArticuloFrm();
             frm.Type = TypeForm.Update;
             frm.DataFill = response[0];
             bool Resp = frm.ShowDialog() ?? false;
@@ -86,9 +86,9 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DCategoria item = new DCategoria()
+            DArticulo item = new DArticulo()
             {
-                idCategoria = id
+                idArticulo = id
             };
             Metodos.Eliminar(item);
             Refresh(txtBuscar.Text);
@@ -117,7 +117,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.Encontrar(id);
 
-            CategoriaFrm frmTrab = new CategoriaFrm();
+            ArticuloFrm frmTrab = new ArticuloFrm();
             frmTrab.Type = TypeForm.Read;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;

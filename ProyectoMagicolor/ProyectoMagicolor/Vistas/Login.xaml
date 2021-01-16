@@ -26,8 +26,8 @@
             <StackPanel Grid.Row="1" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown">
                 <local:TextInput x:Name="txtUsuario" Margin="50 10" FontSize="17" Placeholder="Usuario"/>
                 <Grid Margin="50 10">
-                    <PasswordBox x:Name="txtContraseña" FontSize="17" GotFocus="txtContraseña_GotFocus" LostFocus="txtContraseña_LostFocus"/>
                     <TextBlock Name="txtContraeñaPlace" Text="Contraseña" FontSize="17" Foreground="Gray" VerticalAlignment="Center"/>
+                    <PasswordBox x:Name="txtContraseña" FontSize="17" GotFocus="txtContraseña_GotFocus" LostFocus="txtContraseña_LostFocus"/>
                 </Grid>
                 <Button Margin="100 25" Background="#8BCC00" Content="Iniciar Sesión" FontSize="17" BorderBrush="{x:Null}" Click="login_Click"/>
                 <TextBlock HorizontalAlignment="Center" FontSize="15">
