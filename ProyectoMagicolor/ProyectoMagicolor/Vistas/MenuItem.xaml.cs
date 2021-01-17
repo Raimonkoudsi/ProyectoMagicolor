@@ -29,6 +29,7 @@ namespace ProyectoMagicolor.Vistas
 
             ExpanderMenu.Visibility = itemMenu.SubItems == null ? Visibility.Collapsed : Visibility.Visible;
             ListViewItemMenu.Visibility = itemMenu.SubItems == null ? Visibility.Visible : Visibility.Collapsed;
+            ListViewItemMenu.Content = itemMenu.Header;
 
             this.DataContext = itemMenu;
         }
@@ -36,6 +37,7 @@ namespace ProyectoMagicolor.Vistas
         private void LisViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _context.SwitchScreen(((SubItem)((ListView)sender).SelectedItem).Screen);
+            LisViewMenu.SelectedItem = 0;
         }
     }
 }

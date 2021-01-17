@@ -93,6 +93,20 @@ namespace ProyectoMagicolor.Vistas
             return Valid;
         }
 
+        public static bool ValidHttpURL(string s)
+        {
+            Uri resultURI;
+
+            if (!Regex.IsMatch(s, @"^https?:\/\/", RegexOptions.IgnoreCase))
+                s = "http://" + s;
+
+            if (Uri.TryCreate(s, UriKind.Absolute, out resultURI))
+                return (resultURI.Scheme == Uri.UriSchemeHttp ||
+                        resultURI.Scheme == Uri.UriSchemeHttps);
+
+            return false;
+        }
+
         public static void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Tab)

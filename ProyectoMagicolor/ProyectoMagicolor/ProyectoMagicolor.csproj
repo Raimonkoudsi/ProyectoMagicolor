@@ -94,13 +94,55 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Vistas\ArticuloDG.xaml.cs">
+      <DependentUpon>ArticuloDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ArticuloFrm.xaml.cs">
+      <DependentUpon>ArticuloFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ProveedorDG.xaml.cs">
+      <DependentUpon>ProveedorDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ClienteDG.xaml.cs">
+      <DependentUpon>ClienteDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ProveedorFrm.xaml.cs">
+      <DependentUpon>ProveedorFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ClienteFrm.xaml.cs">
+      <DependentUpon>ClienteFrm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\MenuItem.xaml.cs">
       <DependentUpon>MenuItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\TextInput.xaml.cs">
       <DependentUpon>TextInput.xaml</DependentUpon>
     </Compile>
+    <Page Include="Vistas\ArticuloDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ProveedorDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ClienteDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\CategoriaDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ArticuloFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ProveedorFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ClienteFrm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

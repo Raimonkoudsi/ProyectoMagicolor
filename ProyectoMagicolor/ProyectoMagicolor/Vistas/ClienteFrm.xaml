@@ -1,0 +1,71 @@
+﻿<Window x:Class="ProyectoMagicolor.Vistas.ClienteFrm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        mc:Ignorable="d"
+        Title="FormTrabajadores" Height="450" Width="700" Loaded="Window_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="#f0f0f0">
+            <TextBlock Name="txtTitulo"
+                       Text="Insertar Cliente" 
+                       HorizontalAlignment="Center"
+                       FontWeight="Bold"
+                       FontSize="25"
+                       Margin="0 10"/>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
+            <StackPanel Width="350" Margin="0 10 0 0">
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:TextInput Grid.Column="0" x:Name="txtNombre" Placeholder="Nombre" Margin="0 0 5 0" FontSize="15"/>
+                    <local:TextInput Grid.Column="1" x:Name="txtApellidos" Placeholder="Apellidos" Margin="5 0 0 0" FontSize="15"/>
+                </Grid>
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                        <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged">
+                            <ComboBoxItem>V</ComboBoxItem>
+                            <ComboBoxItem>E</ComboBoxItem>
+                            <ComboBoxItem>J</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <local:TextInput Grid.Column="1" x:Name="txtDocumento" Placeholder="Documento" Margin="10 0 0 0" FontSize="15"/>
+                </Grid>
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:TextInput Grid.Column="0" x:Name="txtTelefono" Placeholder="Telefono" Margin="0 0 5 0" FontSize="15"/>
+                    <local:TextInput Grid.Column="1" x:Name="txtEmail" Placeholder="Email" Margin="5 0 0 0" FontSize="15"/>
+                </Grid>
+                <Grid Margin="0 10">
+                    <TextBlock x:Name="PlaceDireccion" Text="Dirección" FontSize="15" Margin="1 4" Foreground="Gray"/>
+                    <TextBox x:Name="txtDireccion" FontSize="15" Text="" 
+                             Height="100" TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             HorizontalScrollBarVisibility="Disabled"
+                             VerticalScrollBarVisibility="Auto"
+                             GotFocus="PlaceDescripcion_GotFocus" LostFocus="PlaceDescripcion_LostFocus"/>
+                </Grid>
+                <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
+
+                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

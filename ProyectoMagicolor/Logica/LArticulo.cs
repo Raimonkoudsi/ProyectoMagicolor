@@ -21,7 +21,6 @@ namespace Logica
                             codigo,
                             nombre,
                             descripcion,
-                            imagen,
                             stockMinimo,
                             stockMaximo,
                             idCategoria
@@ -29,7 +28,6 @@ namespace Logica
                             @codigo,
                             @nombre,
                             @descripcion,
-                            @imagen,
                             @stockMinimo,
                             @stockMaximo,
                             @idCategoria
@@ -44,11 +42,10 @@ namespace Logica
                     comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
                     comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
                     comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
-                    comm.Parameters.AddWithValue("@imagen", Articulo.imagen);
+                    //comm.Parameters.AddWithValue("@imagen", Articulo.imagen);
                     comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
                     comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMinimo);
                     comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
-
                     try
                     {
                         conn.Open();
@@ -76,23 +73,14 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE articulo SET (
-                            codigo,
-                            nombre,
-                            descripcion,
-                            imagen,
-                            stockMinimo,
-                            stockMaximo,
-                            idCategoria
-                        ) VALUES(
-                            @codigo,
-                            @nombre,
-                            @descripcion,
-                            @imagen,
-                            @stockMinimo,
-                            @stockMaximo,
-                            @idCategoria
-                        ) WHERE idArticulo = @idArticulo;
+                        UPDATE articulo SET
+                            codigo = @codigo,
+                            nombre = @nombre,
+                            descripcion = @descripcion,
+                            stockMinimo = @stockMinimo,
+                            stockMaximo = @stockMaximo,
+                            idCategoria = @idCategoria
+                        WHERE idArticulo = @idArticulo;
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -103,7 +91,7 @@ namespace Logica
                     comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
                     comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
                     comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
-                    comm.Parameters.AddWithValue("@imagen", Articulo.imagen);
+                    //comm.Parameters.AddWithValue("@imagen", Articulo.imagen);
                     comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
                     comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMinimo);
                     comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
@@ -132,7 +120,7 @@ namespace Logica
         }
 
 
-        public string Eiminar(DArticulo Articulo)
+        public string Eliminar(DArticulo Articulo)
         {
             string respuesta = "";
 
@@ -200,6 +188,64 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DArticulo
                                 {
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    descripcion = reader.GetString(3),
+                                    //imagen = reader.GetSqlBytes(4).Buffer,
+                                    stockMinimo = reader.GetInt32(5),
+                                    stockMaximo = reader.GetInt32(6),
+                                    idCategoria = reader.GetInt32(7)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        public List<DArticulo> Encontrar(int Buscar)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [articulo] WHERE idArticulo= " + Buscar + " ";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    idArticulo = reader.GetInt32(0),
                                     codigo = reader.GetString(1),
                                     nombre = reader.GetString(2),
                                     descripcion = reader.GetString(3),
