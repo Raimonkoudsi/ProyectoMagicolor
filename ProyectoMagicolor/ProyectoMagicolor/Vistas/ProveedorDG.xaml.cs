@@ -23,7 +23,7 @@ namespace ProyectoMagicolor.Vistas
     public partial class ProveedorDG : Page
     {
 
-        public LCliente Metodos = new LCliente();
+        public LProveedor Metodos = new LProveedor();
 
         public ProveedorDG()
         {
@@ -34,7 +34,12 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DCliente> items = Metodos.Mostrar(search);
+            List<DProveedor> items = Metodos.Mostrar(search);
+
+            foreach(DProveedor item in items)
+            {
+                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
+            }
 
 
             dgOperaciones.ItemsSource = items;
@@ -58,7 +63,7 @@ namespace ProyectoMagicolor.Vistas
             //}
             //else
             //    MessageBox.Show("no hay");
-            ClienteFrm frmTrab = new ClienteFrm();
+            ProveedorFrm frmTrab = new ProveedorFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
         }
@@ -68,7 +73,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.Encontrar(id);
 
-            ClienteFrm frm = new ClienteFrm();
+            ProveedorFrm frm = new ProveedorFrm();
             frm.Type = TypeForm.Update;
             frm.DataFill = response[0];
             bool Resp = frm.ShowDialog() ?? false;
@@ -86,9 +91,9 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DCliente item = new DCliente()
+            DProveedor item = new DProveedor()
             {
-                idCliente = id
+                idProveedor = id
             };
             Metodos.Eliminar(item);
             Refresh(txtBuscar.Text);
@@ -117,7 +122,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.Encontrar(id);
 
-            ClienteFrm frmTrab = new ClienteFrm();
+            ProveedorFrm frmTrab = new ProveedorFrm();
             frmTrab.Type = TypeForm.Read;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;

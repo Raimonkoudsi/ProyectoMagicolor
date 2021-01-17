@@ -32,16 +32,27 @@ namespace ProyectoMagicolor.Vistas
             InitializeComponent();
             txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
             txtTelefono.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+
+            LCategoria Mt = new LCategoria();
+
+            var LCmt = Mt.Mostrar("");
+
+            DCategoria NCT = new DCategoria(0,"Variedades", "");
+            LCmt.Add(NCT);
+            
+            CbSectorComercial.ItemsSource = LCmt;
+            CbSectorComercial.DisplayMemberPath = "nombre";
+            CbSectorComercial.SelectedValuePath = "nombre";
         }
 
         
 
         public TypeForm Type;
-        public DCliente DataFill;
+        public DProveedor DataFill;
 
-        public DCliente UForm;
+        public DProveedor UForm;
 
-        public LCliente Metodos = new LCliente();
+        public LProveedor Metodos = new LProveedor();
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -54,14 +65,14 @@ namespace ProyectoMagicolor.Vistas
         {
             if(Type == TypeForm.Read)
             {
-                txtTitulo.Text = "Leer Cliente";
+                txtTitulo.Text = "Leer Proveedor";
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
             }
             else if(Type == TypeForm.Update)
             {
-                txtTitulo.Text = "Editar Cliente";
+                txtTitulo.Text = "Editar Proveedor";
                 fillForm(DataFill);
             }
         }
@@ -76,22 +87,24 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            string nombre = txtNombre.txt.Text;
-            string apellidos = txtApellidos.txt.Text;
+            string razonsocial = txtRazonSocial.txt.Text;
+            string sectorcomercial = (string)CbSectorComercial.SelectedValue;
             string tipoDocumento = CbTipoDocumento.Text;
             string documento = txtDocumento.txt.Text;
             string direccion = txtDireccion.Text;
             string telefono = txtTelefono.Changed ? txtTelefono.txt.Text : "";
             string email = txtEmail.Changed ? txtEmail.txt.Text : "";
+            string url = txtUrl.Changed ? txtUrl.txt.Text : "";
 
-            UForm = new DCliente(0,
-                                 nombre,
-                                 apellidos,
-                                 tipoDocumento,
-                                 documento,
-                                 direccion,
-                                 telefono,
-                                 email); //Datos
+            UForm = new DProveedor(0,
+                                   razonsocial,
+                                   sectorcomercial,
+                                   tipoDocumento,
+                                   documento,
+                                   direccion,
+                                   telefono,
+                                   email,
+                                   url); //Datos
         }
 
         void Create()
@@ -114,7 +127,7 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
-            UForm.idCliente = DataFill.idCliente;
+            UForm.idProveedor = DataFill.idProveedor;
             string response = Metodos.Editar(UForm);
             MessageBox.Show(response);
             if(response == "OK")
@@ -148,23 +161,31 @@ namespace ProyectoMagicolor.Vistas
             else
                 PlaceTipoDocumento.Text = "Tipo";
         }
+        private void CbSectorComercial_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbSectorComercial.SelectedIndex > -1)
+                PlaceSectorComercial.Text = "";
+            else
+                PlaceSectorComercial.Text = "Sector Comercial";
+        }
 
         void SetEnable(bool Enable)
         {
-            txtNombre.IsEnabled = Enable;
-            txtApellidos.IsEnabled = Enable;
+            txtRazonSocial.IsEnabled = Enable;
+            CbSectorComercial.IsEnabled = Enable;
             CbTipoDocumento.IsEnabled = Enable;
             txtDocumento.IsEnabled = Enable;
             txtDireccion.IsEnabled = Enable;
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
+            txtUrl.IsEnabled = Enable;
         }
-        void fillForm(DCliente Data)
+        void fillForm(DProveedor Data)
         {
             if(Data != null)
             {
-                txtNombre.SetText(Data.nombre);
-                txtApellidos.SetText(Data.apellidos);
+                txtRazonSocial.SetText(Data.razonSocial);
+                CbSectorComercial.SelectedValue = Data.sectorComercial;
                 CbTipoDocumento.SelectedIndex = Data.tipoDocumento == "V" ? 0 :
                                                 Data.tipoDocumento == "E" ? 1 : 
                                                 Data.tipoDocumento == "J" ? 2 : -1;
@@ -173,21 +194,22 @@ namespace ProyectoMagicolor.Vistas
                 txtEmail.SetText(Data.email);
                 txtDireccion.Text = Data.direccion;
                 PlaceDireccion.Text = Data.direccion != "" ? "" : "Dirección";
+                txtUrl.SetText(Data.url);
             }
         }
         #region Validation
         bool Validate()
         {
-            if (!txtNombre.Changed)
+            if (!txtRazonSocial.Changed)
             {
-                MessageBox.Show("Debes llenar el campo Nombre!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtNombre.txt.Focus();
+                MessageBox.Show("Debes llenar el campo Razón Social!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtRazonSocial.txt.Focus();
                 return true;
             }
-            if (!txtApellidos.Changed)
+            if (CbSectorComercial.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes llenar el campo Apellidos!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtApellidos.txt.Focus();
+                MessageBox.Show("Debes seleccionar un Sector Comercial!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                CbSectorComercial.Focus();
                 return true;
             }
             if (CbTipoDocumento.SelectedIndex == -1)
@@ -202,7 +224,7 @@ namespace ProyectoMagicolor.Vistas
                 txtDocumento.txt.Focus();
                 return true;
             }
-            if(txtTelefono.txt.Text.Contains(" ") && txtTelefono.Changed)
+            if(txtTelefono.Changed && txtTelefono.txt.Text.Contains(" ") )
             {
                 MessageBox.Show("El campo de telefono no debe tener espacios!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtTelefono.txt.Focus();
@@ -214,11 +236,18 @@ namespace ProyectoMagicolor.Vistas
                 txtEmail.txt.Focus();
                 return true;
             }
+            if(txtUrl.Changed && !Validaciones.ValidHttpURL(txtUrl.txt.Text))
+            {
+                MessageBox.Show("El URl es Incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtEmail.txt.Focus();
+                return true;
+            }
 
             return false;
         }
 
         #endregion
+
 
     }
 }

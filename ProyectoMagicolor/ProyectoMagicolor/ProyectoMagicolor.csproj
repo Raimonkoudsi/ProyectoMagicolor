@@ -100,8 +100,14 @@
     <Compile Include="Vistas\ArticuloFrm.xaml.cs">
       <DependentUpon>ArticuloFrm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\ProveedorDG.xaml.cs">
+      <DependentUpon>ProveedorDG.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ClienteDG.xaml.cs">
       <DependentUpon>ClienteDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ProveedorFrm.xaml.cs">
+      <DependentUpon>ProveedorFrm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\ClienteFrm.xaml.cs">
       <DependentUpon>ClienteFrm.xaml</DependentUpon>
@@ -116,6 +122,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Vistas\ProveedorDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\ClienteDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -125,6 +135,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Vistas\ArticuloFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ProveedorFrm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

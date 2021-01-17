@@ -36,6 +36,11 @@ namespace ProyectoMagicolor.Vistas
 
             List<DCliente> items = Metodos.Mostrar(search);
 
+            foreach(DCliente item in items)
+            {
+                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento; 
+            }
+
 
             dgOperaciones.ItemsSource = items;
         }
