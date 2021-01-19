@@ -4,21 +4,22 @@ using System.Text;
 
 namespace Datos
 {
-    public class DCuentaPagar:Conexion
+    public class DCuentaCobrar:Conexion
     {
 
-        private int _IdCuentaPagar;
-        public int idCuentaPagar
+
+        private int _IdCuentaCobrar;
+        public int idCuentaCobrar
         {
-            get { return _IdCuentaPagar; }
-            set { _IdCuentaPagar = value; }
+            get { return _IdCuentaCobrar; }
+            set { _IdCuentaCobrar = value; }
         }
 
-        private int _IdIngreso;
-        public int idIngreso
+        private int _IdVenta;
+        public int idVenta
         {
-            get { return _IdIngreso; }
-            set { _IdIngreso = value; }
+            get { return _IdVenta; }
+            set { _IdVenta = value; }
         }
 
         private DateTime _FechaInicio;
@@ -49,22 +50,15 @@ namespace Datos
             set { _Estado = value; }
         }
 
-        private string _RazonSocial;
-        public string razonSocial
-        {
-            get { return _RazonSocial; }
-            set { _RazonSocial = value; }
-        }
-
-        public DCuentaPagar()
+        public DCuentaCobrar()
         {
 
         }
 
-        public DCuentaPagar(int IdCuentaPagar, int IdIngreso, DateTime FechaInicio, DateTime FechaLimite, double MontoIngresado, int Estado)
+        public DCuentaCobrar(int IdCuentaCobrar, int IdVenta, DateTime FechaInicio, DateTime FechaLimite, double MontoIngresado, int Estado)
         {
-            this.idCuentaPagar = IdCuentaPagar;
-            this.idIngreso = IdIngreso;
+            this.idCuentaCobrar = IdCuentaCobrar;
+            this.idVenta = IdVenta;
             this.fechaInicio = FechaInicio;
             this.fechaLimite = FechaLimite;
             this.montoIngresado = MontoIngresado;

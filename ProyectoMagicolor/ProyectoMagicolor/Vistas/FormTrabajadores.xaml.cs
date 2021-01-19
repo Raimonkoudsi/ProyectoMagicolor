@@ -158,7 +158,7 @@ namespace ProyectoMagicolor.Vistas
                 txtTitulo.Text = "Editar Trabajador";
                 fillForm(DataFill);
             }
-        }
+        } 
 
        
 

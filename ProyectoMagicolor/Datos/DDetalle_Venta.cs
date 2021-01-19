@@ -21,6 +21,13 @@ namespace Datos
             set { _IdVenta = value; }
         }
 
+        private int _IdDetalleIngreso;
+        public int idDetalleIngreso
+        {
+            get { return _IdDetalleIngreso; }
+            set { _IdDetalleIngreso = value; }
+        }
+
         private int _Cantidad;
         public int cantidad
         {
@@ -48,10 +55,11 @@ namespace Datos
 
         }
 
-        public DDetalle_Venta(int IdDetalleVenta, int IdVenta, int Cantidad, double PrecioVenta, double Impuesto, int Estado)
+        public DDetalle_Venta(int IdDetalleVenta, int IdVenta, int IdDetalleIngreso, int Cantidad, double PrecioVenta, double Impuesto, int Estado)
         {
             this.idDetalleVenta = IdDetalleVenta;
             this.idVenta = IdVenta;
+            this.idDetalleIngreso = IdDetalleIngreso;
             this.cantidad = Cantidad;
             this.precioVenta = PrecioVenta;
             this.impuesto = Impuesto;

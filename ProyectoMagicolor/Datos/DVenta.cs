@@ -69,12 +69,33 @@ namespace Datos
             set { _Estado = value; }
         }
 
+        private string _CedulaTrabajador;
+        public string cedulaTrabajador
+        {
+            get { return _CedulaTrabajador; }
+            set { _CedulaTrabajador = value; }
+        }
+
+        private string _Cliente;
+        public string cliente
+        {
+            get { return _Cliente; }
+            set { _Cliente = value; }
+        }
+
+        private double _MontoTotal;
+        public double montoTotal
+        {
+            get { return _MontoTotal; }
+            set { _MontoTotal = value; }
+        }
+
         public DVenta()
         {
 
         }
 
-        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado)
+        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado, string CedulaTrabajador, string Cliente, double MontoTotal)
         {
             this.idVenta = IdVenta;
             this.idCliente = IdCliente;
@@ -85,6 +106,9 @@ namespace Datos
             this.descuento = Descuento;
             this.metodoPago = MetodoPago;
             this.estado = Estado;
+            this.cedulaTrabajador = CedulaTrabajador;
+            this.cliente = Cliente;
+            this.montoTotal = MontoTotal;
         }
 
     }

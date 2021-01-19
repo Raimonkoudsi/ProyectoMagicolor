@@ -84,7 +84,7 @@ namespace Logica
                                 comm2.Parameters.AddWithValue("@fechaLimite", CuentaPagar.fechaLimite);
                                 comm2.Parameters.AddWithValue("@montoIngresado", CuentaPagar.montoIngresado);
 
-                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por cobrar";
+                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
                             }
                         }
 
@@ -205,10 +205,8 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT i.idIngreso, t.cedula, p.razonSocial,i.fecha, i.tipoComprobante, i.serieComprobante, i.metodoPago, i.estado, SUM(di.precioCompra) as precioTotal from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] dt on i.idIngreso=dt.idIngreso where tipoComprobante = " + Buscar +" AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
+                    comm.CommandText = "SELECT i.idIngreso, t.cedula, p.razonSocial,i.fecha, i.tipoComprobante, i.serieComprobante, i.metodoPago, i.estado, SUM(di.precioCompra) as precioTotal from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso where tipoComprobante = " + Buscar +" AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
 
                     try
                     {
@@ -250,6 +248,132 @@ namespace Logica
                 }
             }
 
+        }
+
+
+        //cuentas por pagar
+        public List<DIngreso> MostrarCxP()
+        {
+            List<DIngreso> ListaGenerica = new List<DIngreso>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT i.idIngreso, p.razonSocial, i.tipoComprobante, i.serieComprobante, i.fecha, (SUM(di.precioCompra) - SUM(cp.Monto)) as montoTotal, i.estado from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso where i.metodoPago = 2 AND (SUM(di.precioCompra) - SUM(cp.Monto)) != 0";
+
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DIngreso
+                                {
+                                    idIngreso = reader.GetInt32(0),
+                                    razonSocial = reader.GetString(1),
+                                    tipoComprobante = reader.GetString(2),
+                                    serieComprobante = reader.GetString(3),
+                                    fecha = reader.GetDateTime(4),
+                                    montoTotal = reader.GetDouble(5),
+                                    estado = reader.GetInt32(6)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+
+
+        public string RegistrarCxP(DCuentaPagar CuentaPagar, DRegistro_CuentaPagar RegistroCuentaPagar, int IdIngreso)
+        {
+            string respuesta = "";
+
+            string query = @"
+                        INSERT INTO registroCuentaPagar(
+                            idCuentaPagar,
+                            monto,
+                            fecha,
+                        ) VALUES(
+                            @idCuentaPagar,
+                            @monto,
+                            @fecha,
+                        );
+	        ";
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand(query, conn))
+                {
+                    comm.Parameters.AddWithValue("@idCuentaPagar", RegistroCuentaPagar.idCuentaPagar);
+                    comm.Parameters.AddWithValue("@monto", RegistroCuentaPagar.monto);
+                    comm.Parameters.AddWithValue("@fecha", DateTime.Now);
+
+                    try
+                    {
+                        conn.Open();
+                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta";
+
+
+                        if (respuesta.Equals("OK"))
+                        {
+
+                            string query2 = @"
+                                        UPDATE cuentaPagar SET
+                                            montoIngresado = SUM(montoIngresado) + @monto,
+                                        WHERE idCuentaPagar = @idCuentaPagar;
+	                        ";
+
+                            using (SqlCommand comm2 = new SqlCommand(query2, conn))
+                            {
+                                comm2.Parameters.AddWithValue("@monto", RegistroCuentaPagar.monto);
+                                comm2.Parameters.AddWithValue("@idCuentaPagar", CuentaPagar.idCuentaPagar);
+
+                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
+
+                                //falta colocarlo como enta si el monto es total
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        respuesta = e.Message;
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return respuesta;
+                }
+            }
         }
 
     }
