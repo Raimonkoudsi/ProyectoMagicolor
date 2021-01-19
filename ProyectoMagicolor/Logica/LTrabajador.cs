@@ -142,7 +142,9 @@ namespace Logica
                     try
                     {
                         conn.Open();
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizo el Registro del Trabajador";
+                        var Resp = comm.ExecuteNonQuery();
+                        respuesta = Resp == 1 ? "OK" : "No se actualizo el Registro del Trabajador";
+                        Console.WriteLine(Resp);
                     }
                     catch (SqlException e)
                     {

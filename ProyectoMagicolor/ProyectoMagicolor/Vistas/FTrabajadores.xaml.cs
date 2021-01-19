@@ -122,7 +122,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            FormTrabajadores frmTrab = new FormTrabajadores();
+            TrabajadoresFrm frmTrab = new TrabajadoresFrm();
             frmTrab.ShowDialog();
         }
     }

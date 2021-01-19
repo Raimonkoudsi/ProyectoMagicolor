@@ -1,0 +1,80 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.CategoriaDG"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Background="WhiteSmoke"
+        Title="Trabajadores" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="70 10">
+            <TextBlock Name="txtBucarPlaceH" Text="Buscar..." FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+            <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+            <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+        </Grid>
+
+        <DataGrid x:Name="dgOperaciones" 
+                  Grid.Row="1"
+                  AutoGenerateColumns="false" 
+                  IsReadOnly="true" 
+                  ColumnWidth="*" 
+                  Margin="30 0"
+                  BorderThickness="0 1 0 1"
+                  BorderBrush="LightGray"
+                  Background="WhiteSmoke">
+            <DataGrid.Resources>
+                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="#f0f0f0" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="*" Header="Nombre" Binding="{Binding nombre}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="*" Header="Descripción" Binding="{Binding descripcion}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTemplateColumn Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Width="auto">
+                                <Button CommandParameter="{Binding idCategoria}"
+                                        Click="Button_Click_1"
+                                        Margin="0 0 5 0"
+                                        Padding="5">Editar</Button>
+                                <Button Name="txtVer"
+                                        CommandParameter="{Binding idCategoria}"
+                                        Click="txtVer_Click"
+                                        Margin="5 0"
+                                        Padding="5">Ver</Button>
+                                <Button x:Name="btnEliminar"
+                                        CommandParameter="{Binding idCategoria}" 
+                                        Click="btnEliminar_Click"
+                                        Background="OrangeRed" BorderBrush="OrangeRed"
+                                        Margin="5 0 0 0"
+                                        Padding="5">Eliminar</Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Grid.Row="2" Content="Agregar" HorizontalAlignment="Center" Margin="0 10" Click="Button_Click" Background="ForestGreen" BorderBrush="ForestGreen"/>
+    </Grid>
+</Page>

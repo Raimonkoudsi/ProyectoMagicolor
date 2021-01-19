@@ -60,7 +60,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            Changed = txt.Text != "";
+            //Changed = txt.Text != "";
             if (!Changed)
             {
                 txt.Foreground = Brushes.Gray;
@@ -76,6 +76,11 @@ namespace ProyectoMagicolor.Vistas
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             _Placeholder = Placeholder;
+        }
+
+        private void txt_KeyUp(object sender, KeyEventArgs e)
+        {
+            Changed = txt.Text != "";
         }
     }
 }

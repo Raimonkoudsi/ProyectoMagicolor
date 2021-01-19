@@ -93,6 +93,20 @@ namespace ProyectoMagicolor.Vistas
             return Valid;
         }
 
+        public static bool ValidHttpURL(string s)
+        {
+            Uri resultURI;
+
+            if (!Regex.IsMatch(s, @"^https?:\/\/", RegexOptions.IgnoreCase))
+                s = "http://" + s;
+
+            if (Uri.TryCreate(s, UriKind.Absolute, out resultURI))
+                return (resultURI.Scheme == Uri.UriSchemeHttp ||
+                        resultURI.Scheme == Uri.UriSchemeHttps);
+
+            return false;
+        }
+
         public static void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Tab)
@@ -117,11 +131,11 @@ namespace ProyectoMagicolor.Vistas
     /// <summary>
     /// Interaction logic for FormTrabajadores.xaml
     /// </summary>
-    public partial class FormTrabajadores : Window
+    public partial class TrabajadoresFrm : Window
     {
 
 
-        public FormTrabajadores()
+        public TrabajadoresFrm()
         {
             InitializeComponent();
             txtCedula.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
@@ -221,6 +235,7 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
+            UForm.idTrabajador = DataFill.idTrabajador;
             string response = MetodosUsuario.Editar(UForm);
             MessageBox.Show(response);
             if(response == "OK")

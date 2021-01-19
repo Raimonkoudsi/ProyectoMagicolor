@@ -82,25 +82,16 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE cliente SET (
-                            razonSocial,
-                            sectorComercial,
-                            tipoDocumento,
-                            numeroDocumento,
-                            direccion,
-                            telefono,
-                            email,
-                            url
-                        ) VALUES(
-                            @razonSocial,
-                            @sectorComercial,
-                            @tipoDocumento,
-                            @numeroDocumento,
-                            @direccion,
-                            @telefono,
-                            @email,
-                            @url
-                        ) WHERE idProveedor = @idProveedor;
+                        UPDATE proveedor SET 
+                            razonSocial = @razonSocial,
+                            sectorComercial = @sectorComercial,
+                            tipoDocumento = @tipoDocumento,
+                            numeroDocumento = @numeroDocumento,
+                            direccion = @direccion,
+                            telefono = @telefono,
+                            email = @email,
+                            url = @url
+                            WHERE idProveedor = @idProveedor;
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -141,12 +132,12 @@ namespace Logica
         }
 
 
-        public string Eiminar(DProveedor Proveedor)
+        public string Eliminar(DProveedor Proveedor)
         {
             string respuesta = "";
 
             string query = @"
-                        DELETE FROM cliente WHERE idProveedor=@idProveedor
+                        DELETE FROM proveedor WHERE idProveedor=@idProveedor
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -209,6 +200,64 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DProveedor
                                 {
+                                    idProveedor = reader.GetInt32(0),
+                                    razonSocial = reader.GetString(1),
+                                    sectorComercial = reader.GetString(2),
+                                    tipoDocumento = reader.GetString(3),
+                                    numeroDocumento = reader.GetString(4),
+                                    direccion = reader.GetString(5),
+                                    telefono = reader.GetString(6),
+                                    email = reader.GetString(7),
+                                    url = reader.GetString(8)
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+        public List<DProveedor> Encontrar(int Buscar)
+        {
+            List<DProveedor> ListaGenerica = new List<DProveedor>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [proveedor] WHERE idProveedor= " + Buscar + "";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DProveedor
+                                {
+                                    idProveedor = reader.GetInt32(0),
                                     razonSocial = reader.GetString(1),
                                     sectorComercial = reader.GetString(2),
                                     tipoDocumento = reader.GetString(3),

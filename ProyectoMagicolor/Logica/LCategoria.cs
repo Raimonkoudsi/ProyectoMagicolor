@@ -63,13 +63,10 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        UPDATE categoria SET (
-                            nombre,
-                            descripcion
-                        ) VALUES(
-                            @nombre,
-                            @descripcion
-                        ) WHERE idCategoria = @idCategoria;
+                        UPDATE categoria SET 
+                            nombre = @nombre,
+                            descripcion = @descripcion
+                        WHERE idCategoria = @idCategoria;
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -104,7 +101,7 @@ namespace Logica
         }
 
 
-        public string Eiminar(DCategoria Categoria)
+        public string Eliminar(DCategoria Categoria)
         {
             string respuesta = "";
 
@@ -155,7 +152,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT nombre, descripcion from [categoria] where nombre like '" + Buscar + "%' order by nombre";
+                    comm.CommandText = "SELECT idCategoria, nombre, descripcion from [categoria] where nombre like '" + Buscar + "%' order by nombre";
 
 
                     //comm.Parameters.AddWithValue("@textoBuscar", "");
@@ -172,8 +169,9 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DCategoria
                                 {
-                                    nombre = reader.GetString(0),
-                                    descripcion = reader.GetString(1),
+                                    idCategoria = reader.GetInt32(0),
+                                    nombre = reader.GetString(1),
+                                    descripcion = reader.GetString(2),
                                 });
                             }
                         }
@@ -194,6 +192,58 @@ namespace Logica
             }
 
         }
+        public List<DCategoria> Encontrar(int Buscar)
+        {
+            List<DCategoria> ListaGenerica = new List<DCategoria>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [categoria] where idCategoria = " + Buscar + "";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DCategoria
+                                {
+                                    idCategoria = reader.GetInt32(0),
+                                    nombre = reader.GetString(1),
+                                    descripcion = reader.GetString(2),
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
 
     }
 }

@@ -6,91 +6,36 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="380"
+        Title="Login" Height="350" Width="380"
         AllowsTransparency="True" Background="Transparent"
         WindowStyle="None" ResizeMode="NoResize">
-    <Grid>
+    <Border Background="WhiteSmoke" CornerRadius="15">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
-
-            <Border CornerRadius="10" Grid.RowSpan="2">
-                <Border.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#66D3FA" Offset="0.0"/>
-                        <GradientStop Color="#3C99DC" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
-
-
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Variedades Magicolor"
-                           FontWeight="Light"
-                           FontFamily="Agency FB Bold"
-                           FontSize="44"
-                           Foreground="White"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-
-
-
-            <StackPanel Grid.Row="1" >
-                <StackPanel Orientation="Horizontal">
-                    <TextBox FontFamily="Helvetica"
-                             x:Name="txtUsuario"
-                             FontWeight="Light"
-                             Text="Username"
-                             FontSize="20"
-                             HorizontalAlignment="Center"
-                             Foreground="White"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             Width="235"
-                             HorizontalContentAlignment="Left"
-                             Opacity="0.5"
-                             Height="25"
-                             Margin="63,0,0,0"/>
-
-                </StackPanel>
-                <Border Width="250"
-                        Height="2"
-                        Background="White"
-                        Opacity="0.5"/>
-
-
-
-                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                    <PasswordBox FontFamily="Helvetica"
-                             x:Name="txtContraseña"
-                             FontWeight="Light"
-                             Password="Password"
-                             FontSize="20"
-                             HorizontalAlignment="Center"
-                             Foreground="White"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             Width="235"
-                             HorizontalContentAlignment="Left"
-                             Opacity="0.5"
-                             Height="25"
-                             Margin="63,0,0,0"/>
-
-                </StackPanel>
-                <Border Width="250"
-                        Height="2"
-                        Background="White"
-                        Opacity="0.5"/>
-
-
-                <StackPanel Orientation="Horizontal" Margin="0,50,0,0">
-                    <Button x:Name="login" Width="100" Height="40" Click="login_Click" Content="Ingresar" Margin="60,0,60,0"/>
-                </StackPanel>
-
+            <Grid Margin="0 30 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="#3194F7" Width="10"/>
+                <TextBlock Grid.Column="1" Text="MAGICOLOR" FontSize="25" FontWeight="Bold" Foreground="#3194F7"  Margin="10 10"/>
+            </Grid>
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown">
+                <local:TextInput x:Name="txtUsuario" Margin="50 10" FontSize="17" Placeholder="Usuario"/>
+                <Grid Margin="50 10">
+                    <TextBlock Name="txtContraeñaPlace" Text="Contraseña" FontSize="17" Foreground="Gray" VerticalAlignment="Center"/>
+                    <PasswordBox x:Name="txtContraseña" FontSize="17" GotFocus="txtContraseña_GotFocus" LostFocus="txtContraseña_LostFocus"/>
+                </Grid>
+                <Button Margin="100 25" Background="#8BCC00" Content="Iniciar Sesión" FontSize="17" BorderBrush="{x:Null}" Click="login_Click"/>
+                <TextBlock HorizontalAlignment="Center" FontSize="15">
+                    <Hyperlink Foreground="Gray" TextDecorations="" >
+                        Olvidaste la contraseña?
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </Grid>
-    </Grid>
+    </Border>
 </Window>
