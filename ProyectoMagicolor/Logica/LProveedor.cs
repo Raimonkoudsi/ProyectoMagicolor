@@ -298,7 +298,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT * from [proveedor] WHERE tipoDocumento= " + Tipo + " AND numeroDocumento= " + NroDocumento + "";
+                    comm.CommandText = "SELECT * from [proveedor] WHERE tipoDocumento = '" + Tipo + "' AND numeroDocumento = '" + NroDocumento + "'";
 
 
                     //comm.Parameters.AddWithValue("@textoBuscar", "");
