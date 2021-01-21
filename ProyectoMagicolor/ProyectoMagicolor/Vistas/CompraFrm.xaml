@@ -1,0 +1,201 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.CompraFrm"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="820"
+      Title="CompraFrm">
+
+    <Grid Background="WhiteSmoke">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="0 0 1 0" BorderBrush="Gray">
+            <Grid Width="200">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Visibility="Collapsed">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Vendedor" FontSize="15" FontWeight="Bold"/>
+                        <TextBlock Text="Raimon Koudsi" Margin="7 2 0 0"/>
+                    </StackPanel>
+                    <Separator Margin="0 5"/>
+                </StackPanel>
+                <Grid Grid.Row="1" >
+                    <StackPanel  Margin="7 10 7 7">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Proveedor" FontSize="17" FontWeight="Bold"/>
+                                <TextBlock x:Name="txtProvName" Text="John Doe Inc." FontSize="12" FontWeight="Bold" TextTrimming="CharacterEllipsis" Margin="4 0 5 10" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel x:Name="ProveedorDatos" Visibility="Collapsed">
+                            <StackPanel Margin="7 0 0 0">
+                                <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProvDoc" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Margin="7 10 0 0">
+                                <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProvDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Margin="7 10 0 0">
+                                <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProvTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Margin="7 10 0 0">
+                                <TextBlock Text="Email" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProvEmail" Text="Jocrod.one@gmail.com" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Grid x:Name="ProveedorBuscar" Margin="0 10 0 0" Visibility="Visible">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Margin="0 0 5 0">
+                                <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" VerticalAlignment="Center" Foreground="Gray"/>
+                                <ComboBox x:Name="CbTipoDocumento" Width="40" SelectionChanged="CbTipoDocumento_SelectionChanged">
+                                    <ComboBoxItem>V</ComboBoxItem>
+                                    <ComboBoxItem>E</ComboBoxItem>
+                                    <ComboBoxItem>J</ComboBoxItem>
+                                </ComboBox>
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <TextBlock Name="PlaceDocumento" Text="Documento" Foreground="Gray" VerticalAlignment="Center" Margin="1 0 0 0"/>
+                                <TextBox x:Name="txtDocumento" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
+                            </Grid>
+                        </Grid>
+                        <Grid Margin="10 15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="BtnProveedor" Grid.Column="0" Padding="3" Click="Button_Click" Margin="5 0">Encontrar</Button>
+                        </Grid>
+                    </StackPanel>
+                    <Separator Margin="0 5" VerticalAlignment="Bottom"/>
+                </Grid>
+                <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
+                    <StackPanel>
+                        <TextBlock Text="Subtotal" FontSize="10" FontWeight="Bold" Foreground="Gray" Margin="0"/>
+                        <TextBlock Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Impuesto" FontSize="10" FontWeight="Bold" Foreground="Gray" Margin="0"/>
+                        <TextBlock Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Total" FontSize="15" FontWeight="Bold" Margin="0 "/>
+                        <TextBlock Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <Grid  Margin="10 10 10 0">
+                        <TextBlock x:Name="PlaceMetodoPago" Text="Método de pago" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                        <ComboBox x:Name="CbMetodoPago" FontSize="13" SelectionChanged="CbMetodoPago_SelectionChanged">
+                            <ComboBoxItem>Contado</ComboBoxItem>
+                            <ComboBoxItem>Credito</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Button Content="Procesar" FontSize="17" Background="ForestGreen" BorderBrush="ForestGreen" FontWeight="Bold" Margin="0 20"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="30 15" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0" Margin="0 10 5 10">
+                    <TextBlock Name="txtBucarPlaceH" Text="Codigo de Articulo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                    <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                    <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+                </Grid>
+                <Button Grid.Column="1" HorizontalAlignment="Right" Content="Agregar Articulo" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 0"/>
+            </Grid>
+
+            <DataGrid x:Name="dgOperaciones" 
+                  Grid.Row="1"
+                  AutoGenerateColumns="false" 
+                  IsReadOnly="true" 
+                  ColumnWidth="*" 
+                  Margin="30 0 30 30"
+                  FontSize="12"
+                  BorderThickness="0 1 0 1"
+                  BorderBrush="LightGray"
+                  Background="LightGray">
+                <DataGrid.Resources>
+                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="#f0f0f0" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="auto" Header="Articulo" Binding="{Binding nombre}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Precio Compra" Binding="{Binding descripcion}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Precio Venta" Binding="{Binding descripcion}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Cantidad" Binding="{Binding descripcion}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!--<DataGridTemplateColumn Width="auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Width="auto">
+                                    <Button CommandParameter="{Binding idCategoria}"
+                                        Click="Button_Click_1"
+                                        Margin="0 0 5 0"
+                                        Padding="5">Editar</Button>
+                                    <Button Name="txtVer"
+                                        CommandParameter="{Binding idCategoria}"
+                                        Click="txtVer_Click"
+                                        Margin="5 0"
+                                        Padding="5">Ver</Button>
+                                    <Button x:Name="btnEliminar"
+                                        CommandParameter="{Binding idCategoria}" 
+                                        Click="btnEliminar_Click"
+                                        Background="OrangeRed" BorderBrush="OrangeRed"
+                                        Margin="5 0 0 0"
+                                        Padding="5">Eliminar</Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>-->
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Page>

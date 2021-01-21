@@ -67,7 +67,7 @@ namespace ProyectoMagicolor
             Menu.Children.Add(new MenuItemX(item4, this));
             Menu.Children.Add(new MenuItemX(item5, this));
 
-            var Frm = new CategoriaDG();
+            var Frm = new CompraFrm();
             ContentFrame.Content = Frm;
         }
 

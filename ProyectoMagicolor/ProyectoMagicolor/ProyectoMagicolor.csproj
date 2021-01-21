@@ -100,6 +100,12 @@
     <Compile Include="Vistas\ArticuloFrm.xaml.cs">
       <DependentUpon>ArticuloFrm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\CompraFrm.xaml.cs">
+      <DependentUpon>CompraFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ProveedorVista.xaml.cs">
+      <DependentUpon>ProveedorVista.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ProveedorDG.xaml.cs">
       <DependentUpon>ProveedorDG.xaml</DependentUpon>
     </Compile>
@@ -118,7 +124,18 @@
     <Compile Include="Vistas\TextInput.xaml.cs">
       <DependentUpon>TextInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\VentaFrm.xaml.cs">
+      <DependentUpon>VentaFrm.xaml</DependentUpon>
+    </Compile>
     <Page Include="Vistas\ArticuloDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\CompraFrm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vistas\ProveedorVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -201,6 +218,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vistas\TextInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vistas\VentaFrm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

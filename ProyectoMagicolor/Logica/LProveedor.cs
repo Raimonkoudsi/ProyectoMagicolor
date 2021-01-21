@@ -6,7 +6,7 @@ using Datos;
 
 using System.Data;
 using System.Data.SqlClient;
-
+using System.Windows;
 
 namespace Logica
 {
@@ -273,6 +273,65 @@ namespace Logica
                     catch (SqlException e)
                     {
                         //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        public List<DProveedor> EncontrarConDocumento(string Tipo, string NroDocumento)
+        {
+            List<DProveedor> ListaGenerica = new List<DProveedor>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [proveedor] WHERE tipoDocumento= " + Tipo + " AND numeroDocumento= " + NroDocumento + "";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DProveedor
+                                {
+                                    idProveedor = reader.GetInt32(0),
+                                    razonSocial = reader.GetString(1),
+                                    sectorComercial = reader.GetString(2),
+                                    tipoDocumento = reader.GetString(3),
+                                    numeroDocumento = reader.GetString(4),
+                                    direccion = reader.GetString(5),
+                                    telefono = reader.GetString(6),
+                                    email = reader.GetString(7),
+                                    url = reader.GetString(8)
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        //error
+                        MessageBox.Show(e.Message);
                     }
                     finally
                     {
