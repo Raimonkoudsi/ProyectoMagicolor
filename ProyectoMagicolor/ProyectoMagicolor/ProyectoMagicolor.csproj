@@ -94,8 +94,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Vistas\ArticuloVista.xaml.cs">
+      <DependentUpon>ArticuloVista.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ArticuloDG.xaml.cs">
       <DependentUpon>ArticuloDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DetalleIngresoFrm.xaml.cs">
+      <DependentUpon>DetalleIngresoFrm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\ArticuloFrm.xaml.cs">
       <DependentUpon>ArticuloFrm.xaml</DependentUpon>
@@ -127,7 +133,15 @@
     <Compile Include="Vistas\VentaFrm.xaml.cs">
       <DependentUpon>VentaFrm.xaml</DependentUpon>
     </Compile>
+    <Page Include="Vistas\ArticuloVista.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\ArticuloDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\DetalleIngresoFrm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

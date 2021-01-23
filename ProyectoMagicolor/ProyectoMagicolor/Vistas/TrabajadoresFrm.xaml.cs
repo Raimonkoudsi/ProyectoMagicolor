@@ -124,6 +124,42 @@ namespace ProyectoMagicolor.Vistas
 
             if (!Char.IsDigit(ch))
             {
+         
+                e.Handled = true;
+            }
+        }
+
+        public static void TextBoxValidatePrices(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                TextBox s = e.Source as TextBox;
+                if (s != null)
+                {
+                    s.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+
+                e.Handled = true;
+            }
+
+            char ch = GetCharFromKey(e.Key);
+
+            TextBox txtBox = (TextBox)sender;
+
+            if (ch == 46 && txtBox.Text.IndexOf('.') != -1)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (Regex.IsMatch(txtBox.Text, @"\.\d\d"))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (!Char.IsDigit(ch) && ch != 9 && ch != 8 && ch != 46)
+            {
                 e.Handled = true;
             }
         }

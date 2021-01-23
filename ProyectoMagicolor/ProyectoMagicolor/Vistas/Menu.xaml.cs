@@ -15,6 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Datos;
+using Logica;
+
 namespace ProyectoMagicolor
 {
 	/// <summary>
@@ -24,9 +27,11 @@ namespace ProyectoMagicolor
 	{
         public Login ParentFrm;
         
-		public MainWindow()
+		public MainWindow(DTrabajador trabajador)
 		{
 			InitializeComponent();
+
+            LoggedTrabajador = trabajador;
 
             var menuRegister = new List<SubItem>();
             menuRegister.Add(new SubItem("Customer"));
@@ -67,9 +72,11 @@ namespace ProyectoMagicolor
             Menu.Children.Add(new MenuItemX(item4, this));
             Menu.Children.Add(new MenuItemX(item5, this));
 
-            var Frm = new CompraFrm();
+            var Frm = new CompraFrm(this);
             ContentFrame.Content = Frm;
         }
+
+        public DTrabajador LoggedTrabajador;
 
         public void SwitchScreen(object sender)
         {

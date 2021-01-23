@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="820"
+      Loaded="Page_Loaded"
       Title="CompraFrm">
 
     <Grid Background="WhiteSmoke">
@@ -44,10 +45,10 @@
                                 <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtProvDoc" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
-                            <StackPanel Margin="7 10 0 0">
+                            <!--<StackPanel Margin="7 10 0 0">
                                 <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtProvDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
-                            </StackPanel>
+                            </StackPanel>-->
                             <StackPanel Margin="7 10 0 0">
                                 <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtProvTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
@@ -87,15 +88,21 @@
                 <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
                     <StackPanel>
                         <TextBlock Text="Subtotal" FontSize="10" FontWeight="Bold" Foreground="Gray" Margin="0"/>
-                        <TextBlock Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                        <TextBlock x:Name="txtSubtotal" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="Impuesto" FontSize="10" FontWeight="Bold" Foreground="Gray" Margin="0"/>
-                        <TextBlock Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                        <Grid>
+                            <TextBlock Name="txtImpuestoP" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBox x:Name="txtImpuesto" Text="15" MaxLength="5" Width="40" FontWeight="Bold" FontSize="15" KeyUp="txtImpuesto_KeyUp" HorizontalAlignment="Right"/>
+                                <TextBlock Text="%" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="Total" FontSize="15" FontWeight="Bold" Margin="0 "/>
-                        <TextBlock Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                        <TextBlock Name="txtTotal" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
                     </StackPanel>
                     <Grid  Margin="10 10 10 0">
                         <TextBlock x:Name="PlaceMetodoPago" Text="Método de pago" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
@@ -104,7 +111,11 @@
                             <ComboBoxItem>Credito</ComboBoxItem>
                         </ComboBox>
                     </Grid>
-                    <Button Content="Procesar" FontSize="17" Background="ForestGreen" BorderBrush="ForestGreen" FontWeight="Bold" Margin="0 20"/>
+                    <Grid Name="GrdFechaLimite" Margin="30 10 30 0" Visibility="Collapsed">
+                        <TextBlock x:Name="PlaceFechaLimite" Text="Fecha Limite" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                        <DatePicker x:Name="dpFechaLimite" FontSize="13" Focusable="False" SelectedDateChanged="dpFechaLimite_SelectedDateChanged"/>
+                    </Grid>
+                    <Button Content="Procesar" Name="BtnProcesar" FontSize="17" Background="ForestGreen" BorderBrush="ForestGreen" Click="BtnProcesar_Click" FontWeight="Bold" Margin="0 20"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -121,10 +132,10 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Row="0" Margin="0 10 5 10">
                     <TextBlock Name="txtBucarPlaceH" Text="Codigo de Articulo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                    <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                    <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" KeyDown="txtBuscar_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
                     <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
                 </Grid>
-                <Button Grid.Column="1" HorizontalAlignment="Right" Content="Agregar Articulo" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 0"/>
+                <Button Grid.Column="1" HorizontalAlignment="Right" Content="Agregar Articulo" Click="Button_Click_1" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 0"/>
             </Grid>
 
             <DataGrid x:Name="dgOperaciones" 
@@ -143,49 +154,45 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="auto" Header="Articulo" Binding="{Binding nombre}">
+                    <DataGridTextColumn Width="*" Header="Articulo" Binding="{Binding NombreArticulo}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Precio Compra" Binding="{Binding descripcion}">
+                    <DataGridTextColumn Width="auto" Header="Precio Compra" Binding="{Binding PrecioCompra}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Precio Venta" Binding="{Binding descripcion}">
+                    <DataGridTextColumn Width="auto" Header="Precio Venta" Binding="{Binding PrecioVenta}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Cantidad" Binding="{Binding descripcion}">
+                    <DataGridTextColumn Width="auto" Header="Cantidad" Binding="{Binding Cantidad}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <!--<DataGridTemplateColumn Width="auto">
+                    <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Width="auto">
-                                    <Button CommandParameter="{Binding idCategoria}"
-                                        Click="Button_Click_1"
+                                    <Button CommandParameter="{Binding id}"
+                                            Name="BtnEditar"
+                                        Click="BtnEditar_Click"
                                         Margin="0 0 5 0"
                                         Padding="5">Editar</Button>
-                                    <Button Name="txtVer"
-                                        CommandParameter="{Binding idCategoria}"
-                                        Click="txtVer_Click"
-                                        Margin="5 0"
-                                        Padding="5">Ver</Button>
                                     <Button x:Name="btnEliminar"
-                                        CommandParameter="{Binding idCategoria}" 
+                                        CommandParameter="{Binding id}" 
                                         Click="btnEliminar_Click"
                                         Background="OrangeRed" BorderBrush="OrangeRed"
                                         Margin="5 0 0 0"
@@ -193,7 +200,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

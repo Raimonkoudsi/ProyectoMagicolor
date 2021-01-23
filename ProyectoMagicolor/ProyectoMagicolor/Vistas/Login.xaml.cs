@@ -46,14 +46,18 @@ namespace ProyectoMagicolor.Vistas
 
                 LTrabajador metodosUsuario = new LTrabajador();
 
-                String[] respuesta = metodosUsuario.Login(txtUsuario.txt.Text, txtContraseña.Password);
+                var respuesta = metodosUsuario.Login(txtUsuario.txt.Text, txtContraseña.Password);
 
-                if(respuesta[0] != "")
+                if(respuesta.Count > 0)
                 {
-                    var MainFrm = new MainWindow();
+                    var MainFrm = new MainWindow(respuesta[0]);
                     this.Hide();
                     MainFrm.ShowDialog();
                     this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Los datos son incorrectos!");
                 }
 
                 //MessageBox.Show(respuesta[0] + respuesta[1] + respuesta[2] + respuesta[3]);

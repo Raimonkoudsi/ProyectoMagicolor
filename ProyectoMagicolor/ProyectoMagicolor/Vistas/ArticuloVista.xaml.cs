@@ -20,28 +20,37 @@ namespace ProyectoMagicolor.Vistas
     /// <summary>
     /// Interaction logic for FTrabajadores.xaml
     /// </summary>
-    public partial class ProveedorVista : Window
+    public partial class ArticuloVista : Window
     {
 
-        public CompraFrm ParentForm;
+        public LArticulo Metodos = new LArticulo();
 
-        public LProveedor Metodos = new LProveedor();
+        public DArticulo Resultado;
 
-        public ProveedorVista(CompraFrm parent)
+        public List<int> Actual;
+        public bool filterDG;
+
+        public ArticuloVista(List<int> ActLista, bool Filter)
         {
             InitializeComponent();
-            ParentForm = parent;
+
+            Actual = ActLista;
+            filterDG = Filter;
         }
         
 
         public void Refresh(string search)
         {
 
-            List<DProveedor> items = Metodos.Mostrar(search);
-
-            foreach(DProveedor item in items)
+            List<DArticulo> items = Metodos.Mostrar(search);
+            if (filterDG)
             {
-                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
+                foreach (int item in Actual)
+                {
+                    var id = items.FindIndex((articulo) => articulo.idArticulo == item);
+
+                    items.RemoveAt(id);
+                }
             }
 
 
@@ -55,27 +64,24 @@ namespace ProyectoMagicolor.Vistas
             Refresh(txtBuscar.Text);
         }
 
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    ProveedorFrm frmTrab = new ProveedorFrm();
-        //    bool Resp = frmTrab.ShowDialog() ?? false;
-        //    Refresh(txtBuscar.Text);
-        //}
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var response = Metodos.Encontrar(id)[0];
+            var response = Metodos.Encontrar(id);
 
-            DialogResult = true;
-            ParentForm.AgregarProveedor(response);
-            this.Close();
+            if(response.Count > 0)
+            {
+                DialogResult = true;
+                Resultado = response[0];
+                this.Close();
+            }
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             Refresh(txtBuscar.Text);
         }
+
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {

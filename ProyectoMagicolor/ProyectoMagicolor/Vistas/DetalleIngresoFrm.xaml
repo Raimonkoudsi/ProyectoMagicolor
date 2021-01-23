@@ -1,0 +1,57 @@
+﻿<Window x:Class="ProyectoMagicolor.Vistas.DetalleIngresoFrm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        mc:Ignorable="d"
+        Title="FormTrabajadores" Height="300" Width="700" Loaded="Window_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="#f0f0f0">
+            <TextBlock Name="txtTitulo"
+                       Text="Agregar Articulo" 
+                       HorizontalAlignment="Center"
+                       FontWeight="Bold"
+                       FontSize="25"
+                       Margin="0 10"/>
+        </Grid>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
+            <StackPanel Width="350" Margin="0 10 0 0">
+                <!--<local:TextInput x:Name="txtNombre" Placeholder="Nombre" Margin="0 10" FontSize="15"/>-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="GridArticulo" VerticalAlignment="Center" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="txtArticulo" Text="Lapices" FontWeight="Bold" FontSize="15" />
+                        <TextBlock x:Name="txtArticuloCod" Grid.Row="1" Text="123123" FontWeight="Bold" FontSize="9" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Button Grid.Column="1" x:Name="BtnAgregarArticulo" Content="Buscar Artículo" Click="BtnAgregarArticulo_Click" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 10"/>
+                </Grid>
+                <Grid Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:TextInput Grid.Column="0" x:Name="txtPrecioCompra" Placeholder="Precio Compra" Margin="0 0 5 0" FontSize="15"/>
+                    <local:TextInput Grid.Column="1" x:Name="txtPrecioVenta" Placeholder="Precio Venta" Margin="5 0" FontSize="15"/>
+                    <local:TextInput Grid.Column="2" x:Name="txtCantidad" Placeholder="Cantidad" Margin="5 0 0 0" FontSize="15"/>
+                </Grid>
+                <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
+
+                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

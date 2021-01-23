@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 
 namespace Logica
 {
-    public class LIngreso:DIngreso
+    public class LIngreso : DIngreso
     {
         //Metodos
 
@@ -22,20 +22,14 @@ namespace Logica
                             idTrabajador,
                             idProveedor,
                             fecha,
-                            tipoComprobante,
-                            serieComprobante,
                             impuesto,
                             metodoPago,
-                            estado
                         ) VALUES(
                             @idTrabajador,
                             @idProveedor,
                             @fecha,
-                            @tipoComprobante,
-                            @serieComprobante,
                             @impuesto,
                             @metodoPago
-                            @estado
                         );
 	        ";
 
@@ -47,11 +41,9 @@ namespace Logica
                     comm.Parameters.AddWithValue("@idTrabajador", Ingreso.idTrabajador);
                     comm.Parameters.AddWithValue("@idProveedor", Ingreso.idProveedor);
                     comm.Parameters.AddWithValue("@fecha", Ingreso.fecha);
-                    comm.Parameters.AddWithValue("@tipoComprobante", Ingreso.tipoComprobante);
-                    comm.Parameters.AddWithValue("@serieComprobante", Ingreso.serieComprobante);
                     comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
                     comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
-                    comm.Parameters.AddWithValue("@estado", 1);
+                    //comm.Parameters.AddWithValue("@estado", 1);
 
                     try
                     {
@@ -88,9 +80,9 @@ namespace Logica
                             }
                         }
 
-                        if(respuesta.Equals("OK"))
+                        if (respuesta.Equals("OK"))
                         {
-                            int i=0;
+                            int i = 0;
                             foreach (DDetalle_Ingreso det in Detalle)
                             {
 
@@ -205,7 +197,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT i.idIngreso, t.cedula, p.razonSocial,i.fecha, i.tipoComprobante, i.serieComprobante, i.metodoPago, i.estado, SUM(di.precioCompra) as precioTotal from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso where tipoComprobante = " + Buscar +" AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
+                    comm.CommandText = "SELECT i.idIngreso, t.cedula, p.razonSocial,i.fecha, i.tipoComprobante, i.serieComprobante, i.metodoPago, i.estado, SUM(di.precioCompra) as precioTotal from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
 
 
                     try

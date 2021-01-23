@@ -5,6 +5,7 @@ using Datos;
 
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows;
 
 namespace Logica
 {
@@ -380,9 +381,10 @@ namespace Logica
 
         }
 
-        public String[] Login(string Usuario, string Contraseña)
+        public List<DTrabajador> Login(string Usuario, string Contraseña)
         {
-            String[] respuesta = new String[4];
+
+            List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
             string error = "";
 
@@ -394,8 +396,7 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = @"
-                        SELECT cedula, usuario, nombre, acceso
-                        FROM [trabajador] 
+                        SELECT * FROM [trabajador] 
                         WHERE usuario = @usuario AND contraseña = @contraseña
 	                ;";
 
@@ -411,16 +412,31 @@ namespace Logica
                         {
                             if (reader.Read())
                             {
-                                respuesta[0] = String.Format("{0}", reader["cedula"]);
-                                respuesta[1] = String.Format("{0}", reader["usuario"]);
-                                respuesta[2] = String.Format("{0}", reader["nombre"]);
-                                respuesta[3] = String.Format("{0}", reader["acceso"]);
+                                int state = reader.GetInt32(14);
+                                ListaGenerica.Add(new DTrabajador
+                                    (
+                                        reader.GetInt32(0),
+                                        reader.GetString(1),
+                                        reader.GetString(2),
+                                        reader.GetString(3),
+                                        reader.GetDateTime(4),
+                                        reader.GetString(5),
+                                        reader.GetString(6),
+                                        reader.GetString(7),
+                                        reader.GetString(8),
+                                        reader.GetString(9),
+                                        reader.GetString(10),
+                                        reader.GetString(11),
+                                        reader.GetString(12),
+                                        reader.GetString(13),
+                                        state.ToString()
+                                    ));
                             }
                         }
                     }
                     catch (SqlException e)
                     {
-                        error = e.Message;
+                        MessageBox.Show(e.Message);
                     }
                     finally
                     {
@@ -429,7 +445,7 @@ namespace Logica
                             conn.Close();
                         }
                     }
-                    return respuesta;
+                    return ListaGenerica;
                 }
             }
         }

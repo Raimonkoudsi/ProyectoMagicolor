@@ -5,6 +5,7 @@ using Datos;
 
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows;
 
 namespace Logica
 {
@@ -193,16 +194,17 @@ namespace Logica
                                     nombre = reader.GetString(2),
                                     descripcion = reader.GetString(3),
                                     //imagen = reader.GetSqlBytes(4).Buffer,
-                                    stockMinimo = reader.GetInt32(5),
-                                    stockMaximo = reader.GetInt32(6),
-                                    idCategoria = reader.GetInt32(7)
+                                    stockMinimo = reader.GetInt32(4),
+                                    stockMaximo = reader.GetInt32(5),
+                                    idCategoria = reader.GetInt32(6)
                                 });
                             }
                         }
                     }
-                    catch
+                    catch(Exception e)
                     {
                         //error
+                        MessageBox.Show(e.Message);
                     }
                     finally
                     {
@@ -249,9 +251,65 @@ namespace Logica
                                     codigo = reader.GetString(1),
                                     nombre = reader.GetString(2),
                                     descripcion = reader.GetString(3),
-                                    stockMinimo = reader.GetInt32(5),
-                                    stockMaximo = reader.GetInt32(6),
-                                    idCategoria = reader.GetInt32(7)
+                                    stockMinimo = reader.GetInt32(4),
+                                    stockMaximo = reader.GetInt32(5),
+                                    idCategoria = reader.GetInt32(6)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        public List<DArticulo> EncontrarConCodigo(string Buscar)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [articulo] WHERE codigo= '" + Buscar + "' ";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    descripcion = reader.GetString(3),
+                                    stockMinimo = reader.GetInt32(4),
+                                    stockMaximo = reader.GetInt32(5),
+                                    idCategoria = reader.GetInt32(6)
                                 });
                             }
                         }
