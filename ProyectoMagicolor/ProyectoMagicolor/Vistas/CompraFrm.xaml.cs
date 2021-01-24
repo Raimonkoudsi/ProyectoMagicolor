@@ -84,7 +84,6 @@ namespace ProyectoMagicolor.Vistas
                                              Proveedor.idProveedor,
                                              DateTime.Now,
                                              "",
-                                             "",
                                              impuestos,
                                              CbMetodoPago.SelectedIndex + 1,
                                              0, "", "", 0);

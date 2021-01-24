@@ -35,18 +35,11 @@ namespace Datos
             set { _Fecha = value; }
         }
 
-        private string _TipoComprobante;
-        public string tipoComprobante
+        private string _Factura;
+        public string factura
         {
-            get { return _TipoComprobante; }
-            set { _TipoComprobante = value; }
-        }
-
-        private string _SerieComprobante;
-        public string serieComprobante
-        {
-            get { return _SerieComprobante; }
-            set { _SerieComprobante = value; }
+            get { return _Factura; }
+            set { _Factura = value; }
         }
 
         private double _Impuesto;
@@ -96,14 +89,13 @@ namespace Datos
 
         }
 
-        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Impuesto, int MetodoPago, int Estado, string Cedula, string RazonSocial, double MontoTotal)
+        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, double Impuesto, int MetodoPago, int Estado, string Cedula, string RazonSocial, double MontoTotal)
         {
             this.idIngreso = IdIngreso;
             this.idTrabajador = IdTrabajador;
             this.idProveedor = IdProveedor;
             this.fecha = Fecha;
-            this.tipoComprobante = TipoComprobante;
-            this.serieComprobante = SerieComprobante;
+            this.factura = Factura;
             this.impuesto = Impuesto;
             this.metodoPago = MetodoPago;
             this.estado = Estado;

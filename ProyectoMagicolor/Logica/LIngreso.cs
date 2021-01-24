@@ -22,14 +22,19 @@ namespace Logica
                             idTrabajador,
                             idProveedor,
                             fecha,
+                            factura,
                             impuesto,
                             metodoPago,
-                        ) VALUES(
+                            estado
+                        ) OUTPUT Inserted.idIngreso
+                        VALUES(
                             @idTrabajador,
                             @idProveedor,
                             @fecha,
+                            @factura,
                             @impuesto,
-                            @metodoPago
+                            @metodoPago,
+                            @estado
                         );
 	        ";
 
@@ -41,20 +46,23 @@ namespace Logica
                     comm.Parameters.AddWithValue("@idTrabajador", Ingreso.idTrabajador);
                     comm.Parameters.AddWithValue("@idProveedor", Ingreso.idProveedor);
                     comm.Parameters.AddWithValue("@fecha", Ingreso.fecha);
+                    comm.Parameters.AddWithValue("@factura", Ingreso.factura);
                     comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
                     comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
-                    //comm.Parameters.AddWithValue("@estado", 1);
+                    comm.Parameters.AddWithValue("@estado", 1);
 
                     try
                     {
                         conn.Open();
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del ingreso";
+                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del ingreso";
 
-                        this.idIngreso = Convert.ToInt32(comm.Parameters["@idIngreso"].Value);
+                        this.idIngreso = (int)comm.ExecuteScalar();
+                        //this.idIngreso = Convert.ToInt32(comm.Parameters["idIngreso"].Value);
+
+                        respuesta = !String.IsNullOrEmpty(this.idIngreso.ToString()) ? "OK" : "No se ingreso el Registro del ingreso";
 
                         if (respuesta.Equals("OK") && Ingreso.metodoPago == 2)
                         {
-
                             string query2 = @"
                                 INSERT INTO cuentaPagar(
                                     idIngreso,
@@ -197,7 +205,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT i.idIngreso, t.cedula, p.razonSocial,i.fecha, i.tipoComprobante, i.serieComprobante, i.metodoPago, i.estado, SUM(di.precioCompra) as precioTotal from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
+                    comm.CommandText = "SELECT i.idIngreso, t.cedula, p.razonSocial,i.fecha, i.factura, i.metodoPago, i.estado, SUM(di.precioCompra) as precioTotal from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
 
 
                     try
@@ -216,11 +224,10 @@ namespace Logica
                                     cedulaTrabajador = reader.GetString(1),
                                     razonSocial = reader.GetString(2),
                                     fecha = reader.GetDateTime(3),
-                                    tipoComprobante = reader.GetString(4),
-                                    serieComprobante = reader.GetString(5),
-                                    metodoPago = reader.GetInt32(7),
-                                    estado = reader.GetInt32(8),
-                                    montoTotal = reader.GetDouble(9)
+                                    factura = reader.GetString(4),
+                                    metodoPago = reader.GetInt32(5),
+                                    estado = reader.GetInt32(6),
+                                    montoTotal = reader.GetDouble(7)
                                 });
                             }
                         }
@@ -256,7 +263,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT i.idIngreso, p.razonSocial, i.tipoComprobante, i.serieComprobante, i.fecha, (SUM(di.precioCompra) - SUM(cp.Monto)) as montoTotal, i.estado from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso where i.metodoPago = 2 AND (SUM(di.precioCompra) - SUM(cp.Monto)) != 0";
+                    comm.CommandText = "SELECT i.idIngreso, p.razonSocial, i.factura, i.fecha, (SUM(di.precioCompra) - SUM(cp.Monto)) as montoTotal, i.estado from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso where i.metodoPago = 2 AND (SUM(di.precioCompra) - SUM(cp.Monto)) != 0";
 
 
                     try
@@ -273,11 +280,10 @@ namespace Logica
                                 {
                                     idIngreso = reader.GetInt32(0),
                                     razonSocial = reader.GetString(1),
-                                    tipoComprobante = reader.GetString(2),
-                                    serieComprobante = reader.GetString(3),
-                                    fecha = reader.GetDateTime(4),
-                                    montoTotal = reader.GetDouble(5),
-                                    estado = reader.GetInt32(6)
+                                    factura = reader.GetString(2),
+                                    fecha = reader.GetDateTime(3),
+                                    montoTotal = reader.GetDouble(4),
+                                    estado = reader.GetInt32(5)
                                 });
                             }
                         }

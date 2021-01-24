@@ -167,12 +167,24 @@ namespace Logica
 
                             while (reader.Read())
                             {
-                                ListaGenerica.Add(new DCategoria
+                                if (reader["descripcion"] != DBNull.Value)
                                 {
-                                    idCategoria = reader.GetInt32(0),
-                                    nombre = reader.GetString(1),
-                                    descripcion = reader.GetString(2),
-                                });
+                                    ListaGenerica.Add(new DCategoria
+                                    {
+                                        idCategoria = reader.GetInt32(0),
+                                        nombre = reader.GetString(1),
+                                        descripcion = reader.GetString(2)
+                                    });
+                                }
+                                else
+                                {
+                                    ListaGenerica.Add(new DCategoria
+                                    {
+                                        idCategoria = reader.GetInt32(0),
+                                        nombre = reader.GetString(1),
+                                        descripcion = "No contiene una Descripción"
+                                    });
+                                }
                             }
                         }
                     }
