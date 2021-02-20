@@ -49,7 +49,11 @@ namespace Logica
                     comm.Parameters.AddWithValue("@factura", Ingreso.factura);
                     comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
                     comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
-                    comm.Parameters.AddWithValue("@estado", 1);
+
+                    if (Ingreso.metodoPago == 2)
+                        comm.Parameters.AddWithValue("@estado", 2);
+                    else
+                        comm.Parameters.AddWithValue("@estado", 1);
 
                     try
                     {
@@ -263,7 +267,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT i.idIngreso, p.razonSocial, i.factura, i.fecha, (SUM(di.precioCompra) - SUM(cp.Monto)) as montoTotal, i.estado from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso where i.metodoPago = 2 AND (SUM(di.precioCompra) - SUM(cp.Monto)) != 0";
+                    comm.CommandText = "SELECT i.idIngreso, p.razonSocial, i.factura, i.fecha, (SUM(di.precioCompra) - SUM(cp.Monto)) as montoTotal, i.estado from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso where i.metodoPago = 2 AND (SUM(di.precioCompra) - SUM(cp.monto)) != 0";
 
 
                     try
@@ -354,8 +358,22 @@ namespace Logica
 
                                 respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
 
-                                //falta colocarlo como enta si el monto es total
-                            }
+                                //falta colocarlo como venta si el monto es total
+                                if (respuesta.Equals("OK"))
+                                {
+                                    string query3 = @"
+                                        UPDATE i.estado SET '1'
+                                        from [ingreso] i 
+                                        inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso
+                                        inner join [detalleIngreso] di on i.idIngreso=di.idIngreso
+                                        WHERE i.idIngreso = cp.idIngreso AND (SUM(di.precioCompra) - cp.montoIngresado) = 0";
+
+                                    using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                        {
+                                            respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Actualizo el registro";
+                                        }
+                                    }
+                                }
                         }
                     }
                     catch (SqlException e)

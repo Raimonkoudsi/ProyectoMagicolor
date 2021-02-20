@@ -7,6 +7,8 @@ using Datos;
 using System.Data;
 using System.Data.SqlClient;
 
+//estado 1=activo, 2=cuentaxcobrar, 3=anulado
+
 namespace Logica
 {
     public class LVenta:DVenta
@@ -51,7 +53,12 @@ namespace Logica
                     comm.Parameters.AddWithValue("@serieComprobante", Venta.serieComprobante);
                     comm.Parameters.AddWithValue("@descuento", Venta.descuento);
                     comm.Parameters.AddWithValue("@metodoPago", Venta.metodoPago);
-                    comm.Parameters.AddWithValue("@estado", 1);
+
+                    if (Venta.metodoPago == 2)
+                        comm.Parameters.AddWithValue("@estado", 2);
+                    else
+                        comm.Parameters.AddWithValue("@estado", 1);
+
 
                     try
                     {
