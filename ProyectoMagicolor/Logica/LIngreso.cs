@@ -254,6 +254,73 @@ namespace Logica
         }
 
 
+        //funcionando
+        public List<DIngreso> MostrarStock(string Buscar)
+        {
+            List<DIngreso> ListaGenerica = new List<DIngreso>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"SELECT 
+                                            a.codigo, 
+                                            a.nombre, 
+                                            SUM(di.cantidadInicial) as cantidadInicial,
+                                            SUM(di.cantidadActual) as cantidadActual,
+                                            (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
+                                        from [articulo] a 
+                                            inner join [detalleIngreso] di on a.idArticulo=a.idArticulo  
+                                        where a.codigo LIKE '" + Buscar + "%' " +
+                                            "AND SUM(di.cantidadActual) > 0" +
+                                        "GROUP BY a.codigo, a.nombre" +
+                                        "ORDER BY SUM(di.cantidadActual) ASC";
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DIngreso
+                                {
+                                    idIngreso = reader.GetInt32(0),
+                                    cedulaTrabajador = reader.GetString(1),
+                                    razonSocial = reader.GetString(2),
+                                    fecha = reader.GetDateTime(3),
+                                    factura = reader.GetString(4),
+                                    metodoPago = reader.GetInt32(5),
+                                    estado = reader.GetInt32(6),
+                                    montoTotal = reader.GetDouble(7)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+
         //cuentas por pagar
         public List<DIngreso> MostrarCxP()
         {
