@@ -267,7 +267,19 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT i.idIngreso, p.razonSocial, i.factura, i.fecha, (SUM(di.precioCompra) - SUM(cp.Monto)) as montoTotal, i.estado from [ingreso] i inner join [proveedor] p on i.idProveedor=p.idProveedor inner join [trabajador] t on i.idTrabajador=t.idTrabajador inner join [detalleIngreso] di on i.idIngreso=di.idIngreso inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso where i.metodoPago = 2 AND (SUM(di.precioCompra) - SUM(cp.monto)) != 0";
+                    comm.CommandText = @"SELECT 
+                                            i.idIngreso, 
+                                            p.razonSocial, 
+                                            i.factura, 
+                                            i.fecha, 
+                                            (SUM(di.precioCompra) - SUM(cp.montoIngresado)) as montoTotal,
+                                            t.cedula
+                                        from [ingreso] i 
+                                            inner join [proveedor] p on i.idProveedor=p.idProveedor 
+                                            inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
+                                            inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
+                                            inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
+                                        where i.estado = 2";
 
 
                     try
@@ -287,7 +299,7 @@ namespace Logica
                                     factura = reader.GetString(2),
                                     fecha = reader.GetDateTime(3),
                                     montoTotal = reader.GetDouble(4),
-                                    estado = reader.GetInt32(5)
+                                    cedulaTrabajador = reader.GetString(5)
                                 });
                             }
                         }

@@ -166,7 +166,7 @@ namespace Logica
 
 
         //funcionando
-        public List<DCliente> Mostrar(string Buscar)
+        public List<DCliente> Mostrar(string Buscar, string Buscar2)
         {
             List<DCliente> ListaGenerica = new List<DCliente>();
 
@@ -177,7 +177,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT * from [cliente] where numeroDocumento like '" + Buscar + "%' order by numeroDocumento";
+                    comm.CommandText = "SELECT * from [cliente] where tipoDocumento = '" + Buscar +"' AND numeroDocumento like '" + Buscar2 + "%' order by numeroDocumento";
 
 
                     //comm.Parameters.AddWithValue("@textoBuscar", "");

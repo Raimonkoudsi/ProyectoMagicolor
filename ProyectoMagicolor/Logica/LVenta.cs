@@ -254,5 +254,163 @@ namespace Logica
             }
 
         }
+
+
+
+
+        //cuentas por cobrar
+        public List<DVenta> MostrarCxC()
+        {
+            List<DVenta> ListaGenerica = new List<DVenta>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"SELECT 
+                                            v.idVenta,
+                                            c.cedula,
+                                            c.apellidos" + " " + @"c.nombre, 
+                                            v.tipoComprobante,
+                                            v.serieComprobante, 
+                                            v.fecha, 
+                                            (SUM(dv.precioVenta) - SUM(cc.montoIngresado)) as montoTotal,
+                                            t.cedula
+                                        from [venta] v 
+                                            inner join [cliente] c on v.idCliente=c.idCliente 
+                                            inner join [trabajador] t on v.idTrabajador=t.idTrabajador 
+                                            inner join [detalleVenta] dv on v.idVenta=dv.idVenta 
+                                            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta 
+                                        where v.estado = 2";
+
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DVenta
+                                {
+                                    idVenta = reader.GetInt32(0),
+                                    cedulaCliente = reader.GetString(1),
+                                    cliente = reader.GetString(2),
+                                    tipoComprobante = reader.GetString(3),
+                                    serieComprobante = reader.GetString(4),
+                                    fecha = reader.GetDateTime(5),
+                                    montoTotal = reader.GetDouble(6),
+                                    cedulaTrabajador = reader.GetString(7)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+
+
+        public string RegistrarCxP(DCuentaCobrar CuentaCobrar, DRegistro_CuentaCobrar RegistroCuentaCobrar, int IdVenta)
+        {
+            string respuesta = "";
+
+            string query = @"
+                            INSERT INTO registroCuentaCobrar(
+                                idCuentaCobrar,
+                                monto,
+                                fecha,
+                            ) VALUES(
+                                @idCuentaCobrar,
+                                @monto,
+                                @fecha,
+                            );
+             ";
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand(query, conn))
+                {
+                    comm.Parameters.AddWithValue("@idCuentaCobrar", RegistroCuentaCobrar.idCuentaCobrar);
+                    comm.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
+                    comm.Parameters.AddWithValue("@fecha", DateTime.Now);
+
+                    try
+                    {
+                        conn.Open();
+                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta";
+
+
+                        if (respuesta.Equals("OK"))
+                        {
+
+                            string query2 = @"
+                                            UPDATE cuentaCobrar SET
+                                                montoIngresado = SUM(montoIngresado) + @monto,
+                                            WHERE idCuentaCobrar = @idCuentaCobrar;
+                             ";
+
+                            using (SqlCommand comm2 = new SqlCommand(query2, conn))
+                            {
+                                comm2.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
+                                comm2.Parameters.AddWithValue("@idCuentaPagar", CuentaCobrar.idCuentaCobrar);
+
+                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
+
+
+                                if (respuesta.Equals("OK"))
+                                {
+                                    string query3 = @"
+                                            UPDATE v.estado SET '1'
+                                            from [venta] v 
+                                            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta
+                                            inner join [detalleVenta] dv on v.idVenta=dv.idVenta
+                                            WHERE v.idVenta = cc.idVenta 
+                                            AND (SUM(dv.precioVenta) - cc.montoIngresado) = 0";
+
+                                    using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                    {
+                                        respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Actualizo el registro";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        respuesta = e.Message;
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return respuesta;
+                }
+            }
+        }
     }
 }

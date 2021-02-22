@@ -76,6 +76,13 @@ namespace Datos
             set { _CedulaTrabajador = value; }
         }
 
+        private string _CedulaCliente;
+        public string cedulaCliente
+        {
+            get { return _CedulaCliente; }
+            set { _CedulaCliente = value; }
+        }
+
         private string _Cliente;
         public string cliente
         {
@@ -95,7 +102,7 @@ namespace Datos
 
         }
 
-        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado, string CedulaTrabajador, string Cliente, double MontoTotal)
+        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado, string CedulaTrabajador, string CedulaCliente, string Cliente, double MontoTotal)
         {
             this.idVenta = IdVenta;
             this.idCliente = IdCliente;
@@ -107,6 +114,7 @@ namespace Datos
             this.metodoPago = MetodoPago;
             this.estado = Estado;
             this.cedulaTrabajador = CedulaTrabajador;
+            this.cedulaCliente = CedulaCliente;
             this.cliente = Cliente;
             this.montoTotal = MontoTotal;
         }

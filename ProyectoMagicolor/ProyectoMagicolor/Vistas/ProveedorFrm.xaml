@@ -46,6 +46,7 @@
                             <ComboBoxItem>V</ComboBoxItem>
                             <ComboBoxItem>E</ComboBoxItem>
                             <ComboBoxItem>J</ComboBoxItem>
+                            <ComboBoxItem>G</ComboBoxItem>
                         </ComboBox>
                     </Grid>
                     <local:TextInput Grid.Column="1" x:Name="txtDocumento" Placeholder="Documento" Margin="10 0 0 0" FontSize="15"/>

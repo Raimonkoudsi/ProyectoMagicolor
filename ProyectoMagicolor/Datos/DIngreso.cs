@@ -84,6 +84,7 @@ namespace Datos
             set { _MontoTotal = value; }
         }
 
+
         public DIngreso()
         {
 
@@ -100,8 +101,8 @@ namespace Datos
             this.metodoPago = MetodoPago;
             this.estado = Estado;
             this.cedulaTrabajador = Cedula;
-            this.razonSocial = razonSocial;
-            this.montoTotal = montoTotal;
+            this.razonSocial = RazonSocial;
+            this.montoTotal = MontoTotal;
         }
 
 

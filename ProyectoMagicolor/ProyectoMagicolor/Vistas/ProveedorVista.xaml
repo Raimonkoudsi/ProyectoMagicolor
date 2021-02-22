@@ -16,8 +16,16 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="70 10">
-            <TextBlock Name="txtBucarPlaceH" Text="Buscar..." FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-            <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+            <Grid>
+                <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged" Margin="0,0,547,0">
+                    <ComboBoxItem>V</ComboBoxItem>
+                    <ComboBoxItem>E</ComboBoxItem>
+                    <ComboBoxItem>J</ComboBoxItem>
+                    <ComboBoxItem>G</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+            <local:TextInput x:Name="txtDocumento" Placeholder="Documento" Margin="68,0,0,0" FontSize="15"/>
             <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
         </Grid>
 

@@ -34,14 +34,15 @@ namespace ProyectoMagicolor.Vistas
         }
         
 
-        public void Refresh(string search)
+        public void Refresh(string typeSearch, string search)
         {
 
-            List<DProveedor> items = Metodos.Mostrar(search);
+            List<DProveedor> items = Metodos.Mostrar(typeSearch, search);
 
-            foreach(DProveedor item in items)
+            foreach (DProveedor item in items)
             {
-                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
+                item.numeroDocumento = item.numeroDocumento;
+                item.tipoDocumento = item.tipoDocumento;
             }
 
 
@@ -52,7 +53,7 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         //private void Button_Click(object sender, RoutedEventArgs e)
@@ -74,23 +75,23 @@ namespace ProyectoMagicolor.Vistas
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(txtBuscar.Text == "")
+            if(PlaceTipoDocumento.Text == "")
             {
-               txtBucarPlaceH.Text = "";
+                PlaceTipoDocumento.Text = "";
             }
             
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(txtBuscar.Text == "")
+            if(PlaceTipoDocumento.Text == "")
             {
-                txtBucarPlaceH.Text = "Buscar...";
+                PlaceTipoDocumento.Text = "Buscar...";
             }
             
         }

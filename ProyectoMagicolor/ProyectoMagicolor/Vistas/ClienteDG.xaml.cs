@@ -31,14 +31,15 @@ namespace ProyectoMagicolor.Vistas
         }
         
 
-        public void Refresh(string search)
+        public void Refresh(string typeSearch, string search)
         {
 
-            List<DCliente> items = Metodos.Mostrar(search);
+            List<DCliente> items = Metodos.Mostrar(typeSearch, search);
 
             foreach(DCliente item in items)
             {
-                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento; 
+                item.numeroDocumento = item.numeroDocumento; 
+                item.tipoDocumento = item.tipoDocumento;
             }
 
 
@@ -49,7 +50,7 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text ,txtDocumento.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -65,7 +66,7 @@ namespace ProyectoMagicolor.Vistas
             //    MessageBox.Show("no hay");
             ClienteFrm frmTrab = new ClienteFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -77,12 +78,12 @@ namespace ProyectoMagicolor.Vistas
             frm.Type = TypeForm.Update;
             frm.DataFill = response[0];
             bool Resp = frm.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
@@ -96,23 +97,23 @@ namespace ProyectoMagicolor.Vistas
                 idCliente = id
             };
             Metodos.Eliminar(item);
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(txtBuscar.Text == "")
+            if(txtDocumento.Text == "")
             {
-               txtBucarPlaceH.Text = "";
+                txtDocumento.Text = "";
             }
             
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(txtBuscar.Text == "")
+            if(txtDocumento.Text == "")
             {
-                txtBucarPlaceH.Text = "Buscar...";
+                txtDocumento.Text = "Buscar...";
             }
             
         }
@@ -126,9 +127,13 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.Type = TypeForm.Read;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
 
-            //MessageBox.Show(response[0].fechaNacimiento.ToString());
+        }
+
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
     }
 

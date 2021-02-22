@@ -167,7 +167,8 @@ namespace ProyectoMagicolor.Vistas
                 txtApellidos.SetText(Data.apellidos);
                 CbTipoDocumento.SelectedIndex = Data.tipoDocumento == "V" ? 0 :
                                                 Data.tipoDocumento == "E" ? 1 : 
-                                                Data.tipoDocumento == "J" ? 2 : -1;
+                                                Data.tipoDocumento == "J" ? 2 :
+                                                Data.tipoDocumento == "G" ? 3 : - 1;
                 txtDocumento.SetText(Data.numeroDocumento);
                 txtTelefono.SetText(Data.telefono);
                 txtEmail.SetText(Data.email);
