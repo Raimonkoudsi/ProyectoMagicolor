@@ -63,13 +63,40 @@ namespace Datos
             set { _IdCategoria = value; }
         }
 
+        private double _PrecioVenta;
+        public double precioVenta
+        {
+            get { return _PrecioVenta; }
+            set { _PrecioVenta = value; }
+        }
+
+        private int _CantidadInicial;
+        public int cantidadInicial
+        {
+            get { return _CantidadInicial; }
+            set { _CantidadInicial = value; }
+        }
+
+        private int _CantidadActual;
+        public int cantidadActual
+        {
+            get { return _CantidadActual; }
+            set { _CantidadActual = value; }
+        }
+
+        private int _CantidadVendida;
+        public int cantidadVendida
+        {
+            get { return _CantidadVendida; }
+            set { _CantidadVendida = value; }
+        }
 
         public DArticulo()
         {
 
         }
 
-        public DArticulo(int IdArticulo,string Codigo, string Nombre, string Descripcion, byte[] Imagen, int StockMinimo, int StockMaximo, int IdCategoria)
+        public DArticulo(int IdArticulo,string Codigo, string Nombre, string Descripcion, byte[] Imagen, int StockMinimo, int StockMaximo, int IdCategoria, double PrecioVenta, int CantidadInicial, int CantidadActual, int CantidadVendida)
         {
             this.idArticulo = IdArticulo;
             this.codigo = Codigo;
@@ -79,6 +106,10 @@ namespace Datos
             this.stockMinimo = StockMinimo;
             this.stockMaximo = StockMaximo;
             this.idCategoria = IdCategoria;
+            this.precioVenta = PrecioVenta;
+            this.cantidadInicial = CantidadInicial;
+            this.cantidadActual = CantidadActual;
+            this.cantidadVendida = CantidadVendida;
         }
     }
 }

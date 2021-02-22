@@ -255,9 +255,9 @@ namespace Logica
 
 
         //funcionando
-        public List<DIngreso> MostrarStock(string Buscar)
+        public List<DArticulo> MostrarStock(string Buscar)
         {
-            List<DIngreso> ListaGenerica = new List<DIngreso>();
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
 
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -270,11 +270,12 @@ namespace Logica
                     comm.CommandText = @"SELECT 
                                             a.codigo, 
                                             a.nombre, 
+                                            di.precioVenta,
                                             SUM(di.cantidadInicial) as cantidadInicial,
                                             SUM(di.cantidadActual) as cantidadActual,
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
-                                            inner join [detalleIngreso] di on a.idArticulo=a.idArticulo  
+                                            inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
                                         where a.codigo LIKE '" + Buscar + "%' " +
                                             "AND SUM(di.cantidadActual) > 0" +
                                         "GROUP BY a.codigo, a.nombre" +
@@ -289,16 +290,14 @@ namespace Logica
 
                             while (reader.Read())
                             {
-                                ListaGenerica.Add(new DIngreso
+                                ListaGenerica.Add(new DArticulo
                                 {
-                                    idIngreso = reader.GetInt32(0),
-                                    cedulaTrabajador = reader.GetString(1),
-                                    razonSocial = reader.GetString(2),
-                                    fecha = reader.GetDateTime(3),
-                                    factura = reader.GetString(4),
-                                    metodoPago = reader.GetInt32(5),
-                                    estado = reader.GetInt32(6),
-                                    montoTotal = reader.GetDouble(7)
+                                    codigo = reader.GetString(0),
+                                    nombre = reader.GetString(1),
+                                    precioVenta = reader.GetDouble(2),
+                                    cantidadInicial = reader.GetInt32(3),
+                                    cantidadActual = reader.GetInt32(4),
+                                    cantidadVendida = reader.GetInt32(5)
                                 });
                             }
                         }
