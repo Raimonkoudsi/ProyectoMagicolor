@@ -270,15 +270,13 @@ namespace Logica
                     comm.CommandText = @"SELECT 
                                             a.codigo, 
                                             a.nombre, 
-                                            di.precioVenta,
                                             SUM(di.cantidadInicial) as cantidadInicial,
                                             SUM(di.cantidadActual) as cantidadActual,
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
                                         where a.codigo LIKE '" + Buscar + "%' " +
-                                            "AND SUM(di.cantidadActual) > 0" +
-                                        "GROUP BY a.codigo, a.nombre, di.precioVenta, di.cantidadActual, di.cantidadInicial" +
+                                        "GROUP BY a.codigo, a.nombre" +
                                         "HAVING SUM(di.cantidadActual) > 0" +
                                         "ORDER BY SUM(a.codigo) ASC";
 
