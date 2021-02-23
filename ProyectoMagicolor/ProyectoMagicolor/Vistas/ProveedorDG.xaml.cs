@@ -130,6 +130,14 @@ namespace ProyectoMagicolor.Vistas
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
 
         }
+
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbTipoDocumento.SelectedIndex > -1)
+                PlaceTipoDocumento.Text = "";
+            else
+                PlaceTipoDocumento.Text = "Tipo";
+        }
     }
 
 }

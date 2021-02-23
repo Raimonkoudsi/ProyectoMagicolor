@@ -100,7 +100,11 @@ namespace ProyectoMagicolor.Vistas
                                   null,
                                   stockminimo,
                                   stockmaximo,
-                                  idCategoria);
+                                  idCategoria,
+                                  0,
+                                  0,
+                                  0,
+                                  0);
         }
 
         void Create()

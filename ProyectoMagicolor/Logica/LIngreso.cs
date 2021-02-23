@@ -278,8 +278,11 @@ namespace Logica
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
                                         where a.codigo LIKE '" + Buscar + "%' " +
                                             "AND SUM(di.cantidadActual) > 0" +
-                                        "GROUP BY a.codigo, a.nombre" +
-                                        "ORDER BY SUM(di.cantidadActual) ASC";
+                                        "GROUP BY a.codigo, a.nombre, di.precioVenta, di.cantidadActual, di.cantidadInicial" +
+                                        "HAVING SUM(di.cantidadActual) > 0" +
+                                        "ORDER BY SUM(a.codigo) ASC";
+
+
 
                     try
                     {
