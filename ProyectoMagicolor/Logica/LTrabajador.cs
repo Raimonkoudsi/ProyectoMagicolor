@@ -449,5 +449,100 @@ namespace Logica
                 }
             }
         }
+
+
+        public bool UsuarioRepetido(string Usuario)
+        {
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"
+                        SELECT idTrabajador FROM [trabajador] 
+                        WHERE usuario = @usuario
+	                ;";
+
+                    comm.Parameters.AddWithValue("@usuario", Usuario);
+
+                    try
+                    {
+                        conn.Open();
+                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "Usuario no Existe";
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message);
+                        return false;
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool CedulaRepetida(string Cedula)
+        {
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"
+                        SELECT idTrabajador FROM [trabajador] 
+                        WHERE cedula = @cedula
+	                ;";
+
+                    comm.Parameters.AddWithValue("@cedula", Cedula);
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message);
+                        return false;
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

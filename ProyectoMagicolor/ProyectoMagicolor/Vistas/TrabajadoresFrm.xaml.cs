@@ -202,11 +202,16 @@ namespace ProyectoMagicolor.Vistas
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
+
             }
             else if(Type == TypeForm.Update)
             {
                 txtTitulo.Text = "Editar Trabajador";
                 fillForm(DataFill);
+            }
+            else
+            {
+                CbTipoDocumento.SelectedIndex = 0;
             }
         } 
 
@@ -488,5 +493,30 @@ namespace ProyectoMagicolor.Vistas
             return false;
         }
         #endregion
+
+        private void txtCedula_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void txtCedula_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void PlaceTipoDocumento_KeyUp(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void PlaceTipoDocumento_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -56,12 +56,12 @@ namespace ProyectoMagicolor.Vistas
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    ProveedorFrm frmTrab = new ProveedorFrm();
-        //    bool Resp = frmTrab.ShowDialog() ?? false;
-        //    Refresh(txtBuscar.Text);
-        //}
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //ProveedorFrm frmTrab = new ProveedorFrm();
+            //bool Resp = frmTrab.ShowDialog() ?? false;
+            //Refresh(txtBuscar.Text);
+        }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
@@ -80,20 +80,20 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(PlaceTipoDocumento.Text == "")
+            if(CbTipoDocumento.Text == "")
             {
-                PlaceTipoDocumento.Text = "";
+                CbTipoDocumento.Text = "";
             }
             
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(PlaceTipoDocumento.Text == "")
-            {
-                PlaceTipoDocumento.Text = "Buscar...";
-            }
-            
+            //if (PlaceTipoDocumento.Text == "")
+            //{
+            //    PlaceTipoDocumento.Text = "Buscar...";
+            //}
+
         }
 
         private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
