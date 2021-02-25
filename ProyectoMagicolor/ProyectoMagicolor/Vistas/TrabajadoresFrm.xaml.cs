@@ -229,7 +229,7 @@ namespace ProyectoMagicolor.Vistas
             string apellido = txtApellidos.txt.Text;
             string sexo = CbSexo.SelectedIndex == 0 ? "H" : "M";
             DateTime Nacimiento = DpNacimiento.SelectedDate ?? DateTime.Now;
-            string cedula = txtCedula.txt.Text;
+            string cedula = CbTipoDocumento.Text + "-" + txtCedula.txt.Text;
             string direccion = txtDireccion.txt.Text;
             string telefono = txtTelefono.txt.Text;
             string email = txtEmail.txt.Text;
@@ -260,6 +260,8 @@ namespace ProyectoMagicolor.Vistas
         {
             fillData();
             if (UForm == null)
+                return;
+            if (CedulaRepetida())
                 return;
             string response = MetodosUsuario.Insertar(UForm);
             MessageBox.Show(response);
@@ -359,6 +361,7 @@ namespace ProyectoMagicolor.Vistas
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
             CbAcceso.IsEnabled = Enable;
+            CbTipoDocumento.IsEnabled = Enable;
             txtUsuario.IsEnabled = Enable;
             txtPassword.IsEnabled = Enable;
             txtCPassword.IsEnabled = Enable;
@@ -373,7 +376,9 @@ namespace ProyectoMagicolor.Vistas
                 txtApellidos.SetText(Data.apellidos);
                 CbSexo.SelectedIndex = Data.sexo == "H" ? 0 : 1;
                 DpNacimiento.SelectedDate = Data.fechaNacimiento;
-                txtCedula.SetText(Data.cedula);
+
+                CbTipoDocumento.SelectedIndex = Data.cedula.Contains("V") == true ? 0 : 1;
+                txtCedula.SetText(Data.cedula.Remove(0,1));
 
                 if(Data.direccion != "")
                     txtDireccion.SetText(Data.direccion);
@@ -494,29 +499,24 @@ namespace ProyectoMagicolor.Vistas
         }
         #endregion
 
+
+        bool CedulaRepetida()
+        {
+            if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtCedula.Text))
+            {
+                MessageBox.Show("Trabajador ya ingresado en el Sistema");
+                txtCedula.SetText("Cedula");
+                txtCedula.Focus();
+
+                return true;
+            }
+            return false;
+        }
+
         private void txtCedula_LostFocus(object sender, RoutedEventArgs e)
         {
-
+            CedulaRepetida();
         }
 
-        private void txtCedula_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void PlaceTipoDocumento_KeyUp(object sender, KeyEventArgs e)
-        {
-
-        }
-
-        private void PlaceTipoDocumento_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
