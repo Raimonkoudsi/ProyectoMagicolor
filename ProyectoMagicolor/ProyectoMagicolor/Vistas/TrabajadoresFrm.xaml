@@ -43,7 +43,7 @@
                         </ComboBox>
                     </Grid>
                     <Grid Grid.Column="1" Margin="5 0 0 0">
-                        <TextBlock x:Name="dpNacPlaceholder" Text="Fecha de Nacimiento" FontSize="15" VerticalAlignment="Center" Foreground="Gray" Grid.ColumnSpan="2"/>
+                        <TextBlock x:Name="dpNacPlaceholder" Text="Fecha de Nacimiento" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
                         <DatePicker x:Name="DpNacimiento" Text="Fecha Nacimiento" FontSize="15" Focusable="False" SelectedDateChanged="DpNacimiento_SelectedDateChanged"/>
                     </Grid>
                 </Grid>
@@ -52,11 +52,20 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="CbTipoDocumento" FontSize="15" Margin="0,0,136,0">
-                        <ComboBoxItem>V</ComboBoxItem>
-                        <ComboBoxItem>E</ComboBoxItem>
-                    </ComboBox>
-                    <local:TextInput Grid.Column="0" x:Name="txtCedula" Placeholder="Cedula" Margin="44,0,5,0" FontSize="15" LostFocus="txtCedula_LostFocus"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                            <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged">
+                                <ComboBoxItem>V</ComboBoxItem>
+                                <ComboBoxItem>E</ComboBoxItem>
+                            </ComboBox>
+                        </Grid>
+                        <local:TextInput Grid.Column="1" x:Name="txtDocumento" Placeholder="Documento" Margin="5 0 0 0" FontSize="15"/>
+                    </Grid>
                     <local:TextInput Grid.Column="1" x:Name="txtTelefono" Placeholder="Telefono" Margin="5 0 0 0" FontSize="15"/>
                 </Grid>
                 <local:TextInput x:Name="txtDireccion" Placeholder="Direccion" Margin="0 10" FontSize="15"/>

@@ -279,5 +279,62 @@ namespace Logica
             }
 
         }
+
+        public List<DCliente> EncontrarConDocumento(string Tipo, string NroDocumento)
+        {
+            List<DCliente> ListaGenerica = new List<DCliente>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [cliente] WHERE tipoDocumento = '" + Tipo + "' AND numeroDocumento = '" + NroDocumento + "'";
+
+
+                    //comm.Parameters.AddWithValue("@textoBuscar", "");
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DCliente
+                                {
+                                    idCliente = reader.GetInt32(0),
+                                    nombre = reader.GetString(1),
+                                    apellidos = reader.GetString(2),
+                                    tipoDocumento = reader.GetString(3),
+                                    numeroDocumento = reader.GetString(4),
+                                    direccion = reader.GetString(5),
+                                    telefono = reader.GetString(6),
+                                    email = reader.GetString(7),
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
     }
 }

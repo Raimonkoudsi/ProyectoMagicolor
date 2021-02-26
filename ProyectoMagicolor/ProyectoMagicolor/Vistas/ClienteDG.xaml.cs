@@ -38,8 +38,7 @@ namespace ProyectoMagicolor.Vistas
 
             foreach(DCliente item in items)
             {
-                item.numeroDocumento = item.numeroDocumento; 
-                item.tipoDocumento = item.tipoDocumento;
+                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
             }
 
 
@@ -49,6 +48,8 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //contentsp.Children.Clear();
+
+            CbTipoDocumento.SelectedIndex = 0;
 
             Refresh(CbTipoDocumento.Text ,txtDocumento.Text);
         }
@@ -104,7 +105,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if(txtDocumento.Text == "")
             {
-                txtDocumento.Text = "";
+                txtBucarPlaceH.Text = "";
             }
             
         }
@@ -113,7 +114,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if(txtDocumento.Text == "")
             {
-                txtDocumento.Text = "Buscar...";
+                txtBucarPlaceH.Text = "Documento";
             }
             
         }
@@ -133,7 +134,17 @@ namespace ProyectoMagicolor.Vistas
 
         private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+            if (CbTipoDocumento.SelectedIndex > -1)
+                PlaceTipoDocumento.Text = "";
+            else
+                PlaceTipoDocumento.Text = "Tipo";
+
+            var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
+                            CbTipoDocumento.SelectedIndex == 1 ? "E" :
+                            CbTipoDocumento.SelectedIndex == 2 ? "J" :
+                            CbTipoDocumento.SelectedIndex == 3 ? "G" : "";
+
+            Refresh(tipoDoc, txtDocumento.Text);
         }
     }
 

@@ -174,7 +174,7 @@ namespace ProyectoMagicolor.Vistas
         public TrabajadoresFrm()
         {
             InitializeComponent();
-            txtCedula.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
             txtTelefono.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
 
@@ -196,7 +196,7 @@ namespace ProyectoMagicolor.Vistas
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if(Type == TypeForm.Read)
+            if (Type == TypeForm.Read)
             {
                 txtTitulo.Text = "Leer Trabajador";
                 fillForm(DataFill);
@@ -204,14 +204,10 @@ namespace ProyectoMagicolor.Vistas
                 btnEnviar.Visibility = Visibility.Collapsed;
 
             }
-            else if(Type == TypeForm.Update)
+            else if (Type == TypeForm.Update)
             {
                 txtTitulo.Text = "Editar Trabajador";
                 fillForm(DataFill);
-            }
-            else
-            {
-                CbTipoDocumento.SelectedIndex = 0;
             }
         } 
 
@@ -229,7 +225,7 @@ namespace ProyectoMagicolor.Vistas
             string apellido = txtApellidos.txt.Text;
             string sexo = CbSexo.SelectedIndex == 0 ? "H" : "M";
             DateTime Nacimiento = DpNacimiento.SelectedDate ?? DateTime.Now;
-            string cedula = CbTipoDocumento.Text + "-" + txtCedula.txt.Text;
+            string cedula = CbTipoDocumento.Text + "-" + txtDocumento.txt.Text;
             string direccion = txtDireccion.txt.Text;
             string telefono = txtTelefono.txt.Text;
             string email = txtEmail.txt.Text;
@@ -260,8 +256,6 @@ namespace ProyectoMagicolor.Vistas
         {
             fillData();
             if (UForm == null)
-                return;
-            if (CedulaRepetida())
                 return;
             string response = MetodosUsuario.Insertar(UForm);
             MessageBox.Show(response);
@@ -350,13 +344,21 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbTipoDocumento.SelectedIndex > -1)
+                PlaceTipoDocumento.Text = "";
+            else
+                PlaceTipoDocumento.Text = "Tipo";
+        }
+
         void SetEnable(bool Enable)
         {
             txtNombre.IsEnabled = Enable;
             txtApellidos.IsEnabled = Enable;
             CbSexo.IsEnabled = Enable;
             DpNacimiento.IsEnabled = Enable;
-            txtCedula.IsEnabled = Enable;
+            txtDocumento.IsEnabled = Enable;
             txtDireccion.IsEnabled = Enable;
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
@@ -378,7 +380,7 @@ namespace ProyectoMagicolor.Vistas
                 DpNacimiento.SelectedDate = Data.fechaNacimiento;
 
                 CbTipoDocumento.SelectedIndex = Data.cedula.Contains("V") == true ? 0 : 1;
-                txtCedula.SetText(Data.cedula.Remove(0,1));
+                txtDocumento.SetText(Data.cedula.Remove(0,2));
 
                 if(Data.direccion != "")
                     txtDireccion.SetText(Data.direccion);
@@ -431,10 +433,10 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
-            if (!txtCedula.Changed)
+            if (!txtDocumento.Changed)
             {
                 MessageBox.Show("Debes llenar el campo Cedula!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtCedula.txt.Focus();
+                txtDocumento.txt.Focus();
                 return true;
             }
 
@@ -495,28 +497,15 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
+            if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+            {
+                MessageBox.Show("La Cedula ingresada está Repetida!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtDocumento.SetText("");
+                txtDocumento.txt.Focus();
+            }
+
             return false;
         }
         #endregion
-
-
-        bool CedulaRepetida()
-        {
-            if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtCedula.Text))
-            {
-                MessageBox.Show("Trabajador ya ingresado en el Sistema");
-                txtCedula.SetText("Cedula");
-                txtCedula.Focus();
-
-                return true;
-            }
-            return false;
-        }
-
-        private void txtCedula_LostFocus(object sender, RoutedEventArgs e)
-        {
-            CedulaRepetida();
-        }
-
     }
 }

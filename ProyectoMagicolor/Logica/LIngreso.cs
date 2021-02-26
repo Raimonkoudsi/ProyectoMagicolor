@@ -267,7 +267,8 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = @"SELECT 
+                    comm.CommandText = @"SELECT
+                                            a.idArticulo
                                             a.codigo, 
                                             a.nombre, 
                                             SUM(di.cantidadInicial) as cantidadInicial,
@@ -275,7 +276,7 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.codigo LIKE '" + Buscar + "%' " +
+                                        where a.nombre LIKE '" + Buscar + "%' " +
                                         "GROUP BY a.codigo, a.nombre" +
                                         "HAVING SUM(di.cantidadActual) > 0" +
                                         "ORDER BY SUM(a.codigo) ASC";
@@ -293,12 +294,123 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DArticulo
                                 {
-                                    codigo = reader.GetString(0),
-                                    nombre = reader.GetString(1),
-                                    precioVenta = reader.GetDouble(2),
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
                                     cantidadInicial = reader.GetInt32(3),
                                     cantidadActual = reader.GetInt32(4),
                                     cantidadVendida = reader.GetInt32(5)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        //funcionando
+        public List<DDetalle_Ingreso> EncontrarByArticulo(int IdArticulo)
+        {
+            List<DDetalle_Ingreso> ListaGenerica = new List<DDetalle_Ingreso>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [detalleIngreso] where idArticulo = " + IdArticulo + " and cantidadActual > 0 order by idDetalleIngreso ASC";
+
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DDetalle_Ingreso
+                                {
+                                    idDetalleIngreso = reader.GetInt32(0),
+                                    idIngreso = reader.GetInt32(1),
+                                    idArticulo = reader.GetInt32(2),
+                                    precioCompra = reader.GetDouble(3),
+                                    precioVenta = reader.GetDouble(4),
+                                    cantidadInicial = reader.GetInt32(5),
+                                    cantidadActual = reader.GetInt32(6)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        public List<DDetalle_Ingreso> Encontrar(int Id)
+        {
+            List<DDetalle_Ingreso> ListaGenerica = new List<DDetalle_Ingreso>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT * from [detalleIngreso] where idDetalleIngreso = " + Id + " order by idDetalleIngreso ASC";
+
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DDetalle_Ingreso
+                                {
+                                    idDetalleIngreso = reader.GetInt32(0),
+                                    idIngreso = reader.GetInt32(1),
+                                    idArticulo = reader.GetInt32(2),
+                                    precioCompra = reader.GetDouble(3),
+                                    precioVenta = reader.GetDouble(4),
+                                    cantidadInicial = reader.GetInt32(5),
+                                    cantidadActual = reader.GetInt32(6)
                                 });
                             }
                         }

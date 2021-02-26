@@ -105,6 +105,21 @@
     <Compile Include="Vistas\ArticuloDG.xaml.cs">
       <DependentUpon>ArticuloDG.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\ClienteFrmVista.xaml.cs">
+      <DependentUpon>ClienteFrmVista.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\ClienteVista.xaml.cs">
+      <DependentUpon>ClienteVista.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DetalleIngresoVista.xaml.cs">
+      <DependentUpon>DetalleIngresoVista.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\VentaFrm.xaml.cs">
+      <DependentUpon>VentaFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DetalleVentaFrm.xaml.cs">
+      <DependentUpon>DetalleVentaFrm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\DetalleIngresoFrm.xaml.cs">
       <DependentUpon>DetalleIngresoFrm.xaml</DependentUpon>
     </Compile>
@@ -135,14 +150,31 @@
     <Compile Include="Vistas\TextInput.xaml.cs">
       <DependentUpon>TextInput.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Vistas\VentaFrm.xaml.cs">
-      <DependentUpon>VentaFrm.xaml</DependentUpon>
-    </Compile>
     <Page Include="Vistas\ArticuloVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Vistas\ArticuloDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ClienteFrmVista.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\ClienteVista.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\DetalleIngresoVista.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\VentaFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\DetalleVentaFrm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -237,10 +269,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vistas\TextInput.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Vistas\VentaFrm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
