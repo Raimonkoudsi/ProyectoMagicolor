@@ -280,7 +280,15 @@ namespace Logica
 
         }
 
+<<<<<<< Updated upstream
         public List<DCliente> EncontrarConDocumento(string Tipo, string NroDocumento)
+=======
+
+
+
+
+        public List<DCliente> ClienteRepetido(string tipoDocumento, string numeroDocumento)
+>>>>>>> Stashed changes
         {
             List<DCliente> ListaGenerica = new List<DCliente>();
 
@@ -291,10 +299,15 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
+<<<<<<< Updated upstream
                     comm.CommandText = "SELECT * from [cliente] WHERE tipoDocumento = '" + Tipo + "' AND numeroDocumento = '" + NroDocumento + "'";
 
 
                     //comm.Parameters.AddWithValue("@textoBuscar", "");
+=======
+                    comm.CommandText = "SELECT * from [cliente] WHERE tipoDocumento= " + tipoDocumento + " AND numeroDocumento=" + numeroDocumento + "";
+
+>>>>>>> Stashed changes
 
                     try
                     {

@@ -255,7 +255,7 @@ namespace Logica
 
 
         //funcionando
-        public List<DArticulo> MostrarStock(string Buscar)
+        public List<DArticulo> MostrarStock(string Buscar, bool CodigoBarra)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
@@ -267,8 +267,14 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
+<<<<<<< Updated upstream
                     comm.CommandText = @"SELECT
                                             a.idArticulo
+=======
+                    string queryCondicional = CodigoBarra ? "=" : "LIKE";
+
+                    comm.CommandText = @"SELECT 
+>>>>>>> Stashed changes
                                             a.codigo, 
                                             a.nombre, 
                                             SUM(di.cantidadInicial) as cantidadInicial,
@@ -276,7 +282,11 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
+<<<<<<< Updated upstream
                                         where a.nombre LIKE '" + Buscar + "%' " +
+=======
+                                        where a.codigo " + queryCondicional + " '" + Buscar + "%' " +
+>>>>>>> Stashed changes
                                         "GROUP BY a.codigo, a.nombre" +
                                         "HAVING SUM(di.cantidadActual) > 0" +
                                         "ORDER BY SUM(a.codigo) ASC";
@@ -431,6 +441,9 @@ namespace Logica
             }
 
         }
+
+
+
 
 
         //cuentas por pagar
