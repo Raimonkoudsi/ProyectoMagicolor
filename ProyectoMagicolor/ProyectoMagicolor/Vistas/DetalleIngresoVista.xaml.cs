@@ -44,22 +44,22 @@ namespace ProyectoMagicolor.Vistas
         {
 
             List<DArticulo> items = MetIng.MostrarStockNombre(search);
-            if (filterDG)
-            {
-                foreach (int item in Actual)
-                {
-                    var Res = items.FindAll((art) =>  art.idArticulo == item);
+            //if (filterDG)
+            //{
+            //    foreach (int item in Actual)
+            //    {
+            //        var Res = items.FindAll((art) =>  art.idArticulo == item);
 
-                    foreach (DArticulo j in Res)
-                    {
-                        var id = items.FindIndex((articulo) => articulo.idArticulo == j.idArticulo);
+            //        foreach (DArticulo j in Res)
+            //        {
+            //            var id = items.FindIndex((articulo) => articulo.idArticulo == j.idArticulo);
 
 
-                        if (id > -1)
-                            items.RemoveAt(id);
-                    }
-                }
-            }
+            //            if (id > -1)
+            //                items.RemoveAt(id);
+            //        }
+            //    }
+            //}
 
 
             dgOperaciones.ItemsSource = items;

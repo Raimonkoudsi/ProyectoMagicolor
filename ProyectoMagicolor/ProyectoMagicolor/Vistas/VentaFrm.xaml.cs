@@ -212,8 +212,12 @@ namespace ProyectoMagicolor.Vistas
                 }
                 else
                 {
-                    ClienteFrmVista Frm = new ClienteFrmVista(this, CbTipoDocumento.Text, txtDocumento.Text);
-                    bool? res = Frm.ShowDialog();
+                    var resp = MessageBox.Show("Esta cedula no está en la base de datos! ¿Desea agregarlo?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if(resp == MessageBoxResult.Yes)
+                    {
+                        ClienteFrmVista Frm = new ClienteFrmVista(this, CbTipoDocumento.Text, txtDocumento.Text);
+                        bool? res = Frm.ShowDialog();
+                    }
                 }
 
             }

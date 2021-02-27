@@ -74,7 +74,7 @@
                             </Grid>
                             <Grid Grid.Column="1">
                                 <TextBlock Name="PlaceDocumento" Text="Documento" Foreground="Gray" VerticalAlignment="Center" Margin="1 0 0 0"/>
-                                <TextBox x:Name="txtDocumento" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
+                                <TextBox x:Name="txtDocumento" MaxLength="9" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
                             </Grid>
                         </Grid>
                         <Grid Margin="10 15">
@@ -82,7 +82,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="BtnBuscar" Grid.Column="0" Padding="3" Click="Button_Click" Margin="5 0">Buscar</Button>
+                            <Button x:Name="BtnBuscar" Grid.Column="0" Padding="3" Click="Button_Click" Margin="0,0,4.727,-0.036" HorizontalAlignment="Right" Width="95">Buscar</Button>
                             <Button x:Name="BtnAbrir" Grid.Column="1" Padding="10 0" Visibility="Visible" Click="BtnAbrir_Click" Background="ForestGreen" BorderBrush="ForestGreen" Margin="5 0">Abrir</Button>
                         </Grid>
                     </StackPanel>

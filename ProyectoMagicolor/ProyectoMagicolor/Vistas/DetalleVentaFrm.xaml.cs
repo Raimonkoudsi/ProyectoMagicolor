@@ -37,7 +37,6 @@ namespace ProyectoMagicolor.Vistas
 
             ActualDetalle = actualDetalle;
 
-            txtPrecio.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
             txtCantidad.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
 
@@ -91,7 +90,6 @@ namespace ProyectoMagicolor.Vistas
             }
 
             int id = DataDIngreso.idDetalleIngreso;
-            double precio = double.Parse(txtPrecio.txt.Text);
             int Cantidad = int.Parse(txtCantidad.txt.Text);
 
 
@@ -99,7 +97,7 @@ namespace ProyectoMagicolor.Vistas
                                         0,
                                         id,
                                         Cantidad,
-                                        precio,
+                                        DataDIngreso.precioVenta,
                                         0,0);
         }
 
@@ -182,7 +180,6 @@ namespace ProyectoMagicolor.Vistas
         void SetEnable(bool Enable)
         {
             BtnAgregarArticulo.Visibility = Enable ? Visibility.Visible : Visibility.Collapsed;
-            txtPrecio.IsEnabled = Enable;
             txtCantidad.IsEnabled = Enable;
         }
         void fillForm(DDetalle_Venta Data, DArticulo Articulo)
@@ -190,20 +187,12 @@ namespace ProyectoMagicolor.Vistas
             if(Data != null)
             {
                 AgregarArticulo(DataDIngreso, DataArticulo);
-                txtPrecio.SetText(Data.precioVenta.ToString());
                 txtCantidad.SetText(Data.cantidad.ToString());
             }
         }
         #region Validation
         bool Validate()
         {
-            if (!txtPrecio.Changed)
-            {
-                MessageBox.Show("Debes llenar el Precio!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPrecio.txt.Focus();
-                return true;
-            }
-
             if (!txtCantidad.Changed)
             {
                 MessageBox.Show("Debes llenar el campo Cantidad!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
