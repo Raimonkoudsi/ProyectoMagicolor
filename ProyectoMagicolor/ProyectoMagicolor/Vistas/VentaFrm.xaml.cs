@@ -295,6 +295,8 @@ namespace ProyectoMagicolor.Vistas
         {
             bool WillInclude = false;
 
+            bool OpenProducts = false;
+
             DArticulo DA = new DArticulo();
             DDetalle_Ingreso DDI = new DDetalle_Ingreso();
             if (txtBuscar.Text != "")
@@ -302,9 +304,14 @@ namespace ProyectoMagicolor.Vistas
                 LArticulo Metodo = new LArticulo();
                 LIngreso MEt = new LIngreso();
                 var response = Metodo.EncontrarConCodigo(txtBuscar.Text);
-                var Resp2 = MEt.EncontrarByArticulo(response[0].idArticulo);
+                List<DDetalle_Ingreso> Resp2 = new List<DDetalle_Ingreso>();
 
-                if (response.Count > 0 && Resp2.Count > 0)
+                if(response.Count > 0)
+                {
+                    Resp2 = MEt.EncontrarByArticulo(response[0].idArticulo);
+                }
+
+                if (Resp2.Count > 0)
                 {
                     DA = response[0];
                     DDI = Resp2[0];
@@ -315,10 +322,13 @@ namespace ProyectoMagicolor.Vistas
                     var resp = MessageBox.Show("El Codigo que ingresaste no se encuentra! ¿Deseas buscarlo manualmente?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (resp == MessageBoxResult.No)
                         return;
+                    else
+                        OpenProducts = true;
                 }
             }
             DetalleVentaFrm DVFrm = new DetalleVentaFrm(this, ListaVenta);
             DVFrm.Type = TypeForm.Create;
+            DVFrm.OpenProducts = OpenProducts;
             if(WillInclude)
             {
                 DVFrm.AgregarArticulo(DDI, DA);

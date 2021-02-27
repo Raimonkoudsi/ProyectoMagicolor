@@ -53,6 +53,7 @@ namespace ProyectoMagicolor.Vistas
 
         public LArticulo Metodos = new LArticulo();
 
+        public bool OpenProducts;
         public int idEdit;
         public List<DDetalle_Venta> ActualDetalle;
 
@@ -76,6 +77,12 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtTitulo.Text = "Editar Articulo";
                 fillForm(DataFill, DataArticulo);
+            }
+
+
+            if (OpenProducts)
+            {
+                AbrirIngresos();
             }
         }
 
@@ -150,26 +157,31 @@ namespace ProyectoMagicolor.Vistas
             BtnAgregarArticulo.Content = "Buscar Artículo";
         }
 
+        public void AbrirIngresos()
+        {
+            List<int> intentnt = new List<int>();
+
+            foreach (DDetalle_Venta item in ActualDetalle)
+            {
+                intentnt.Add(item.idDetalleIngreso);
+            }
+
+            DetalleIngresoVista AVFrm = new DetalleIngresoVista(intentnt, Type == TypeForm.Create);
+            if ((bool)AVFrm.ShowDialog())
+            {
+                LIngreso Met = new LIngreso();
+                var Resp = Met.EncontrarByArticulo(AVFrm.Resultado.idArticulo)[0];
+
+                AgregarArticulo(Resp, AVFrm.Resultado);
+            }
+        }
+
 
         private void BtnAgregarArticulo_Click(object sender, RoutedEventArgs e)
         {
             if (!ArticuloSetted)
             {
-                List<int> intentnt = new List<int>();
-
-                foreach(DDetalle_Venta item in ActualDetalle)
-                {
-                    intentnt.Add(item.idDetalleIngreso);
-                }
-
-                DetalleIngresoVista AVFrm = new DetalleIngresoVista(intentnt, Type == TypeForm.Create);
-                if ((bool)AVFrm.ShowDialog())
-                {
-                    LIngreso Met = new LIngreso();
-                    var Resp = Met.EncontrarByArticulo(AVFrm.Resultado.idArticulo)[0];
-
-                    AgregarArticulo(Resp ,AVFrm.Resultado);
-                }
+                AbrirIngresos();
             }
             else
             {
