@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Datos
 {
-    public class DVenta:Conexion
+    public class DVenta : Conexion
     {
         private int _IdVenta;
         public int idVenta
@@ -97,12 +97,21 @@ namespace Datos
             set { _MontoTotal = value; }
         }
 
+        private double _Impuesto;
+        public double impuesto
+        {
+            get { return _Impuesto; }
+            set { _Impuesto = value; }
+        }
+
+
+
         public DVenta()
         {
 
         }
 
-        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado, string CedulaTrabajador, string CedulaCliente, string Cliente, double MontoTotal)
+        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado, string CedulaTrabajador, string CedulaCliente, string Cliente, double MontoTotal, double Impuesto)
         {
             this.idVenta = IdVenta;
             this.idCliente = IdCliente;
@@ -117,6 +126,7 @@ namespace Datos
             this.cedulaCliente = CedulaCliente;
             this.cliente = Cliente;
             this.montoTotal = MontoTotal;
+            this.impuesto = Impuesto;
         }
 
     }

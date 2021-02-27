@@ -80,13 +80,13 @@ namespace ProyectoMagicolor.Vistas
 
             LVenta Metodo = new LVenta();
 
-            DVenta dVenta = new DVenta(0,0,
+            DVenta dVenta = new DVenta(0,Cliente.idCliente,
                                              Parent.LoggedTrabajador.idTrabajador,
                                              DateTime.Now,
                                              "","",
                                              descuento,
                                              CbMetodoPago.SelectedIndex + 1,
-                                             0, "", "", "", total);
+                                             0, "", "", "", total, impuestos);
 
             DCuentaCobrar CC = new DCuentaCobrar(0,
                                                0,

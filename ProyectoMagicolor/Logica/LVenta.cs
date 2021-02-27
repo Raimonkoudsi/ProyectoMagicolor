@@ -26,17 +26,20 @@ namespace Logica
                             fecha,
                             tipoComprobante,
                             serieComprobante,
-                            descuento,
                             metodoPago,
+                            descuento,
+                            impuesto,
                             estado
-                        ) VALUES(
+                        ) OUTPUT Inserted.idVenta
+                        VALUES(
                             @idCliente,
                             @idTrabajador,
                             @fecha,
                             @tipoComprobante,
                             @serieComprobante,
+                            @metodoPago,
                             @descuento,
-                            @metodoPago
+                            @impuesto,
                             @estado
                         );
 	        ";
@@ -52,6 +55,7 @@ namespace Logica
                     comm.Parameters.AddWithValue("@tipoComprobante", Venta.tipoComprobante);
                     comm.Parameters.AddWithValue("@serieComprobante", Venta.serieComprobante);
                     comm.Parameters.AddWithValue("@descuento", Venta.descuento);
+                    comm.Parameters.AddWithValue("@impuesto", Venta.impuesto);
                     comm.Parameters.AddWithValue("@metodoPago", Venta.metodoPago);
 
                     if (Venta.metodoPago == 2)
@@ -63,9 +67,15 @@ namespace Logica
                     try
                     {
                         conn.Open();
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la venta";
 
-                        this.idVenta = Convert.ToInt32(comm.Parameters["@idVenta"].Value);
+                        this.idVenta = (int)comm.ExecuteScalar();
+
+                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la venta";
+
+                        //this.idVenta = Convert.ToInt32(comm.Parameters["@idVenta"].Value);
+
+                        respuesta = !String.IsNullOrEmpty(this.idVenta.ToString()) ? "OK" : "No se ingreso el Registro de la venta";
+
 
                         if (respuesta.Equals("OK") && Venta.metodoPago == 2)
                         {
