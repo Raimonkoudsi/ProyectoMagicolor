@@ -43,7 +43,7 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DArticulo> items = MetIng.MostrarStock(search);
+            List<DArticulo> items = MetIng.MostrarStockNombre(search);
             if (filterDG)
             {
                 foreach (int item in Actual)
