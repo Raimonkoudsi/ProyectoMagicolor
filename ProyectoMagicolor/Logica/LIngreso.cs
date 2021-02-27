@@ -255,7 +255,7 @@ namespace Logica
 
 
         //funcionando
-        public List<DArticulo> MostrarStock(string Buscar, bool CodigoBarra)
+        public List<DArticulo> MostrarStock(string Buscar)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
@@ -267,8 +267,6 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    string queryCondicional = CodigoBarra ? "=" : "LIKE";
-
                     comm.CommandText = @"SELECT
                                             a.idArticulo,
                                             a.codigo, 
@@ -278,12 +276,10 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.codigo " + queryCondicional + " '" + Buscar + "%' " +
+                                        where a.nombre =" +  Buscar + "%' " +
                                         "GROUP BY a.codigo, a.nombre" +
                                         "HAVING SUM(di.cantidadActual) > 0" +
                                         "ORDER BY SUM(a.codigo) ASC";
-
-
 
                     try
                     {
