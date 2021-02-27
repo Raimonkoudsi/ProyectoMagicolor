@@ -38,8 +38,7 @@ namespace ProyectoMagicolor.Vistas
 
             foreach (DProveedor item in items)
             {
-                item.tipoDocumento = item.tipoDocumento;
-                item.numeroDocumento = item.numeroDocumento;
+                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
             }
 
 
@@ -49,6 +48,8 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //contentsp.Children.Clear();
+
+            CbTipoDocumento.SelectedIndex = 2;
 
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
@@ -137,6 +138,13 @@ namespace ProyectoMagicolor.Vistas
                 PlaceTipoDocumento.Text = "";
             else
                 PlaceTipoDocumento.Text = "Tipo";
+
+            var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
+                            CbTipoDocumento.SelectedIndex == 1 ? "E" :
+                            CbTipoDocumento.SelectedIndex == 2 ? "J" :
+                            CbTipoDocumento.SelectedIndex == 3 ? "G" : "";
+
+            Refresh(tipoDoc, txtDocumento.Text);
         }
     }
 
