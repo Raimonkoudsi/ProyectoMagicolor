@@ -11,9 +11,6 @@ namespace Logica
     public class LCliente : DCliente
     {
 
-
-        //Metodos
-
         public string Insertar(DCliente Cliente)
         {
             string respuesta = "";
@@ -179,9 +176,6 @@ namespace Logica
 
                     comm.CommandText = "SELECT * from [cliente] where tipoDocumento = '" + Buscar +"' AND numeroDocumento like '" + Buscar2 + "%' order by numeroDocumento";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
-
                     try
                     {
 
@@ -235,9 +229,6 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = "SELECT * from [cliente] WHERE idCliente= " + Buscar + "";
-
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
 
                     try
                     {

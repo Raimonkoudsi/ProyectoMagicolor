@@ -277,9 +277,9 @@ namespace Logica
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
                                         where a.nombre LIKE " +  Buscar + "%' " +
-                                        "GROUP BY a.codigo, a.nombre, a.idArticulo" +
-                                        "HAVING SUM(di.cantidadActual) > 0" +
-                                        "ORDER BY a.idArticulo ASC";
+                                        "GROUP BY a.codigo, a.nombre, a.idArticulo " +
+                                        "HAVING SUM(di.cantidadActual) > 0 " +
+                                        "ORDER BY a.idArticulo ASC ";
 
                     try
                     {
@@ -341,9 +341,9 @@ namespace Logica
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
                                         where a.codigo = " + Buscar + "%' " +
-                                        "GROUP BY a.codigo, a.nombre, a.idArticulo" +
-                                        "HAVING SUM(di.cantidadActual) > 0" +
-                                        "ORDER BY a.idArticulo ASC";
+                                        "GROUP BY a.codigo, a.nombre, a.idArticulo " +
+                                        "HAVING SUM(di.cantidadActual) > 0 " +
+                                        "ORDER BY a.idArticulo ASC ";
 
                     try
                     {
