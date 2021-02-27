@@ -116,14 +116,12 @@ namespace Logica
                                         idVenta,
                                         idDetalleIngreso,
                                         cantidad,
-                                        precioVenta,
-                                        impuesto
+                                        precioVenta
                                     ) VALUES(
                                         @idVenta,
                                         @idDetalleIngreso,
                                         @cantidad,
-                                        @precioVenta,
-                                        @impuesto
+                                        @precioVenta
                                     );
 	                            ";
 
@@ -133,7 +131,6 @@ namespace Logica
                                     comm3.Parameters.AddWithValue("@idDetalleIngreso", Detalle[i].idDetalleIngreso);
                                     comm3.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
                                     comm3.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
-                                    comm3.Parameters.AddWithValue("@impuesto", Detalle[i].impuesto);
 
                                     respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
                                     i++;
