@@ -5,7 +5,7 @@ using Datos;
 
 using System.Data;
 using System.Data.SqlClient;
-
+using System.Windows;
 
 namespace Logica
 {
@@ -302,9 +302,10 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch(Exception e)
                     {
                         //error
+                        MessageBox.Show(e.Message);
                     }
                     finally
                     {
