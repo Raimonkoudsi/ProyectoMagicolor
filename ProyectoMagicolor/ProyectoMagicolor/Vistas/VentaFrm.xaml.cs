@@ -310,7 +310,12 @@ namespace ProyectoMagicolor.Vistas
                     DDI = Resp2[0];
                     WillInclude = true;
                 }
-
+                else
+                {
+                    var resp = MessageBox.Show("El Codigo que ingresaste no se encuentra! ¿Deseas buscarlo manualmente?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (resp == MessageBoxResult.No)
+                        return;
+                }
             }
             DetalleVentaFrm DVFrm = new DetalleVentaFrm(this, ListaVenta);
             DVFrm.Type = TypeForm.Create;

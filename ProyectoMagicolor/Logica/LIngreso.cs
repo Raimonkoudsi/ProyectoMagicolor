@@ -415,17 +415,18 @@ namespace Logica
                                     idDetalleIngreso = reader.GetInt32(0),
                                     idIngreso = reader.GetInt32(1),
                                     idArticulo = reader.GetInt32(2),
-                                    precioCompra = reader.GetDouble(3),
-                                    precioVenta = reader.GetDouble(4),
+                                    precioCompra = (double)reader.GetDecimal(3),
+                                    precioVenta = (double)reader.GetDecimal(4),
                                     cantidadInicial = reader.GetInt32(5),
                                     cantidadActual = reader.GetInt32(6)
                                 });
                             }
                         }
                     }
-                    catch
+                    catch(Exception e)
                     {
                         //error
+                        MessageBox.Show(e.Message);
                     }
                     finally
                     {
@@ -470,8 +471,8 @@ namespace Logica
                                     idDetalleIngreso = reader.GetInt32(0),
                                     idIngreso = reader.GetInt32(1),
                                     idArticulo = reader.GetInt32(2),
-                                    precioCompra = reader.GetDouble(3),
-                                    precioVenta = reader.GetDouble(4),
+                                    precioCompra = (double)reader.GetDecimal(3),
+                                    precioVenta = (double)reader.GetDecimal(4),
                                     cantidadInicial = reader.GetInt32(5),
                                     cantidadActual = reader.GetInt32(6)
                                 });
