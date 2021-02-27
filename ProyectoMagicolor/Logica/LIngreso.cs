@@ -267,14 +267,10 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-<<<<<<< Updated upstream
-                    comm.CommandText = @"SELECT
-                                            a.idArticulo
-=======
                     string queryCondicional = CodigoBarra ? "=" : "LIKE";
 
-                    comm.CommandText = @"SELECT 
->>>>>>> Stashed changes
+                    comm.CommandText = @"SELECT
+                                            a.idArticulo,
                                             a.codigo, 
                                             a.nombre, 
                                             SUM(di.cantidadInicial) as cantidadInicial,
@@ -282,11 +278,7 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-<<<<<<< Updated upstream
-                                        where a.nombre LIKE '" + Buscar + "%' " +
-=======
                                         where a.codigo " + queryCondicional + " '" + Buscar + "%' " +
->>>>>>> Stashed changes
                                         "GROUP BY a.codigo, a.nombre" +
                                         "HAVING SUM(di.cantidadActual) > 0" +
                                         "ORDER BY SUM(a.codigo) ASC";
