@@ -255,7 +255,7 @@ namespace Logica
 
 
         //funcionando
-        public List<DArticulo> MostrarStock(string Buscar)
+        public List<DArticulo> MostrarStockNombre(string Buscar)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
@@ -276,7 +276,71 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.nombre =" +  Buscar + "%' " +
+                                        where a.nombre LIKE " +  Buscar + "%' " +
+                                        "GROUP BY a.codigo, a.nombre" +
+                                        "HAVING SUM(di.cantidadActual) > 0" +
+                                        "ORDER BY SUM(a.codigo) ASC";
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    cantidadInicial = reader.GetInt32(3),
+                                    cantidadActual = reader.GetInt32(4),
+                                    cantidadVendida = reader.GetInt32(5)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+        public List<DArticulo> MostrarStockCodigo(string Buscar)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"SELECT
+                                            a.idArticulo,
+                                            a.codigo, 
+                                            a.nombre, 
+                                            SUM(di.cantidadInicial) as cantidadInicial,
+                                            SUM(di.cantidadActual) as cantidadActual,
+                                            (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
+                                        from [articulo] a 
+                                            inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
+                                        where a.codigo = " + Buscar + "%' " +
                                         "GROUP BY a.codigo, a.nombre" +
                                         "HAVING SUM(di.cantidadActual) > 0" +
                                         "ORDER BY SUM(a.codigo) ASC";
