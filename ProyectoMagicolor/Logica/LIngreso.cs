@@ -276,10 +276,10 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.nombre LIKE " +  Buscar + "%' " +
+                                        where a.nombre LIKE '" +  Buscar + "%' " +
                                         "GROUP BY a.codigo, a.nombre, a.idArticulo " +
                                         "HAVING SUM(di.cantidadActual) > 0 " +
-                                        "ORDER BY a.idArticulo ASC ";
+                                        "ORDER BY a.idArticulo ASC";
 
                     try
                     {
@@ -341,10 +341,10 @@ namespace Logica
                                             (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.codigo = " + Buscar + "%' " +
+                                        where a.codigo = " + Buscar + " " +
                                         "GROUP BY a.codigo, a.nombre, a.idArticulo " +
                                         "HAVING SUM(di.cantidadActual) > 0 " +
-                                        "ORDER BY a.idArticulo ASC ";
+                                        "ORDER BY a.idArticulo ASC";
 
                     try
                     {
