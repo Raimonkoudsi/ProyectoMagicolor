@@ -41,8 +41,7 @@ namespace ProyectoMagicolor.Vistas
 
             foreach (DProveedor item in items)
             {
-                item.numeroDocumento = item.numeroDocumento;
-                item.tipoDocumento = item.tipoDocumento;
+                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
             }
 
 
@@ -53,14 +52,9 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
-            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
-        }
+            CbTipoDocumento.SelectedIndex = 2;
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //ProveedorFrm frmTrab = new ProveedorFrm();
-            //bool Resp = frmTrab.ShowDialog() ?? false;
-            //Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -80,19 +74,19 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(CbTipoDocumento.Text == "")
+            if (txtDocumento.Text == "")
             {
-                CbTipoDocumento.Text = "";
+                txtBucarPlaceH.Text = "";
             }
-            
+
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            //if (PlaceTipoDocumento.Text == "")
-            //{
-            //    PlaceTipoDocumento.Text = "Buscar...";
-            //}
+            if (txtDocumento.Text == "")
+            {
+                txtBucarPlaceH.Text = "Documento";
+            }
 
         }
 
@@ -102,6 +96,13 @@ namespace ProyectoMagicolor.Vistas
                 PlaceTipoDocumento.Text = "";
             else
                 PlaceTipoDocumento.Text = "Tipo";
+
+            var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
+                            CbTipoDocumento.SelectedIndex == 1 ? "E" :
+                            CbTipoDocumento.SelectedIndex == 2 ? "J" :
+                            CbTipoDocumento.SelectedIndex == 3 ? "G" : "";
+
+            Refresh(tipoDoc, txtDocumento.Text);
         }
     }
 
