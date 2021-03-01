@@ -80,7 +80,7 @@ namespace ProyectoMagicolor.Vistas
 
             LVenta Metodo = new LVenta();
 
-            DVenta dVenta = new DVenta(0,Cliente.idCliente,
+            DVenta dVenta = new DVenta(0,0,
                                              Parent.LoggedTrabajador.idTrabajador,
                                              DateTime.Now,
                                              "","",
@@ -97,6 +97,11 @@ namespace ProyectoMagicolor.Vistas
 
             string res = Metodo.Insertar(dVenta, ListaVenta, CC);
             MessageBox.Show(res);
+
+            if (res.Equals("OK"))
+            {
+                Parent.SwitchScreen(new VentaFrm(Parent));
+            }
         }
 
         private void CbMetodoPago_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -389,33 +394,43 @@ namespace ProyectoMagicolor.Vistas
             {
                 Subtotal += item.precioVenta * item.cantidad;
             }
-            double x = Math.Truncate(Subtotal * 100) / 100;
-            txtSubtotal.Text = "Bs.S " + x.ToString("0.00");
-
-
+            double SubTCImp = Subtotal;
 
             double impPer = double.Parse(txtImpuesto.Text, CultureInfo.InvariantCulture);
+            double impDec = (impPer / 100);
+            Subtotal = Subtotal / (impDec + 1);
 
-            double imp = Subtotal * (impPer / 100);
-
-            double y = Math.Truncate(imp * 100) / 100;
-
-            txtImpuestoP.Text = "Bs.S " + y.ToString("0.00");
-
-
-            double Total = Subtotal + imp;
-
-            double Descuento = double.Parse(txtDescuento.Text);
-            Total = Total - Descuento;
-
-            double z = Math.Truncate(Total * 100) / 100;
-
-            txtTotal.Text = "Bs.S " + z.ToString("0.00");
+            double imp = SubTCImp - Subtotal;
 
             subtotal = Subtotal;
             impuestos = imp;
+
+
+            double Total = Subtotal + imp;
+            double Desc = 0;
+
+            if (txtDescuento.Text != "")
+                Desc = Convert.ToDouble(txtDescuento.Text);
+
+            if (Desc > total)
+                return;
+
+            double Descuento = Desc;
+            Total = Total - Descuento;
+
+
             descuento = Descuento;
             total = Total;
+
+
+            double x = Math.Truncate(Subtotal * 100) / 100;
+            txtSubtotal.Text = "Bs.S " + x.ToString("0.00");
+
+            double y = Math.Truncate(imp * 100) / 100;
+            txtImpuestoP.Text = "Bs.S " + y.ToString("0.00");
+
+            double z = Math.Truncate(Total * 100) / 100;
+            txtTotal.Text = "Bs.S " + z.ToString("0.00");
 
         }
 
@@ -430,6 +445,10 @@ namespace ProyectoMagicolor.Vistas
             {
                 MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 Monto = 0;
+                subtotal = 0;
+                impuestos = 0;
+                total = 0;
+                descuento = 0;
             }
 
             txtDescuento.Text = Monto.ToString("0.00");

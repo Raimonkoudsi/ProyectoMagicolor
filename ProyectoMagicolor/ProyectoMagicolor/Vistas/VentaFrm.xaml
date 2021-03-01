@@ -49,11 +49,11 @@
                                 <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
                             </StackPanel>-->
-                            <StackPanel Margin="7 10 0 0">
+                            <StackPanel Margin="7 5 0 0">
                                 <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
-                            <StackPanel Margin="7 10 0 0">
+                            <StackPanel Margin="7 5 0 0">
                                 <TextBlock Text="Email" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliEmail" Text="Jocrod.one@gmail.com" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
@@ -77,7 +77,7 @@
                                 <TextBox x:Name="txtDocumento" MaxLength="9" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
                             </Grid>
                         </Grid>
-                        <Grid Margin="10 15">
+                        <Grid Margin="10 12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="auto"/>
