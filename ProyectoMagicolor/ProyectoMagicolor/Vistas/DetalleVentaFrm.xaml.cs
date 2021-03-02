@@ -59,11 +59,17 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Send();
+        }
+
+        public void Send()
+        {
             if (Type == TypeForm.Update)
                 Update();
             else
                 Create();
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if(Type == TypeForm.Read)
@@ -79,6 +85,7 @@ namespace ProyectoMagicolor.Vistas
                 fillForm(DataFill, DataArticulo);
             }
 
+            txtCantidad.txt.Focus();
 
             if (OpenProducts)
             {
@@ -224,5 +231,13 @@ namespace ProyectoMagicolor.Vistas
 
 
         #endregion
+
+        private void StackPanel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                Send();
+            }
+        }
     }
 }

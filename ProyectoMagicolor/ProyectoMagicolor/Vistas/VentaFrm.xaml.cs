@@ -184,6 +184,8 @@ namespace ProyectoMagicolor.Vistas
             BtnBuscar.BorderBrush = Brushes.ForestGreen;
             BtnBuscar.Content = "Cambiar";
             BtnAbrir.Visibility = Visibility.Collapsed;
+
+            txtBuscar.Focus();
         }
 
         public void QuitarCliente()
@@ -269,6 +271,10 @@ namespace ProyectoMagicolor.Vistas
             DisplayData.Add(MCN);
 
             ListaVenta.Add(DDV);
+
+            txtBuscar.Text = "";
+            txtBuscar.Focus();
+
             Refresh();
         }
 
