@@ -501,7 +501,7 @@ namespace Logica
 
 
         //cuentas por pagar
-        public List<DIngreso> MostrarCxP()
+        public List<DIngreso> MostrarCxP(string Buscar)
         {
             List<DIngreso> ListaGenerica = new List<DIngreso>();
 
@@ -514,7 +514,7 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = @"SELECT 
-                                            i.idIngreso, 
+                                            cp.idCuentaPagar, 
                                             p.razonSocial, 
                                             i.factura, 
                                             i.fecha, 
@@ -525,7 +525,7 @@ namespace Logica
                                             inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
                                             inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
                                             inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
-                                        where i.estado = 2";
+                                        where i.estado = 2 AND p.razonSocial LIKE '" + Buscar + "%' group by cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha, t.cedula";
 
 
                     try
@@ -648,6 +648,71 @@ namespace Logica
                     return respuesta;
                 }
             }
+        }
+
+
+        public List<DIngreso> EncontrarCxP(int Buscar)
+        {
+            List<DIngreso> ListaGenerica = new List<DIngreso>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"SELECT 
+                                            cp.idCuentaPagar, 
+                                            p.razonSocial, 
+                                            i.factura, 
+                                            i.fecha, 
+                                            (SUM(di.precioCompra) - SUM(cp.montoIngresado)) as montoTotal
+                                        from [ingreso] i 
+                                            inner join [proveedor] p on i.idProveedor=p.idProveedor 
+                                            inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
+                                            inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
+                                            inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
+                                        where i.estado = 2 AND cp.idCuentaCobrar = " + Buscar + " order by cp.idCuentaCobrar ASC";
+
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DIngreso
+                                {
+                                    idIngreso = reader.GetInt32(0),
+                                    razonSocial = reader.GetString(1),
+                                    factura = reader.GetString(2),
+                                    fecha = reader.GetDateTime(3),
+                                    montoTotal = reader.GetDouble(4)
+                                });
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //error
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
         }
 
     }

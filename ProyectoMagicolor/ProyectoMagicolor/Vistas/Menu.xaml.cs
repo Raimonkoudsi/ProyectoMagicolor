@@ -55,7 +55,7 @@ namespace ProyectoMagicolor
             var item2 = new ItemMenu("Pruebas", menuReports, PackIconKind.FileReport);
 
             var menuExpenses = new List<SubItem>();
-            menuExpenses.Add(new SubItem("Fixed"));
+            menuExpenses.Add(new SubItem("Fixed", new CuentaPagarDG(this)));
             menuExpenses.Add(new SubItem("Variable"));
             var item3 = new ItemMenu("Expenses", menuExpenses, PackIconKind.ShoppingBasket);
 

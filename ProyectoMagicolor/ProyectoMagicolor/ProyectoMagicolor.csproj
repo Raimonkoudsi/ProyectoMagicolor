@@ -111,6 +111,12 @@
     <Compile Include="Vistas\ClienteVista.xaml.cs">
       <DependentUpon>ClienteVista.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\CuentaPagarDG.xaml.cs">
+      <DependentUpon>CuentaPagarDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DetalleCuentaPagarFrm.xaml.cs">
+      <DependentUpon>DetalleCuentaPagarFrm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\DetalleIngresoVista.xaml.cs">
       <DependentUpon>DetalleIngresoVista.xaml</DependentUpon>
     </Compile>
@@ -165,6 +171,14 @@
     <Page Include="Vistas\ClienteVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\CuentaPagarDG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vistas\DetalleCuentaPagarFrm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vistas\DetalleIngresoVista.xaml">
       <Generator>MSBuild:Compile</Generator>

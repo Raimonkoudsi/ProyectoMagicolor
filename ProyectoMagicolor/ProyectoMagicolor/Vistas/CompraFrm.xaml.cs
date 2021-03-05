@@ -99,6 +99,7 @@ namespace ProyectoMagicolor.Vistas
             MessageBox.Show(res);
         }
 
+        #region VALIDACIONES
         private void CbMetodoPago_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             GrdFechaLimite.Visibility = CbMetodoPago.SelectedIndex == 1 ?
@@ -156,6 +157,7 @@ namespace ProyectoMagicolor.Vistas
                 PlaceDocumento.Text = "Codigo de Articulo";
             }
         }
+#endregion
 
         public bool ProveedorSetted = false;
 
