@@ -544,15 +544,16 @@ namespace Logica
                                     razonSocial = reader.GetString(1),
                                     factura = reader.GetString(2),
                                     fecha = reader.GetDateTime(3),
-                                    montoTotal = reader.GetDouble(4),
+                                    montoTotal = (double)reader.GetDecimal(4),
                                     cedulaTrabajador = reader.GetString(5)
                                 });
                             }
                         }
                     }
-                    catch
+                    catch(Exception e)
                     {
                         //error
+                        Console.WriteLine(e.Message);
                     }
                     finally
                     {
