@@ -61,9 +61,11 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnAgregarPago_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show(((Button)sender).CommandParameter.ToString());
+            int idCuentaPagar = (int)((Button)sender).CommandParameter;
 
-            int id = (int)((Button)sender).CommandParameter;
-            var response = Metodos.EncontrarCxP(id);
+            //int id = (int)((Button)sender).CommandParameter;
+            var response = Metodos.EncontrarCxP(idCuentaPagar);
 
             //implementar lo de la ListaCP
             DetalleCuentaPagarFrm frmTrab = new DetalleCuentaPagarFrm(this, ListaCP);

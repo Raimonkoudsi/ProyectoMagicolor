@@ -92,7 +92,7 @@ namespace ProyectoMagicolor.Vistas
                                                0,
                                                DateTime.Now,
                                                dpFechaLimite.SelectedDate ?? DateTime.Now,
-                                               total,
+                                               0,
                                                0);
 
             string res = Metodo.Insertar(dIngreso, ListaCompra, CP);
