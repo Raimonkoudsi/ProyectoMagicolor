@@ -11,14 +11,18 @@ namespace Logica
 {
     public class LIngreso : DIngreso
     {
-        //Metodos
 
         public string Insertar(DIngreso Ingreso, List<DDetalle_Ingreso> Detalle, DCuentaPagar CuentaPagar)
         {
+            int ID=1;
+
             string respuesta = "";
+
+            string queryID = "SELECT max(idIngreso) FROM ingreso";
 
             string query = @"
                         INSERT INTO ingreso(
+                            idIngreso,
                             idTrabajador,
                             idProveedor,
                             fecha,
@@ -26,8 +30,9 @@ namespace Logica
                             impuesto,
                             metodoPago,
                             estado
-                        ) OUTPUT Inserted.idIngreso
+                        )
                         VALUES(
+                            @idIngreso,
                             @idTrabajador,
                             @idProveedor,
                             @fecha,
@@ -40,102 +45,118 @@ namespace Logica
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
-
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm4 = new SqlCommand(queryID, conn))
                 {
-                    comm.Parameters.AddWithValue("@idTrabajador", Ingreso.idTrabajador);
-                    comm.Parameters.AddWithValue("@idProveedor", Ingreso.idProveedor);
-                    comm.Parameters.AddWithValue("@fecha", Ingreso.fecha);
-                    comm.Parameters.AddWithValue("@factura", Ingreso.factura);
-                    comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
-                    comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
-
-                    if (Ingreso.metodoPago == 2)
-                        comm.Parameters.AddWithValue("@estado", 2);
-                    else
-                        comm.Parameters.AddWithValue("@estado", 1);
-
                     try
                     {
                         conn.Open();
-                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del ingreso";
 
-                        this.idIngreso = (int)comm.ExecuteScalar();
-                        //this.idIngreso = Convert.ToInt32(comm.Parameters["idIngreso"].Value);
-
-                        respuesta = !String.IsNullOrEmpty(this.idIngreso.ToString()) ? "OK" : "No se ingreso el Registro del ingreso";
-
-                        if (respuesta.Equals("OK") && Ingreso.metodoPago == 2)
+                        using (SqlDataReader reader = comm4.ExecuteReader())
                         {
-                            string query2 = @"
-                                INSERT INTO cuentaPagar(
-                                    idIngreso,
-                                    fechaInicio,
-                                    fechaLimite,
-                                    montoIngresado
-                                ) VALUES(
-                                    @idIngreso,
-                                    @fechaInicio,
-                                    @fechaLimite,
-                                    @montoIngresado
-                                );
-	                        ";
-
-                            using (SqlCommand comm2 = new SqlCommand(query2, conn))
+                            if (reader.Read())
                             {
-                                comm2.Parameters.AddWithValue("@idIngreso", this.idIngreso);
-                                comm2.Parameters.AddWithValue("@fechaInicio", CuentaPagar.fechaInicio);
-                                comm2.Parameters.AddWithValue("@fechaLimite", CuentaPagar.fechaLimite);
-                                comm2.Parameters.AddWithValue("@montoIngresado", CuentaPagar.montoIngresado);
+                                if (!reader.IsDBNull(0))
+                                {
+                                    ID = reader.GetInt32(0);
+                                    ID++;
+                                }
 
-                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
                             }
+
                         }
 
-                        if (respuesta.Equals("OK"))
+                        using (SqlCommand comm = new SqlCommand(query, conn))
                         {
-                            int i = 0;
-                            foreach (DDetalle_Ingreso det in Detalle)
-                            {
+                            comm.Parameters.AddWithValue("@idIngreso", ID);
+                            comm.Parameters.AddWithValue("@idTrabajador", Ingreso.idTrabajador);
+                            comm.Parameters.AddWithValue("@idProveedor", Ingreso.idProveedor);
+                            comm.Parameters.AddWithValue("@fecha", Ingreso.fecha);
+                            comm.Parameters.AddWithValue("@factura", Ingreso.factura);
+                            comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
+                            comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
 
-                                string query3 = @"
-                                    INSERT INTO detalleIngreso(
+                            if (Ingreso.metodoPago == 2)
+                                comm.Parameters.AddWithValue("@estado", 2);
+                            else
+                                comm.Parameters.AddWithValue("@estado", 1);
+
+                            //this.idIngreso = (int)comm.ExecuteScalar();
+
+                            respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del ingreso";
+
+                            if (respuesta.Equals("OK") && Ingreso.metodoPago == 2)
+                            {
+                                string query2 = @"
+                                    INSERT INTO cuentaPagar(
                                         idIngreso,
-                                        idArticulo,
-                                        precioCompra,
-                                        precioVenta,
-                                        cantidadInicial,
-                                        cantidadActual
+                                        fechaInicio,
+                                        fechaLimite,
+                                        montoIngresado
                                     ) VALUES(
                                         @idIngreso,
-                                        @idArticulo,
-                                        @precioCompra,
-                                        @precioVenta,
-                                        @cantidadInicial,
-                                        @cantidadActual
+                                        @fechaInicio,
+                                        @fechaLimite,
+                                        @montoIngresado
                                     );
 	                            ";
 
-                                using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                using (SqlCommand comm2 = new SqlCommand(query2, conn))
                                 {
-                                    comm3.Parameters.AddWithValue("@idIngreso", this.idIngreso);
-                                    comm3.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                    comm3.Parameters.AddWithValue("@precioCompra", Detalle[i].precioCompra);
-                                    comm3.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
-                                    comm3.Parameters.AddWithValue("@cantidadInicial", Detalle[i].cantidadInicial);
-                                    comm3.Parameters.AddWithValue("@cantidadActual", Detalle[i].cantidadActual);
+                                    comm2.Parameters.AddWithValue("@idIngreso", ID);
+                                    comm2.Parameters.AddWithValue("@fechaInicio", CuentaPagar.fechaInicio);
+                                    comm2.Parameters.AddWithValue("@fechaLimite", CuentaPagar.fechaLimite);
+                                    comm2.Parameters.AddWithValue("@montoIngresado", CuentaPagar.montoIngresado);
 
-
-                                    respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
-                                    i++;
+                                    respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
                                 }
+                            }
 
-                                if (!respuesta.Equals("OK"))
+                            if (respuesta.Equals("OK"))
+                            {
+                                int i = 0;
+                                foreach (DDetalle_Ingreso det in Detalle)
                                 {
-                                    break;
+
+                                    string query3 = @"
+                                        INSERT INTO detalleIngreso(
+                                            idIngreso,
+                                            idArticulo,
+                                            precioCompra,
+                                            precioVenta,
+                                            cantidadInicial,
+                                            cantidadActual
+                                        ) VALUES(
+                                            @idIngreso,
+                                            @idArticulo,
+                                            @precioCompra,
+                                            @precioVenta,
+                                            @cantidadInicial,
+                                            @cantidadActual
+                                        );
+	                                ";
+
+                                    using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                    {
+                                        comm3.Parameters.AddWithValue("@idIngreso", ID);
+                                        comm3.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                        comm3.Parameters.AddWithValue("@precioCompra", Detalle[i].precioCompra);
+                                        comm3.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
+                                        comm3.Parameters.AddWithValue("@cantidadInicial", Detalle[i].cantidadInicial);
+                                        comm3.Parameters.AddWithValue("@cantidadActual", Detalle[i].cantidadActual);
+
+
+                                        respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
+                                        i++;
+                                    }
+
+                                    if (!respuesta.Equals("OK"))
+                                    {
+                                        break;
+                                    }
                                 }
                             }
                         }
+
                     }
                     catch (SqlException e)
                     {
@@ -236,9 +257,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -302,10 +323,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (SqlException e)
                     {
-                        //error
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -367,9 +387,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -423,10 +443,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (SqlException e)
                     {
-                        //error
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -479,9 +498,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -514,7 +533,7 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = @"SELECT 
-                                            cp.idCuentaPagar, 
+                                            i.idIngreso,
                                             p.razonSocial, 
                                             i.factura, 
                                             i.fecha, 
@@ -525,7 +544,7 @@ namespace Logica
                                             inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
                                             inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
                                             inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
-                                        where i.estado = 2 AND p.razonSocial LIKE '" + Buscar + "%' group by cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha, t.cedula";
+                                        where i.estado = 2 AND p.razonSocial LIKE '" + Buscar + "%' group by i.idIngreso, p.razonSocial, i.factura, i.fecha, t.cedula";
 
 
                     try
@@ -550,10 +569,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (SqlException e)
                     {
-                        //error
-                        Console.WriteLine(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -665,7 +683,8 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = @"SELECT 
-                                            cp.idCuentaPagar, 
+                                            i.idIngreso,
+                                            cp.idCuentaPagar,
                                             p.razonSocial, 
                                             i.factura, 
                                             i.fecha, 
@@ -675,7 +694,7 @@ namespace Logica
                                             inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
                                             inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
                                             inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
-                                        where i.estado = 2 AND cp.idCuentaCobrar = " + Buscar + " order by cp.idCuentaCobrar ASC";
+                                        where i.estado = 2 AND cp.idCuentaPagar = " + Buscar + " group by i.idIngreso, cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha order by cp.idCuentaPagar ASC";
 
 
                     try
@@ -691,17 +710,19 @@ namespace Logica
                                 ListaGenerica.Add(new DIngreso
                                 {
                                     idIngreso = reader.GetInt32(0),
-                                    razonSocial = reader.GetString(1),
-                                    factura = reader.GetString(2),
-                                    fecha = reader.GetDateTime(3),
-                                    montoTotal = reader.GetDouble(4)
+                                    idCuentaPagar = reader.GetInt32(1),
+                                    razonSocial = reader.GetString(2),
+                                    factura = reader.GetString(3),
+                                    fecha = reader.GetDateTime(4),
+                                    montoTotal = (double)reader.GetDecimal(5)
+
                                 });
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -715,6 +736,5 @@ namespace Logica
             }
 
         }
-
     }
 }

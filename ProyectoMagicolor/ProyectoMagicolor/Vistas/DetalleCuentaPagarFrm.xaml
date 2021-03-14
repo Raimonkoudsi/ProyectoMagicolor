@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid x:Name="GridArticulo" VerticalAlignment="Center" Visibility="Collapsed">
+                    <Grid x:Name="GridArticulo" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>

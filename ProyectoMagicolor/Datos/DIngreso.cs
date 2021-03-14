@@ -84,13 +84,20 @@ namespace Datos
             set { _MontoTotal = value; }
         }
 
+        private int _IdCuentaPagar;
+        public int idCuentaPagar
+        {
+            get { return _IdCuentaPagar; }
+            set { _IdCuentaPagar = value; }
+        }
+
 
         public DIngreso()
         {
 
         }
 
-        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, double Impuesto, int MetodoPago, int Estado, string Cedula, string RazonSocial, double MontoTotal)
+        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, double Impuesto, int MetodoPago, int Estado, string Cedula, string RazonSocial, double MontoTotal, int IdCuentaPagar)
         {
             this.idIngreso = IdIngreso;
             this.idTrabajador = IdTrabajador;
@@ -103,6 +110,7 @@ namespace Datos
             this.cedulaTrabajador = Cedula;
             this.razonSocial = RazonSocial;
             this.montoTotal = MontoTotal;
+            this.idCuentaPagar = IdCuentaPagar;
         }
 
 

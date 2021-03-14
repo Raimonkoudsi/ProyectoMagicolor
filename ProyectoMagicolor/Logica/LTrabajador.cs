@@ -13,8 +13,6 @@ namespace Logica
     {
 
 
-        //Metodos
-
         public string Insertar(DTrabajador Trabajador)
         {
             string respuesta = "";
@@ -82,7 +80,6 @@ namespace Logica
                     catch(SqlException e)
                     {
                         respuesta = e.Message;
-                        Console.WriteLine(e.Message);
                     }
                     finally
                     {
@@ -145,7 +142,6 @@ namespace Logica
                         conn.Open();
                         var Resp = comm.ExecuteNonQuery();
                         respuesta = Resp == 1 ? "OK" : "No se actualizo el Registro del Trabajador";
-                        Console.WriteLine(Resp);
                     }
                     catch (SqlException e)
                     {
@@ -203,7 +199,6 @@ namespace Logica
 
 
 
-        //funcionando
         public List<DTrabajador> Mostrar(string Buscar)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
@@ -216,9 +211,6 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = "SELECT idTrabajador, cedula, nombre, apellidos, direccion, telefono, email, usuario from [trabajador] where cedula like '" + Buscar + "%' order by cedula";
-
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
 
                     try
                     {
@@ -246,7 +238,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        respuesta = e.Message;
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -274,9 +266,6 @@ namespace Logica
 
                     comm.CommandText = "SELECT cedula, nombre, apellidos, direccion, telefono, email, usuario from trabajador where usuario like '" + Buscar + "%' order by usuario";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
-
                     try
                     {
 
@@ -300,9 +289,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -366,7 +355,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        respuesta = e.Message;
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -406,7 +395,6 @@ namespace Logica
                     try
                     {
                         conn.Open();
-                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "Usuario no Existe";
 
                         using (SqlDataReader reader = comm.ExecuteReader())
                         {
@@ -436,7 +424,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -484,7 +472,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                         return false;
                     }
                     finally
@@ -530,7 +518,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                         return false;
                     }
                     finally

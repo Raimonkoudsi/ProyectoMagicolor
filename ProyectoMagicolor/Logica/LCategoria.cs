@@ -6,6 +6,7 @@ using Datos;
 
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows;
 
 namespace Logica
 {
@@ -154,9 +155,6 @@ namespace Logica
 
                     comm.CommandText = "SELECT idCategoria, nombre, descripcion from [categoria] where nombre like '" + Buscar + "%' order by nombre";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
-
                     try
                     {
 
@@ -190,7 +188,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -241,7 +239,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {

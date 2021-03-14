@@ -201,10 +201,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (SqlException e)
                     {
-                        //error
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -258,9 +257,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -314,9 +313,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {

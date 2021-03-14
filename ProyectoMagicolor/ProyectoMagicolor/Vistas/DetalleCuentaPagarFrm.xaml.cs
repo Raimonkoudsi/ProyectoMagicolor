@@ -55,7 +55,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            MessageBox.Show(DataFill.idIngreso.ToString());
             //txtTitulo.Text = "Agregar Pago";
             //fillForm(DataFill, DataCxP);
             //SetEnable(false);

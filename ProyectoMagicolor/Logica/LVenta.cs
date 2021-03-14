@@ -6,6 +6,7 @@ using Datos;
 
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows;
 
 //estado 1=activo, 2=cuentaxcobrar, 3=anulado
 
@@ -217,9 +218,6 @@ namespace Logica
 
                     comm.CommandText = "SELECT v.idVenta, t.cedula, c.cedula "+"-"+" c.nombre, v.fecha, v.tipoComprobante, v.serieComprobante, v.metodoPago, v.estado, SUM(dv.precioVenta) as precioTotal from [venta] v inner join [cliente] c on v.idCliente=v.idCliente inner join [trabajador] t on v.idTrabajador=t.idTrabajador inner join [detalleVenta] dv on v.idVenta=dv.idVenta where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
-
                     try
                     {
 
@@ -245,9 +243,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -319,9 +317,9 @@ namespace Logica
                             }
                         }
                     }
-                    catch
+                    catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {

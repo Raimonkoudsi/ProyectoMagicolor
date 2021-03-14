@@ -212,7 +212,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -238,9 +238,6 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = "SELECT * from [proveedor] WHERE idProveedor= " + Buscar + "";
-
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
 
                     try
                     {
@@ -269,7 +266,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        //error
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -297,9 +294,6 @@ namespace Logica
 
                     comm.CommandText = "SELECT * from [proveedor] WHERE tipoDocumento = '" + Tipo + "' AND numeroDocumento = '" + NroDocumento + "'";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
-
                     try
                     {
 
@@ -327,8 +321,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        //error
-                        MessageBox.Show(e.Message);
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {

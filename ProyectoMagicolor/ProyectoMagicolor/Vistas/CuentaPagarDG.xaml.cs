@@ -42,10 +42,11 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DIngreso> items = Metodos.MostrarCxP(search);
+            List<DIngreso> DisplayData = Metodos.MostrarCxP(search);
 
+            //dgOperaciones.ItemsSource = null;
+            dgOperaciones.ItemsSource = DisplayData;
 
-            dgOperaciones.ItemsSource = items;
         }
 
 
@@ -61,16 +62,14 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnAgregarPago_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(((Button)sender).CommandParameter.ToString());
-            int idCuentaPagar = (int)((Button)sender).CommandParameter;
 
-            //int id = (int)((Button)sender).CommandParameter;
-            var response = Metodos.EncontrarCxP(idCuentaPagar);
+            int idIngreso = (int)((Button)sender).CommandParameter;
+            var response = Metodos.EncontrarCxP(idIngreso);
 
             //implementar lo de la ListaCP
-            DetalleCuentaPagarFrm frmTrab = new DetalleCuentaPagarFrm(this, ListaCP);
-            frmTrab.DataFill = response[0];
-            bool Resp = frmTrab.ShowDialog() ?? false;
+            DetalleCuentaPagarFrm frmDetalleCP = new DetalleCuentaPagarFrm(this, ListaCP);
+            frmDetalleCP.DataFill = response[0];
+            bool Resp = frmDetalleCP.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
         }
 
