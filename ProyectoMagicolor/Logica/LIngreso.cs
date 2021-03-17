@@ -114,8 +114,30 @@ namespace Logica
                             if (respuesta.Equals("OK"))
                             {
                                 int i = 0;
+                                int stock = 0;
+
                                 foreach (DDetalle_Ingreso det in Detalle)
                                 {
+                                    string queryStock = @"
+                                        SELECT 
+                                            SUM(cantidadInicial) as cantidadActual 
+                                        FROM [detalleIngreso] WHERE idArticulo= " + Detalle[i].idArticulo + " ";
+
+                                    using (SqlCommand comm5 = new SqlCommand(queryStock, conn))
+                                    {
+                                        using (SqlDataReader reader = comm5.ExecuteReader())
+                                        {
+                                            if (reader.Read())
+                                            {
+                                                if (!reader.IsDBNull(0))
+                                                {
+                                                    stock = reader.GetInt32(0);
+                                                }
+
+                                            }
+
+                                        }
+                                    }
 
                                     string query3 = @"
                                         INSERT INTO detalleIngreso(
@@ -131,7 +153,7 @@ namespace Logica
                                             @precioCompra,
                                             @precioVenta,
                                             @cantidadInicial,
-                                            @cantidadActual
+                                            @cantidadInicial + " + stock + @"
                                         );
 	                                ";
 
@@ -142,7 +164,7 @@ namespace Logica
                                         comm3.Parameters.AddWithValue("@precioCompra", Detalle[i].precioCompra);
                                         comm3.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
                                         comm3.Parameters.AddWithValue("@cantidadInicial", Detalle[i].cantidadInicial);
-                                        comm3.Parameters.AddWithValue("@cantidadActual", Detalle[i].cantidadActual);
+                                        //comm3.Parameters.AddWithValue("@cantidadActual", Detalle[i].cantidadActual);
 
 
                                         respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
@@ -537,14 +559,14 @@ namespace Logica
                                             p.razonSocial, 
                                             i.factura, 
                                             i.fecha, 
-                                            (SUM(di.precioCompra) - SUM(cp.montoIngresado)) as montoTotal,
+                                            ((SUM(di.precioCompra) * di.cantidadInicial) - cp.montoIngresado) as montoTotal,
                                             t.cedula
                                         from [ingreso] i 
                                             inner join [proveedor] p on i.idProveedor=p.idProveedor 
                                             inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
                                             inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
                                             inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
-                                        where i.estado = 2 AND p.razonSocial LIKE '" + Buscar + "%' group by i.idIngreso, p.razonSocial, i.factura, i.fecha, t.cedula";
+                                        where i.estado = 2 AND p.razonSocial LIKE '" + Buscar + "%' group by i.idIngreso, p.razonSocial, i.factura, i.fecha, t.cedula, cp.montoIngresado, di.cantidadInicial";
 
 
                     try
@@ -588,7 +610,7 @@ namespace Logica
 
 
 
-        public string RegistrarCxP(DCuentaPagar CuentaPagar, DRegistro_CuentaPagar RegistroCuentaPagar, int IdIngreso)
+        public string RegistrarCxP(DRegistro_CuentaPagar RegistroCuentaPagar, int IdCuentaPagar, int IdIngreso)
         {
             string respuesta = "";
 
@@ -596,11 +618,11 @@ namespace Logica
                         INSERT INTO registroCuentaPagar(
                             idCuentaPagar,
                             monto,
-                            fecha,
+                            fecha
                         ) VALUES(
                             @idCuentaPagar,
                             @monto,
-                            @fecha,
+                            @fecha
                         );
 	        ";
 
@@ -624,33 +646,47 @@ namespace Logica
 
                             string query2 = @"
                                         UPDATE cuentaPagar SET
-                                            montoIngresado = SUM(montoIngresado) + @monto,
+                                            montoIngresado = montoIngresado + @monto
                                         WHERE idCuentaPagar = @idCuentaPagar;
 	                        ";
 
                             using (SqlCommand comm2 = new SqlCommand(query2, conn))
                             {
                                 comm2.Parameters.AddWithValue("@monto", RegistroCuentaPagar.monto);
-                                comm2.Parameters.AddWithValue("@idCuentaPagar", CuentaPagar.idCuentaPagar);
+                                comm2.Parameters.AddWithValue("@idCuentaPagar", IdCuentaPagar);
 
                                 respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
 
-                                //falta colocarlo como venta si el monto es total
+
                                 if (respuesta.Equals("OK"))
                                 {
                                     string query3 = @"
-                                        UPDATE i.estado SET '1'
-                                        from [ingreso] i 
-                                        inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso
-                                        inner join [detalleIngreso] di on i.idIngreso=di.idIngreso
-                                        WHERE i.idIngreso = cp.idIngreso AND (SUM(di.precioCompra) - cp.montoIngresado) = 0";
+                                        UPDATE ingreso SET ingreso.estado = 1
+                                        from [ingreso]
+                                        inner join [cuentaPagar] cp on ingreso.idIngreso=cp.idIngreso
+										inner join (
+											SELECT ingreso.idIngreso 
+											FROM ingreso 
+											inner join [cuentaPagar] cp on ingreso.idIngreso=cp.idIngreso
+											inner join [detalleIngreso] di on ingreso.idIngreso=di.idIngreso
+											WHERE ingreso.idIngreso = cp.idIngreso AND ingreso.estado = 2
+											GROUP BY ingreso.idIngreso , cp.montoIngresado, di.cantidadInicial
+											HAVING ((SUM(di.precioCompra)*di.cantidadInicial) - cp.montoIngresado) = 0
+										) X
+										ON x.idIngreso=cp.idIngreso
+										WHERE cp.idCuentaPagar = " + IdCuentaPagar + " ";
 
                                     using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                    {
+                                        respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Actualizo el registro";
+
+                                        if(respuesta.Equals("OK"))
                                         {
-                                            respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Actualizo el registro";
-                                        }
+                                            MessageBox.Show("Pago Completado", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                                        } 
                                     }
                                 }
+                            }
                         }
                     }
                     catch (SqlException e)
@@ -694,7 +730,7 @@ namespace Logica
                                             inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
                                             inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
                                             inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
-                                        where i.estado = 2 AND cp.idCuentaPagar = " + Buscar + " group by i.idIngreso, cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha order by cp.idCuentaPagar ASC";
+                                        where i.estado = 2 AND i.idIngreso = " + Buscar + " group by i.idIngreso, cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha order by cp.idCuentaPagar ASC";
 
 
                     try

@@ -38,11 +38,11 @@ namespace ProyectoMagicolor.Vistas
 
 
         public DIngreso DataFill;
-        public DCuentaPagar DataCxP;
+        //public DCuentaPagar DataCxP;
 
         public DRegistro_CuentaPagar UForm;
 
-        public LArticulo Metodos = new LArticulo();
+        public LIngreso Metodos = new LIngreso();
 
         public int idEdit;
         public List<DRegistro_CuentaPagar> ActualDetalle;
@@ -55,7 +55,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(DataFill.idIngreso.ToString());
             //txtTitulo.Text = "Agregar Pago";
             //fillForm(DataFill, DataCxP);
             //SetEnable(false);
@@ -71,7 +70,7 @@ namespace ProyectoMagicolor.Vistas
             //    return;
             //}
 
-            int idCuentaPagar = DataCxP.idCuentaPagar;
+            int idCuentaPagar = DataFill.idCuentaPagar;
             double monto = double.Parse(txtMonto.txt.Text);
 
 
@@ -87,7 +86,7 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
 
-            //ParentForm.AgregarArticulo(UForm, DataArticulo);
+            Metodos.RegistrarCxP(UForm, DataFill.idCuentaPagar, DataFill.idIngreso);
             this.Close();
         }
 
