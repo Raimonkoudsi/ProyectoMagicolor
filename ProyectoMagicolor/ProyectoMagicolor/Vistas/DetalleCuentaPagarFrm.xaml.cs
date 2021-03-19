@@ -55,6 +55,13 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+            txtIdIngreso.Text = DataFill.idIngreso.ToString();
+            txtRazonSocial.Text = DataFill.razonSocial;
+            txtFactura.Text = DataFill.factura;
+            txtFecha.Text = DataFill.fecha.ToString();
+            txtMontoTotal.Text = DataFill.montoTotal.ToString();
+
             //txtTitulo.Text = "Agregar Pago";
             //fillForm(DataFill, DataCxP);
             //SetEnable(false);
