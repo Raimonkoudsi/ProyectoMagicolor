@@ -50,7 +50,12 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Create();
+            Create(false);
+        }
+
+        private void Button2_Click(object sender, RoutedEventArgs e)
+        {
+            Create(true);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -60,25 +65,27 @@ namespace ProyectoMagicolor.Vistas
             txtRazonSocial.Text = DataFill.razonSocial;
             txtFactura.Text = DataFill.factura;
             txtFecha.Text = DataFill.fecha.ToString();
+            txtMontoRestante.Text = DataFill.monto.ToString();
             txtMontoTotal.Text = DataFill.montoTotal.ToString();
-
-            //txtTitulo.Text = "Agregar Pago";
-            //fillForm(DataFill, DataCxP);
-            //SetEnable(false);
-            //btnEnviar.Visibility = Visibility.Collapsed;
             
         }
 
-        void fillData()
+        void fillData(bool total)
         {
-            //if (Validate())
-            //{
-            //    UForm = null;
-            //    return;
-            //}
+            if (Validate())
+            {
+                UForm = null;
+                return;
+            }
 
             int idCuentaPagar = DataFill.idCuentaPagar;
-            double monto = double.Parse(txtMonto.txt.Text);
+
+            double monto = 0F;
+
+            if (total)
+                monto = double.Parse(txtMonto.txt.Text);
+            else
+                monto = DataFill.monto;
 
 
             UForm = new DRegistro_CuentaPagar(0,
@@ -87,14 +94,49 @@ namespace ProyectoMagicolor.Vistas
                                          DateTime.Now);
         }
 
-        void Create()
+        void Create(bool total)
         {
-            fillData();
+            fillData(total);
             if (UForm == null)
+                return;
+
+            MessageBoxResult rpta;
+
+            if (total)
+            {
+                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de" + DataFill.monto + " $ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            }
+            else
+            {
+                rpta = MessageBox.Show("Desea Cancelar el Monto de" + txtMonto.txt.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + "$ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            }
+
+            if (rpta == MessageBoxResult.No)
                 return;
 
             Metodos.RegistrarCxP(UForm, DataFill.idCuentaPagar, DataFill.idIngreso);
             this.Close();
+        }
+
+
+
+        bool Validate()
+        {
+            if (txtMonto.txt.Text == "" || double.Parse(txtMonto.txt.Text) <= 0)
+            {
+                MessageBox.Show("Debe Agregar un Monto para Abonar!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtMonto.Focus();
+                return true;
+            }
+            else if (double.Parse(txtMonto.txt.Text) > DataFill.monto)
+            {
+                MessageBox.Show("El Monto no debe Exceder la Deuda!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtMonto.Focus();
+                return true;
+            }
+
+            return false;
+
         }
 
 

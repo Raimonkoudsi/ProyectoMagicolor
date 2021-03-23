@@ -30,8 +30,7 @@ namespace Logica
                             impuesto,
                             metodoPago,
                             estado
-                        )
-                        VALUES(
+                        ) VALUES (
                             @idIngreso,
                             @idTrabajador,
                             @idProveedor,
@@ -92,7 +91,7 @@ namespace Logica
                                         fechaInicio,
                                         fechaLimite,
                                         montoIngresado
-                                    ) VALUES(
+                                    ) VALUES (
                                         @idIngreso,
                                         @fechaInicio,
                                         @fechaLimite,
@@ -164,7 +163,6 @@ namespace Logica
                                         comm3.Parameters.AddWithValue("@precioCompra", Detalle[i].precioCompra);
                                         comm3.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
                                         comm3.Parameters.AddWithValue("@cantidadInicial", Detalle[i].cantidadInicial);
-                                        //comm3.Parameters.AddWithValue("@cantidadActual", Detalle[i].cantidadActual);
 
 
                                         respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
@@ -297,7 +295,6 @@ namespace Logica
         }
 
 
-        //funcionando
         public List<DArticulo> MostrarStockNombre(string Buscar)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
@@ -559,7 +556,7 @@ namespace Logica
                                             p.razonSocial, 
                                             i.factura, 
                                             i.fecha, 
-                                            ((SUM(di.precioCompra) * di.cantidadInicial) - cp.montoIngresado) as montoTotal,
+                                            ((SUM(di.precioCompra) * di.cantidadInicial) - cp.montoIngresado) as montoActual,
                                             t.cedula
                                         from [ingreso] i 
                                             inner join [proveedor] p on i.idProveedor=p.idProveedor 
@@ -614,16 +611,22 @@ namespace Logica
         {
             string respuesta = "";
 
+
             string query = @"
-                        INSERT INTO registroCuentaPagar(
-                            idCuentaPagar,
-                            monto,
-                            fecha
-                        ) VALUES(
-                            @idCuentaPagar,
-                            @monto,
-                            @fecha
-                        );
+                          UPDATE cuentaPagar SET
+                               cuentaPagar.montoIngresado = cuentaPagar.montoIngresado + @monto
+                          FROM cuentaPagar
+                          inner join (
+							   SELECT ingreso.idIngreso 
+							   FROM ingreso 
+							   inner join [cuentaPagar] cp on ingreso.idIngreso=cp.idIngreso
+							   inner join [detalleIngreso] di on ingreso.idIngreso=di.idIngreso
+							   WHERE ingreso.idIngreso = cp.idIngreso AND ingreso.estado = 2
+							   GROUP BY ingreso.idIngreso , cp.montoIngresado, di.cantidadInicial
+							   HAVING ((SUM(di.precioCompra)*di.cantidadInicial) - (cp.montoIngresado + @monto)) >= 0
+						  ) X
+                          ON x.idIngreso = cuentaPagar.idIngreso
+                          WHERE cuentaPagar.idCuentaPagar = @idCuentaPagar;
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -631,9 +634,9 @@ namespace Logica
 
                 using (SqlCommand comm = new SqlCommand(query, conn))
                 {
-                    comm.Parameters.AddWithValue("@idCuentaPagar", RegistroCuentaPagar.idCuentaPagar);
                     comm.Parameters.AddWithValue("@monto", RegistroCuentaPagar.monto);
-                    comm.Parameters.AddWithValue("@fecha", DateTime.Now);
+                    comm.Parameters.AddWithValue("@idCuentaPagar", IdCuentaPagar);
+
 
                     try
                     {
@@ -643,17 +646,24 @@ namespace Logica
 
                         if (respuesta.Equals("OK"))
                         {
-
                             string query2 = @"
-                                        UPDATE cuentaPagar SET
-                                            montoIngresado = montoIngresado + @monto
-                                        WHERE idCuentaPagar = @idCuentaPagar;
+                                        INSERT INTO registroCuentaPagar(
+                                            idCuentaPagar,
+                                            monto,
+                                            fecha
+                                        ) VALUES (
+                                            @idCuentaPagar,
+                                            @monto,
+                                            @fecha
+                                        );
 	                        ";
+
 
                             using (SqlCommand comm2 = new SqlCommand(query2, conn))
                             {
+                                comm2.Parameters.AddWithValue("@idCuentaPagar", RegistroCuentaPagar.idCuentaPagar);
                                 comm2.Parameters.AddWithValue("@monto", RegistroCuentaPagar.monto);
-                                comm2.Parameters.AddWithValue("@idCuentaPagar", IdCuentaPagar);
+                                comm2.Parameters.AddWithValue("@fecha", DateTime.Now);
 
                                 respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
 
@@ -724,13 +734,14 @@ namespace Logica
                                             p.razonSocial, 
                                             i.factura, 
                                             i.fecha, 
-                                            (SUM(di.precioCompra) - SUM(cp.montoIngresado)) as montoTotal
+                                            (SUM(di.precioCompra) * di.cantidadInicial) as montoTotal,
+                                            (SUM(di.precioCompra) * di.cantidadInicial - SUM(cp.montoIngresado)) as monto
                                         from [ingreso] i 
                                             inner join [proveedor] p on i.idProveedor=p.idProveedor 
                                             inner join [trabajador] t on i.idTrabajador=t.idTrabajador 
                                             inner join [detalleIngreso] di on i.idIngreso=di.idIngreso 
                                             inner join [cuentaPagar] cp on i.idIngreso=cp.idIngreso 
-                                        where i.estado = 2 AND i.idIngreso = " + Buscar + " group by i.idIngreso, cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha order by cp.idCuentaPagar ASC";
+                                        where i.estado = 2 AND i.idIngreso = " + Buscar + " group by i.idIngreso,di.cantidadInicial, cp.idCuentaPagar, p.razonSocial, i.factura, i.fecha order by cp.idCuentaPagar ASC";
 
 
                     try
@@ -750,7 +761,8 @@ namespace Logica
                                     razonSocial = reader.GetString(2),
                                     factura = reader.GetString(3),
                                     fecha = reader.GetDateTime(4),
-                                    montoTotal = (double)reader.GetDecimal(5)
+                                    monto = (double)reader.GetDecimal(5),
+                                    montoTotal = (double)reader.GetDecimal(6)
 
                                 });
                             }

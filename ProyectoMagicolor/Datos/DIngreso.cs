@@ -77,6 +77,13 @@ namespace Datos
             set { _RazonSocial = value; }
         }
 
+        private double _Monto;
+        public double monto
+        {
+            get { return _Monto; }
+            set { _Monto = value; }
+        }
+
         private double _MontoTotal;
         public double montoTotal
         {
@@ -97,7 +104,7 @@ namespace Datos
 
         }
 
-        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, double Impuesto, int MetodoPago, int Estado, string Cedula, string RazonSocial, double MontoTotal, int IdCuentaPagar)
+        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, double Impuesto, int MetodoPago, int Estado, string Cedula, string RazonSocial, double Monto, double MontoTotal, int IdCuentaPagar)
         {
             this.idIngreso = IdIngreso;
             this.idTrabajador = IdTrabajador;
@@ -109,6 +116,7 @@ namespace Datos
             this.estado = Estado;
             this.cedulaTrabajador = Cedula;
             this.razonSocial = RazonSocial;
+            this.monto = Monto;
             this.montoTotal = MontoTotal;
             this.idCuentaPagar = IdCuentaPagar;
         }

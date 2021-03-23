@@ -20,7 +20,7 @@
                        Margin="0 10"/>
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
-            <StackPanel Width="350" Margin="0 10 0 0">
+            <StackPanel Width="450" Margin="0 10 0 0">
                 <!--<local:TextInput x:Name="txtNombre" Placeholder="Nombre" Margin="0 10" FontSize="15"/>-->
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -34,12 +34,14 @@
                             <ColumnDefinition Width="70"/>
                             <ColumnDefinition Width="70"/>
                             <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="70"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="txtIdIngreso" Text="Lapices" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
                         <TextBlock x:Name="txtRazonSocial" Grid.Column="1" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                         <TextBlock x:Name="txtFactura" Grid.Column="2" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                         <TextBlock x:Name="txtFecha" Grid.Column="3" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                         <TextBlock x:Name="txtMontoTotal" Grid.Column="4" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="txtMontoRestante" Grid.Column="5" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
                 <Grid Margin="0 10">
@@ -51,7 +53,15 @@
                     <local:TextInput Grid.Column="1" x:Name="txtMonto" Placeholder="Monto a Abonar" Margin="0 0 5 0" FontSize="15"/>
                 </Grid>
 
-                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnEnviar" Width="150" Background="#3194F7" Content="Abonar" Margin="0 30 0 0" Click="Button_Click"/>
+                    <Button Name="btnEnviarTotal" Width="150" Grid.Column="1" Background="#3194F7" Content="Abonar Total" Margin="0 30 0 0" Click="Button2_Click"/>
+                </Grid>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>
