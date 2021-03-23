@@ -83,7 +83,7 @@ namespace ProyectoMagicolor.Vistas
                                              Parent.LoggedTrabajador.idTrabajador,
                                              Proveedor.idProveedor,
                                              DateTime.Now,
-                                             "",
+                                             txtFactura.txt.Text,
                                              impuestos,
                                              CbMetodoPago.SelectedIndex + 1,
                                              0, "", "", 0, 0, 0);
