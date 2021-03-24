@@ -67,6 +67,13 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
+            if (!txtFactura.Changed)
+            {
+                MessageBox.Show("Debes llenar el campo Factura!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtFactura.txt.Focus();
+                return true;
+            }
+
             return false;
 
         }
@@ -352,31 +359,31 @@ namespace ProyectoMagicolor.Vistas
             {
                 Subtotal += item.precioCompra * item.cantidadInicial;
             }
-            double x = Math.Truncate(Subtotal * 100) / 100;
-            txtSubtotal.Text = "Bs.S " + x.ToString("0.00");
 
+            double SubTCImp = Subtotal;
 
 
             double impPer = double.Parse(txtImpuesto.Text, CultureInfo.InvariantCulture);
+            double impDec = (impPer / 100);
+            Subtotal = Subtotal / (impDec + 1);
 
-            double imp = Subtotal * (impPer / 100);
-
-            double y = Math.Truncate(imp * 100) / 100;
-
-            txtImpuestoP.Text = "Bs.S " + y.ToString("0.00");
-
-
-
+            double imp = SubTCImp - Subtotal;
             double Total = Subtotal + imp;
-
-            double z = Math.Truncate(Total * 100) / 100;
-
-            txtTotal.Text = "Bs.S " + z.ToString("0.00");
 
             subtotal = Subtotal;
             impuestos = imp;
             total = Total;
 
+
+
+            double x = Math.Truncate(Subtotal * 100) / 100;
+            txtSubtotal.Text = "Bs.S " + x.ToString("0.00");
+
+            double y = Math.Truncate(imp * 100) / 100;
+            txtImpuestoP.Text = "Bs.S " + y.ToString("0.00");
+
+            double z = Math.Truncate(Total * 100) / 100;
+            txtTotal.Text = "Bs.S " + z.ToString("0.00");
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
