@@ -11,6 +11,6 @@ namespace Datos
 
         protected static string conexionRaimon = "DESKTOP-2185U8G\\SQLEXPRESS";
         protected static string conexionJose = "DESKTOP-KOFID31\\SQLEXPRESS01";
-        protected static string CadenaConexion = "Data Source= " + conexionJose + "; Initial Catalog= dbMagicolor; Integrated Security= true";
+        protected static string CadenaConexion = "Data Source= " + conexionRaimon + "; Initial Catalog= dbMagicolor; Integrated Security= true";
     }
 }

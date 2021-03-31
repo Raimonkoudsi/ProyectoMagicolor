@@ -23,7 +23,9 @@ namespace ProyectoMagicolor.Vistas
     public partial class ArticuloVista : Window
     {
 
-        public LArticulo Metodos = new LArticulo();
+        public LIngreso Metodos = new LIngreso();
+
+        public LArticulo MetodosArticulos = new LArticulo();
 
         public DArticulo Resultado;
 
@@ -42,7 +44,7 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DArticulo> items = Metodos.Mostrar(search);
+            List<DArticulo> items = Metodos.MostrarStockNombre(search);
             if (filterDG)
             {
                 foreach (int item in Actual)
@@ -67,7 +69,7 @@ namespace ProyectoMagicolor.Vistas
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var response = Metodos.Encontrar(id);
+            var response = MetodosArticulos.Encontrar(id);
 
             if(response.Count > 0)
             {

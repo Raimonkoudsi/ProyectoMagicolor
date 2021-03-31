@@ -32,7 +32,6 @@ namespace ProyectoMagicolor.Vistas
 
             Parent = parent;
 
-
         }
 
         public List<DRegistro_CuentaPagar> ListaCP = new List<DRegistro_CuentaPagar>();

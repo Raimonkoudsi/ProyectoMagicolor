@@ -7,6 +7,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
 
+//estado 1=activo, 2=cuentaxcobrar, 3=anulado
+
 namespace Logica
 {
     public class LIngreso : DIngreso
@@ -104,7 +106,7 @@ namespace Logica
                                     comm2.Parameters.AddWithValue("@idIngreso", ID);
                                     comm2.Parameters.AddWithValue("@fechaInicio", CuentaPagar.fechaInicio);
                                     comm2.Parameters.AddWithValue("@fechaLimite", CuentaPagar.fechaLimite);
-                                    comm2.Parameters.AddWithValue("@montoIngresado", CuentaPagar.montoIngresado);
+                                    comm2.Parameters.AddWithValue("@montoIngresado", 0);
 
                                     respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
                                 }
@@ -307,19 +309,19 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = @"SELECT
+                    comm.CommandText = @"SELECT TOP 1
                                             a.idArticulo,
                                             a.codigo, 
                                             a.nombre, 
-                                            SUM(di.cantidadInicial) as cantidadInicial,
-                                            SUM(di.cantidadActual) as cantidadActual,
-                                            (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
+                                            c.nombre,
+                                            di.precioVenta,
+                                            di.cantidadActual
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.nombre LIKE '" +  Buscar + "%' " +
-                                        "GROUP BY a.codigo, a.nombre, a.idArticulo " +
-                                        "HAVING SUM(di.cantidadActual) > 0 " +
-                                        "ORDER BY a.idArticulo ASC";
+                                            inner join [categoria] c on a.idCategoria=c.idCategoria
+										WHERE a.nombre LIKE '" + Buscar + @"%' 
+                                        GROUP BY a.codigo, a.nombre, a.idArticulo, di.cantidadActual, di.idDetalleIngreso, c.nombre, di.precioVenta
+                                        ORDER BY di.idDetalleIngreso DESC";
 
                     try
                     {
@@ -335,9 +337,9 @@ namespace Logica
                                     idArticulo = reader.GetInt32(0),
                                     codigo = reader.GetString(1),
                                     nombre = reader.GetString(2),
-                                    cantidadInicial = reader.GetInt32(3),
-                                    cantidadActual = reader.GetInt32(4),
-                                    cantidadVendida = reader.GetInt32(5)
+                                    categoria = reader.GetString(3),
+                                    precioVenta = (double)reader.GetDecimal(4),
+                                    cantidadActual = reader.GetInt32(5)
                                 });
                             }
                         }
@@ -359,6 +361,7 @@ namespace Logica
 
         }
 
+        //todavia no se implementa, cambiarlo como stocknombre
         public List<DArticulo> MostrarStockCodigo(string Buscar)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
@@ -371,19 +374,20 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = @"SELECT
+                    comm.CommandText = @"SELECT TOP 1
                                             a.idArticulo,
                                             a.codigo, 
                                             a.nombre, 
-                                            SUM(di.cantidadInicial) as cantidadInicial,
-                                            SUM(di.cantidadActual) as cantidadActual,
-                                            (SUM(di.cantidadInicial)-SUM(di.cantidadActual)) as cantidadVendida
+                                            (SELECT SUM(cantidadInicial) as cantidad 
+												from detalleIngreso
+											) as cantidadInicial,
+                                            di.cantidadActual
                                         from [articulo] a 
                                             inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
-                                        where a.codigo = " + Buscar + " " +
-                                        "GROUP BY a.codigo, a.nombre, a.idArticulo " +
-                                        "HAVING SUM(di.cantidadActual) > 0 " +
-                                        "ORDER BY a.idArticulo ASC";
+										WHERE a.codigo = " + Buscar + @" 
+                                        GROUP BY a.codigo, a.nombre, a.idArticulo, di.cantidadActual, di.idDetalleIngreso
+                                        HAVING di.cantidadActual > 0
+                                        ORDER BY di.idDetalleIngreso DESC";
 
                     try
                     {
@@ -423,7 +427,7 @@ namespace Logica
 
         }
 
-        //funcionando
+
         public List<DDetalle_Ingreso> EncontrarByArticulo(int IdArticulo)
         {
             List<DDetalle_Ingreso> ListaGenerica = new List<DDetalle_Ingreso>();
@@ -436,7 +440,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT * from [detalleIngreso] where idArticulo = " + IdArticulo + " and cantidadActual > 0 order by idDetalleIngreso ASC";
+                    comm.CommandText = "SELECT idDetalleIngreso, idIngreso, idArticulo, precioCompra, precioVenta, cantidadInicial, cantidadActual from [detalleIngreso] where idArticulo = " + IdArticulo + " and cantidadActual > 0 order by idDetalleIngreso DESC";
 
 
                     try
@@ -491,7 +495,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT * from [detalleIngreso] where idDetalleIngreso = " + Id + " order by idDetalleIngreso ASC";
+                    comm.CommandText = "SELECT * from [detalleIngreso] where idDetalleIngreso = " + Id + " order by idDetalleIngreso DESC";
 
 
                     try
@@ -533,7 +537,6 @@ namespace Logica
             }
 
         }
-
 
 
 
@@ -607,7 +610,7 @@ namespace Logica
 
 
 
-        public string RegistrarCxP(DRegistro_CuentaPagar RegistroCuentaPagar, int IdCuentaPagar, int IdIngreso)
+        public string RegistrarCxP(DRegistro_CuentaPagar RegistroCuentaPagar, int IdCuentaPagar)
         {
             string respuesta = "";
 
@@ -689,11 +692,6 @@ namespace Logica
                                     using (SqlCommand comm3 = new SqlCommand(query3, conn))
                                     {
                                         respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Actualizo el registro";
-
-                                        if(respuesta.Equals("OK"))
-                                        {
-                                            MessageBox.Show("Pago Completado", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
-                                        } 
                                     }
                                 }
                             }

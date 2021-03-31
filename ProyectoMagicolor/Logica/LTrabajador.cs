@@ -375,7 +375,7 @@ namespace Logica
 
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
-            string error = "";
+            //string error = "";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {

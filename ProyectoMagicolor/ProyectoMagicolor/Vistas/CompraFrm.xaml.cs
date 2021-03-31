@@ -93,7 +93,7 @@ namespace ProyectoMagicolor.Vistas
                                              txtFactura.txt.Text,
                                              impuestos,
                                              CbMetodoPago.SelectedIndex + 1,
-                                             0, "", "", 0, 0, 0);
+                                             0);
 
             DCuentaPagar CP = new DCuentaPagar(0,
                                                0,

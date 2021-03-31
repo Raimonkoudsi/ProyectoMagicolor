@@ -34,20 +34,6 @@ namespace Datos
             set { _Fecha = value; }
         }
 
-        private string _TipoComprobante;
-        public string tipoComprobante
-        {
-            get { return _TipoComprobante; }
-            set { _TipoComprobante = value; }
-        }
-
-        private string _SerieComprobante;
-        public string serieComprobante
-        {
-            get { return _SerieComprobante; }
-            set { _SerieComprobante = value; }
-        }
-
         private double _Descuento;
         public double descuento
         {
@@ -90,6 +76,20 @@ namespace Datos
             set { _Cliente = value; }
         }
 
+        private double _Impuesto;
+        public double impuesto
+        {
+            get { return _Impuesto; }
+            set { _Impuesto = value; }
+        }
+
+        private double _Monto;
+        public double monto
+        {
+            get { return _Monto; }
+            set { _Monto = value; }
+        }
+
         private double _MontoTotal;
         public double montoTotal
         {
@@ -97,11 +97,11 @@ namespace Datos
             set { _MontoTotal = value; }
         }
 
-        private double _Impuesto;
-        public double impuesto
+        private int _IdCuentaCobrar;
+        public int idCuentaCobrar
         {
-            get { return _Impuesto; }
-            set { _Impuesto = value; }
+            get { return _IdCuentaCobrar; }
+            set { _IdCuentaCobrar = value; }
         }
 
 
@@ -111,22 +111,16 @@ namespace Datos
 
         }
 
-        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, string TipoComprobante, string SerieComprobante, double Descuento,int MetodoPago, int Estado, string CedulaTrabajador, string CedulaCliente, string Cliente, double MontoTotal, double Impuesto)
+        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, double Descuento, double Impuesto,int MetodoPago, int Estado)
         {
             this.idVenta = IdVenta;
             this.idCliente = IdCliente;
             this.idTrabajador = IdTrabajador;
             this.fecha = Fecha;
-            this.tipoComprobante = TipoComprobante;
-            this.serieComprobante = SerieComprobante;
             this.descuento = Descuento;
+            this.impuesto = Impuesto;
             this.metodoPago = MetodoPago;
             this.estado = Estado;
-            this.cedulaTrabajador = CedulaTrabajador;
-            this.cedulaCliente = CedulaCliente;
-            this.cliente = Cliente;
-            this.montoTotal = MontoTotal;
-            this.impuesto = Impuesto;
         }
 
     }

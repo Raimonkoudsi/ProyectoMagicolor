@@ -16,16 +16,17 @@ using Datos;
 using Logica;
 using Microsoft.Win32;
 
+
 namespace ProyectoMagicolor.Vistas
 {
     /// <summary>
-    /// Lógica de interacción para DetalleCuentaPagarFrm.xaml
+    /// Lógica de interacción para DetalleCuentaCobrarFrm.xaml
     /// </summary>
-    public partial class DetalleCuentaPagarFrm : Window
+    public partial class DetalleCuentaCobrarFrm : Window
     {
-        CuentaPagarDG ParentForm;
+        CuentaCobrarDG ParentForm;
 
-        public DetalleCuentaPagarFrm(CuentaPagarDG parentfrm, List<DRegistro_CuentaPagar> actualDetalle)
+        public DetalleCuentaCobrarFrm(CuentaCobrarDG parentfrm, List<DRegistro_CuentaCobrar> actualDetalle)
         {
             InitializeComponent();
 
@@ -37,16 +38,16 @@ namespace ProyectoMagicolor.Vistas
         }
 
 
-        public DIngreso DataFill;
+        public DVenta DataFill;
         //public DCuentaPagar DataCxP;
 
-        public DRegistro_CuentaPagar UForm;
+        public DRegistro_CuentaCobrar UForm;
 
-        public LIngreso Metodos = new LIngreso();
+        public LVenta Metodos = new LVenta();
 
         public int idEdit;
         public bool total;
-        public List<DRegistro_CuentaPagar> ActualDetalle;
+        public List<DRegistro_CuentaCobrar> ActualDetalle;
 
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -66,13 +67,13 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            txtIdIngreso.Text = DataFill.idIngreso.ToString();
-            txtRazonSocial.Text = DataFill.razonSocial;
-            txtFactura.Text = DataFill.factura;
+            txtIdVenta.Text = DataFill.idVenta.ToString();
+            txtCliente.Text = DataFill.cliente;
+            txtCedula.Text = DataFill.cedulaCliente;
             txtFecha.Text = DataFill.fecha.ToString();
             txtMontoRestante.Text = DataFill.monto.ToString();
             txtMontoTotal.Text = DataFill.montoTotal.ToString();
-            
+
         }
 
         void fillData(bool total)
@@ -83,18 +84,18 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            int idCuentaPagar = DataFill.idCuentaPagar;
+            int idCuentaCobrar = DataFill.idCuentaCobrar;
 
             double monto = 0F;
 
-            if (total)
+            if (!total)
                 monto = double.Parse(txtMonto.txt.Text);
             else
-                monto = DataFill.monto;
+                monto = DataFill.montoTotal;
 
 
-            UForm = new DRegistro_CuentaPagar(0,
-                                         idCuentaPagar,
+            UForm = new DRegistro_CuentaCobrar(0,
+                                         idCuentaCobrar,
                                          monto,
                                          DateTime.Now);
         }
@@ -109,21 +110,21 @@ namespace ProyectoMagicolor.Vistas
 
             if (total)
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de" + DataFill.monto + " $ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " $ ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
             else
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto de" + txtMonto.txt.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + "$ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto de " + txtMonto.txt.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + "$ ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
 
             if (rpta == MessageBoxResult.No)
                 return;
 
-            string ok = Metodos.RegistrarCxP(UForm, DataFill.idCuentaPagar);
+            string ok = Metodos.RegistrarCxC(UForm, DataFill.idCuentaCobrar);
 
-            if(ok.Equals("OK"))
+            if (ok.Equals("OK"))
             {
-                if(total)
+                if (total)
                 {
                     MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -156,7 +157,5 @@ namespace ProyectoMagicolor.Vistas
             return false;
 
         }
-
-
     }
 }

@@ -18,26 +18,27 @@ namespace Logica
 
         public string Insertar(DVenta Venta, List<DDetalle_Venta> Detalle, DCuentaCobrar CuentaCobrar)
         {
+            int ID = 1;
+
             string respuesta = "";
+
+            string queryID = "SELECT max(idVenta) FROM venta";
 
             string query = @"
                         INSERT INTO venta(
+                            idVenta,
                             idCliente,
                             idTrabajador,
                             fecha,
-                            tipoComprobante,
-                            serieComprobante,
                             metodoPago,
                             descuento,
                             impuesto,
                             estado
-                        ) OUTPUT Inserted.idVenta
-                        VALUES(
+                        ) VALUES (
+                            @idVenta,
                             @idCliente,
                             @idTrabajador,
                             @fecha,
-                            @tipoComprobante,
-                            @serieComprobante,
                             @metodoPago,
                             @descuento,
                             @impuesto,
@@ -48,98 +49,133 @@ namespace Logica
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand commID = new SqlCommand(queryID, conn))
                 {
-                    comm.Parameters.AddWithValue("@idCliente", Venta.idCliente);
-                    comm.Parameters.AddWithValue("@idTrabajador", Venta.idTrabajador);
-                    comm.Parameters.AddWithValue("@fecha", Venta.fecha);
-                    comm.Parameters.AddWithValue("@tipoComprobante", Venta.tipoComprobante);
-                    comm.Parameters.AddWithValue("@serieComprobante", Venta.serieComprobante);
-                    comm.Parameters.AddWithValue("@descuento", Venta.descuento);
-                    comm.Parameters.AddWithValue("@impuesto", Venta.impuesto);
-                    comm.Parameters.AddWithValue("@metodoPago", Venta.metodoPago);
-
-                    if (Venta.metodoPago == 2)
-                        comm.Parameters.AddWithValue("@estado", 2);
-                    else
-                        comm.Parameters.AddWithValue("@estado", 1);
-
 
                     try
                     {
                         conn.Open();
 
-                        this.idVenta = (int)comm.ExecuteScalar();
-
-                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la venta";
-
-                        //this.idVenta = Convert.ToInt32(comm.Parameters["@idVenta"].Value);
-
-                        respuesta = !String.IsNullOrEmpty(this.idVenta.ToString()) ? "OK" : "No se ingreso el Registro de la venta";
-
-
-                        if (respuesta.Equals("OK") && Venta.metodoPago == 2)
+                        using (SqlDataReader reader = commID.ExecuteReader())
                         {
-
-                            string query2 = @"
-                                INSERT INTO cuentaCobrar(
-                                    idVenta,
-                                    fechaInicio,
-                                    fechaLimite,
-                                    montoIngresado
-                                ) VALUES(
-                                    @idVenta,
-                                    @fechaInicio,
-                                    @fechaLimite,
-                                    @montoIngresado
-                                );
-	                        ";
-
-                            using (SqlCommand comm2 = new SqlCommand(query2, conn))
+                            if (reader.Read())
                             {
-                                comm2.Parameters.AddWithValue("@idVenta", this.idVenta);
-                                comm2.Parameters.AddWithValue("@fechaInicio", CuentaCobrar.fechaInicio);
-                                comm2.Parameters.AddWithValue("@fechaLimite", CuentaCobrar.fechaLimite);
-                                comm2.Parameters.AddWithValue("@montoIngresado", CuentaCobrar.montoIngresado);
+                                if (!reader.IsDBNull(0))
+                                {
+                                    ID = reader.GetInt32(0);
+                                    ID++;
+                                }
 
-                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
                             }
+
                         }
 
-                        if (respuesta.Equals("OK"))
+                        using (SqlCommand comm = new SqlCommand(query, conn))
                         {
-                            int i = 0;
-                            foreach (DDetalle_Venta det in Detalle)
+                            comm.Parameters.AddWithValue("@idVenta", ID);
+                            comm.Parameters.AddWithValue("@idCliente", Venta.idCliente);
+                            comm.Parameters.AddWithValue("@idTrabajador", Venta.idTrabajador);
+                            comm.Parameters.AddWithValue("@fecha", Venta.fecha);
+                            comm.Parameters.AddWithValue("@descuento", Venta.descuento);
+                            comm.Parameters.AddWithValue("@impuesto", Venta.impuesto);
+                            comm.Parameters.AddWithValue("@metodoPago", Venta.metodoPago);
+
+                            if (Venta.metodoPago == 2)
+                                comm.Parameters.AddWithValue("@estado", 2);
+                            else
+                                comm.Parameters.AddWithValue("@estado", 1);
+
+
+                            respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la venta";
+
+
+                            if (respuesta.Equals("OK") && Venta.metodoPago == 2)
                             {
 
-                                string query3 = @"
-                                    INSERT INTO detalleVenta(
+                                string query2 = @"
+                                    INSERT INTO cuentaCobrar(
                                         idVenta,
-                                        idDetalleIngreso,
-                                        cantidad,
-                                        precioVenta
+                                        fechaInicio,
+                                        fechaLimite,
+                                        montoIngresado
                                     ) VALUES(
                                         @idVenta,
-                                        @idDetalleIngreso,
-                                        @cantidad,
-                                        @precioVenta
+                                        @fechaInicio,
+                                        @fechaLimite,
+                                        @montoIngresado
                                     );
 	                            ";
 
-                                using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                using (SqlCommand comm2 = new SqlCommand(query2, conn))
                                 {
-                                    comm3.Parameters.AddWithValue("@idVenta", this.idVenta);
-                                    comm3.Parameters.AddWithValue("@idDetalleIngreso", Detalle[i].idDetalleIngreso);
-                                    comm3.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
-                                    comm3.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
+                                    comm2.Parameters.AddWithValue("@idVenta", ID);
+                                    comm2.Parameters.AddWithValue("@fechaInicio", CuentaCobrar.fechaInicio);
+                                    comm2.Parameters.AddWithValue("@fechaLimite", CuentaCobrar.fechaLimite);
+                                    comm2.Parameters.AddWithValue("@montoIngresado", 0);
 
-                                    respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
-                                    i++;
+                                    respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
                                 }
+                            }
 
-                                if (!respuesta.Equals("OK"))
+                            if (respuesta.Equals("OK"))
+                            {
+                                int i = 0;
+
+                                foreach (DDetalle_Venta det in Detalle)
                                 {
-                                    break;
+                                    string queryStock = @"
+                                        UPDATE detalleIngreso SET 
+                                               detalleIngreso.cantidadActual = detalleIngreso.cantidadActual - @cantidad
+                                        FROM [detalleIngreso]
+                                        inner join (
+							                   SELECT detalleIngreso.idDetalleIngreso 
+							                   FROM detalleIngreso 
+							                   GROUP BY detalleIngreso.idDetalleIngreso, detalleIngreso.cantidadActual
+							                   HAVING @cantidad <= detalleIngreso.cantidadActual
+						                ) X
+                                        ON x.idDetalleIngreso = detalleIngreso.idDetalleIngreso
+                                        WHERE detalleIngreso.idDetalleIngreso = @idDetalleIngreso ";
+ 
+                                    using (SqlCommand comm3 = new SqlCommand(queryStock, conn))
+                                    {
+                                            comm3.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                            comm3.Parameters.AddWithValue("@idDetalleIngreso", Detalle[i].idDetalleIngreso);
+
+                                            respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la Venta";
+
+                                            if (respuesta.Equals("OK"))
+                                            {
+                                                string query4 = @"
+                                                    INSERT INTO detalleVenta(
+                                                        idVenta,
+                                                        idDetalleIngreso,
+                                                        cantidad,
+                                                        precioVenta
+                                                    ) VALUES(
+                                                        @idVenta,
+                                                        @idDetalleIngreso,
+                                                        @cantidad,
+                                                        @precioVenta
+                                                    );
+	                                            ";
+
+                                                using (SqlCommand comm4 = new SqlCommand(query4, conn))
+                                                {
+                                                    comm4.Parameters.AddWithValue("@idVenta", ID);
+                                                    comm4.Parameters.AddWithValue("@idDetalleIngreso", Detalle[i].idDetalleIngreso);
+                                                    comm4.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                                    comm4.Parameters.AddWithValue("@precioVenta", Detalle[i].precioVenta);
+
+                                                    respuesta = comm4.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
+                                                    i++;
+                                                }
+
+                                                if (!respuesta.Equals("OK"))
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -203,7 +239,7 @@ namespace Logica
 
 
 
-        //funcionando
+
         public List<DVenta> Mostrar(string Buscar, string Buscar2)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
@@ -216,7 +252,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT v.idVenta, t.cedula, c.cedula "+"-"+" c.nombre, v.fecha, v.tipoComprobante, v.serieComprobante, v.metodoPago, v.estado, SUM(dv.precioVenta) as precioTotal from [venta] v inner join [cliente] c on v.idCliente=v.idCliente inner join [trabajador] t on v.idTrabajador=t.idTrabajador inner join [detalleVenta] dv on v.idVenta=dv.idVenta where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
+                    comm.CommandText = "SELECT v.idVenta, c.cedula "+"-"+" c.nombre, v.fecha, v.metodoPago, v.estado, SUM(dv.precioVenta) as precioTotal from [venta] v inner join [cliente] c on v.idCliente=v.idCliente inner join [trabajador] t on v.idTrabajador=t.idTrabajador inner join [detalleVenta] dv on v.idVenta=dv.idVenta where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
 
                     try
                     {
@@ -231,14 +267,11 @@ namespace Logica
                                 ListaGenerica.Add(new DVenta
                                 {
                                     idVenta = reader.GetInt32(0),
-                                    cedulaTrabajador = reader.GetString(1),
-                                    cliente = reader.GetString(2), 
-                                    fecha = reader.GetDateTime(3),
-                                    tipoComprobante = reader.GetString(4),
-                                    serieComprobante = reader.GetString(5),
-                                    metodoPago = reader.GetInt32(7),
-                                    estado = reader.GetInt32(8),
-                                    montoTotal = reader.GetDouble(9)
+                                    cliente = reader.GetString(1), 
+                                    fecha = reader.GetDateTime(2),
+                                    metodoPago = reader.GetInt32(3),
+                                    estado = reader.GetInt32(4),
+                                    montoTotal = reader.GetDouble(5)
                                 });
                             }
                         }
@@ -264,7 +297,7 @@ namespace Logica
 
 
         //cuentas por cobrar
-        public List<DVenta> MostrarCxC()
+        public List<DVenta> MostrarCxC(string Buscar, string Buscar2)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
 
@@ -278,19 +311,16 @@ namespace Logica
 
                     comm.CommandText = @"SELECT 
                                             v.idVenta,
-                                            c.cedula,
-                                            c.apellidos" + " " + @"c.nombre, 
-                                            v.tipoComprobante,
-                                            v.serieComprobante, 
+                                            c.tipoDocumento + '-' + c.numeroDocumento,
+                                            c.apellidos + ' ' + c.nombre, 
                                             v.fecha, 
-                                            (SUM(dv.precioVenta) - SUM(cc.montoIngresado)) as montoTotal,
-                                            t.cedula
+                                            ((SUM(dv.precioVenta) * dv.cantidad) - cc.montoIngresado - v.descuento) as montoTotal
                                         from [venta] v 
                                             inner join [cliente] c on v.idCliente=c.idCliente 
                                             inner join [trabajador] t on v.idTrabajador=t.idTrabajador 
                                             inner join [detalleVenta] dv on v.idVenta=dv.idVenta 
                                             inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta 
-                                        where v.estado = 2";
+                                        where v.estado = 2 AND c.tipoDocumento LIKE '" + Buscar + "%' AND c.numeroDocumento LIKE '" + Buscar2 + "%' group by v.idVenta, c.tipoDocumento, c.numeroDocumento, c.apellidos, c.nombre, v.fecha, cc.montoIngresado, dv.cantidad, v.descuento";
 
 
                     try
@@ -308,11 +338,8 @@ namespace Logica
                                     idVenta = reader.GetInt32(0),
                                     cedulaCliente = reader.GetString(1),
                                     cliente = reader.GetString(2),
-                                    tipoComprobante = reader.GetString(3),
-                                    serieComprobante = reader.GetString(4),
-                                    fecha = reader.GetDateTime(5),
-                                    montoTotal = reader.GetDouble(6),
-                                    cedulaTrabajador = reader.GetString(7)
+                                    fecha = reader.GetDateTime(3),
+                                    montoTotal = (double)reader.GetDecimal(4)
                                 });
                             }
                         }
@@ -336,30 +363,37 @@ namespace Logica
 
 
 
-        public string RegistrarCxP(DCuentaCobrar CuentaCobrar, DRegistro_CuentaCobrar RegistroCuentaCobrar, int IdVenta)
+        public string RegistrarCxC(DRegistro_CuentaCobrar RegistroCuentaCobrar, int IdCuentaCobrar)
         {
             string respuesta = "";
 
+
             string query = @"
-                            INSERT INTO registroCuentaCobrar(
-                                idCuentaCobrar,
-                                monto,
-                                fecha,
-                            ) VALUES(
-                                @idCuentaCobrar,
-                                @monto,
-                                @fecha,
-                            );
-             ";
+                          UPDATE cuentaCobrar SET
+                               cuentaCobrar.montoIngresado = cuentaCobrar.montoIngresado + @monto
+                          FROM cuentaCobrar
+                          inner join (
+							   SELECT venta.idVenta 
+							   FROM venta 
+							       inner join [cuentaCobrar] cc on venta.idVenta=cc.idVenta
+                                   inner join [detalleVenta] dv on dv.idVenta=venta.idVenta
+							       inner join [detalleIngreso] di on di.idDetalleIngreso=dv.idDetalleIngreso
+							   WHERE venta.idVenta = cc.idVenta AND venta.estado = 2
+							   GROUP BY venta.idVenta , cc.montoIngresado, dv.cantidad
+							   HAVING ((SUM(dv.precioVenta)*dv.cantidad) - (cc.montoIngresado + @monto)) >= 0
+						  ) X
+                          ON x.idVenta = cuentaCobrar.idVenta
+                          WHERE cuentaCobrar.idCuentaCobrar = @idCuentaCobrar;
+	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
                 using (SqlCommand comm = new SqlCommand(query, conn))
                 {
-                    comm.Parameters.AddWithValue("@idCuentaCobrar", RegistroCuentaCobrar.idCuentaCobrar);
                     comm.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
-                    comm.Parameters.AddWithValue("@fecha", DateTime.Now);
+                    comm.Parameters.AddWithValue("@idCuentaCobrar", IdCuentaCobrar);
+
 
                     try
                     {
@@ -369,30 +403,45 @@ namespace Logica
 
                         if (respuesta.Equals("OK"))
                         {
-
                             string query2 = @"
-                                            UPDATE cuentaCobrar SET
-                                                montoIngresado = SUM(montoIngresado) + @monto,
-                                            WHERE idCuentaCobrar = @idCuentaCobrar;
-                             ";
+                                        INSERT INTO registroCobrar(
+                                            idCuentaCobrar,
+                                            monto,
+                                            fecha
+                                        ) VALUES (
+                                            @idCuentaCobrar,
+                                            @monto,
+                                            @fecha
+                                        );
+	                        ";
+
 
                             using (SqlCommand comm2 = new SqlCommand(query2, conn))
                             {
+                                comm2.Parameters.AddWithValue("@idCuentaCobrar", RegistroCuentaCobrar.idCuentaCobrar);
                                 comm2.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
-                                comm2.Parameters.AddWithValue("@idCuentaPagar", CuentaCobrar.idCuentaCobrar);
+                                comm2.Parameters.AddWithValue("@fecha", DateTime.Now);
 
-                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por pagar";
+                                respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por cobrar";
 
 
                                 if (respuesta.Equals("OK"))
                                 {
                                     string query3 = @"
-                                            UPDATE v.estado SET '1'
-                                            from [venta] v 
-                                            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta
-                                            inner join [detalleVenta] dv on v.idVenta=dv.idVenta
-                                            WHERE v.idVenta = cc.idVenta 
-                                            AND (SUM(dv.precioVenta) - cc.montoIngresado) = 0";
+                                        UPDATE venta SET venta.estado = 1
+                                        from [venta]
+                                        inner join [cuentaCobrar] cc on venta.idVenta=cc.idVenta
+										inner join (
+											SELECT venta.idVenta 
+											FROM venta 
+											inner join [cuentaCobrar] cc on venta.idVenta=cc.idVenta
+											inner join [detalleVenta] dv on venta.idVenta=dv.idVenta
+											WHERE venta.idVenta = cc.idVenta AND venta.estado = 2
+											GROUP BY venta.idVenta , cc.montoIngresado, dv.cantidad, venta.descuento, dv.precioVenta
+											HAVING ((dv.precioVenta * dv.cantidad) - cc.montoIngresado - venta.descuento) = 0
+										) X
+										ON x.idVenta=cc.idVenta
+										WHERE cc.idCuentaCobrar = " + IdCuentaCobrar + " ";
 
                                     using (SqlCommand comm3 = new SqlCommand(query3, conn))
                                     {
@@ -404,7 +453,7 @@ namespace Logica
                     }
                     catch (SqlException e)
                     {
-                        respuesta = e.Message;
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
                     {
@@ -416,6 +465,78 @@ namespace Logica
                     return respuesta;
                 }
             }
+        }
+
+
+
+
+
+        public List<DVenta> EncontrarCxC(int Buscar)
+        {
+            List<DVenta> ListaGenerica = new List<DVenta>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"SELECT 
+                                            v.idVenta,
+                                            cc.idCuentaCobrar,
+                                            c.tipoDocumento + '-' + c.numeroDocumento,
+                                            c.apellidos + ' ' + c.nombre, 
+                                            v.fecha, 
+                                            ((SUM(dv.precioVenta) * dv.cantidad) - v.descuento) as montoTotal,
+                                            (SUM(dv.precioVenta) * dv.cantidad - cc.montoIngresado - v.descuento) as monto
+                                        from [venta] v 
+                                            inner join [cliente] c on v.idCliente=c.idCliente 
+                                            inner join [detalleVenta] dv on v.idVenta=dv.idVenta 
+                                            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta 
+                                        where v.estado = 2 AND v.idVenta = " + Buscar + " group by v.idVenta,dv.cantidad, cc.idCuentaCobrar, cc.montoIngresado, c.tipoDocumento, c.numeroDocumento, c.apellidos, c.nombre, v.fecha, v.descuento order by cc.idCuentaCobrar ASC";
+
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DVenta
+                                {
+                                    idVenta = reader.GetInt32(0),
+                                    idCuentaCobrar = reader.GetInt32(1),
+                                    cedulaCliente = reader.GetString(2),
+                                    cliente = reader.GetString(3),
+                                    fecha = reader.GetDateTime(4),
+                                    monto = (double)reader.GetDecimal(5),
+                                    montoTotal = (double)reader.GetDecimal(6)
+
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
         }
     }
 }
