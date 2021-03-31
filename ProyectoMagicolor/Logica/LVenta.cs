@@ -205,8 +205,9 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        DELETE FROM venta WHERE idVenta=@idVenta
-	        ";
+                        UPDATE venta SET estado = 3
+						WHERE idVenta = @idVenta
+            ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {

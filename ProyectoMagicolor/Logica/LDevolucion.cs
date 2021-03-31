@@ -157,29 +157,26 @@ namespace Logica
                                                             respuesta = comm5.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
                                                         }
                                                     }
-                                                    else if(cantidad >)
-
-
-
-
-
-
-                                                    string query4 = @"
-                                                          UPDATE detalleVenta SET
-                                                               cantidad = dv.cantidad - @cantidad
-                                                          FROM detalleVenta dv
-                                                               inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                          WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                          AND di.idArticulo = @idArticulo
-                                                    ;";
-
-                                                    using (SqlCommand comm4 = new SqlCommand(query4, conn))
+                                                    //si la cantidad a devolver es menor a la de la venta, se actualiza el detalle venta
+                                                    else if (cantidad > Detalle[i].cantidad)
                                                     {
-                                                        comm4.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
-                                                        comm4.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                                        comm4.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                                        string query6 = @"
+                                                              UPDATE detalleVenta SET
+                                                                   cantidad = dv.cantidad - @cantidad
+                                                              FROM detalleVenta dv
+                                                                   inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                                              WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                              AND di.idArticulo = @idArticulo
+                                                        ;";
 
-                                                        respuesta = comm4.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
+                                                        using (SqlCommand comm6 = new SqlCommand(query6, conn))
+                                                        {
+                                                            comm6.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                                            comm6.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                                            comm6.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+
+                                                            respuesta = comm6.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
+                                                        }
                                                     }
                                                 }
                                             }
@@ -191,6 +188,39 @@ namespace Logica
                                     if (!respuesta.Equals("OK"))
                                     {
                                         break;
+                                    }
+                                }
+
+                                string query7 = @"
+											SELECT COUNT(idDetalleVenta)
+                                            FROM detalleVenta
+                                            WHERE idVenta = @idVenta
+                                ;";
+
+                                using (SqlCommand comm7 = new SqlCommand(query7, conn))
+                                {
+                                    comm7.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
+
+                                    using (SqlDataReader reader = comm7.ExecuteReader())
+                                    {
+                                        if (reader.Read() && !reader.IsDBNull(0))
+                                            cantidad = reader.GetInt32(0);
+                                    }
+
+                                    //anula la venta si devuelve todos los articulos
+                                    if(cantidad==0)
+                                    {
+                                        string query8 = @"
+                                                    UPDATE venta SET estado = 3
+						                            WHERE idVenta = @idVenta
+                                        ";
+
+                                        using (SqlCommand comm8 = new SqlCommand(query8, conn))
+                                        {
+                                            comm7.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
+
+                                            respuesta = comm7.ExecuteNonQuery() == 1 ? "OK" : "No se anulo la venta en devolucion";
+                                        }
                                     }
                                 }
                             }
