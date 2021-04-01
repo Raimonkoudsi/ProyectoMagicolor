@@ -253,7 +253,7 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT v.idVenta, c.cedula "+"-"+" c.nombre, v.fecha, v.metodoPago, v.estado, SUM(dv.precioVenta) as precioTotal from [venta] v inner join [cliente] c on v.idCliente=v.idCliente inner join [trabajador] t on v.idTrabajador=t.idTrabajador inner join [detalleVenta] dv on v.idVenta=dv.idVenta where tipoComprobante = " + Buscar + " AND serieComprobante like '" + Buscar2 + "%' order by serieComprobante";
+                    comm.CommandText = "SELECT v.idVenta, c.cedula "+"-"+" c.nombre, v.fecha, v.metodoPago, v.estado, SUM(dv.precioVenta) as precioTotal from [venta] v inner join [cliente] c on v.idCliente=v.idCliente inner join [trabajador] t on v.idTrabajador=t.idTrabajador inner join [detalleVenta] dv on v.idVenta=dv.idVenta where v.tipoComprobante = " + Buscar + " AND v.serieComprobante like '" + Buscar2 + "%' order by v.serieComprobante";
 
                     try
                     {

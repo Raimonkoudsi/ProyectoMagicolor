@@ -49,6 +49,19 @@ namespace Datos
             set { _Impuesto = value; }
         }
 
+        private string _Nombre;
+        public string nombre
+        {
+            get { return _Nombre; }
+            set { _Nombre = value; }
+        }
+
+        private string _Codigo;
+        public string codigo
+        {
+            get { return _Codigo; }
+            set { _Codigo = value; }
+        }
 
         public DDetalle_Venta()
         {
