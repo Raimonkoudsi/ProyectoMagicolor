@@ -47,12 +47,19 @@ namespace Datos
             get { return _Precio; }
             set { _Precio = value; }
         }
+
+        private int _Dañado;
+        public int dañado
+        {
+            get { return _Dañado; }
+            set { _Dañado = value; }
+        }
         public DDetalle_Devolucion()
         {
 
         }
 
-        public DDetalle_Devolucion(int IdDetalleDevolucion, int IdDevolucion, int IdDetalleVenta, int IdArticulo, int Cantidad, double Precio)
+        public DDetalle_Devolucion(int IdDetalleDevolucion, int IdDevolucion, int IdDetalleVenta, int IdArticulo, int Cantidad, double Precio, int Dañado)
         {
             this.idDetalleDevolucion = IdDetalleDevolucion;
             this.idDevolucion = IdDevolucion;
@@ -60,6 +67,7 @@ namespace Datos
             this.idArticulo = IdArticulo;
             this.cantidad = Cantidad;
             this.precio = Precio;
+            this.dañado = Dañado;
         }
     }
 }

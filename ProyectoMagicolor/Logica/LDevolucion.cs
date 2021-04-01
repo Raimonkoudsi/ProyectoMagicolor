@@ -56,7 +56,7 @@ namespace Logica
 
                         using (SqlCommand comm = new SqlCommand(query, conn))
                         {
-                            comm.Parameters.AddWithValue("@idDevolucion", Devolucion.idDevolucion);
+                            comm.Parameters.AddWithValue("@idDevolucion", ID);
                             comm.Parameters.AddWithValue("@idCliente", Devolucion.idCliente);
                             comm.Parameters.AddWithValue("@idTrabajador", Devolucion.idTrabajador);
                             comm.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
@@ -71,112 +71,118 @@ namespace Logica
 
                                 foreach (DDetalle_Devolucion det in Detalle)
                                 {
-                                    string queryStock = @"
-                                        UPDATE detalleIngreso SET 
-                                               cantidadActual = detalleIngreso.cantidadActual + @cantidad
-                                        WHERE idArticulo = @idArticulo 
-                                        AND idDetalleIngreso=(SELECT MAX(idDetalleIngreso) FROM detalleIngreso)";
-
-                                    using (SqlCommand comm2 = new SqlCommand(queryStock, conn))
+                                    if (Detalle[i].dañado == 1)
                                     {
-                                        comm2.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                        comm2.Parameters.AddWithValue("@precioCompra", Detalle[i].cantidad);
+                                        string queryStock = @"
+                                            UPDATE detalleIngreso SET 
+                                                   cantidadActual = detalleIngreso.cantidadActual + @cantidad
+                                            WHERE idArticulo = @idArticulo 
+                                            AND idDetalleIngreso=(SELECT MAX(idDetalleIngreso) FROM detalleIngreso)";
 
-
-                                        respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso la actualizacion del ingreso";
-
-                                        if (respuesta.Equals("OK"))
+                                        using (SqlCommand comm2 = new SqlCommand(queryStock, conn))
                                         {
-                                            string query3 = @"
-                                                INSERT INTO detalleDevolucion(
-                                                        idDevolucion,
-                                                        idDetalleVenta,
-                                                        idArticulo,
-                                                        cantidad,
-                                                        precio
-                                                    ) VALUES (
-                                                        @idDevolucion,
-                                                        @idDetalleVenta,
-                                                        @idArticulo,
-                                                        @cantidad,
-                                                        @precio
-                                                    );
-	                                        ";
+                                            comm2.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                            comm2.Parameters.AddWithValue("@precioCompra", Detalle[i].cantidad);
 
-                                            using (SqlCommand comm3 = new SqlCommand(query3, conn))
+
+                                            respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso la actualizacion del ingreso";
+                                        }
+                                    }
+
+                                    if (respuesta.Equals("OK"))
+                                    {
+                                        string query3 = @"
+                                            INSERT INTO detalleDevolucion(
+                                                    idDevolucion,
+                                                    idDetalleVenta,
+                                                    idArticulo,
+                                                    cantidad,
+                                                    precio,
+                                                    dañado
+                                                ) VALUES (
+                                                    @idDevolucion,
+                                                    @idDetalleVenta,
+                                                    @idArticulo,
+                                                    @cantidad,
+                                                    @precio,
+                                                    @dañado
+                                                );
+	                                    ";
+
+                                        using (SqlCommand comm3 = new SqlCommand(query3, conn))
+                                        {
+                                            comm3.Parameters.AddWithValue("@idDevolucion", ID);
+                                            comm3.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                            comm3.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                            comm3.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                            comm3.Parameters.AddWithValue("@precio", Detalle[i].precio);
+                                            comm3.Parameters.AddWithValue("@dañado", Detalle[i].dañado);
+
+                                            respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
+
+
+                                            if(respuesta.Equals("OK"))
                                             {
-                                                comm3.Parameters.AddWithValue("@idDevolucion", ID);
-                                                comm3.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                                comm3.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                                comm3.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
-                                                comm3.Parameters.AddWithValue("@precio", Detalle[i].precio);
+                                                string query4 = @"
+														SELECT TOP 1 dv.cantidad
+                                                        FROM detalleVenta dv
+                                                            inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                                        WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                        AND di.idArticulo = @idArticulo
+														ORDER BY dv.idDetalleIngreso DESC
+                                                ;";
 
-                                                respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
-
-
-                                                if(respuesta.Equals("OK"))
+                                                using (SqlCommand comm4 = new SqlCommand(query4, conn))
                                                 {
-                                                    string query4 = @"
-														  SELECT TOP 1 dv.cantidad
-                                                          FROM detalleVenta dv
-                                                               inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                          WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                          AND di.idArticulo = @idArticulo
-														  ORDER BY dv.idDetalleIngreso DESC
+                                                    comm4.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                                    comm4.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+
+                                                    using (SqlDataReader reader = comm4.ExecuteReader())
+                                                    {
+                                                        if (reader.Read() && !reader.IsDBNull(0))
+                                                            cantidad = reader.GetInt32(0);
+                                                        else
+                                                            break;
+                                                    }
+                                                }
+
+                                                //si la cantidad a devolver es igual a la de la venta, se anula el detalle venta
+                                                if(cantidad == Detalle[i].cantidad)
+                                                {
+                                                    string query5 = @"
+														    DELETE dv FROM detalleVenta dv
+                                                            inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                                            WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                            AND di.idArticulo = @idArticulo
                                                     ;";
 
-                                                    using (SqlCommand comm4 = new SqlCommand(query4, conn))
+                                                    using (SqlCommand comm5 = new SqlCommand(query5, conn))
                                                     {
-                                                        comm4.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                                        comm4.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                                        comm5.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                                        comm5.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
 
-                                                        using (SqlDataReader reader = comm4.ExecuteReader())
-                                                        {
-                                                            if (reader.Read() && !reader.IsDBNull(0))
-                                                                cantidad = reader.GetInt32(0);
-                                                            else
-                                                                break;
-                                                        }
+                                                        respuesta = comm5.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
                                                     }
+                                                }
+                                                //si la cantidad a devolver es menor a la de la venta, se actualiza el detalle venta
+                                                else if (cantidad > Detalle[i].cantidad)
+                                                {
+                                                    string query6 = @"
+                                                            UPDATE detalleVenta SET
+                                                                cantidad = dv.cantidad - @cantidad
+                                                            FROM detalleVenta dv
+                                                                inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                                            WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                            AND di.idArticulo = @idArticulo
+                                                    ;";
 
-                                                    //si la cantidad a devolver es igual a la de la venta, se anula el detalle venta
-                                                    if(cantidad == Detalle[i].cantidad)
+                                                    using (SqlCommand comm6 = new SqlCommand(query6, conn))
                                                     {
-                                                        string query5 = @"
-														      DELETE dv FROM detalleVenta dv
-                                                              inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                              WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                              AND di.idArticulo = @idArticulo
-                                                        ;";
+                                                        comm6.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                                        comm6.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                                        comm6.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
 
-                                                        using (SqlCommand comm5 = new SqlCommand(query5, conn))
-                                                        {
-                                                            comm5.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                                            comm5.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-
-                                                            respuesta = comm5.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
-                                                        }
-                                                    }
-                                                    //si la cantidad a devolver es menor a la de la venta, se actualiza el detalle venta
-                                                    else if (cantidad > Detalle[i].cantidad)
-                                                    {
-                                                        string query6 = @"
-                                                              UPDATE detalleVenta SET
-                                                                   cantidad = dv.cantidad - @cantidad
-                                                              FROM detalleVenta dv
-                                                                   inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                              WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                              AND di.idArticulo = @idArticulo
-                                                        ;";
-
-                                                        using (SqlCommand comm6 = new SqlCommand(query6, conn))
-                                                        {
-                                                            comm6.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
-                                                            comm6.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                                            comm6.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-
-                                                            respuesta = comm6.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
-                                                        }
+                                                        respuesta = comm6.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
                                                     }
                                                 }
                                             }
