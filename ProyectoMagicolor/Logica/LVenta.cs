@@ -240,8 +240,7 @@ namespace Logica
 
 
 
-
-        public List<DVenta> Mostrar(string Buscar, string Buscar2)
+        public List<DVenta> MostrarVenta(string Buscar)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
 
@@ -253,7 +252,18 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT v.idVenta, c.cedula "+"-"+" c.nombre, v.fecha, v.metodoPago, v.estado, SUM(dv.precioVenta) as precioTotal from [venta] v inner join [cliente] c on v.idCliente=v.idCliente inner join [trabajador] t on v.idTrabajador=t.idTrabajador inner join [detalleVenta] dv on v.idVenta=dv.idVenta where v.tipoComprobante = " + Buscar + " AND v.serieComprobante like '" + Buscar2 + "%' order by v.serieComprobante";
+                    comm.CommandText = "SELECT " +
+                            "v.idVenta, " +
+                            "c.cedula " + "-" + " c.nombre, " +
+                            "v.fecha, " +
+                            "v.metodoPago, " +
+                            "v.estado, " +
+                            "SUM(dv.precioVenta) as precioTotal " +
+                        "from [venta] v " +
+                        "inner join [cliente] c on v.idCliente=v.idCliente " +
+                        "inner join [trabajador] t on v.idTrabajador=t.idTrabajador " +
+                        "inner join [detalleVenta] dv on v.idVenta=dv.idVenta " +
+                        "where v.idVenta = " + Buscar + " ";
 
                     try
                     {
@@ -268,11 +278,76 @@ namespace Logica
                                 ListaGenerica.Add(new DVenta
                                 {
                                     idVenta = reader.GetInt32(0),
-                                    cliente = reader.GetString(1), 
+                                    cliente = reader.GetString(1),
                                     fecha = reader.GetDateTime(2),
                                     metodoPago = reader.GetInt32(3),
                                     estado = reader.GetInt32(4),
                                     montoTotal = reader.GetDouble(5)
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+
+
+        public List<DDetalle_Venta> MostrarDetalleVenta(string Buscar)
+        {
+            List<DDetalle_Venta> ListaGenerica = new List<DDetalle_Venta>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT " +
+                            "dv.idDetalleVenta, " +
+                            "dv.idVenta, " +
+                            "a.codigo, " +
+                            "a.nombre, " +
+                            "dv.cantidad, " +
+                            "dv.precioVenta " +
+                        "from [detalleVenta] dv " +
+                        "inner join [detalleIngreso] di on di.idDetalleIngreso = dv.idDetalleIngreso " +
+                        "inner join [articulo] a on di.idArticulo = a.idArticulo " +
+                        "where dv.idVenta = " + Buscar;
+
+                    try
+                    {
+
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DDetalle_Venta
+                                {
+                                    idDetalleIngreso = reader.GetInt32(0),
+                                    idVenta = reader.GetInt32(1),
+                                    codigo = reader.GetString(2),
+                                    nombre = reader.GetString(3),
+                                    cantidad = reader.GetInt32(4),
+                                    precioVenta = (double)reader.GetDecimal(5)
                                 });
                             }
                         }

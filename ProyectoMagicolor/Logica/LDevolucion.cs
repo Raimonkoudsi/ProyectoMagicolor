@@ -14,22 +14,23 @@ namespace Logica
 
         public string Insertar(DDevolucion Devolucion, List<DDetalle_Devolucion> Detalle)
         {
-            int ID = 1;
+            int ID = 1, i = 0;
 
             string respuesta = "";
 
-            string queryID = "SELECT max(idDevolucion) FROM devolucion";
-
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
-                using (SqlCommand commID = new SqlCommand(queryID, conn))
+
+                try
                 {
+                    conn.Open();
 
-                    try
+                    #region Obtener Ultimo ID
+                    string queryGetID = "SELECT max(idDevolucion) FROM devolucion";
+
+                    using (SqlCommand comm = new SqlCommand(queryGetID, conn))
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = commID.ExecuteReader())
+                        using (SqlDataReader reader = comm.ExecuteReader())
                         {
                             if (reader.Read() && !reader.IsDBNull(0))
                             {
@@ -37,346 +38,229 @@ namespace Logica
                                 ID++;
                             }
                         }
+                    }
+                    #endregion
 
-                        string query = @"
-                                    INSERT INTO devolucion(
-                                        idDevolucion,
-                                        idCliente,
-                                        idTrabajador,
-                                        idVenta,
-                                        fecha
-                                    ) VALUES (
-                                        @idDevolucion,
-                                        @idCliente,
-                                        @idTrabajador,
-                                        @idVenta,
-                                        @fecha
-                                    );
-	                    ";
+                    #region Añadir Devolucion
+                    string queryAddDevolution = @"
+                                INSERT INTO devolucion(
+                                    idDevolucion,
+                                    idCliente,
+                                    idTrabajador,
+                                    idVenta,
+                                    fecha
+                                ) VALUES (
+                                    @idDevolucion,
+                                    @idCliente,
+                                    @idTrabajador,
+                                    @idVenta,
+                                    @fecha
+                                );
+	                ";
 
-                        using (SqlCommand comm = new SqlCommand(query, conn))
+                    using (SqlCommand comm = new SqlCommand(queryAddDevolution, conn))
+                    {
+                        comm.Parameters.AddWithValue("@idDevolucion", ID);
+                        comm.Parameters.AddWithValue("@idCliente", Devolucion.idCliente);
+                        comm.Parameters.AddWithValue("@idTrabajador", Devolucion.idTrabajador);
+                        comm.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
+                        comm.Parameters.AddWithValue("@fecha", Devolucion.fecha);
+
+                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la Devolucion";
+                    }
+                    #endregion
+
+                    if (respuesta.Equals("OK"))
+                    {
+                        //DETALLES
+                        foreach (DDetalle_Devolucion det in Detalle)
                         {
-                            comm.Parameters.AddWithValue("@idDevolucion", ID);
-                            comm.Parameters.AddWithValue("@idCliente", Devolucion.idCliente);
-                            comm.Parameters.AddWithValue("@idTrabajador", Devolucion.idTrabajador);
-                            comm.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
-                            comm.Parameters.AddWithValue("@fecha", Devolucion.fecha);
+                            #region Restock Articulo si no esta Dañado
+                            if (Detalle[i].dañado == 0)
+                            {
+                                string queryRestock = @"
+                                        UPDATE detalleIngreso SET 
+                                               cantidadActual = cantidadActual + @cantidad
+                                        WHERE idArticulo = @idArticulo 
+                                        AND idDetalleIngreso=(SELECT MAX(idDetalleIngreso) FROM detalleIngreso)
+                                ";
 
-                            respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la Devolucion";
+                                using (SqlCommand comm = new SqlCommand(queryRestock, conn))
+                                {
+                                    comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                    comm.Parameters.AddWithValue("@precioCompra", Detalle[i].cantidad);
 
+                                    respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso la actualizacion del stock";
+                                }
+                            }
+                            #endregion
 
                             if (respuesta.Equals("OK"))
                             {
-                                int i = 0;
+                                #region Añadir Detalle de Devolucion
+                                string queryAddDetailDevolution = @"
+                                    INSERT INTO detalleDevolucion(
+                                            idDevolucion,
+                                            idDetalleVenta,
+                                            idArticulo,
+                                            cantidad,
+                                            precio,
+                                            dañado
+                                        ) VALUES (
+                                            @idDevolucion,
+                                            @idDetalleVenta,
+                                            @idArticulo,
+                                            @cantidad,
+                                            @precio,
+                                            @dañado
+                                        );
+	                            ";
 
-                                foreach (DDetalle_Devolucion det in Detalle)
+                                using (SqlCommand comm = new SqlCommand(queryAddDetailDevolution, conn))
                                 {
-                                    if (Detalle[i].dañado == 1)
-                                    {
-                                        string queryStock = @"
-                                            UPDATE detalleIngreso SET 
-                                                   cantidadActual = detalleIngreso.cantidadActual + @cantidad
-                                            WHERE idArticulo = @idArticulo 
-                                            AND idDetalleIngreso=(SELECT MAX(idDetalleIngreso) FROM detalleIngreso)";
+                                    comm.Parameters.AddWithValue("@idDevolucion", ID);
+                                    comm.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                    comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                    comm.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                    comm.Parameters.AddWithValue("@precio", Detalle[i].precio);
+                                    comm.Parameters.AddWithValue("@dañado", Detalle[i].dañado);
 
-                                        using (SqlCommand comm2 = new SqlCommand(queryStock, conn))
-                                        {
-                                            comm2.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                            comm2.Parameters.AddWithValue("@precioCompra", Detalle[i].cantidad);
-
-
-                                            respuesta = comm2.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso la actualizacion del ingreso";
-                                        }
-                                    }
-
-                                    if (respuesta.Equals("OK"))
-                                    {
-                                        string query3 = @"
-                                            INSERT INTO detalleDevolucion(
-                                                    idDevolucion,
-                                                    idDetalleVenta,
-                                                    idArticulo,
-                                                    cantidad,
-                                                    precio,
-                                                    dañado
-                                                ) VALUES (
-                                                    @idDevolucion,
-                                                    @idDetalleVenta,
-                                                    @idArticulo,
-                                                    @cantidad,
-                                                    @precio,
-                                                    @dañado
-                                                );
-	                                    ";
-
-                                        using (SqlCommand comm3 = new SqlCommand(query3, conn))
-                                        {
-                                            comm3.Parameters.AddWithValue("@idDevolucion", ID);
-                                            comm3.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                            comm3.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                            comm3.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
-                                            comm3.Parameters.AddWithValue("@precio", Detalle[i].precio);
-                                            comm3.Parameters.AddWithValue("@dañado", Detalle[i].dañado);
-
-                                            respuesta = comm3.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del detalle";
-
-
-                                            if(respuesta.Equals("OK"))
-                                            {
-                                                string query4 = @"
-														SELECT TOP 1 dv.cantidad
-                                                        FROM detalleVenta dv
-                                                            inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                        WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                        AND di.idArticulo = @idArticulo
-														ORDER BY dv.idDetalleIngreso DESC
-                                                ;";
-
-                                                using (SqlCommand comm4 = new SqlCommand(query4, conn))
-                                                {
-                                                    comm4.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                                    comm4.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-
-                                                    using (SqlDataReader reader = comm4.ExecuteReader())
-                                                    {
-                                                        if (reader.Read() && !reader.IsDBNull(0))
-                                                            cantidad = reader.GetInt32(0);
-                                                        else
-                                                            break;
-                                                    }
-                                                }
-
-                                                //si la cantidad a devolver es igual a la de la venta, se anula el detalle venta
-                                                if(cantidad == Detalle[i].cantidad)
-                                                {
-                                                    string query5 = @"
-														    DELETE dv FROM detalleVenta dv
-                                                            inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                            WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                            AND di.idArticulo = @idArticulo
-                                                    ;";
-
-                                                    using (SqlCommand comm5 = new SqlCommand(query5, conn))
-                                                    {
-                                                        comm5.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                                        comm5.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-
-                                                        respuesta = comm5.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
-                                                    }
-                                                }
-                                                //si la cantidad a devolver es menor a la de la venta, se actualiza el detalle venta
-                                                else if (cantidad > Detalle[i].cantidad)
-                                                {
-                                                    string query6 = @"
-                                                            UPDATE detalleVenta SET
-                                                                cantidad = dv.cantidad - @cantidad
-                                                            FROM detalleVenta dv
-                                                                inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
-                                                            WHERE dv.idDetalleVenta = @idDetalleVenta
-                                                            AND di.idArticulo = @idArticulo
-                                                    ;";
-
-                                                    using (SqlCommand comm6 = new SqlCommand(query6, conn))
-                                                    {
-                                                        comm6.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
-                                                        comm6.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
-                                                        comm6.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-
-                                                        respuesta = comm6.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Registro del detalle";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    i++;
-
-                                    if (!respuesta.Equals("OK"))
-                                    {
-                                        break;
-                                    }
+                                    respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingreso el Registro del Detalle de Devolucion";
                                 }
+                                #endregion
 
-                                string query7 = @"
-											SELECT COUNT(idDetalleVenta)
-                                            FROM detalleVenta
-                                            WHERE idVenta = @idVenta
-                                ;";
+                            }
+                            else
+                                break;
 
-                                using (SqlCommand comm7 = new SqlCommand(query7, conn))
+                            if (respuesta.Equals("OK"))
+                            {
+                                #region Obtener Cantidad del Articulo Vendido
+                                string queryAmountArticle = @"
+											SELECT TOP 1 dv.cantidad
+                                            FROM detalleVenta dv
+                                                inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                            WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                AND di.idArticulo = @idArticulo
+											ORDER BY dv.idDetalleIngreso DESC
+                                ";
+
+                                using (SqlCommand comm = new SqlCommand(queryAmountArticle, conn))
                                 {
-                                    comm7.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
+                                    comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+                                    comm.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
 
-                                    using (SqlDataReader reader = comm7.ExecuteReader())
+                                    using (SqlDataReader reader = comm.ExecuteReader())
                                     {
                                         if (reader.Read() && !reader.IsDBNull(0))
                                             cantidad = reader.GetInt32(0);
-                                    }
-
-                                    //anula la venta si devuelve todos los articulos
-                                    if(cantidad==0)
-                                    {
-                                        string query8 = @"
-                                                    UPDATE venta SET estado = 3
-						                            WHERE idVenta = @idVenta
-                                        ";
-
-                                        using (SqlCommand comm8 = new SqlCommand(query8, conn))
-                                        {
-                                            comm7.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
-
-                                            respuesta = comm7.ExecuteNonQuery() == 1 ? "OK" : "No se anulo la venta en devolucion";
-                                        }
+                                        else
+                                            break;
                                     }
                                 }
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
-                }
-            }
-        }
+                                #endregion
 
-
-
-        public List<DVenta> MostrarVenta(string Buscar)
-        {
-            List<DVenta> ListaGenerica = new List<DVenta>();
-
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
-            {
-
-                using (SqlCommand comm = new SqlCommand())
-                {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT " +
-                            "v.idVenta, " +
-                            "c.cedula " + "-" + " c.nombre, " +
-                            "v.fecha, " +
-                            "v.metodoPago, " +
-                            "v.estado, " +
-                            "SUM(dv.precioVenta) as precioTotal " +
-                        "from [venta] v " +
-                        "inner join [cliente] c on v.idCliente=v.idCliente " +
-                        "inner join [trabajador] t on v.idTrabajador=t.idTrabajador " +
-                        "inner join [detalleVenta] dv on v.idVenta=dv.idVenta " +
-                        "where v.idVenta = " + Buscar + " ";
-
-                    try
-                    {
-
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DVenta
+                                //si la cantidad a devolver es igual a la de la venta, se elimina el detalle venta
+                                if (cantidad == Detalle[i].cantidad)
                                 {
-                                    idVenta = reader.GetInt32(0),
-                                    cliente = reader.GetString(1),
-                                    fecha = reader.GetDateTime(2),
-                                    metodoPago = reader.GetInt32(3),
-                                    estado = reader.GetInt32(4),
-                                    montoTotal = reader.GetDouble(5)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
-                }
-            }
+                                    #region Eliminar Detalle Venta
+                                    string queryDeleteDetail = @"
+											DELETE dv FROM detalleVenta dv
+                                                inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                            WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                AND di.idArticulo = @idArticulo
+                                    ";
 
-        }
+                                    using (SqlCommand comm = new SqlCommand(queryDeleteDetail, conn))
+                                    {
+                                        comm.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                        comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
 
-
-
-        public List<DDetalle_Venta> MostrarDetalleVenta(string Buscar)
-        {
-            List<DDetalle_Venta> ListaGenerica = new List<DDetalle_Venta>();
-
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
-            {
-
-                using (SqlCommand comm = new SqlCommand())
-                {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT " +
-                            "dv.idDetalleVenta, " +
-                            "dv.idVenta, " +
-                            "a.codigo, " +
-                            "a.nombre, " +
-                            "dv.cantidad, " +
-                            "dv.precioVenta " +
-                        "from [detalleVenta] dv " +
-                        "inner join [detalleIngreso] di on di.idDetalleIngreso = dv.idDetalleIngreso " +
-                        "inner join [articulo] a on di.idArticulo = a.idArticulo " +
-                        "where dv.idVenta = " + Buscar;
-
-                    try
-                    {
-
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DDetalle_Venta
+                                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se eliminó el Detalle de la Venta";
+                                    }
+                                    #endregion
+                                }
+                                //si la cantidad a devolver es menor a la de la venta, se actualiza el detalle venta
+                                else if (cantidad > Detalle[i].cantidad)
                                 {
-                                    idDetalleIngreso = reader.GetInt32(0),
-                                    idVenta = reader.GetInt32(1),
-                                    codigo = reader.GetString(2),
-                                    nombre = reader.GetString(3),
-                                    cantidad = reader.GetInt32(4),
-                                    precioVenta = (double)reader.GetDecimal(5)
-                                });
+                                    #region Actualizar Detalle Venta
+                                    string queryUpdateDetail = @"
+                                            UPDATE detalleVenta SET
+                                                cantidad = dv.cantidad - @cantidad
+                                            FROM detalleVenta dv
+                                                inner join detalleIngreso di ON dv.idDetalleIngreso=di.idDetalleIngreso
+                                            WHERE dv.idDetalleVenta = @idDetalleVenta
+                                                AND di.idArticulo = @idArticulo
+                                    ";
+
+                                    using (SqlCommand comm = new SqlCommand(queryUpdateDetail, conn))
+                                    {
+                                        comm.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
+                                        comm.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
+                                        comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
+
+                                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó el Detalle de la Venta";
+                                    }
+                                    #endregion
+                                }
+                            }
+                            else
+                                break;
+
+                            i++;
+                        }
+
+                        #region Contar Detalles de Ventas Restantes
+                        string queryCountSales = @"
+								SELECT COUNT(idDetalleVenta)
+                                FROM detalleVenta
+                                WHERE idVenta = @idVenta
+                        ;";
+
+                        using (SqlCommand comm = new SqlCommand(queryCountSales, conn))
+                        {
+                            comm.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
+
+                            using (SqlDataReader reader = comm.ExecuteReader())
+                            {
+                                if (reader.Read() && !reader.IsDBNull(0))
+                                    cantidad = reader.GetInt32(0);
                             }
                         }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
+                        #endregion
+
+                        //si queda la venta sin ningun detalle
+                        if (cantidad == 0)
                         {
-                            conn.Close();
+                            #region Anular Venta
+                            string queryCancelSale = @"
+                                    UPDATE venta SET estado = 3
+						            WHERE idVenta = @idVenta
+                            ";
+
+                            using (SqlCommand comm = new SqlCommand(queryCancelSale, conn))
+                            {
+                                comm.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
+
+                                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se anuló la Venta";
+                            }
+                            #endregion
                         }
                     }
-                    return ListaGenerica;
                 }
+                catch (SqlException e)
+                {
+                    MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+                return respuesta;
             }
-
         }
 
 
