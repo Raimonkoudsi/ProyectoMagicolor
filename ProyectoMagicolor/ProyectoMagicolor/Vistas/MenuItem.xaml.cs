@@ -36,8 +36,10 @@ namespace ProyectoMagicolor.Vistas
 
         private void LisViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (LisViewMenu.SelectedIndex < 0) return;
             _context.SwitchScreen(((SubItem)((ListView)sender).SelectedItem).Screen);
             LisViewMenu.SelectedItem = 0;
+            LisViewMenu.SelectedIndex = -1;
         }
     }
 }

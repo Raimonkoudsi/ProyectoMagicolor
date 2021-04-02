@@ -63,6 +63,13 @@ namespace Datos
             set { _Codigo = value; }
         }
 
+        private int _IdArticulo;
+        public int idArticulo
+        {
+            get { return _IdArticulo; }
+            set { _IdArticulo = value; }
+        }
+
         public DDetalle_Venta()
         {
 

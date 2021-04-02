@@ -1,0 +1,188 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.DevolucionFrm"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="820"
+      Loaded="Page_Loaded"
+      Title="CompraFrm">
+
+    <Grid Background="WhiteSmoke">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="0 0 1 0" BorderBrush="Gray">
+            <Grid Width="200">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Visibility="Visible">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Factura " FontSize="15" FontWeight="Bold"/>
+                            <TextBlock Name="txtFactura" Text="#1231982" FontSize="15" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="7 2 0 0">
+                            <TextBlock Text="Fecha: " FontSize="14" />
+                            <TextBlock Name="txtFecha" Text="10/01/2020" FontSize="14"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Separator Margin="0 5"/>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Vendedor" FontSize="15" FontWeight="Bold"/>
+                        <TextBlock Name="txtVendedor" Text="Raimon Koudsi" Margin="7 2 0 0"/>
+                    </StackPanel>
+                    <Separator Margin="0 5"/>
+                </StackPanel>
+                <Grid Grid.Row="1" >
+                    <StackPanel  Margin="7 10 7 7">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Cliente" FontSize="17" FontWeight="Bold"/>
+                                <TextBlock x:Name="txtCliName" Text="John Adams Williams McArthur." FontSize="12" FontWeight="Bold" TextTrimming="CharacterEllipsis" 
+                                           Margin="4 0 5 10" 
+                                           Visibility="Visible"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel x:Name="ClienteDatos" Visibility="Visible">
+                            <StackPanel Margin="7 0 0 0">
+                                <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtCliDoc" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <!--<StackPanel Margin="7 10 0 0">
+                                <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtCliDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
+                            </StackPanel>-->
+                            <StackPanel Margin="7 5 0 0">
+                                <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtCliTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Margin="7 5 0 0">
+                                <TextBlock Text="Email" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtCliEmail" Text="Jocrod.one@gmail.com" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <Separator Margin="0 5" VerticalAlignment="Bottom"/>
+                </Grid>
+                <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
+                    <StackPanel>
+                        <TextBlock Text="Total Restante" FontSize="15" FontWeight="Bold" Margin="0 "/>
+                        <TextBlock Name="txtTotal" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Monto a Devolver" FontSize="15" FontWeight="Bold" Margin="0 "/>
+                        <TextBlock Name="txtMontoDevolucion" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <Grid  Margin="10 10 10 0">
+                        <TextBlock x:Name="PlaceMetodoPago" Text="Método de pago" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                        <ComboBox x:Name="CbMetodoPago" FontSize="13" SelectionChanged="CbMetodoPago_SelectionChanged" IsEnabled="False">
+                            <ComboBoxItem>Contado</ComboBoxItem>
+                            <ComboBoxItem>Credito</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Name="GrdFechaLimite" Margin="30 10 30 20" Visibility="Visible">
+                        <TextBlock x:Name="PlaceFechaLimite" Text="Fecha Limite" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
+                        <DatePicker x:Name="dpFechaLimite" FontSize="13" Focusable="False" SelectedDateChanged="dpFechaLimite_SelectedDateChanged" IsEnabled="False"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="30 15" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Name="BtnProcesarDevolucion" HorizontalAlignment="Left" Content="Procesar Devolución" Click="BtnProcesarDevolucion_Click" Margin="10 0"/>
+                <Button Grid.Column="1" Name="BtnProcesarTodo" HorizontalAlignment="Left" Content="Devolución Completa" Click="BtnProcesarTodo_Click" Background="OrangeRed" BorderBrush="OrangeRed" Margin="10 0"/>
+                <Button Grid.Column="2" Name="BtnAtras" HorizontalAlignment="Right" FontSize="11" Content="Regresar Inicio" Click="BtnAtras_Click" Padding="3" Margin="10 0"/>
+            </Grid>
+
+            <DataGrid x:Name="dgOperaciones"
+                  Grid.Row="1"
+                  AutoGenerateColumns="false" 
+                  IsReadOnly="true" 
+                  ColumnWidth="*" 
+                  Margin="30 0 30 30"
+                  FontSize="11"
+                  BorderThickness="0 1 0 1"
+                  BorderBrush="LightGray"
+                  Background="LightGray">
+                <DataGrid.Resources>
+                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="#f0f0f0" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Articulo" Binding="{Binding NombreArticulo}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Precio" Binding="{Binding Precio}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Comprada" Binding="{Binding CantidadComprada}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Devuelta" Binding="{Binding CantidadDevuelta}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Restante" Binding="{Binding CantidadRestante}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridCheckBoxColumn Width="auto" Header="Dañado" Binding="{Binding Dañado}">
+                        
+                    </DataGridCheckBoxColumn>
+                    <DataGridTemplateColumn Width="auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Width="auto">
+                                    <Button CommandParameter="{Binding Id}"
+                                            Name="BtnDevolver"
+                                        Click="BtnDevolver_Click"
+                                        Margin="0 0 5 0"
+                                        Padding="5">Devolver</Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Page>

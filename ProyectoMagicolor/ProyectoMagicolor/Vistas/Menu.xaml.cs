@@ -60,7 +60,7 @@ namespace ProyectoMagicolor
             var item3 = new ItemMenu("Expenses", menuExpenses, PackIconKind.ShoppingBasket);
 
             var menuFinancial = new List<SubItem>();
-            menuFinancial.Add(new SubItem("Cash Flow"));
+            menuFinancial.Add(new SubItem("Cash Flow", new DevolucionInicio(this)));
             var item4 = new ItemMenu("Expenses", menuFinancial, PackIconKind.ScaleBalance);
 
             var item0 = new ItemMenu("Dashboard", new ArticuloDG(), PackIconKind.ViewDashboard);
@@ -76,7 +76,7 @@ namespace ProyectoMagicolor
             ContentFrame.Content = Frm;
         }
 
-        public DTrabajador LoggedTrabajador;
+        public static DTrabajador LoggedTrabajador;
 
         public void SwitchScreen(object sender)
         {

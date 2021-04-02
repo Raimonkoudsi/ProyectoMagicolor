@@ -87,7 +87,7 @@ namespace ProyectoMagicolor.Vistas
             LIngreso Metodo = new LIngreso();
 
             DIngreso dIngreso = new DIngreso(0,
-                                             Parent.LoggedTrabajador.idTrabajador,
+                                             MainWindow.LoggedTrabajador.idTrabajador,
                                              Proveedor.idProveedor,
                                              DateTime.Now,
                                              txtFactura.txt.Text,

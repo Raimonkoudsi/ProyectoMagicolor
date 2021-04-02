@@ -105,6 +105,9 @@
     <Compile Include="Vistas\ArticuloDG.xaml.cs">
       <DependentUpon>ArticuloDG.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\DevolucionDetalleFrm.xaml.cs">
+      <DependentUpon>DevolucionDetalleFrm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ClienteFrmVista.xaml.cs">
       <DependentUpon>ClienteFrmVista.xaml</DependentUpon>
     </Compile>
@@ -126,8 +129,14 @@
     <Compile Include="Vistas\DetalleIngresoVista.xaml.cs">
       <DependentUpon>DetalleIngresoVista.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\DevolucionInicio.xaml.cs">
+      <DependentUpon>DevolucionInicio.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\VentaFrm.xaml.cs">
       <DependentUpon>VentaFrm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\DevolucionFrm.xaml.cs">
+      <DependentUpon>DevolucionFrm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\DetalleVentaFrm.xaml.cs">
       <DependentUpon>DetalleVentaFrm.xaml</DependentUpon>
@@ -170,6 +179,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Vistas\DevolucionDetalleFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\ClienteFrmVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -198,7 +211,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Vistas\DevolucionInicio.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vistas\VentaFrm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\DevolucionFrm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
