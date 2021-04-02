@@ -323,7 +323,7 @@ namespace Logica
                             {
                                 ListaGenerica.Add(new DDetalle_Venta
                                 {
-                                    idDetalleIngreso = reader.GetInt32(0),
+                                    idDetalleVenta = reader.GetInt32(0),
                                     idVenta = reader.GetInt32(1),
                                     idArticulo = reader.GetInt32(2),
                                     codigo = reader.GetString(3),
