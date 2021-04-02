@@ -62,15 +62,15 @@ namespace ProyectoMagicolor.Vistas
             }
 
             int CantidadDevuelta = int.Parse(txtcantidad.txt.Text);
+            int CantidadRestante = DataFill.CantidadComprada - CantidadDevuelta;
             bool Dañado = RBDamaged.IsChecked ?? false;
 
-            UForm = new ModeloDevolucion(DataFill.Id,
-                                         DataFill.NombreArticulo,
-                                         DataFill.Precio,
-                                         DataFill.CantidadComprada,
-                                         CantidadDevuelta,
-                                         DataFill.CantidadComprada - CantidadDevuelta,
-                                         Dañado);
+            DataFill.CantidadDevuelta = CantidadDevuelta;
+            DataFill.CantidadRestante = CantidadRestante;
+            DataFill.Dañado = Dañado;
+
+
+            UForm = DataFill;
         }
 
         void Create()
