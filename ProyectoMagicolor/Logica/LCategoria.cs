@@ -13,48 +13,53 @@ namespace Logica
     public class LCategoria:DCategoria
     {
 
-        //Metodos
-
         public string Insertar(DCategoria Categoria)
         {
             string respuesta = "";
 
-            string query = @"
-                        INSERT INTO categoria(
-                            nombre,
-                            descripcion
-                        ) VALUES(
-                            @nombre,
-                            @descripcion
-                        );
-	        ";
-
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
-
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                try
                 {
-                    comm.Parameters.AddWithValue("@nombre", Categoria.nombre);
-                    comm.Parameters.AddWithValue("@descripcion", Categoria.descripcion);
+                    conn.Open();
 
-                    try
+                    LID getID = new LID();
+
+                    int ID = getID.ID("categoria", "idCategoria");
+
+                    string queryAddCategory = @"
+                            INSERT INTO categoria (
+                                idCategoria,
+                                nombre,
+                                descripcion
+                            ) VALUES (
+                                @idCategoria,
+                                @nombre,
+                                @descripcion
+                            );
+	                ";
+
+                    using (SqlCommand comm = new SqlCommand(queryAddCategory, conn))
                     {
-                        conn.Open();
+                        comm.Parameters.AddWithValue("@idCategoria", ID);
+                        comm.Parameters.AddWithValue("@nombre", Categoria.nombre);
+                        comm.Parameters.AddWithValue("@descripcion", Categoria.descripcion);
+
                         respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la Categoria";
                     }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
                 }
+                catch (SqlException e)
+                {
+                    respuesta = e.Message;
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+                return respuesta;
             }
         }
 
@@ -63,7 +68,7 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
+            string queryEditCategory = @"
                         UPDATE categoria SET 
                             nombre = @nombre,
                             descripcion = @descripcion
@@ -73,7 +78,7 @@ namespace Logica
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm = new SqlCommand(queryEditCategory, conn))
                 {
                     comm.Parameters.AddWithValue("@nombre", Categoria.nombre);
                     comm.Parameters.AddWithValue("@descripcion", Categoria.descripcion);
@@ -106,14 +111,15 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
-                        DELETE FROM categoria WHERE idCategoria=@idCategoria
+            string queryDeleteCategory = @"
+                        DELETE FROM categoria 
+                        WHERE idCategoria=@idCategoria
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm = new SqlCommand(queryDeleteCategory, conn))
                 {
 
                     comm.Parameters.AddWithValue("@idCategoria", Categoria.idCategoria);
@@ -140,8 +146,6 @@ namespace Logica
         }
 
 
-
-        //funcionando
         public List<DCategoria> Mostrar(string Buscar)
         {
             List<DCategoria> ListaGenerica = new List<DCategoria>();
@@ -153,7 +157,12 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = "SELECT idCategoria, nombre, descripcion from [categoria] where nombre like '" + Buscar + "%' order by nombre";
+                    comm.CommandText = @"SELECT 
+                                            idCategoria, 
+                                            nombre, 
+                                            descripcion 
+                                        from [categoria] 
+                                        where nombre like '" + Buscar + "%' order by nombre";
 
                     try
                     {
@@ -202,6 +211,8 @@ namespace Logica
             }
 
         }
+
+
         public List<DCategoria> Encontrar(int Buscar)
         {
             List<DCategoria> ListaGenerica = new List<DCategoria>();
@@ -215,8 +226,6 @@ namespace Logica
 
                     comm.CommandText = "SELECT * from [categoria] where idCategoria = " + Buscar + "";
 
-
-                    //comm.Parameters.AddWithValue("@textoBuscar", "");
 
                     try
                     {
@@ -232,7 +241,7 @@ namespace Logica
                                 {
                                     idCategoria = reader.GetInt32(0),
                                     nombre = reader.GetString(1),
-                                    descripcion = reader.GetString(2),
+                                    descripcion = reader.GetString(2)
                                 });
                             }
                         }

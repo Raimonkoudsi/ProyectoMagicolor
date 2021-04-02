@@ -24,7 +24,7 @@ namespace ProyectoMagicolor.Vistas
     public partial class CuentaPagarDG : Page
     {
 
-        public LIngreso Metodos = new LIngreso();
+        public LCuentaPagar Metodos = new LCuentaPagar();
 
         public CuentaPagarDG(MainWindow parent)
         {

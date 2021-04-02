@@ -14,7 +14,7 @@ namespace Logica
 
         public string Insertar(DDevolucion Devolucion, List<DDetalle_Devolucion> Detalle)
         {
-            int ID = 1, i = 0;
+            int i = 0;
 
             string respuesta = "";
 
@@ -25,21 +25,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    #region Obtener Ultimo ID
-                    string queryGetID = "SELECT max(idDevolucion) FROM devolucion";
+                    LID MethodID = new LID();
 
-                    using (SqlCommand comm = new SqlCommand(queryGetID, conn))
-                    {
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-                            if (reader.Read() && !reader.IsDBNull(0))
-                            {
-                                ID = reader.GetInt32(0);
-                                ID++;
-                            }
-                        }
-                    }
-                    #endregion
+                    int ID = MethodID.ID("devolucion", "idDevolucion");
 
                     #region Añadir Devolucion
                     string queryAddDevolution = @"
@@ -88,7 +76,7 @@ namespace Logica
                                 using (SqlCommand comm = new SqlCommand(queryRestock, conn))
                                 {
                                     comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
-                                    comm.Parameters.AddWithValue("@precioCompra", Detalle[i].cantidad);
+                                    comm.Parameters.AddWithValue("@cantidad", Detalle[i].cantidad);
 
                                     respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso la actualizacion del stock";
                                 }
@@ -97,9 +85,12 @@ namespace Logica
 
                             if (respuesta.Equals("OK"))
                             {
+                                int detailID = MethodID.ID("detalleDevolucion", "idDetalleDevolucion");
+
                                 #region Añadir Detalle de Devolucion
                                 string queryAddDetailDevolution = @"
                                     INSERT INTO detalleDevolucion(
+                                            idDetalleDevolucion,
                                             idDevolucion,
                                             idDetalleVenta,
                                             idArticulo,
@@ -107,6 +98,7 @@ namespace Logica
                                             precio,
                                             dañado
                                         ) VALUES (
+                                            @idDetalleDevolucion,
                                             @idDevolucion,
                                             @idDetalleVenta,
                                             @idArticulo,
@@ -118,6 +110,7 @@ namespace Logica
 
                                 using (SqlCommand comm = new SqlCommand(queryAddDetailDevolution, conn))
                                 {
+                                    comm.Parameters.AddWithValue("@idDetalleDevolucion", detailID);
                                     comm.Parameters.AddWithValue("@idDevolucion", ID);
                                     comm.Parameters.AddWithValue("@idDetalleVenta", Detalle[i].idDetalleVenta);
                                     comm.Parameters.AddWithValue("@idArticulo", Detalle[i].idArticulo);
@@ -128,7 +121,6 @@ namespace Logica
                                     respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingreso el Registro del Detalle de Devolucion";
                                 }
                                 #endregion
-
                             }
                             else
                                 break;
@@ -229,7 +221,7 @@ namespace Logica
                         }
                         #endregion
 
-                        //si queda la venta sin ningun detalle
+                        //si queda la venta sin ningun detalle, se anula
                         if (cantidad == 0)
                         {
                             #region Anular Venta

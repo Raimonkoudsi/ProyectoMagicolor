@@ -12,84 +12,89 @@ namespace Logica
     public class LTrabajador:DTrabajador
     {
 
-
         public string Insertar(DTrabajador Trabajador)
         {
             string respuesta = "";
 
-            string query = @"
-                        INSERT INTO trabajador(
-                            nombre,
-                            apellidos,
-                            sexo,
-                            fechaNacimiento,
-                            cedula,
-                            direccion,
-                            telefono,
-                            email,
-                            acceso,
-                            usuario,
-                            contraseña,
-                            pregunta,
-                            respuesta,
-                            estado
-                        ) VALUES(
-                            @nombre,
-                            @apellidos,
-                            @sexo,
-                            @fechaNacimiento,
-                            @cedula,
-                            @direccion,
-                            @telefono,
-                            @email,
-                            @acceso,
-                            @usuario,
-                            @contraseña,
-                            @pregunta,
-                            @respuesta,
-                            @estado
-                        );
-	        ";
-
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
-
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                try
                 {
+                    conn.Open();
 
-                    comm.Parameters.AddWithValue("@nombre", Trabajador.nombre);
-                    comm.Parameters.AddWithValue("@apellidos", Trabajador.apellidos);
-                    comm.Parameters.AddWithValue("@sexo", Trabajador.sexo);
-                    comm.Parameters.AddWithValue("@fechaNacimiento", Trabajador.fechaNacimiento);
-                    comm.Parameters.AddWithValue("@cedula", Trabajador.cedula);
-                    comm.Parameters.AddWithValue("@direccion", Trabajador.direccion);
-                    comm.Parameters.AddWithValue("@telefono", Trabajador.telefono);
-                    comm.Parameters.AddWithValue("@email", Trabajador.email);
-                    comm.Parameters.AddWithValue("@acceso", Trabajador.acceso);
-                    comm.Parameters.AddWithValue("@usuario", Trabajador.usuario);
-                    comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
-                    comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
-                    comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
-                    comm.Parameters.AddWithValue("@estado", 1);
+                    LID getID = new LID();
 
-                    try
+                    int ID = getID.ID("trabajador", "idTrabajador");
+
+                    string queryAddWorker = @"
+                                INSERT INTO trabajador (
+                                    idTrabajador,
+                                    nombre,
+                                    apellidos,
+                                    sexo,
+                                    fechaNacimiento,
+                                    cedula,
+                                    direccion,
+                                    telefono,
+                                    email,
+                                    acceso,
+                                    usuario,
+                                    contraseña,
+                                    pregunta,
+                                    respuesta,
+                                    estado
+                                ) VALUES (
+                                    @idTrabajador,
+                                    @nombre,
+                                    @apellidos,
+                                    @sexo,
+                                    @fechaNacimiento,
+                                    @cedula,
+                                    @direccion,
+                                    @telefono,
+                                    @email,
+                                    @acceso,
+                                    @usuario,
+                                    @contraseña,
+                                    @pregunta,
+                                    @respuesta,
+                                    @estado
+                                );
+	                ";
+
+                    using (SqlCommand comm = new SqlCommand(queryAddWorker, conn))
                     {
-                        conn.Open();
+                        comm.Parameters.AddWithValue("@idTrabajador", ID);
+                        comm.Parameters.AddWithValue("@nombre", Trabajador.nombre);
+                        comm.Parameters.AddWithValue("@apellidos", Trabajador.apellidos);
+                        comm.Parameters.AddWithValue("@sexo", Trabajador.sexo);
+                        comm.Parameters.AddWithValue("@fechaNacimiento", Trabajador.fechaNacimiento);
+                        comm.Parameters.AddWithValue("@cedula", Trabajador.cedula);
+                        comm.Parameters.AddWithValue("@direccion", Trabajador.direccion);
+                        comm.Parameters.AddWithValue("@telefono", Trabajador.telefono);
+                        comm.Parameters.AddWithValue("@email", Trabajador.email);
+                        comm.Parameters.AddWithValue("@acceso", Trabajador.acceso);
+                        comm.Parameters.AddWithValue("@usuario", Trabajador.usuario);
+                        comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
+                        comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
+                        comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
+                        comm.Parameters.AddWithValue("@estado", 1);
+
                         respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del Trabajador";
-                    } 
-                    catch(SqlException e)
-                    {
-                        respuesta = e.Message;
                     }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
                 }
+                catch (SqlException e)
+                {
+                    respuesta = e.Message;
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+                return respuesta;
             }
         }
 
@@ -98,7 +103,7 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
+            string queryEditWorker = @"
                         UPDATE trabajador SET
                             nombre = @nombre,
                             apellidos = @apellidos,
@@ -119,7 +124,7 @@ namespace Logica
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm = new SqlCommand(queryEditWorker, conn))
                 {
 
                     comm.Parameters.AddWithValue("@nombre", Trabajador.nombre);
@@ -164,14 +169,15 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
-                        DELETE FROM trabajador WHERE idTrabajador=@idTrabajador
+            string queryDeleteWorker = @"
+                        DELETE FROM trabajador 
+                        WHERE idTrabajador=@idTrabajador
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm = new SqlCommand(queryDeleteWorker, conn))
                 {
 
                     comm.Parameters.AddWithValue("@idTrabajador", Trabajador.idTrabajador);
@@ -375,8 +381,6 @@ namespace Logica
 
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
-            //string error = "";
-
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
@@ -458,7 +462,6 @@ namespace Logica
                     try
                     {
                         conn.Open();
-                        //respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "Usuario no Existe";
 
                         using (SqlDataReader reader = comm.ExecuteReader())
                         {

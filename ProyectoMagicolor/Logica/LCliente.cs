@@ -16,57 +16,65 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
-                        INSERT INTO cliente(
-                            nombre,
-                            apellidos,
-                            tipoDocumento,
-                            numeroDocumento,
-                            direccion,
-                            telefono,
-                            email
-                        ) VALUES(
-                            @nombre,
-                            @apellidos,
-                            @tipoDocumento,
-                            @numeroDocumento,
-                            @direccion,
-                            @telefono,
-                            @email
-                        );
-	        ";
-
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                try
                 {
-                    comm.Parameters.AddWithValue("@nombre", Cliente.nombre);
-                    comm.Parameters.AddWithValue("@apellidos", Cliente.apellidos);
-                    comm.Parameters.AddWithValue("@tipoDocumento", Cliente.tipoDocumento);
-                    comm.Parameters.AddWithValue("@numeroDocumento", Cliente.numeroDocumento);
-                    comm.Parameters.AddWithValue("@direccion", Cliente.direccion);
-                    comm.Parameters.AddWithValue("@telefono", Cliente.telefono);
-                    comm.Parameters.AddWithValue("@email", Cliente.email);
+                    conn.Open();
 
-                    try
+                    LID getID = new LID();
+
+                    int ID = getID.ID("cliente", "idCliente");
+
+                    string queryAddClient = @"
+                            INSERT INTO cliente(
+                                idCliente,
+                                nombre,
+                                apellidos,
+                                tipoDocumento,
+                                numeroDocumento,
+                                direccion,
+                                telefono,
+                                email
+                            ) VALUES (
+                                @idCliente,
+                                @nombre,
+                                @apellidos,
+                                @tipoDocumento,
+                                @numeroDocumento,
+                                @direccion,
+                                @telefono,
+                                @email
+                            );
+	                ";
+
+                    using (SqlCommand comm = new SqlCommand(queryAddClient, conn))
                     {
-                        conn.Open();
+                        comm.Parameters.AddWithValue("@idCliente", ID);
+                        comm.Parameters.AddWithValue("@nombre", Cliente.nombre);
+                        comm.Parameters.AddWithValue("@apellidos", Cliente.apellidos);
+                        comm.Parameters.AddWithValue("@tipoDocumento", Cliente.tipoDocumento);
+                        comm.Parameters.AddWithValue("@numeroDocumento", Cliente.numeroDocumento);
+                        comm.Parameters.AddWithValue("@direccion", Cliente.direccion);
+                        comm.Parameters.AddWithValue("@telefono", Cliente.telefono);
+                        comm.Parameters.AddWithValue("@email", Cliente.email);
+
                         respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del Cliente";
                     }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
                 }
+                catch (SqlException e)
+                {
+                    respuesta = e.Message;
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+                return respuesta;
             }
         }
 
@@ -75,7 +83,7 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
+            string queryEditClient = @"
                         UPDATE cliente SET 
                             nombre = @nombre,
                             apellidos = @apellidos,
@@ -90,7 +98,7 @@ namespace Logica
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm = new SqlCommand(queryEditClient, conn))
                 {
                     comm.Parameters.AddWithValue("@nombre", Cliente.nombre);
                     comm.Parameters.AddWithValue("@apellidos", Cliente.apellidos);
@@ -128,14 +136,15 @@ namespace Logica
         {
             string respuesta = "";
 
-            string query = @"
-                        DELETE FROM cliente WHERE idCliente=@idCliente
+            string queryDeleteClient = @"
+                        DELETE FROM cliente 
+                        WHERE idCliente=@idCliente
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                using (SqlCommand comm = new SqlCommand(queryDeleteClient, conn))
                 {
 
                     comm.Parameters.AddWithValue("@idCliente", Cliente.idCliente);
@@ -161,9 +170,6 @@ namespace Logica
             }
         }
 
-
-
-        //funcionando
         public List<DCliente> Mostrar(string Buscar, string Buscar2)
         {
             List<DCliente> ListaGenerica = new List<DCliente>();
@@ -179,7 +185,6 @@ namespace Logica
 
                     try
                     {
-
                         conn.Open();
 
                         using (SqlDataReader reader = comm.ExecuteReader())
@@ -250,7 +255,7 @@ namespace Logica
                                     numeroDocumento = reader.GetString(4),
                                     direccion = reader.GetString(5),
                                     telefono = reader.GetString(6),
-                                    email = reader.GetString(7),
+                                    email = reader.GetString(7)
                                 });
                             }
                         }

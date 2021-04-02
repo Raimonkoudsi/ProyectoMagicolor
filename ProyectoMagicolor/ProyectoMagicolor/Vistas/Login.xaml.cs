@@ -29,6 +29,7 @@ namespace ProyectoMagicolor.Vistas
 
         void Loging()
         {
+
             if (!txtUsuario.Changed)
             {
                 MessageBox.Show("Debes poner un Nombre de Usuario!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);

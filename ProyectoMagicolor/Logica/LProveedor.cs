@@ -13,66 +13,73 @@ namespace Logica
     public class LProveedor : DProveedor
     {
 
-        //Metodos
-
         public string Insertar(DProveedor Proveedor)
         {
             string respuesta = "";
 
-            string query = @"
-                        INSERT INTO proveedor(
-                            razonSocial,
-                            sectorComercial,
-                            tipoDocumento,
-                            numeroDocumento,
-                            direccion,
-                            telefono,
-                            email,
-                            url
-                        ) VALUES(
-                            @razonSocial,
-                            @sectorComercial,
-                            @tipoDocumento,
-                            @numeroDocumento,
-                            @direccion,
-                            @telefono,
-                            @email,
-                            @url
-                        );
-	        ";
-
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
             {
 
-                using (SqlCommand comm = new SqlCommand(query, conn))
+                try
                 {
-                    comm.Parameters.AddWithValue("@razonSocial", Proveedor.razonSocial);
-                    comm.Parameters.AddWithValue("@sectorComercial", Proveedor.sectorComercial);
-                    comm.Parameters.AddWithValue("@tipoDocumento", Proveedor.tipoDocumento);
-                    comm.Parameters.AddWithValue("@numeroDocumento", Proveedor.numeroDocumento);
-                    comm.Parameters.AddWithValue("@direccion", Proveedor.direccion);
-                    comm.Parameters.AddWithValue("@telefono", Proveedor.telefono);
-                    comm.Parameters.AddWithValue("@email", Proveedor.email);
-                    comm.Parameters.AddWithValue("@url", Proveedor.url);
+                    conn.Open();
 
-                    try
+                    LID getID = new LID();
+
+                    int ID = getID.ID("proveedor", "idProveedor");
+
+                    string query = @"
+                                INSERT INTO proveedor (
+                                    idProveedor,
+                                    razonSocial,
+                                    sectorComercial,
+                                    tipoDocumento,
+                                    numeroDocumento,
+                                    direccion,
+                                    telefono,
+                                    email,
+                                    url
+                                ) VALUES (
+                                    @idProveedor,
+                                    @razonSocial,
+                                    @sectorComercial,
+                                    @tipoDocumento,
+                                    @numeroDocumento,
+                                    @direccion,
+                                    @telefono,
+                                    @email,
+                                    @url
+                                );
+	                ";
+
+                    using (SqlCommand comm = new SqlCommand(query, conn))
                     {
-                        conn.Open();
+                        comm.Parameters.AddWithValue("@idProveedor", ID);
+                        comm.Parameters.AddWithValue("@razonSocial", Proveedor.razonSocial);
+                        comm.Parameters.AddWithValue("@sectorComercial", Proveedor.sectorComercial);
+                        comm.Parameters.AddWithValue("@tipoDocumento", Proveedor.tipoDocumento);
+                        comm.Parameters.AddWithValue("@numeroDocumento", Proveedor.numeroDocumento);
+                        comm.Parameters.AddWithValue("@direccion", Proveedor.direccion);
+                        comm.Parameters.AddWithValue("@telefono", Proveedor.telefono);
+                        comm.Parameters.AddWithValue("@email", Proveedor.email);
+                        comm.Parameters.AddWithValue("@url", Proveedor.url);
+
+
                         respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del Proveedor";
                     }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
                 }
+                catch (SqlException e)
+                {
+                    respuesta = e.Message;
+                }
+                finally
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }
+                return respuesta;
             }
         }
 
@@ -91,7 +98,7 @@ namespace Logica
                             telefono = @telefono,
                             email = @email,
                             url = @url
-                            WHERE idProveedor = @idProveedor;
+                        WHERE idProveedor = @idProveedor;
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -137,7 +144,8 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        DELETE FROM proveedor WHERE idProveedor=@idProveedor
+                        DELETE FROM proveedor 
+                        WHERE idProveedor=@idProveedor
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
@@ -170,8 +178,6 @@ namespace Logica
         }
 
 
-
-        //funcionando
         public List<DProveedor> Mostrar(string Buscar, string Buscar2)
         {
             List<DProveedor> ListaGenerica = new List<DProveedor>();
@@ -187,7 +193,6 @@ namespace Logica
 
                     try
                     {
-
                         conn.Open();
 
                         using (SqlDataReader reader = comm.ExecuteReader())
@@ -226,6 +231,8 @@ namespace Logica
             }
 
         }
+
+
         public List<DProveedor> Encontrar(int Buscar)
         {
             List<DProveedor> ListaGenerica = new List<DProveedor>();

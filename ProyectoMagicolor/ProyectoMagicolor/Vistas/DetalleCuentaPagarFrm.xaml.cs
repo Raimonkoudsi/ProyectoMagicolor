@@ -38,11 +38,10 @@ namespace ProyectoMagicolor.Vistas
 
 
         public DIngreso DataFill;
-        //public DCuentaPagar DataCxP;
 
         public DRegistro_CuentaPagar UForm;
 
-        public LIngreso Metodos = new LIngreso();
+        public LCuentaPagar Metodos = new LCuentaPagar();
 
         public int idEdit;
         public bool total;
