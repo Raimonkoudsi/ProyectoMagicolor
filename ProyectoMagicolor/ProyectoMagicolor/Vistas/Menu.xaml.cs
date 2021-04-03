@@ -61,6 +61,7 @@ namespace ProyectoMagicolor
 
             var menuFinancial = new List<SubItem>();
             menuFinancial.Add(new SubItem("Cash Flow", new DevolucionInicio(this)));
+            menuFinancial.Add(new SubItem("Inventario", new InventarioDG()));
             var item4 = new ItemMenu("Expenses", menuFinancial, PackIconKind.ScaleBalance);
 
             var item0 = new ItemMenu("Dashboard", new ArticuloDG(), PackIconKind.ViewDashboard);

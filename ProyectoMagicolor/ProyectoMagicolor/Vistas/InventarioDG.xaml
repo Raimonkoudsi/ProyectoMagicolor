@@ -1,0 +1,146 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.InventarioDG"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Background="WhiteSmoke"
+        Title="Trabajadores" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Button x:Name="btnOpenFilters" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right" Padding="0" Margin="10 15 20 10" Click="btnOpenFilters_Click" Focusable="False">
+                    <Image Source="/ProyectoMagicolor;component/Imagenes/filter.png" />
+                </Button>
+            </Grid>
+            <DataGrid x:Name="dgOperaciones" 
+                  Grid.Row="1"
+                  AutoGenerateColumns="false" 
+                  IsReadOnly="true" 
+                  ColumnWidth="*" 
+                  Margin="30 0 30 30"
+                  BorderThickness="0 1 0 1"
+                  BorderBrush="LightGray"
+                  Background="WhiteSmoke">
+                <DataGrid.Resources>
+                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="#f0f0f0" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="auto" Header="Código" Binding="{Binding codigo}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Categoria" Binding="{Binding stockMinimo}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Cantidad Actual" Binding="{Binding stockMaximo}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Cantidad Vendida" Binding="{Binding descripcion}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Stock Minimo" Binding="{Binding descripcion}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Width="auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Width="auto">
+                                    <Button CommandParameter="{Binding idArticulo}"
+                                        Click="Button_Click_1"
+                                        Margin="0 0 5 0"
+                                        Padding="5">Editar</Button>
+                                    <Button Name="txtVer"
+                                        CommandParameter="{Binding idArticulo}"
+                                        Click="txtVer_Click"
+                                        Margin="5 0"
+                                        Padding="5">Ver</Button>
+                                    <Button x:Name="btnEliminar"
+                                        CommandParameter="{Binding idArticulo}" 
+                                        Click="btnEliminar_Click"
+                                        Background="OrangeRed" BorderBrush="OrangeRed"
+                                        Margin="5 0 0 0"
+                                        Padding="5">Eliminar</Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <Grid x:Name="SideBar" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Background="#000000" Opacity=".7" MouseDown="Grid_MouseDown" Name="BlackPanel"/>
+            <Grid Grid.Column="1" Name="GridFilters" Background="WhiteSmoke" Width="250">
+                <StackPanel Margin="10 10" Width="200" >
+                    <TextBlock Text="Filtros de Busqueda" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                    <StackPanel Margin="0 10">
+                        <CheckBox Content="Buscar con Fecha" FontWeight="Bold" FontSize="14" IsChecked="True"/>
+                        <StackPanel Visibility="Visible">
+                            <DatePicker />
+                            <CheckBox Content="Entre Fechas" FontWeight="Bold" FontSize="14"/>
+                            <DatePicker />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="0 10">
+                        <TextBlock Text="Mostrar en base a stock" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                        <RadioButton Content="Con Stock" FontWeight="Bold" FontSize="14"/>
+                        <RadioButton Content="Sin Stock" FontWeight="Bold" FontSize="14"/>
+                        <RadioButton Content="Ambos" FontWeight="Bold" FontSize="14"/>
+                    </StackPanel>
+                    <StackPanel Margin="0 10">
+                        <CheckBox Content="Buscar por:" FontWeight="Bold" FontSize="17" Margin="5 5"/>
+                        <RadioButton Content="Mes" FontWeight="Bold" FontSize="14"/>
+                        <RadioButton Content="Semana" FontWeight="Bold" FontSize="14"/>
+                        <RadioButton Content="Dia" FontWeight="Bold" FontSize="14"/>
+                    </StackPanel>
+                    <StackPanel Margin="0 10">
+                        <TextBlock Text="Ordenar:" TextWrapping="Wrap" TextAlignment="Center" FontSize="17" FontWeight="Bold"/>
+                        <CheckBox Content="Alfabeticamente" FontWeight="Bold" FontSize="14"/>
+                        <ComboBox Width="150" HorizontalAlignment="Left" Margin="10 5"/>
+                        <CheckBox Content="Mayores Ventas" FontWeight="Bold" FontSize="14"/>
+                        <CheckBox Content="Mayor Stock" FontWeight="Bold" FontSize="14"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
