@@ -389,6 +389,7 @@ namespace ProyectoMagicolor.Vistas
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Refresh();
+            dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
         }
 
         private void dpFechaLimite_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
