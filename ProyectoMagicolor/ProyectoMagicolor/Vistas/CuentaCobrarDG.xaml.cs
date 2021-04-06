@@ -24,7 +24,7 @@ namespace ProyectoMagicolor.Vistas
     public partial class CuentaCobrarDG : Page
     {
 
-        public LVenta Metodos = new LVenta();
+        public LCuentaCobrar Metodos = new LCuentaCobrar();
 
         public CuentaCobrarDG(MainWindow parent)
         {

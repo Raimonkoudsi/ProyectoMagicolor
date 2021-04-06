@@ -65,7 +65,7 @@ namespace ProyectoMagicolor.Vistas
             int MetodoCredito = 2;
             if (Venta.metodoPago == MetodoCredito)
             {
-                var CuentaCobrar = new LVenta().EncontrarCuentaCobrar(Venta.idVenta)[0];
+                var CuentaCobrar = new LCuentaCobrar().BuscarCxC(Venta.idVenta)[0];
                 dpFechaLimite.SelectedDate = CuentaCobrar.fechaLimite;
             }
 

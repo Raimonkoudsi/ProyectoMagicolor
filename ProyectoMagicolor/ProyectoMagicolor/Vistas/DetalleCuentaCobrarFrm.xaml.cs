@@ -43,7 +43,7 @@ namespace ProyectoMagicolor.Vistas
 
         public DRegistro_CuentaCobrar UForm;
 
-        public LVenta Metodos = new LVenta();
+        public LCuentaCobrar Metodos = new LCuentaCobrar();
 
         public int idEdit;
         public bool total;

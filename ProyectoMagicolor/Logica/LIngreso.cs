@@ -117,9 +117,10 @@ namespace Logica
                         {
                             #region Obtener Stock
                             string querySelectStock = @"
-                                        SELECT 
-                                            SUM(cantidadInicial) as cantidadActual 
-                                        FROM [detalleIngreso] WHERE idArticulo= " + Detalle[i].idArticulo;
+                                        SELECT TOP 1
+                                            cantidadActual
+                                        FROM [detalleIngreso] WHERE idArticulo= " + Detalle[i].idArticulo + @"
+                                        ORDER BY idDetalleIngreso DESC";
 
                             using (SqlCommand comm = new SqlCommand(querySelectStock, conn))
                             {
@@ -196,8 +197,8 @@ namespace Logica
             string respuesta = "";
 
             string query = @"
-                        DELETE FROM ingreso 
-                        WHERE idIngreso=@idIngreso
+                        UPDATE ingreso SET estado = 3
+						WHERE idIngreso = @idIngreso
 	        ";
 
             using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))

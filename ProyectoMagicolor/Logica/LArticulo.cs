@@ -323,5 +323,82 @@ namespace Logica
             }
 
         }
+
+
+
+
+        public List<DArticulo> Inventario(string Buscar)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"
+							SELECT
+                                a.idArticulo,
+                                a.codigo, 
+                                a.nombre, 
+                                c.nombre,
+                                di.cantidadActual,
+                                SUM(dv.cantidad) AS cantidadVendida,
+                                a.stockMinimo
+                            FROM [articulo] a 
+                                INNER JOIN [detalleIngreso] di ON a.idArticulo=di.idArticulo 
+                                INNER JOIN [detalleVenta] dv ON di.idDetalleIngreso=dv.idDetalleIngreso  
+                                INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
+                            GROUP BY 
+								a.codigo, 
+								a.nombre, 
+								a.idArticulo, 
+								di.cantidadActual,
+								c.nombre,
+								a.stockMinimo
+                    ";
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    categoria = reader.GetString(3),
+                                    precioVenta = (double)reader.GetDecimal(4),
+                                    cantidadActual = reader.GetInt32(5)
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+
     }
 }

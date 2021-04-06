@@ -174,6 +174,8 @@ namespace Logica
                             }
                             #endregion
                         }
+                        else
+                            return "No se ingreso el Registro de la cuenta por pagar";
                     }
                 }
                 catch (SqlException e)
