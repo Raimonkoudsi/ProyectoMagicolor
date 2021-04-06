@@ -73,6 +73,11 @@ namespace ProyectoMagicolor.Vistas
         }
 
 
+        void Limpiar()
+        {
+
+        }
+
         private void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
             if (Validate())
@@ -464,6 +469,7 @@ namespace ProyectoMagicolor.Vistas
         {
             Refresh();
             txtDocumento.Focus();
+            dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
         }
 
         private void dpFechaLimite_SelectedDateChanged(object sender, SelectionChangedEventArgs e)

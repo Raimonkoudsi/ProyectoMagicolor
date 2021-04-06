@@ -110,36 +110,65 @@
             </Grid.ColumnDefinitions>
             <Grid Background="#000000" Opacity=".7" MouseDown="Grid_MouseDown" Name="BlackPanel"/>
             <Grid Grid.Column="1" Name="GridFilters" Background="WhiteSmoke" Width="250">
-                <StackPanel Margin="10 10" Width="200" >
-                    <TextBlock Text="Filtros de Busqueda" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" FontWeight="Bold"/>
-                    <StackPanel Margin="0 10">
-                        <CheckBox Content="Buscar con Fecha" FontWeight="Bold" FontSize="14" IsChecked="True"/>
-                        <StackPanel Visibility="Visible">
-                            <DatePicker />
-                            <CheckBox Content="Entre Fechas" FontWeight="Bold" FontSize="14"/>
-                            <DatePicker />
+                <Grid Width="250">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock Text="Filtros de Busqueda" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                    </Grid>
+                    <ScrollViewer Grid.Row="1">
+                        <StackPanel Margin="10">
+                            <StackPanel Margin="0 10">
+                                <CheckBox x:Name="ChBBuscarPor" Content="Buscar por:" FontWeight="Bold" FontSize="17" Margin="5 5" Checked="ChBBuscarPor_Checked" Unchecked="ChBBuscarPor_Checked"/>
+                                <StackPanel x:Name="BuscarPorPanel" IsEnabled="False">
+                                    <RadioButton x:Name="RBMesBuscar" Content="Mes" FontWeight="Bold" FontSize="14"/>
+                                    <RadioButton x:Name="RBSemanaBuscar" Content="Semana" FontWeight="Bold" FontSize="14"/>
+                                    <RadioButton x:Name="RBDiaBuscar" Content="Dia" FontWeight="Bold" FontSize="14"/>
+                                    <RadioButton x:Name="RBFechaBuscar" Content="Fecha Específica" FontWeight="Bold" FontSize="14" Checked="RBFechaBuscar_Checked" Unchecked="RBFechaBuscar_Checked"/>
+                                    <StackPanel x:Name="FechasPanel" Margin="15 5 0 0" Visibility="Collapsed">
+                                        <Grid>
+                                            <TextBlock x:Name="DpFechaInicioPlace" Text="Fecha Buscar" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                                            <DatePicker x:Name="DpFechaInicio" Text="" FontSize="15" Focusable="False" SelectedDateChanged="DpFechaInicio_SelectedDateChanged"/>
+                                        </Grid>
+                                        <CheckBox x:Name="ChBEntreFechas" Content="Entre Fechas" FontWeight="Bold" FontSize="14" Checked="ChBEntreFechas_Checked" Unchecked="ChBEntreFechas_Checked"/>
+                                        <Grid>
+                                            <TextBlock x:Name="DpFechaFinalPlace" Text="Fecha Final" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                                            <DatePicker x:Name="DpFechaFinal" Text="" FontSize="15" Focusable="False" SelectedDateChanged="DpFechaFinal_SelectedDateChanged" IsEnabled="False"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Margin="0 10">
+                                <TextBlock Text="Mostrar en base a stock" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                                <RadioButton x:Name="RBStockMostrar" Content="Con Stock" FontWeight="Bold" FontSize="14" IsChecked="True"/>
+                                <RadioButton x:Name="RBSinStockMostrar" Content="Sin Stock" FontWeight="Bold" FontSize="14"/>
+                                <RadioButton x:Name="RBAmbosMostrar" Content="Ambos" FontWeight="Bold" FontSize="14"/>
+                            </StackPanel>
+                            
+                            <StackPanel Margin="0 10">
+                                <TextBlock Text="Ordenar:" TextWrapping="Wrap" TextAlignment="Center" FontSize="17" FontWeight="Bold"/>
+                                <CheckBox x:Name="ChBAlfabeticoOrdenar" Content="Alfabeticamente" FontWeight="Bold" FontSize="14" Checked="ChBAlfabeticoOrdenar_Checked" Unchecked="ChBAlfabeticoOrdenar_Checked"/>
+                                <StackPanel x:Name="ValoresPanel" Margin="15 5 0 5" Visibility="Collapsed">
+                                    <Grid Width="150" HorizontalAlignment="Left">
+                                        <TextBlock x:Name="CbColumnasPlaceholder" Text="Columnas" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                                        <ComboBox x:Name="CbColumnas" Text="" FontSize="15" SelectionChanged="CbColumnas_SelectionChanged">
+                                            <ComboBoxItem>Articulo</ComboBoxItem>
+                                            <ComboBoxItem>Categoria</ComboBoxItem>
+                                        </ComboBox>
+                                    </Grid>
+                                </StackPanel>
+                                <CheckBox x:Name="ChBMayoresVentasOrdenar" Content="Mayores Ventas" FontWeight="Bold" FontSize="14"/>
+                                <CheckBox x:Name="ChBMayorStockOrdenar" Content="Mayor Stock" FontWeight="Bold" FontSize="14"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                    <StackPanel Margin="0 10">
-                        <TextBlock Text="Mostrar en base a stock" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" FontWeight="Bold"/>
-                        <RadioButton Content="Con Stock" FontWeight="Bold" FontSize="14"/>
-                        <RadioButton Content="Sin Stock" FontWeight="Bold" FontSize="14"/>
-                        <RadioButton Content="Ambos" FontWeight="Bold" FontSize="14"/>
-                    </StackPanel>
-                    <StackPanel Margin="0 10">
-                        <CheckBox Content="Buscar por:" FontWeight="Bold" FontSize="17" Margin="5 5"/>
-                        <RadioButton Content="Mes" FontWeight="Bold" FontSize="14"/>
-                        <RadioButton Content="Semana" FontWeight="Bold" FontSize="14"/>
-                        <RadioButton Content="Dia" FontWeight="Bold" FontSize="14"/>
-                    </StackPanel>
-                    <StackPanel Margin="0 10">
-                        <TextBlock Text="Ordenar:" TextWrapping="Wrap" TextAlignment="Center" FontSize="17" FontWeight="Bold"/>
-                        <CheckBox Content="Alfabeticamente" FontWeight="Bold" FontSize="14"/>
-                        <ComboBox Width="150" HorizontalAlignment="Left" Margin="10 5"/>
-                        <CheckBox Content="Mayores Ventas" FontWeight="Bold" FontSize="14"/>
-                        <CheckBox Content="Mayor Stock" FontWeight="Bold" FontSize="14"/>
-                    </StackPanel>
-                </StackPanel>
+                    </ScrollViewer>
+                    <Grid Grid.Row="2" Background="ForestGreen">
+                        <Button x:Name="BtnAplicarFiltro" Content="Aplicar Filtro" FontSize="17" Height="40" Background="Transparent" BorderBrush="Transparent"/>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

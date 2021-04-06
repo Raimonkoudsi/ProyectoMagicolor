@@ -181,6 +181,97 @@ namespace ProyectoMagicolor.Vistas
 
             BlackPanel.BeginAnimation(OpacityProperty, BlackDA);
         }
+
+        private void ChBBuscarPor_Checked(object sender, RoutedEventArgs e)
+        {
+            if(ChBBuscarPor.IsChecked ?? false)
+            {
+                BuscarPorPanel.IsEnabled = true;
+            }
+            else
+            {
+                BuscarPorPanel.IsEnabled = false;
+
+            }
+        }
+
+        private void RBFechaBuscar_Checked(object sender, RoutedEventArgs e)
+        {
+            if (RBFechaBuscar.IsChecked ?? false)
+            {
+                FechasPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                FechasPanel.Visibility = Visibility.Collapsed;
+
+            }
+        }
+
+        private void ChBEntreFechas_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ChBEntreFechas.IsChecked ?? false)
+            {
+                DpFechaFinal.IsEnabled = true;
+            }
+            else
+            {
+                DpFechaFinal.IsEnabled = false;
+
+            }
+        }
+
+        private void ChBAlfabeticoOrdenar_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ChBAlfabeticoOrdenar.IsChecked ?? false)
+            {
+                ValoresPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ValoresPanel.Visibility = Visibility.Collapsed;
+
+            }
+        }
+
+        private void DpFechaInicio_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DpFechaInicio.SelectedDate != null)
+            {
+                DpFechaInicioPlace.Text = "";
+                DpFechaFinal.DisplayDateStart = DpFechaInicio.SelectedDate?.Date.AddDays(1);
+            }
+            else
+            {
+                DpFechaInicioPlace.Text = "Fecha Inicio";
+                DpFechaFinal.DisplayDateStart = null;
+            }
+        }
+
+        private void DpFechaFinal_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DpFechaFinal.SelectedDate != null)
+            {
+                DpFechaFinalPlace.Text = "";
+
+                DpFechaInicio.DisplayDateEnd = DpFechaFinal.SelectedDate?.Date.AddDays(-1);
+            }
+            else
+            {
+                DpFechaFinalPlace.Text = "Fecha Final";
+
+                DpFechaInicio.DisplayDateEnd = null;
+
+            }
+        }
+
+        private void CbColumnas_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbColumnas.SelectedIndex > -1)
+                CbColumnasPlaceholder.Text = "";
+            else
+                CbColumnasPlaceholder.Text = "Columnas";
+        }
     }
 
 }
