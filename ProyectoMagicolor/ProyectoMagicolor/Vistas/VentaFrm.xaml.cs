@@ -75,6 +75,20 @@ namespace ProyectoMagicolor.Vistas
 
         void Limpiar()
         {
+            QuitarCliente();
+            double Monto = 0;
+            subtotal = 0;
+            impuestos = 0;
+            total = 0;
+            descuento = 0;
+            txtDescuento.Text = Monto.ToString("0.00");
+            CbMetodoPago.SelectedIndex = -1;
+            dpFechaLimite.SelectedDate = null;
+
+            DisplayData.Clear();
+            ListaVenta.Clear();
+
+            RefreshMoney();
 
         }
 
@@ -105,7 +119,7 @@ namespace ProyectoMagicolor.Vistas
 
             if (res.Equals("OK"))
             {
-                Parent.SwitchScreen(new VentaFrm(Parent));
+                Limpiar();
             }
         }
 

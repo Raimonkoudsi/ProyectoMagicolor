@@ -78,6 +78,17 @@ namespace ProyectoMagicolor.Vistas
 
         }
 
+        void Limpiar()
+        {
+            QuitarProveedor();
+            CbMetodoPago.SelectedIndex = -1;
+            dpFechaLimite.SelectedDate = null;
+            txtFactura.SetText("");
+
+            DisplayData.Clear();
+            ListaCompra.Clear();
+        }
+
 
         private void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
@@ -104,6 +115,10 @@ namespace ProyectoMagicolor.Vistas
 
             string res = Metodo.Insertar(dIngreso, ListaCompra, CP);
             MessageBox.Show(res);
+            if (res.Equals("OK"))
+            {
+                Limpiar();
+            }
         }
 
         #region VALIDACIONES

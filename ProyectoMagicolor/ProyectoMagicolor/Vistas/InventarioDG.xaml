@@ -166,7 +166,8 @@
                         </StackPanel>
                     </ScrollViewer>
                     <Grid Grid.Row="2" Background="ForestGreen">
-                        <Button x:Name="BtnAplicarFiltro" Content="Aplicar Filtro" FontSize="17" Height="40" Background="Transparent" BorderBrush="Transparent"/>
+                        <Button x:Name="BtnAplicarFiltro" Content="Aplicar Filtro" FontSize="17" Height="40" Background="Transparent" BorderBrush="Transparent"
+                                Click="BtnAplicarFiltro_Click"/>
                     </Grid>
                 </Grid>
             </Grid>

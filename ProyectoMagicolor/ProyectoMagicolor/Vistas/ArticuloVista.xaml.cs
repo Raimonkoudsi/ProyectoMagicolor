@@ -41,10 +41,10 @@ namespace ProyectoMagicolor.Vistas
         }
         
 
-        public void Refresh(string search)
+        public void Refresh()
         {
 
-            List<DArticulo> items = Metodos.MostrarStockNombre(search);
+            List<DArticulo> items = new LArticulo().MostrarConCategoria(txtBuscar.Text);
             if (filterDG)
             {
                 foreach (int item in Actual)
@@ -63,7 +63,7 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
-            Refresh(txtBuscar.Text);
+            Refresh();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -81,7 +81,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            Refresh();
         }
 
 

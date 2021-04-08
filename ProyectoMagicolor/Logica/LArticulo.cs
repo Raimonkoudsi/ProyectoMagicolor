@@ -218,6 +218,54 @@ namespace Logica
 
         }
 
+        public List<DArticulo> MostrarConCategoria(string Buscar)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "SELECT a.idArticulo, a.codigo, a.nombre, c.nombre as Categoria FROM [articulo] a inner join [categoria] c on a.idCategoria = c.idCategoria Where a.nombre like  '" + Buscar + "%' ORDER BY codigo";
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    categoria = reader.GetString(3)
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
 
         public List<DArticulo> Encontrar(int Buscar)
         {

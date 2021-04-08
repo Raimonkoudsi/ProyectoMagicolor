@@ -272,6 +272,13 @@ namespace ProyectoMagicolor.Vistas
             else
                 CbColumnasPlaceholder.Text = "Columnas";
         }
+
+        private void BtnAplicarFiltro_Click(object sender, RoutedEventArgs e)
+        {
+            InventarioVista Frm = new InventarioVista();
+
+            Frm.Show();
+        }
     }
 
 }
