@@ -189,7 +189,7 @@ namespace ProyectoMagicolor.Vistas
 
         double AnimationDuration = .3;
 
-        private void btnOpenFilters_Click(object sender, RoutedEventArgs e)
+        void OpenSidebar()
         {
             if (isAnimationCurrent)
                 return;
@@ -222,10 +222,9 @@ namespace ProyectoMagicolor.Vistas
             BlackPanel.BeginAnimation(OpacityProperty, BlackDA);
 
             isAnimationCurrent = true;
-
         }
 
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        void CloseSidebar()
         {
             //SideBar.Visibility = Visibility.Collapsed;
 
@@ -257,6 +256,16 @@ namespace ProyectoMagicolor.Vistas
             BlackDA.Duration = TimeSpan.FromSeconds(AnimationDuration);
 
             BlackPanel.BeginAnimation(OpacityProperty, BlackDA);
+        }
+
+        private void btnOpenFilters_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSidebar();
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            CloseSidebar();   
         }
 
         private void RBFechaBuscar_Checked(object sender, RoutedEventArgs e)
@@ -340,6 +349,7 @@ namespace ProyectoMagicolor.Vistas
         private void BtnAplicarFiltro_Click(object sender, RoutedEventArgs e)
         {
             Refresh();
+            CloseSidebar();
         }
     }
 

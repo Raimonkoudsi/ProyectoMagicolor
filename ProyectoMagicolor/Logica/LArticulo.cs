@@ -405,7 +405,7 @@ namespace Logica
             }
 
             //ORDEN
-            if (typeOrder <= 0 || typeOrder >= 4) return null;
+            if (typeOrder <= 0 || typeOrder >= 5) return null;
             else
             {
                 //alfabeticamente por Articulo
