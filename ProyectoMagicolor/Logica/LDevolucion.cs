@@ -25,9 +25,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    LID MethodID = new LID();
+                    LFunction MethodID = new LFunction();
 
-                    int ID = MethodID.ID("devolucion", "idDevolucion");
+                    int ID = MethodID.GetID("devolucion", "idDevolucion");
 
                     #region Añadir Devolucion
                     string queryAddDevolution = @"

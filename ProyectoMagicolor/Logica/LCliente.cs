@@ -23,9 +23,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    LID getID = new LID();
+                    LFunction getID = new LFunction();
 
-                    int ID = getID.ID("cliente", "idCliente");
+                    int ID = getID.GetID("cliente", "idCliente");
 
                     string queryAddClient = @"
                             INSERT INTO cliente(

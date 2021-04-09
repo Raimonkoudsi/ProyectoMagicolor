@@ -22,6 +22,7 @@ namespace ProyectoMagicolor.Vistas
     /// </summary>
     public partial class Login : Window
     {
+
         public Login()
         {
             InitializeComponent();

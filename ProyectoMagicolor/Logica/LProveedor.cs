@@ -24,9 +24,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    LID getID = new LID();
+                    LFunction getID = new LFunction();
 
-                    int ID = getID.ID("proveedor", "idProveedor");
+                    int ID = getID.GetID("proveedor", "idProveedor");
 
                     string query = @"
                                 INSERT INTO proveedor (
@@ -287,6 +287,7 @@ namespace Logica
             }
 
         }
+
 
         public List<DProveedor> EncontrarConDocumento(string Tipo, string NroDocumento)
         {

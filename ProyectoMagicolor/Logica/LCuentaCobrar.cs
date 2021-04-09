@@ -117,9 +117,9 @@ namespace Logica
 
                     if (respuesta.Equals("OK"))
                     {
-                        LID getID = new LID();
+                        LFunction getID = new LFunction();
 
-                        int ID = getID.ID("registroCuentaCobrar", "idRegistro");
+                        int ID = getID.GetID("registroCuentaCobrar", "idRegistro");
 
                         #region Añadir Registro Cuenta Cobrar
                         string queryAddRegCC = @"

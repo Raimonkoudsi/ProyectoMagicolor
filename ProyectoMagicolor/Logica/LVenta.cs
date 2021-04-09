@@ -24,9 +24,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    LID getID = new LID();
+                    LFunction getID = new LFunction();
 
-                    int IDVenta = getID.ID("venta", "idVenta");
+                    int IDVenta = getID.GetID("venta", "idVenta");
 
                     #region Añadir Venta
                     string queryAddSale = @"
@@ -75,7 +75,7 @@ namespace Logica
 
                     if (respuesta.Equals("OK") && Venta.metodoPago == 2)
                     {
-                        int IDCC = getID.ID("cuentaCobrar", "idCuentaCobrar");
+                        int IDCC = getID.GetID("cuentaCobrar", "idCuentaCobrar");
 
                         #region Añadir Cuenta x Cobrar
                         string queryAddCC = @"
@@ -143,7 +143,7 @@ namespace Logica
 
                             if (respuesta.Equals("OK"))
                             {
-                                int IDDetVenta = getID.ID("detalleVenta", "idDetalleVenta");
+                                int IDDetVenta = getID.GetID("detalleVenta", "idDetalleVenta");
 
                                 #region Añadir Detalle Venta
                                 string queryAddDetSale = @"

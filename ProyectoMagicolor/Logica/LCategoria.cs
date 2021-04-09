@@ -23,9 +23,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    LID getID = new LID();
+                    LFunction getID = new LFunction();
 
-                    int ID = getID.ID("categoria", "idCategoria");
+                    int ID = getID.GetID("categoria", "idCategoria");
 
                     string queryAddCategory = @"
                             INSERT INTO categoria (

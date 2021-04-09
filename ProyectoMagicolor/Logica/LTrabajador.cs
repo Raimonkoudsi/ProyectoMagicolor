@@ -22,9 +22,9 @@ namespace Logica
                 {
                     conn.Open();
 
-                    LID getID = new LID();
+                    LFunction getID = new LFunction();
 
-                    int ID = getID.ID("trabajador", "idTrabajador");
+                    int ID = getID.GetID("trabajador", "idTrabajador");
 
                     string queryAddWorker = @"
                                 INSERT INTO trabajador (
@@ -311,6 +311,7 @@ namespace Logica
             }
 
         }
+
         public List<DTrabajador> Encontrar(int Buscar)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
@@ -441,7 +442,6 @@ namespace Logica
                 }
             }
         }
-
 
         public bool UsuarioRepetido(string Usuario)
         {

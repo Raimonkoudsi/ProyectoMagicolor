@@ -11,9 +11,9 @@ using System.Reflection;
 
 namespace Logica
 {
-    public class LID:Conexion
+    public class LFunction:Conexion
     {
-        public int ID(string Table, string Parameter)
+        public int GetID(string Table, string Parameter)
         {
             int ID = 1;
 
@@ -53,7 +53,7 @@ namespace Logica
             }
         }
 
-
+        /*
         public bool Insert(string Table, DArticulo Articulo, int CountValue)
         {
             bool respuesta = false;
@@ -141,6 +141,18 @@ namespace Logica
 
             //    iteracion++;
             //}
+        }
+        */
+
+        
+    }
+
+    public static class DateTimeExtensions
+    {
+        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
     }
 }
