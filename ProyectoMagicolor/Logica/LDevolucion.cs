@@ -85,7 +85,7 @@ namespace Logica
 
                             if (respuesta.Equals("OK"))
                             {
-                                int detailID = MethodID.ID("detalleDevolucion", "idDetalleDevolucion");
+                                int detailID = MethodID.GetID("detalleDevolucion", "idDetalleDevolucion");
 
                                 #region Añadir Detalle de Devolucion
                                 string queryAddDetailDevolution = @"

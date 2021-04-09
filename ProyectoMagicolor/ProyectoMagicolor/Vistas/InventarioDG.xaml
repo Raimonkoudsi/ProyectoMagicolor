@@ -49,28 +49,28 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Categoria" Binding="{Binding stockMinimo}">
+                    <DataGridTextColumn Width="auto" Header="Categoria" Binding="{Binding categoria}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Cantidad Actual" Binding="{Binding stockMaximo}">
+                    <DataGridTextColumn Width="auto" Header="Cantidad Actual" Binding="{Binding cantidadActual}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Cantidad Vendida" Binding="{Binding descripcion}">
+                    <DataGridTextColumn Width="auto" Header="Cantidad Vendida" Binding="{Binding cantidadVendida}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Stock Minimo" Binding="{Binding descripcion}">
+                    <DataGridTextColumn Width="auto" Header="Stock Minimo" Binding="{Binding stockMinimo}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -103,7 +103,7 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Grid x:Name="SideBar" Visibility="Collapsed">
+        <Grid x:Name="SideBar" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
@@ -122,11 +122,12 @@
                     <ScrollViewer Grid.Row="1">
                         <StackPanel Margin="10">
                             <StackPanel Margin="0 10">
-                                <CheckBox x:Name="ChBBuscarPor" Content="Buscar por:" FontWeight="Bold" FontSize="17" Margin="5 5" Checked="ChBBuscarPor_Checked" Unchecked="ChBBuscarPor_Checked"/>
-                                <StackPanel x:Name="BuscarPorPanel" IsEnabled="False">
-                                    <RadioButton x:Name="RBMesBuscar" Content="Mes" FontWeight="Bold" FontSize="14"/>
-                                    <RadioButton x:Name="RBSemanaBuscar" Content="Semana" FontWeight="Bold" FontSize="14"/>
+                                <TextBlock x:Name="txtBuscarPor" Text="Buscar por:" FontWeight="Bold" FontSize="17" Margin="5 5"/>
+                                <StackPanel x:Name="BuscarPorPanel">
                                     <RadioButton x:Name="RBDiaBuscar" Content="Dia" FontWeight="Bold" FontSize="14"/>
+                                    <RadioButton x:Name="RBSemanaBuscar" Content="Semana" FontWeight="Bold" FontSize="14"/>
+                                    <RadioButton x:Name="RBMesBuscar" Content="Mes" FontWeight="Bold" FontSize="14"/>
+                                    <RadioButton x:Name="RBAñoBuscar" Content="Año" FontWeight="Bold" FontSize="14" IsChecked="True"/>
                                     <RadioButton x:Name="RBFechaBuscar" Content="Fecha Específica" FontWeight="Bold" FontSize="14" Checked="RBFechaBuscar_Checked" Unchecked="RBFechaBuscar_Checked"/>
                                     <StackPanel x:Name="FechasPanel" Margin="15 5 0 0" Visibility="Collapsed">
                                         <Grid>
@@ -150,8 +151,8 @@
                             
                             <StackPanel Margin="0 10">
                                 <TextBlock Text="Ordenar:" TextWrapping="Wrap" TextAlignment="Center" FontSize="17" FontWeight="Bold"/>
-                                <CheckBox x:Name="ChBAlfabeticoOrdenar" Content="Alfabeticamente" FontWeight="Bold" FontSize="14" Checked="ChBAlfabeticoOrdenar_Checked" Unchecked="ChBAlfabeticoOrdenar_Checked"/>
-                                <StackPanel x:Name="ValoresPanel" Margin="15 5 0 5" Visibility="Collapsed">
+                                <RadioButton x:Name="ChBAlfabeticoOrdenar" Content="Alfabeticamente" FontWeight="Bold" FontSize="14" Checked="ChBAlfabeticoOrdenar_Checked" Unchecked="ChBAlfabeticoOrdenar_Checked"/>
+                                <StackPanel x:Name="ValoresPanel" Margin="15 5 0 5" Visibility="Visible">
                                     <Grid Width="150" HorizontalAlignment="Left">
                                         <TextBlock x:Name="CbColumnasPlaceholder" Text="Columnas" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
                                         <ComboBox x:Name="CbColumnas" Text="" FontSize="15" SelectionChanged="CbColumnas_SelectionChanged">
@@ -160,8 +161,8 @@
                                         </ComboBox>
                                     </Grid>
                                 </StackPanel>
-                                <CheckBox x:Name="ChBMayoresVentasOrdenar" Content="Mayores Ventas" FontWeight="Bold" FontSize="14"/>
-                                <CheckBox x:Name="ChBMayorStockOrdenar" Content="Mayor Stock" FontWeight="Bold" FontSize="14"/>
+                                <RadioButton x:Name="ChBMayoresVentasOrdenar" Content="Mayores Ventas" FontWeight="Bold" FontSize="14"/>
+                                <RadioButton x:Name="ChBMayorStockOrdenar" Content="Mayor Stock" FontWeight="Bold" FontSize="14"/>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>

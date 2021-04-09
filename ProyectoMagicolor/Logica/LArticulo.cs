@@ -375,10 +375,10 @@ namespace Logica
 
 
 
-        public List<DArticulo> Inventario(int typeDate, string firstDate, string secondDate, int typeStock, int typeOrder)
+        public List<DArticulo> Inventario(int typeDate, DateTime firstDate, DateTime secondDate, int typeStock, int typeOrder)
         {
 
-            string dateQuery = "", stockQuery = "", orderQuery = "";
+            string dateQuery = "", orderQuery = "";
 
             //FECHAS
             if (typeDate <= 0 || typeDate >= 6) return null;
@@ -386,46 +386,40 @@ namespace Logica
             {
                 //diaria
                 if (typeDate == 1)
-                    dateQuery = " AND v.fecha = " + DateTime.Now.Date;
+                    dateQuery = " AND v.fecha = ('" + DateTime.Now.Date.ToShortDateString() + "')";
                 //semanal
                 else if (typeDate == 2)
-                    dateQuery = " AND v.fecha BETWEEN " + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday) + " AND " + DateTime.Now.Date;
+                    dateQuery = " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
                 //mensual
                 else if (typeDate == 3)
-                    dateQuery = " AND v.fecha BETWEEN " + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) + " AND " + DateTime.Now.Date;
+                    dateQuery = " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
                 //anual
                 else if (typeDate == 4)
-                    dateQuery = " AND v.fecha BETWEEN " + new DateTime(DateTime.Now.Year, 1, 1) + " AND " + DateTime.Now.Date;
-                //entre fechas
+                    dateQuery = " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+                //Por Fecha
                 else if (typeDate == 5)
-                    dateQuery = " AND v.fecha BETWEEN " + firstDate + " AND " + secondDate;
-            }
-
-            //STOCKS
-            if (typeStock <= 1 || typeStock >= 4) return null;
-            else
-            {
-                //con stock
-                if (typeStock == 2)
-                    stockQuery = " AND di.cantidadActual >= a.stockMinimo ";
-                //sin stock
-                else if (typeStock == 3)
-                    stockQuery = " AND di.cantidadActual < a.stockMinimo ";
+                    dateQuery = " AND v.fecha = ('" + firstDate.ToShortDateString() + "')";
+                //entre fechas
+                else if (typeDate == 6)
+                    dateQuery = " AND v.fecha BETWEEN ('" + firstDate.ToShortDateString() + "') AND ('" + secondDate.ToShortDateString() + "')";
             }
 
             //ORDEN
             if (typeOrder <= 0 || typeOrder >= 4) return null;
             else
             {
-                //alfabeticamente
+                //alfabeticamente por Articulo
                 if (typeOrder == 1)
-                    orderQuery = " a.nombre ";
-                //mayores ventas
+                    orderQuery = " a.nombre ASC";
+                //Alfabeticamente por Categoría
                 else if (typeOrder == 2)
-                    orderQuery = " vendido ";
-                //mayor stock
+                    orderQuery = " c.nombre ASC";
+                //mayores ventas
                 else if (typeOrder == 3)
-                    orderQuery = " cantidad ";
+                    orderQuery = " vendido DESC";
+                //mayor stock
+                else if (typeOrder == 4)
+                    orderQuery = " cantidad DESC";
             }
 
 
@@ -439,8 +433,6 @@ namespace Logica
                                     SELECT TOP 1 
                                         di.cantidadActual 
                                     FROM [detalleIngreso] di 
-		                                INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso=di.idDetalleIngreso
-		                                INNER JOIN [venta] v ON v.idVenta=dv.idVenta
                                     WHERE a.idArticulo = di.idArticulo 
                                     ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
                                     ISNULL((
@@ -449,11 +441,11 @@ namespace Logica
                                     FROM [detalleVenta] dv 
 		                                INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
 		                                INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-                                    WHERE a.idArticulo = di.idArticulo " + dateQuery + stockQuery + @" ), 0) as vendido,
+                                    WHERE a.idArticulo = di.idArticulo " + dateQuery + @" ), 0) as vendido,
                                     a.stockMinimo
                                 FROM [articulo] a 
 	                                INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
-                                ORDER BY " + orderQuery + @"DESC
+                                ORDER BY " + orderQuery + @"
             ";
 
             List<DArticulo> ListaGenerica = new List<DArticulo>();
@@ -473,22 +465,22 @@ namespace Logica
 
                         using (SqlDataReader reader = comm.ExecuteReader())
                         {
-                            //no agrega las filas en busquedas con o sin stock si esta en 0
-                            if ((typeStock == 2 || typeStock == 3) && reader.GetInt32(5)!=0)
+                            while (reader.Read())
                             {
-                                while (reader.Read())
+                                int CantidadActual = reader.GetInt32(4);
+                                int StockMinimo = reader.GetInt32(6);
+                                if ((typeStock == 2 && CantidadActual < StockMinimo) || (typeStock == 3 && CantidadActual >= StockMinimo))
+                                    continue;
+                                ListaGenerica.Add(new DArticulo
                                 {
-                                    ListaGenerica.Add(new DArticulo
-                                    {
-                                        idArticulo = reader.GetInt32(0),
-                                        codigo = reader.GetString(1),
-                                        nombre = reader.GetString(2),
-                                        categoria = reader.GetString(3),
-                                        cantidadActual = reader.GetInt32(4),
-                                        cantidadVendida = reader.GetInt32(5),
-                                        stockMinimo = reader.GetInt32(6)
-                                    });
-                                }
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    categoria = reader.GetString(3),
+                                    cantidadActual = CantidadActual,
+                                    cantidadVendida = reader.GetInt32(5),
+                                    stockMinimo = StockMinimo
+                                });
                             }
                         }
                     }

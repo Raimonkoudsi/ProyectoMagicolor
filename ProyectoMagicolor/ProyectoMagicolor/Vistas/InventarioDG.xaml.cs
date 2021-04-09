@@ -29,16 +29,93 @@ namespace ProyectoMagicolor.Vistas
         public InventarioDG()
         {
             InitializeComponent();
+
+            ChBAlfabeticoOrdenar.IsChecked = true;
+            CbColumnas.SelectedIndex = 0;
         }
         
 
         public void Refresh()
         {
 
-            //List<DArticulo> items = Metodos.Mostrar("");
+            int TipoBuscarPor = 1;
+
+            DateTime FechaInicio = DateTime.Now;
+            DateTime FechaFinal = DateTime.Now;
+
+            if (RBDiaBuscar.IsChecked ?? false)
+                TipoBuscarPor = 1;
+            else if (RBSemanaBuscar.IsChecked ?? false)
+                TipoBuscarPor = 2;
+            else if (RBMesBuscar.IsChecked ?? false)
+                TipoBuscarPor = 3;
+            else if (RBAñoBuscar.IsChecked ?? false)
+                TipoBuscarPor = 4;
+            else if (RBFechaBuscar.IsChecked ?? false)
+            {
+                //entre 2 Fechas
+                if(ChBEntreFechas.IsChecked ?? false)
+                {
+                    if(DpFechaInicio.SelectedDate != null && DpFechaFinal.SelectedDate != null)
+                    {
+                        FechaInicio = DpFechaInicio.SelectedDate ?? DateTime.Now;
+                        FechaFinal = DpFechaFinal.SelectedDate ?? DateTime.Now;
+                        TipoBuscarPor = 6;
+                    }
+                    else
+                    {
+                        //Mensaje de Error
+                    }
+                }
+                //Solo 1 Fecha
+                else
+                {
+                    if(DpFechaInicio.SelectedDate != null)
+                    {
+                        FechaInicio = DpFechaInicio.SelectedDate ?? DateTime.Now;
+                        TipoBuscarPor = 5;
+                    }
+                    else
+                    {
+                        //mensaje de Error
+                    }
+                }
+            }
+
+            int TipoMostrar = 1;
+
+            if (RBStockMostrar.IsChecked ?? false)
+                TipoMostrar = 2;
+            else if (RBSinStockMostrar.IsChecked ?? false)
+                TipoMostrar = 3;
 
 
-            //dgOperaciones.ItemsSource = items;
+
+            int TipoOrdenar = 1;
+
+            if (ChBAlfabeticoOrdenar.IsChecked ?? false)
+            {
+                //Ordenar por Articulos
+                if (CbColumnas.SelectedIndex == 0)
+                    TipoOrdenar = 1;
+                //Ordenar por Categorías
+                else if (CbColumnas.SelectedIndex == 1)
+                    TipoOrdenar = 2;
+                else
+                {
+                    //mensaje de Error
+                }
+            }
+            else if (ChBMayoresVentasOrdenar.IsChecked ?? false)
+                TipoOrdenar = 3;
+            else if (ChBMayorStockOrdenar.IsChecked ?? false)
+                TipoOrdenar = 4;
+
+
+            List<DArticulo> items = Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar);
+
+
+            dgOperaciones.ItemsSource = items;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -182,19 +259,6 @@ namespace ProyectoMagicolor.Vistas
             BlackPanel.BeginAnimation(OpacityProperty, BlackDA);
         }
 
-        private void ChBBuscarPor_Checked(object sender, RoutedEventArgs e)
-        {
-            if(ChBBuscarPor.IsChecked ?? false)
-            {
-                BuscarPorPanel.IsEnabled = true;
-            }
-            else
-            {
-                BuscarPorPanel.IsEnabled = false;
-
-            }
-        }
-
         private void RBFechaBuscar_Checked(object sender, RoutedEventArgs e)
         {
             if (RBFechaBuscar.IsChecked ?? false)
@@ -275,9 +339,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void BtnAplicarFiltro_Click(object sender, RoutedEventArgs e)
         {
-            InventarioVista Frm = new InventarioVista();
-
-            Frm.Show();
+            Refresh();
         }
     }
 
