@@ -516,71 +516,54 @@ namespace Logica
                     comm.Connection = conn;
 
                     comm.CommandText = @"
-                                SELECT
-                                    a.idArticulo,
-                                    a.codigo, 
-                                    a.nombre,
-									a.descripcion,
-									a.stockMinimo,
-									a.stockMaximo,
-                                    c.nombre,
-                                    ISNULL((
-										SELECT 
-											SUM(dv.cantidad) 
-										FROM [detalleVenta] dv 
-											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
-										WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida, 
-									ISNULL((
-										SELECT 
-											SUM(di.cantidadInicial) 
-										FROM [detalleIngreso] di 
-										WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada, 
-									ISNULL((
-										SELECT 
-											SUM(dd.cantidad) 
-										FROM [detalleDevolucion] dd 
-										WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta, 
-									ISNULL((
-										SELECT 
-											COUNT(DISTINCT c.idCliente) 
-										FROM [cliente] c 
-											INNER JOIN [venta] v ON v.idCliente = c.idCliente
-											INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
-											INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso=dv.idDetalleIngreso
-										WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente, 
-                                    ISNULL((
-										SELECT 
-											CAST((SUM(dv.precioVenta * dv.cantidad)/((
-												(SELECT
-													v.impuesto
-												 FROM [venta] v
- 												 WHERE v.idVenta = dv.idVenta
-											)/100.0)+1)) AS NUMERIC(38,2))
-										FROM [detalleVenta] dv 
-											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-											INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-										WHERE a.idArticulo = di.idArticulo GROUP BY dv.idVenta " + weekDate + @"), 0) AS subtotal,
-									ISNULL((
-										SELECT 
-											CAST(SUM(dv.precioVenta * dv.cantidad) -
-											(SUM(dv.precioVenta * dv.cantidad) / (((
-												SELECT
-													v.impuesto
-												 FROM [venta] v
- 												 WHERE v.idVenta = dv.idVenta
-											)/100.0)+1))AS NUMERIC(38,2))
-										FROM [detalleVenta] dv 
-											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-										WHERE a.idArticulo = di.idArticulo GROUP BY dv.idVenta " + weekDate + @"), 0) AS impuesto,
-									ISNULL((
-										SELECT 
-											(SUM(dv.precioVenta * dv.cantidad)) AS total
-										FROM [detalleVenta] dv 
-											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-										WHERE a.idArticulo = di.idArticulo " + weekDate + @"), 0) AS total
-                                FROM [articulo] a 
-	                                INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
-								WHERE a.idArticulo= " + idArticle + @"
+                                        SELECT
+                                            a.idArticulo,
+                                            a.codigo, 
+                                            a.nombre,
+									        a.descripcion,
+									        a.stockMinimo,
+									        a.stockMaximo,
+                                            c.nombre,
+                                            ISNULL((
+										        SELECT 
+											        SUM(dv.cantidad) 
+										        FROM [detalleVenta] dv 
+											        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+										        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida, 
+									        ISNULL((
+										        SELECT 
+											        SUM(di.cantidadInicial) 
+										        FROM [detalleIngreso] di 
+										        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada, 
+									        ISNULL((
+										        SELECT 
+											        SUM(dd.cantidad) 
+										        FROM [detalleDevolucion] dd 
+										        WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta, 
+									        ISNULL((
+										        SELECT 
+											        COUNT(DISTINCT c.idCliente) 
+										        FROM [cliente] c 
+											        INNER JOIN [venta] v ON v.idCliente = c.idCliente
+											        INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
+											        INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso=dv.idDetalleIngreso
+										        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente, 
+                                            ISNULL((
+										        SELECT 
+										          CAST((SUM(dv.precioVenta * dv.cantidad/((v.impuesto/100.0)+1))) AS NUMERIC(38,2))
+										        FROM [detalleVenta] dv 
+										          INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+										          INNER JOIN [venta] v ON v.idVenta=dv.idVenta
+										        WHERE a.idArticulo = di.idArticulo ), 0) AS subtotal,
+									        ISNULL((
+										        SELECT 
+											        (SUM(dv.precioVenta * dv.cantidad)) AS total
+										        FROM [detalleVenta] dv 
+											        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS total
+                                        FROM [articulo] a 
+	                                        INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
+								        WHERE a.idArticulo= " + idArticle + @"
                     ";
 
                     try
