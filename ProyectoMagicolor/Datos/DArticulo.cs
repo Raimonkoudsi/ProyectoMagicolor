@@ -133,6 +133,41 @@ namespace Datos
             set { _Total = value; }
         }
 
+        private double _SubtotalDevolucion;
+        public double subtotalDevolucion
+        {
+            get { return _SubtotalDevolucion; }
+            set { _SubtotalDevolucion = value; }
+        }
+
+        private double _TotalDevolucion;
+        public double totalDevolucion
+        {
+            get { return _TotalDevolucion; }
+            set { _TotalDevolucion = value; }
+        }
+
+        private double _PrecioUnidad;
+        public double precioUnidad
+        {
+            get { return _PrecioUnidad; }
+            set { _PrecioUnidad = value; }
+        }
+
+        private double _CompraVendida;
+        public double compraVendida
+        {
+            get { return _CompraVendida; }
+            set { _CompraVendida = value; }
+        }
+
+        private double _TotalNeto;
+        public double totalNeto
+        {
+            get { return _TotalNeto; }
+            set { _TotalNeto = value; }
+        }
+
 
         public DArticulo()
         {

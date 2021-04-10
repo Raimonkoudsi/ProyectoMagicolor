@@ -604,13 +604,50 @@ namespace Logica
 										        FROM [detalleVenta] dv 
 										          INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
 										          INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-										        WHERE a.idArticulo = di.idArticulo ), 0) AS subtotal,
+										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS subtotal,
 									        ISNULL((
 										        SELECT 
 											        (SUM(dv.precioVenta * dv.cantidad)) AS total
 										        FROM [detalleVenta] dv 
 											        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS total
+                                                    INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS total,
+									        ISNULL((
+										        SELECT 
+										          CAST((SUM(dd.precio * dd.cantidad/((v.impuesto/100.0)+1))) AS NUMERIC(38,2))
+										        FROM [detalleDevolucion] dd 
+											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
+											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+										        WHERE a.idArticulo = dd.idArticulo  " + weekDate + @"  ), 0) AS subtotalDevolucion,
+									        ISNULL((
+										        SELECT 
+											        (SUM(dd.precio * dd.cantidad))
+										        FROM [detalleDevolucion] dd 
+											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
+											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+										        WHERE a.idArticulo = dd.idArticulo  " + weekDate + @" ), 0) AS totalDevolucion,
+									        ISNULL((
+										        SELECT TOP 1
+										          di.precioCompra
+										        FROM [detalleIngreso] di 
+											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+										        WHERE a.idArticulo = di.idArticulo " + weekDate + @"
+										        ORDER BY di.idDetalleIngreso DESC), 0) AS costoUnidad,
+									        ISNULL((
+										        SELECT 
+										          (SUM(di.precioCompra * dv.cantidad))
+										        FROM [detalleIngreso] di 
+											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS compraVendida,
+									        ISNULL((
+										        SELECT 
+										          (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad))
+										        FROM [detalleIngreso] di 
+											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS totalNeto
                                         FROM [articulo] a 
 	                                        INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
 								        WHERE a.idArticulo= " + idArticle + @"
@@ -640,7 +677,12 @@ namespace Logica
                                     cantidadCliente = reader.GetInt32(10),
                                     subtotal = (double)reader.GetDecimal(11),
                                     impuesto = (double)reader.GetDecimal(12),
-                                    total = (double)reader.GetDecimal(13)
+                                    total = (double)reader.GetDecimal(13),
+                                    subtotalDevolucion = (double)reader.GetDecimal(14),
+                                    totalDevolucion = (double)reader.GetDecimal(15),
+                                    precioUnidad = (double)reader.GetDecimal(16),
+                                    compraVendida = (double)reader.GetDecimal(17),
+                                    totalNeto = (double)reader.GetDecimal(18)
                                 });
                             }
                         }
