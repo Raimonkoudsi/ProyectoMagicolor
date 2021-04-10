@@ -430,18 +430,18 @@ namespace Logica
                                     a.nombre, 
                                     c.nombre,
                                     ISNULL((
-                                    SELECT TOP 1 
-                                        di.cantidadActual 
-                                    FROM [detalleIngreso] di 
-                                    WHERE a.idArticulo = di.idArticulo 
-                                    ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
+                                        SELECT TOP 1 
+                                            di.cantidadActual 
+                                        FROM [detalleIngreso] di 
+                                        WHERE a.idArticulo = di.idArticulo 
+                                        ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
                                     ISNULL((
-                                    SELECT 
-                                        SUM(dv.cantidad) 
-                                    FROM [detalleVenta] dv 
-		                                INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-		                                INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-                                    WHERE a.idArticulo = di.idArticulo " + dateQuery + @" ), 0) as vendido,
+                                        SELECT 
+                                            SUM(dv.cantidad) 
+                                        FROM [detalleVenta] dv 
+		                                    INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+		                                    INNER JOIN [venta] v ON v.idVenta=dv.idVenta
+                                        WHERE a.idArticulo = di.idArticulo " + dateQuery + @" ), 0) as vendido,
                                     a.stockMinimo
                                 FROM [articulo] a 
 	                                INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
@@ -502,5 +502,131 @@ namespace Logica
         }
 
 
+
+        public List<DArticulo> DetalleInventario(int idArticle)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    string weekDate = " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+
+                    comm.Connection = conn;
+
+                    comm.CommandText = @"
+                                SELECT
+                                    a.idArticulo,
+                                    a.codigo, 
+                                    a.nombre,
+									a.descripcion,
+									a.stockMinimo,
+									a.stockMaximo,
+                                    c.nombre,
+                                    ISNULL((
+										SELECT 
+											SUM(dv.cantidad) 
+										FROM [detalleVenta] dv 
+											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+										WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida, 
+									ISNULL((
+										SELECT 
+											SUM(di.cantidadInicial) 
+										FROM [detalleIngreso] di 
+										WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada, 
+									ISNULL((
+										SELECT 
+											SUM(dd.cantidad) 
+										FROM [detalleDevolucion] dd 
+										WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta, 
+									ISNULL((
+										SELECT 
+											COUNT(DISTINCT c.idCliente) 
+										FROM [cliente] c 
+											INNER JOIN [venta] v ON v.idCliente = c.idCliente
+											INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
+											INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso=dv.idDetalleIngreso
+										WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente, 
+                                    ISNULL((
+										SELECT 
+											CAST((SUM(dv.precioVenta * dv.cantidad)/((
+												(SELECT
+													v.impuesto
+												 FROM [venta] v
+ 												 WHERE v.idVenta = dv.idVenta
+											)/100.0)+1)) AS NUMERIC(38,2))
+										FROM [detalleVenta] dv 
+											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+											INNER JOIN [venta] v ON v.idVenta=dv.idVenta
+										WHERE a.idArticulo = di.idArticulo GROUP BY dv.idVenta " + weekDate + @"), 0) AS subtotal,
+									ISNULL((
+										SELECT 
+											CAST(SUM(dv.precioVenta * dv.cantidad) -
+											(SUM(dv.precioVenta * dv.cantidad) / (((
+												SELECT
+													v.impuesto
+												 FROM [venta] v
+ 												 WHERE v.idVenta = dv.idVenta
+											)/100.0)+1))AS NUMERIC(38,2))
+										FROM [detalleVenta] dv 
+											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+										WHERE a.idArticulo = di.idArticulo GROUP BY dv.idVenta " + weekDate + @"), 0) AS impuesto,
+									ISNULL((
+										SELECT 
+											(SUM(dv.precioVenta * dv.cantidad)) AS total
+										FROM [detalleVenta] dv 
+											INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+										WHERE a.idArticulo = di.idArticulo " + weekDate + @"), 0) AS total
+                                FROM [articulo] a 
+	                                INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
+								WHERE a.idArticulo= " + idArticle + @"
+                    ";
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    idArticulo = reader.GetInt32(0),
+                                    codigo = reader.GetString(1),
+                                    nombre = reader.GetString(2),
+                                    descripcion = reader.GetString(3),
+                                    stockMinimo = reader.GetInt32(4),
+                                    stockMaximo = reader.GetInt32(5),
+                                    categoria = reader.GetString(6),
+                                    cantidadVendida = reader.GetInt32(7),
+                                    cantidadComprada = reader.GetInt32(8),
+                                    cantidadDevuelta = reader.GetInt32(9),
+                                    cantidadCliente = reader.GetInt32(10),
+                                    subtotal = (double)reader.GetDecimal(11),
+                                    impuesto = (double)reader.GetDecimal(12),
+                                    total = (double)reader.GetDecimal(13)
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
     }
 }

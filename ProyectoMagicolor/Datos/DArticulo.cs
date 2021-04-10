@@ -91,6 +91,49 @@ namespace Datos
             set { _Categoria = value; }
         }
 
+        private int _CantidadComprada;
+        public int cantidadComprada
+        {
+            get { return _CantidadComprada; }
+            set { _CantidadComprada = value; }
+        }
+
+        private int _CantidadDevuelta;
+        public int cantidadDevuelta
+        {
+            get { return _CantidadDevuelta; }
+            set { _CantidadDevuelta = value; }
+        }
+
+        private int _CantidadCliente;
+        public int cantidadCliente
+        {
+            get { return _CantidadCliente; }
+            set { _CantidadCliente = value; }
+        }
+
+        private double _Subtotal;
+        public double subtotal
+        {
+            get { return _Subtotal; }
+            set { _Subtotal = value; }
+        }
+
+        private double _Impuesto;
+        public double impuesto
+        {
+            get { return _Impuesto; }
+            set { _Impuesto = value; }
+        }
+
+        private double _Total;
+        public double total
+        {
+            get { return _Total; }
+            set { _Total = value; }
+        }
+
+
         public DArticulo()
         {
 
