@@ -44,22 +44,22 @@ namespace ProyectoMagicolor.Vistas
         {
 
             List<DArticulo> items = MetIng.MostrarStockNombre(search);
-            //if (filterDG)
-            //{
-            //    foreach (int item in Actual)
-            //    {
-            //        var Res = items.FindAll((art) =>  art.idArticulo == item);
+            if (filterDG)
+            {
+                foreach (int item in Actual)
+                {
+                    var Res = items.FindAll((art) => art.idArticulo == item);
 
-            //        foreach (DArticulo j in Res)
-            //        {
-            //            var id = items.FindIndex((articulo) => articulo.idArticulo == j.idArticulo);
+                    foreach (DArticulo j in Res)
+                    {
+                        var id = items.FindIndex((articulo) => articulo.idArticulo == j.idArticulo);
 
 
-            //            if (id > -1)
-            //                items.RemoveAt(id);
-            //        }
-            //    }
-            //}
+                        if (id > -1)
+                            items.RemoveAt(id);
+                    }
+                }
+            }
 
 
             dgOperaciones.ItemsSource = items;
@@ -75,6 +75,12 @@ namespace ProyectoMagicolor.Vistas
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
+            var resp = new LArticulo().SacarArticulo(id)[0];
+            if(resp.cantidadActual == 0)
+            {
+                MessageBox.Show("El Producto que has seleccionado tiene un stock de 0!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             var response = Metodos.Encontrar(id);
 
             if(response.Count > 0)

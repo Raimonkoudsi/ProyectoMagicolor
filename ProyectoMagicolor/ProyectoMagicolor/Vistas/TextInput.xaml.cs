@@ -34,7 +34,7 @@ namespace ProyectoMagicolor.Vistas
             if(!Changed)
             {
                 txt.Foreground = Brushes.Gray;
-                txt.Text = Placeholder;
+                txt.Text = _Placeholder;
             }
             else
             {

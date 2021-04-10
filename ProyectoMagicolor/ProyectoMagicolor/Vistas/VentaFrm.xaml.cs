@@ -84,11 +84,16 @@ namespace ProyectoMagicolor.Vistas
             txtDescuento.Text = Monto.ToString("0.00");
             CbMetodoPago.SelectedIndex = -1;
             dpFechaLimite.SelectedDate = null;
+            txtImpuesto.Text = "15";
+            txtBuscar.Text = "";
+            txtDocumento.Text = "";
+            txtDescuento.Text = "0,00";
 
             DisplayData.Clear();
             ListaVenta.Clear();
 
             RefreshMoney();
+            Refresh();
 
         }
 

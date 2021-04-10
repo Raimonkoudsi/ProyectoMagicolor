@@ -300,19 +300,27 @@ namespace Logica
                 {
                     comm.Connection = conn;
 
-                    comm.CommandText = @"SELECT TOP 1
+                    comm.CommandText = @"SELECT 
                                             a.idArticulo,
-                                            a.codigo, 
-                                            a.nombre, 
-                                            c.nombre,
-                                            di.precioVenta,
-                                            di.cantidadActual
-                                        from [articulo] a 
-                                            inner join [detalleIngreso] di on a.idArticulo=di.idArticulo  
+											a.codigo,
+											a.nombre,
+											c.nombre as Categoria,
+											ISNULL((
+                                        SELECT TOP 1 
+                                            di.precioVenta 
+                                        FROM [detalleIngreso] di 
+                                        WHERE a.idArticulo = di.idArticulo 
+                                        ORDER BY di.idDetalleIngreso DESC), 0) AS PrecioVenta,
+											ISNULL((
+                                        SELECT TOP 1 
+                                            di.cantidadActual 
+                                        FROM [detalleIngreso] di 
+                                        WHERE a.idArticulo = di.idArticulo 
+                                        ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
+                                        from [articulo] a  
                                             inner join [categoria] c on a.idCategoria=c.idCategoria
-										WHERE a.nombre LIKE '" + Buscar + @"%' 
-                                        GROUP BY a.codigo, a.nombre, a.idArticulo, di.cantidadActual, di.idDetalleIngreso, c.nombre, di.precioVenta
-                                        ORDER BY di.idDetalleIngreso DESC";
+										WHERE a.nombre LIKE '" + Buscar + @"%'
+                                        order by a.nombre";
 
                     try
                     {
@@ -320,9 +328,10 @@ namespace Logica
 
                         using (SqlDataReader reader = comm.ExecuteReader())
                         {
-
+                            
                             while (reader.Read())
                             {
+
                                 ListaGenerica.Add(new DArticulo
                                 {
                                     idArticulo = reader.GetInt32(0),

@@ -113,6 +113,7 @@ namespace ProyectoMagicolor.Vistas
                                         Cantidad,
                                         DataDIngreso.precioVenta,
                                         0,0);
+            UForm.idArticulo = DataArticulo.idArticulo;
         }
 
         void Create()
@@ -146,6 +147,7 @@ namespace ProyectoMagicolor.Vistas
             GridArticulo.Visibility = Visibility.Visible;
             txtArticulo.Text = Articulo.nombre;
             txtArtPrecio.Text = DDI.precioVenta.ToString("0.00");
+            txtStock.Text = "En Stock: " + DDI.cantidadActual;
 
 
             BtnAgregarArticulo.Content = "Cambiar";
@@ -160,6 +162,7 @@ namespace ProyectoMagicolor.Vistas
             GridArticulo.Visibility = Visibility.Collapsed;
             txtArticulo.Text = "";
             txtArtPrecio.Text = "";
+            txtStock.Text = "";
 
             BtnAgregarArticulo.Content = "Buscar Artículo";
         }
@@ -170,7 +173,7 @@ namespace ProyectoMagicolor.Vistas
 
             foreach (DDetalle_Venta item in ActualDetalle)
             {
-                intentnt.Add(item.idDetalleIngreso);
+                intentnt.Add(item.idArticulo);
             }
 
             DetalleIngresoVista AVFrm = new DetalleIngresoVista(intentnt, Type == TypeForm.Create);
@@ -223,6 +226,13 @@ namespace ProyectoMagicolor.Vistas
             {
                 MessageBox.Show("Debes seleccionar un Articulo!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtArticulo.Focus();
+                return true;
+            }
+
+            if(DataDIngreso.cantidadActual < int.Parse(txtCantidad.txt.Text))
+            {
+                MessageBox.Show("No puedes superar la cantidad que hay en Stock!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtCantidad.txt.Focus();
                 return true;
             }
 

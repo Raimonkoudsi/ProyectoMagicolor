@@ -94,6 +94,9 @@ namespace ProyectoMagicolor.Vistas
                     else
                     {
                         //Mensaje de Error
+                        MessageBox.Show("Debes seleccionar las dos fechas!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                        DpFechaInicio.Focus();
+                        return;
                     }
                 }
                 //Solo 1 Fecha
@@ -107,6 +110,9 @@ namespace ProyectoMagicolor.Vistas
                     else
                     {
                         //mensaje de Error
+                        MessageBox.Show("Debes seleccionar una fecha!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                        DpFechaInicio.Focus();
+                        return;
                     }
                 }
             }
@@ -133,6 +139,9 @@ namespace ProyectoMagicolor.Vistas
                 else
                 {
                     //mensaje de Error
+                    MessageBox.Show("Debes seleccionar una columna!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    CbColumnas.Focus();
+                    return;
                 }
             }
             else if (ChBMayoresVentasOrdenar.IsChecked ?? false)
@@ -173,13 +182,10 @@ namespace ProyectoMagicolor.Vistas
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var response = Metodos.Encontrar(id);
+            var response = Metodos.DetalleInventario(id)[0];
 
-            ArticuloFrm frmTrab = new ArticuloFrm();
-            frmTrab.Type = TypeForm.Read;
-            frmTrab.DataFill = response[0];
-            bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh();
+            InventarioVista vista = new InventarioVista(response);
+            vista.ShowDialog();
             //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
 

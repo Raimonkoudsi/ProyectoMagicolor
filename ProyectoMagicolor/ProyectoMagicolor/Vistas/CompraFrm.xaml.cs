@@ -84,9 +84,13 @@ namespace ProyectoMagicolor.Vistas
             CbMetodoPago.SelectedIndex = -1;
             dpFechaLimite.SelectedDate = null;
             txtFactura.SetText("");
+            txtBuscar.Text = "";
+            txtFactura.SetText("");
+            txtImpuesto.Text = "15";
 
             DisplayData.Clear();
             ListaCompra.Clear();
+            Refresh();
         }
 
 

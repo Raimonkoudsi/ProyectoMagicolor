@@ -54,8 +54,8 @@ namespace ProyectoMagicolor.Vistas
                 {
                     var MainFrm = new MainWindow(respuesta[0]);
                     this.Hide();
-                    MainFrm.ShowDialog();
-                    this.Close();
+                    MainFrm.Show();
+                    MainFrm.Closing += (s,r)=> { this.Close(); };
                 }
                 else
                 {
@@ -97,6 +97,16 @@ namespace ProyectoMagicolor.Vistas
             {
                 Loging();
             }
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

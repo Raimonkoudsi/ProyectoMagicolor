@@ -100,7 +100,7 @@ namespace Logica
                     comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
                     comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
                     comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
-                    comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMinimo);
+                    comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
                     comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
 
                     comm.Parameters.AddWithValue("@idArticulo", Articulo.idArticulo);
@@ -561,7 +561,7 @@ namespace Logica
             {
                 using (SqlCommand comm = new SqlCommand())
                 {
-                    string weekDate = " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+                    string weekDate = " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
 
                     comm.Connection = conn;
 
@@ -676,13 +676,12 @@ namespace Logica
                                     cantidadDevuelta = reader.GetInt32(9),
                                     cantidadCliente = reader.GetInt32(10),
                                     subtotal = (double)reader.GetDecimal(11),
-                                    impuesto = (double)reader.GetDecimal(12),
-                                    total = (double)reader.GetDecimal(13),
-                                    subtotalDevolucion = (double)reader.GetDecimal(14),
-                                    totalDevolucion = (double)reader.GetDecimal(15),
-                                    precioUnidad = (double)reader.GetDecimal(16),
-                                    compraVendida = (double)reader.GetDecimal(17),
-                                    totalNeto = (double)reader.GetDecimal(18)
+                                    total = (double)reader.GetDecimal(12),
+                                    subtotalDevolucion = (double)reader.GetDecimal(13),
+                                    totalDevolucion = (double)reader.GetDecimal(14),
+                                    precioUnidad = (double)reader.GetDecimal(15),
+                                    compraVendida = (double)reader.GetDecimal(16),
+                                    totalNeto = (double)reader.GetDecimal(17)
                                 });
                             }
                         }

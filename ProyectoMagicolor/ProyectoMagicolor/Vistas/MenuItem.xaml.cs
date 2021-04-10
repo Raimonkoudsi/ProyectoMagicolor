@@ -31,6 +31,15 @@ namespace ProyectoMagicolor.Vistas
             ListViewItemMenu.Visibility = itemMenu.SubItems == null ? Visibility.Visible : Visibility.Collapsed;
             ListViewItemMenu.Content = itemMenu.Header;
 
+            if(itemMenu.SubItems == null)
+            {
+                ListViewItemMenu.Click += (s, r) =>
+                {
+                    //_context.SwitchScreen(itemMenu.Screen);
+                    _context.LogOut();
+                };
+            }
+
             this.DataContext = itemMenu;
         }
 

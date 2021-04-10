@@ -8,6 +8,9 @@
         Loaded="Window_Loaded"
         Background="WhiteSmoke"
         Title="Seleccionar Articulo" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Window.Resources>
+        <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -30,6 +33,22 @@
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
                   Background="WhiteSmoke">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <Binding Path="idArticulo" Converter="{StaticResource BooleanToBrushConverter}">
+                                <Binding.ConverterParameter>
+                                    <x:Array Type="SolidColorBrush">
+                                        <SolidColorBrush Color="Red"/>
+                                        <SolidColorBrush Color="Blue"/>
+                                    </x:Array>
+                                </Binding.ConverterParameter>
+                            </Binding>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="#f0f0f0" />

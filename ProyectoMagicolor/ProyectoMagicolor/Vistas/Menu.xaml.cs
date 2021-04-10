@@ -64,7 +64,7 @@ namespace ProyectoMagicolor
             menuFinancial.Add(new SubItem("Inventario", new InventarioDG()));
             var item4 = new ItemMenu("Expenses", menuFinancial, PackIconKind.ScaleBalance);
 
-            var item0 = new ItemMenu("Dashboard", new ArticuloDG(), PackIconKind.ViewDashboard);
+            var item0 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
 
             Menu.Children.Add(new MenuItemX(item0, this));
             Menu.Children.Add(new MenuItemX(item1, this));
@@ -87,6 +87,13 @@ namespace ProyectoMagicolor
             {
                 ContentFrame.Content = screen;
             }
+        }
+
+        public void LogOut()
+        {
+            Login login = new Login();
+            login.Show();
+            this.Close();
         }
 
 		private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)

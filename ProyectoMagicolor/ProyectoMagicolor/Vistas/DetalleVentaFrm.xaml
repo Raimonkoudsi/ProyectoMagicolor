@@ -33,7 +33,10 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="txtArticulo" Text="Lapices" FontWeight="Bold" FontSize="15" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="txtArticulo" Text="Lapices" FontWeight="Bold" FontSize="15" />
+                            <TextBlock x:Name="txtStock" Text="En Stock: 20" FontWeight="Bold" FontSize="15"  Margin="10 0"/>
+                        </StackPanel>
                         <TextBlock x:Name="txtArtPrecio" Grid.Row="1" Text="Bs.S 10.000,00" FontWeight="Bold" FontSize="9" VerticalAlignment="Center"/>
                     </Grid>
                     <Button Grid.Column="1" x:Name="BtnAgregarArticulo" Content="Buscar Artículo" Click="BtnAgregarArticulo_Click" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 10"/>
