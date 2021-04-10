@@ -428,7 +428,7 @@ namespace ProyectoMagicolor.Vistas
             double imp = SubTCImp - Subtotal;
 
             subtotal = Subtotal;
-            impuestos = imp;
+            impuestos = impPer;
 
 
             double Total = Subtotal + imp;

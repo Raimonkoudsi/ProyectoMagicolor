@@ -8,6 +8,9 @@
         Loaded="Window_Loaded"
         Background="WhiteSmoke"
         Title="Trabajadores" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Page.Resources>
+        <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
+    </Page.Resources>
 
     <Grid>
         <Grid>
@@ -29,6 +32,22 @@
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
                   Background="WhiteSmoke">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <Binding Path="idArticulo" Converter="{StaticResource BooleanToBrushConverter}">
+                                    <Binding.ConverterParameter>
+                                        <x:Array Type="SolidColorBrush">
+                                            <SolidColorBrush Color="Red"/>
+                                            <SolidColorBrush Color="Blue"/>
+                                        </x:Array>
+                                    </Binding.ConverterParameter>
+                                </Binding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="#f0f0f0" />
@@ -42,7 +61,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                    <DataGridTextColumn Width="*" Header="Nombre" Binding="{Binding nombre}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -81,21 +100,11 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Width="auto">
-                                    <Button CommandParameter="{Binding idArticulo}"
-                                        Click="Button_Click_1"
-                                        Margin="0 0 5 0"
-                                        Padding="5">Editar</Button>
                                     <Button Name="txtVer"
                                         CommandParameter="{Binding idArticulo}"
                                         Click="txtVer_Click"
                                         Margin="5 0"
-                                        Padding="5">Ver</Button>
-                                    <Button x:Name="btnEliminar"
-                                        CommandParameter="{Binding idArticulo}" 
-                                        Click="btnEliminar_Click"
-                                        Background="OrangeRed" BorderBrush="OrangeRed"
-                                        Margin="5 0 0 0"
-                                        Padding="5">Eliminar</Button>
+                                        >Ver</Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -103,7 +112,7 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Grid x:Name="SideBar" Visibility="Visible">
+        <Grid x:Name="SideBar" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>

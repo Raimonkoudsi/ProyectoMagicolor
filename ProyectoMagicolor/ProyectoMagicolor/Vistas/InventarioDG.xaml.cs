@@ -15,9 +15,38 @@ using System.Windows.Media.Animation;
 
 using Datos;
 using Logica;
+using System.Globalization;
 
 namespace ProyectoMagicolor.Vistas
 {
+
+    public class BooleanToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return Brushes.Transparent;
+
+            int idArticulo = int.Parse(value.ToString());
+
+            var resp = new LArticulo().SacarArticulo(idArticulo)[0];
+
+            if(resp.cantidadActual < resp.stockMinimo)
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFD8D8"));
+            }
+            else
+            {
+                return Brushes.Transparent;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for FTrabajadores.xaml
     /// </summary>
@@ -138,37 +167,6 @@ namespace ProyectoMagicolor.Vistas
             //    MessageBox.Show("no hay");
             ArticuloFrm frmTrab = new ArticuloFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            int id = (int)((Button)sender).CommandParameter;
-            var response = Metodos.Encontrar(id);
-
-            ArticuloFrm frm = new ArticuloFrm();
-            frm.Type = TypeForm.Update;
-            frm.DataFill = response[0];
-            bool Resp = frm.ShowDialog() ?? false;
-            Refresh();
-        }
-
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            Refresh();
-        }
-
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (Resp != MessageBoxResult.Yes)
-                return;
-            int id = (int)((Button)sender).CommandParameter;
-            DArticulo item = new DArticulo()
-            {
-                idArticulo = id
-            };
-            Metodos.Eliminar(item);
             Refresh();
         }
 
@@ -351,6 +349,7 @@ namespace ProyectoMagicolor.Vistas
             Refresh();
             CloseSidebar();
         }
+
     }
 
 }
