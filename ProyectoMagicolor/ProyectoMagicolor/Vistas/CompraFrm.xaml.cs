@@ -386,7 +386,7 @@ namespace ProyectoMagicolor.Vistas
             double Total = Subtotal + imp;
 
             subtotal = Subtotal;
-            impuestos = imp;
+            impuestos = impPer;
             total = Total;
 
 

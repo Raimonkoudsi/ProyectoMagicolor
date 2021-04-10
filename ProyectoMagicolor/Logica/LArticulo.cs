@@ -413,7 +413,7 @@ namespace Logica
                     orderQuery = " a.nombre ASC";
                 //Alfabeticamente por Categoría
                 else if (typeOrder == 2)
-                    orderQuery = " c.nombre ASC";
+                    orderQuery = " c.nombre, a.nombre ASC";
                 //mayores ventas
                 else if (typeOrder == 3)
                     orderQuery = " vendido DESC";
@@ -480,6 +480,56 @@ namespace Logica
                                     cantidadActual = CantidadActual,
                                     cantidadVendida = reader.GetInt32(5),
                                     stockMinimo = StockMinimo
+                                });
+                            }
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            conn.Close();
+                        }
+                    }
+                    return ListaGenerica;
+                }
+            }
+
+        }
+
+
+        public List<DArticulo> SacarArticulo(int Buscar)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            {
+
+                using (SqlCommand comm = new SqlCommand())
+                {
+                    comm.Connection = conn;
+
+                    comm.CommandText = "Select a.stockMinimo, ISNULL((SELECT TOP 1 di.cantidadActual FROM [detalleIngreso] di WHERE a.idArticulo = di.idArticulo ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad from [articulo] a WHERE a.idArticulo= " + Buscar + " ";
+
+                    try
+                    {
+                        conn.Open();
+
+                        using (SqlDataReader reader = comm.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                int CantidadActual = reader.GetInt32(1);
+                                int StockMinimo = reader.GetInt32(0);
+                                ListaGenerica.Add(new DArticulo
+                                {
+                                    stockMinimo = StockMinimo,
+                                    cantidadActual = CantidadActual
                                 });
                             }
                         }
