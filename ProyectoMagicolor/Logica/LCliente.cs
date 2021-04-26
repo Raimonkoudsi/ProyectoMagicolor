@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Datos;
-
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
@@ -11,325 +10,224 @@ namespace Logica
 {
     public class LCliente : DCliente
     {
+        #region QUERIES
+        private string queryInsert = @"
+            INSERT INTO [cliente] (
+                idCliente,
+                nombre,
+                apellidos,
+                tipoDocumento,
+                numeroDocumento,
+                direccion,
+                telefono,
+                email
+            ) VALUES (
+                @idCliente,
+                @nombre,
+                @apellidos,
+                @tipoDocumento,
+                @numeroDocumento,
+                @direccion,
+                @telefono,
+                @email
+            );
+	    ";
 
-        public string Insertar(DCliente Cliente)
+        private string queryUpdate = @"
+            UPDATE [cliente] SET 
+                nombre = @nombre,
+                apellidos = @apellidos,
+                tipoDocumento = @tipoDocumento,
+                numeroDocumento = @numeroDocumento,
+                direccion = @direccion,
+                telefono = @telefono,
+                email = @email
+            WHERE idCliente = @idCliente;
+	    ";
+
+        private string queryDelete = @"
+            DELETE * FROM [cliente] 
+            WHERE idCliente = @idCliente;
+	    ";
+
+        private string queryList = @"
+            SELECT * FROM [cliente] 
+            WHERE tipoDocumento = @tipoDocumento AND numeroDocumento LIKE @numeroDocumento + '%' 
+            ORDER BY numeroDocumento;
+        ";
+
+        private string queryListID = @"
+            SELECT * FROM [cliente] 
+            WHERE idCliente = @idCliente;
+        ";
+
+        private string queryListDocument = @"
+            SELECT * FROM [cliente] 
+            WHERE tipoDocumento = @tipoDocumento AND numeroDocumento = @numeroDocumento
+        ";
+        #endregion
+
+
+        public string Insertar(DCliente Client)
         {
             string respuesta = "";
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idCliente", LFunction.GetID("cliente", "idCliente"));
+                comm.Parameters.AddWithValue("@nombre", Client.nombre);
+                comm.Parameters.AddWithValue("@apellidos", Client.apellidos);
+                comm.Parameters.AddWithValue("@tipoDocumento", Client.tipoDocumento);
+                comm.Parameters.AddWithValue("@numeroDocumento", Client.numeroDocumento);
+                comm.Parameters.AddWithValue("@direccion", Client.direccion);
+                comm.Parameters.AddWithValue("@telefono", Client.telefono);
+                comm.Parameters.AddWithValue("@email", Client.email);
 
-                try
-                {
-                    conn.Open();
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro del Cliente";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Ingresado Correctamente");
+            };
+            LFunction.SafeExecutor(action);
 
-                    LFunction getID = new LFunction();
-
-                    int ID = getID.GetID("cliente", "idCliente");
-
-                    string queryAddClient = @"
-                            INSERT INTO cliente(
-                                idCliente,
-                                nombre,
-                                apellidos,
-                                tipoDocumento,
-                                numeroDocumento,
-                                direccion,
-                                telefono,
-                                email
-                            ) VALUES (
-                                @idCliente,
-                                @nombre,
-                                @apellidos,
-                                @tipoDocumento,
-                                @numeroDocumento,
-                                @direccion,
-                                @telefono,
-                                @email
-                            );
-	                ";
-
-                    using (SqlCommand comm = new SqlCommand(queryAddClient, conn))
-                    {
-                        comm.Parameters.AddWithValue("@idCliente", ID);
-                        comm.Parameters.AddWithValue("@nombre", Cliente.nombre);
-                        comm.Parameters.AddWithValue("@apellidos", Cliente.apellidos);
-                        comm.Parameters.AddWithValue("@tipoDocumento", Cliente.tipoDocumento);
-                        comm.Parameters.AddWithValue("@numeroDocumento", Cliente.numeroDocumento);
-                        comm.Parameters.AddWithValue("@direccion", Cliente.direccion);
-                        comm.Parameters.AddWithValue("@telefono", Cliente.telefono);
-                        comm.Parameters.AddWithValue("@email", Cliente.email);
-
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del Cliente";
-                    }
-                }
-                catch (SqlException e)
-                {
-                    respuesta = e.Message;
-                }
-                finally
-                {
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }
-                return respuesta;
-            }
+            return respuesta;
         }
 
 
-        public string Editar(DCliente Cliente)
+        public string Editar(DCliente Client)
         {
             string respuesta = "";
 
-            string queryEditClient = @"
-                        UPDATE cliente SET 
-                            nombre = @nombre,
-                            apellidos = @apellidos,
-                            tipoDocumento = @tipoDocumento,
-                            numeroDocumento = @numeroDocumento,
-                            direccion = @direccion,
-                            telefono = @telefono,
-                            email = @email
-                            WHERE idCliente = @idCliente;
-	        ";
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryUpdate, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@nombre", Client.nombre);
+                comm.Parameters.AddWithValue("@apellidos", Client.apellidos);
+                comm.Parameters.AddWithValue("@tipoDocumento", Client.tipoDocumento);
+                comm.Parameters.AddWithValue("@numeroDocumento", Client.numeroDocumento);
+                comm.Parameters.AddWithValue("@direccion", Client.direccion);
+                comm.Parameters.AddWithValue("@telefono", Client.telefono);
+                comm.Parameters.AddWithValue("@email", Client.email);
+                comm.Parameters.AddWithValue("@idCliente", Client.idCliente);
 
-                using (SqlCommand comm = new SqlCommand(queryEditClient, conn))
-                {
-                    comm.Parameters.AddWithValue("@nombre", Cliente.nombre);
-                    comm.Parameters.AddWithValue("@apellidos", Cliente.apellidos);
-                    comm.Parameters.AddWithValue("@tipoDocumento", Cliente.tipoDocumento);
-                    comm.Parameters.AddWithValue("@numeroDocumento", Cliente.numeroDocumento);
-                    comm.Parameters.AddWithValue("@direccion", Cliente.direccion);
-                    comm.Parameters.AddWithValue("@telefono", Cliente.telefono);
-                    comm.Parameters.AddWithValue("@email", Cliente.email);
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Cliente";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Actualizado Correctamente");
+            };
+            LFunction.SafeExecutor(action);
 
-                    comm.Parameters.AddWithValue("@idCliente", Cliente.idCliente);
-
-                    try
-                    {
-                        conn.Open();
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizo el Registro del Cliente";
-                    }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
-                }
-            }
+            return respuesta;
         }
 
 
-        public string Eliminar(DCliente Cliente)
+        public string Eliminar(int IdCliente)
         {
             string respuesta = "";
 
-            string queryDeleteClient = @"
-                        DELETE FROM cliente 
-                        WHERE idCliente=@idCliente
-	        ";
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idCliente", IdCliente);
 
-                using (SqlCommand comm = new SqlCommand(queryDeleteClient, conn))
-                {
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Registro del Cliente";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Eliminado Correctamente");
+            };
+            LFunction.SafeExecutor(action);
 
-                    comm.Parameters.AddWithValue("@idCliente", Cliente.idCliente);
-
-                    try
-                    {
-                        conn.Open();
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se elimino el Registro del Cliente";
-                    }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
-                }
-            }
-        }
-
-        public List<DCliente> Mostrar(string Buscar, string Buscar2)
-        {
-            List<DCliente> ListaGenerica = new List<DCliente>();
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
-            {
-
-                using (SqlCommand comm = new SqlCommand())
-                {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT * from [cliente] where tipoDocumento = '" + Buscar +"' AND numeroDocumento like '" + Buscar2 + "%' order by numeroDocumento";
-
-                    try
-                    {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DCliente
-                                {
-                                    idCliente = reader.GetInt32(0),
-                                    nombre = reader.GetString(1),
-                                    apellidos = reader.GetString(2),
-                                    tipoDocumento = reader.GetString(3),
-                                    numeroDocumento = reader.GetString(4),
-                                    direccion = reader.GetString(5),
-                                    telefono = reader.GetString(6),
-                                    email = reader.GetString(7),
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
-                }
-            }
-
-        }
-
-        public List<DCliente> Encontrar(int Buscar)
-        {
-            List<DCliente> ListaGenerica = new List<DCliente>();
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
-            {
-
-                using (SqlCommand comm = new SqlCommand())
-                {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT * from [cliente] WHERE idCliente= " + Buscar + "";
-
-                    try
-                    {
-
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DCliente
-                                {
-                                    idCliente = reader.GetInt32(0),
-                                    nombre = reader.GetString(1),
-                                    apellidos = reader.GetString(2),
-                                    tipoDocumento = reader.GetString(3),
-                                    numeroDocumento = reader.GetString(4),
-                                    direccion = reader.GetString(5),
-                                    telefono = reader.GetString(6),
-                                    email = reader.GetString(7)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
-                }
-            }
-
+            return respuesta;
         }
 
 
-        public List<DCliente> EncontrarConDocumento(string Tipo, string NroDocumento)
+        public List<DCliente> Mostrar(string TipoDocumento, string NumeroDocumento)
         {
             List<DCliente> ListaGenerica = new List<DCliente>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT * from [cliente] WHERE tipoDocumento = '" + Tipo + "' AND numeroDocumento = '" + NroDocumento + "'";
-
-                    try
+                    ListaGenerica.Add(new DCliente
                     {
-
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DCliente
-                                {
-                                    idCliente = reader.GetInt32(0),
-                                    nombre = reader.GetString(1),
-                                    apellidos = reader.GetString(2),
-                                    tipoDocumento = reader.GetString(3),
-                                    numeroDocumento = reader.GetString(4),
-                                    direccion = reader.GetString(5),
-                                    telefono = reader.GetString(6),
-                                    email = reader.GetString(7),
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idCliente = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        apellidos = reader.GetString(2),
+                        tipoDocumento = reader.GetString(3),
+                        numeroDocumento = reader.GetString(4),
+                        direccion = reader.GetString(5),
+                        telefono = reader.GetString(6),
+                        email = reader.GetString(7),
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
+        }
+
+
+        public List<DCliente> Encontrar(int IdCliente)
+        {
+            List<DCliente> ListaGenerica = new List<DCliente>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idCliente", IdCliente);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DCliente
+                    {
+                        idCliente = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        apellidos = reader.GetString(2),
+                        tipoDocumento = reader.GetString(3),
+                        numeroDocumento = reader.GetString(4),
+                        direccion = reader.GetString(5),
+                        telefono = reader.GetString(6),
+                        email = reader.GetString(7)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DCliente> EncontrarConDocumento(string TipoDocumento, string NumeroDocumento)
+        {
+            List<DCliente> ListaGenerica = new List<DCliente>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListDocument, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DCliente
+                    {
+                        idCliente = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        apellidos = reader.GetString(2),
+                        tipoDocumento = reader.GetString(3),
+                        numeroDocumento = reader.GetString(4),
+                        direccion = reader.GetString(5),
+                        telefono = reader.GetString(6),
+                        email = reader.GetString(7),
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
         }
     }
 }

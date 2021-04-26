@@ -26,6 +26,11 @@ namespace ProyectoMagicolor.Vistas
         public Login()
         {
             InitializeComponent();
+
+            txtUsuario.BorderBrush = System.Windows.Media.Brushes.LightGray;
+            txtContraseña.BorderBrush = System.Windows.Media.Brushes.LightGray;
+            txtUsuario.Foreground = System.Windows.Media.Brushes.LightGray;
+            txtContraseña.Foreground = System.Windows.Media.Brushes.LightGray;
         }
 
         void Loging()
@@ -81,6 +86,9 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtContraeñaPlace.Text = "";
             }
+
+            txtContraseña.BorderBrush = System.Windows.Media.Brushes.White;
+            txtContraseña.Foreground = System.Windows.Media.Brushes.White;
         }
 
         private void txtContraseña_LostFocus(object sender, RoutedEventArgs e)
@@ -89,6 +97,31 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtContraeñaPlace.Text = "Contraseña";
             }
+
+            txtContraseña.BorderBrush = System.Windows.Media.Brushes.LightGray;
+            txtContraseña.Foreground = System.Windows.Media.Brushes.LightGray;
+        }
+
+        private void txtUsuario_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtUsuario.Text == "")
+            {
+                txtUsuarioPlace.Text = "";
+            }
+
+            txtUsuario.BorderBrush = System.Windows.Media.Brushes.White;
+            txtUsuario.Foreground = System.Windows.Media.Brushes.White;
+        }
+
+        private void txtUsuario_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtUsuario.Text == "")
+            {
+                txtUsuarioPlace.Text = "Usuario";
+            }
+
+            txtUsuario.BorderBrush = System.Windows.Media.Brushes.LightGray;
+            txtUsuario.Foreground = System.Windows.Media.Brushes.LightGray;
         }
 
         private void StackPanel_KeyDown(object sender, KeyEventArgs e)

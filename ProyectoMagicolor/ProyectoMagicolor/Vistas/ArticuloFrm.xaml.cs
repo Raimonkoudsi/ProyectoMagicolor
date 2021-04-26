@@ -107,14 +107,12 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
-            string response = Metodos.Insertar(UForm);
-            MessageBox.Show(response);
-            if (response == "OK")
+
+            if (Metodos.Insertar(UForm).Equals("OK"))
             {
                 this.DialogResult = true;
                 this.Close();
             }
-
         }
 
         void Update()
@@ -123,13 +121,13 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
             UForm.idArticulo = DataFill.idArticulo;
-            string response = Metodos.Editar(UForm);
-            MessageBox.Show(response);
-            if(response == "OK")
-            {
-                this.DialogResult = true;
-                this.Close();
-            }
+            Metodos.Editar(UForm);
+            //MessageBox.Show(response);
+            //if(response == "OK")
+            //{
+            //    this.DialogResult = true;
+            //    this.Close();
+            //}
         }
 
         private void PlaceDescripcion_GotFocus(object sender, RoutedEventArgs e)

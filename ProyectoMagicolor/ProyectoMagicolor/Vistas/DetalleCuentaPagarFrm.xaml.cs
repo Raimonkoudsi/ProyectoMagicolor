@@ -86,7 +86,7 @@ namespace ProyectoMagicolor.Vistas
 
             double monto = 0F;
 
-            if (total)
+            if (!total)
                 monto = double.Parse(txtMonto.txt.Text);
             else
                 monto = DataFill.monto;
@@ -108,7 +108,7 @@ namespace ProyectoMagicolor.Vistas
 
             if (total)
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de" + DataFill.monto + " $ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " $ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
             else
             {
@@ -118,18 +118,15 @@ namespace ProyectoMagicolor.Vistas
             if (rpta == MessageBoxResult.No)
                 return;
 
-            string ok = Metodos.RegistrarCxP(UForm, DataFill.idCuentaPagar);
+            string abonarCP = Metodos.RegistrarCxP(UForm, DataFill.idCuentaPagar);
 
-            if(ok.Equals("OK"))
+            if (abonarCP.Equals("TOTAL"))
             {
-                if(total)
-                {
-                    MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Abono Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (abonarCP.Equals("PARCIAL"))
+            {
+                MessageBox.Show("Abono Ingresado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             this.Close();

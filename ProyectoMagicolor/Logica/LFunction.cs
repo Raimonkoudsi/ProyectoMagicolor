@@ -11,140 +11,54 @@ using System.Reflection;
 
 namespace Logica
 {
-    public class LFunction:Conexion
+    public class LFunction : Conexion
     {
-        public int GetID(string Table, string Parameter)
+        public static int GetID(string Table, string Parameter)
         {
             int ID = 1;
 
             string queryGetID = "SELECT max(" + Parameter + ") FROM " + Table;
+            using SqlCommand comm = new SqlCommand(queryGetID, Conexion.ConexionSql);
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
-            {
-                using (SqlCommand comm = new SqlCommand(queryGetID, conn))
-                {
-                    try
-                    {
-                        conn.Open();
+            using SqlDataReader reader = comm.ExecuteReader();
+            if (reader.Read() && !reader.IsDBNull(0)) ID = reader.GetInt32(0) + 1;
 
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-                            if (reader.Read() && !reader.IsDBNull(0))
-                            {
-                                ID = reader.GetInt32(0);
-                                ID++;
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-
-                    return ID;
-                }
-            }
+            return ID;
         }
 
-        /*
-        public bool Insert(string Table, DArticulo Articulo, int CountValue)
+
+        public static MessageBoxResult MessageExecutor(string TypeError, string Message)
         {
-            bool respuesta = false;
+            if (TypeError == null && Message == null)
+                throw new NullReferenceException("Error en el mensaje de Información");
+            if (TypeError == "Error")
+                return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (TypeError == "Information")
+                return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            string finalAddQuery = "INSERT INTO " + Table + " VALUES (";
-
-            PropertyInfo[] properties = Articulo.GetType().GetProperties();
-
-            int iteracion=0;
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
-            {
-                try
-                {
-                    conn.Open();
-                    using (SqlCommand comm = new SqlCommand(finalAddQuery, conn))
-                    {
-
-
-                        for (int i = 0; i <= (CountValue - 1); i++)
-                        {
-                            finalAddQuery += properties[i].GetValue(Articulo, null).ToString();
-
-
-                            if (iteracion < (CountValue - 1))
-                            {
-                                finalAddQuery += ",";
-                            }
-                            else
-                            {
-                                finalAddQuery += ");";
-                            }
-
-                            comm.Parameters.AddWithValue("@" + properties[i].Name, 
-                                                        properties[i].GetValue(Articulo, null));
-
-                            iteracion++;
-                        }
-
-                        respuesta = comm.ExecuteNonQuery() == 1 ? true : false;
-
-                        MessageBox.Show(finalAddQuery, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        if (respuesta)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-
-                    }
-                }
-                catch (SqlException e)
-                {
-                    MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    return false;
-                }
-                finally
-                {
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }
-            }
-
-            //foreach (PropertyInfo pi in properties)
-            //{
-            //    //MessageBox.Show(pi.Name, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    ///MessageBox.Show(pi.GetValue(Articulo, null).ToString(), "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    finalAddQuery += pi.GetValue(Articulo, null).ToString();
-
-
-            //    if(iteracion < properties.Length)
-            //    {
-            //        finalAddQuery += ",";
-            //    } 
-            //    else
-            //    {
-            //        finalAddQuery += ");";
-            //    }
-
-            //    iteracion++;
-            //}
+            return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK);
         }
-        */
 
-        
+        public static void SafeExecutor(Action action)
+        {
+            SafeExecutor(() => { action(); return 0; });
+        }
+
+        private static T SafeExecutor<T>(Func<T> action)
+        {
+            try
+            {
+                Conexion.ConexionSql.Open();
+                return action();
+            }
+            catch (SqlException errorSql) { MessageExecutor("Error", errorSql.Message); }
+            catch (IndexOutOfRangeException errorIndex) { MessageExecutor("Error", errorIndex.Message); }
+            catch (ArgumentNullException errorNull) { MessageExecutor("Error", errorNull.Message); }
+            catch (Exception error) { MessageExecutor("Error", error.Message); }
+            finally { if (Conexion.ConexionSql.State == ConnectionState.Open) Conexion.ConexionSql.Close(); }
+
+            return default(T);
+        }
     }
 
     public static class DateTimeExtensions

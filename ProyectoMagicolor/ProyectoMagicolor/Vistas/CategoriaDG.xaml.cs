@@ -86,11 +86,7 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DCategoria item = new DCategoria()
-            {
-                idCategoria = id
-            };
-            Metodos.Eliminar(item);
+            Metodos.Eliminar(id);
             Refresh(txtBuscar.Text);
         }
 

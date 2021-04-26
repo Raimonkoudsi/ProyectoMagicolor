@@ -108,7 +108,7 @@ namespace ProyectoMagicolor.Vistas
                                              MainWindow.LoggedTrabajador.idTrabajador,
                                              DateTime.Now,
                                              descuento,
-                                             impuestos,
+                                             impuesto,
                                              CbMetodoPago.SelectedIndex + 1,
                                              0);
 
@@ -417,6 +417,8 @@ namespace ProyectoMagicolor.Vistas
 
         public double subtotal, impuestos, descuento, total;
 
+        public int impuesto;
+
         public void RefreshMoney()
         {
             double Subtotal = 0;
@@ -435,6 +437,7 @@ namespace ProyectoMagicolor.Vistas
             subtotal = Subtotal;
             impuestos = impPer;
 
+            impuesto = int.Parse(txtImpuesto.Text);
 
             double Total = Subtotal + imp;
             double Desc = 0;

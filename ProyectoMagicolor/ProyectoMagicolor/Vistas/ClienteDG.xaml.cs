@@ -93,11 +93,7 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DCliente item = new DCliente()
-            {
-                idCliente = id
-            };
-            Metodos.Eliminar(item);
+            Metodos.Eliminar(id);
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 

@@ -119,39 +119,28 @@ namespace ProyectoMagicolor.Vistas
 
             int TipoMostrar = 1;
 
-            if (RBStockMostrar.IsChecked ?? false)
-                TipoMostrar = 2;
-            else if (RBSinStockMostrar.IsChecked ?? false)
-                TipoMostrar = 3;
-
-
+            if (RBStockMostrar.IsChecked ?? false) TipoMostrar = 2;
+            else if (RBSinStockMostrar.IsChecked ?? false) TipoMostrar = 3;
 
             int TipoOrdenar = 1;
 
             if (ChBAlfabeticoOrdenar.IsChecked ?? false)
             {
                 //Ordenar por Articulos
-                if (CbColumnas.SelectedIndex == 0)
-                    TipoOrdenar = 1;
+                if (CbColumnas.SelectedIndex == 0) TipoOrdenar = 1;
                 //Ordenar por Categorías
-                else if (CbColumnas.SelectedIndex == 1)
-                    TipoOrdenar = 2;
+                else if (CbColumnas.SelectedIndex == 1) TipoOrdenar = 2;
                 else
                 {
-                    //mensaje de Error
                     MessageBox.Show("Debes seleccionar una columna!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     CbColumnas.Focus();
                     return;
                 }
             }
-            else if (ChBMayoresVentasOrdenar.IsChecked ?? false)
-                TipoOrdenar = 3;
-            else if (ChBMayorStockOrdenar.IsChecked ?? false)
-                TipoOrdenar = 4;
-
+            else if (ChBMayoresVentasOrdenar.IsChecked ?? false) TipoOrdenar = 3;
+            else if (ChBMayorStockOrdenar.IsChecked ?? false) TipoOrdenar = 4;
 
             List<DArticulo> items = Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar);
-
 
             dgOperaciones.ItemsSource = items;
         }

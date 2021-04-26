@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Datos;
-
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
@@ -11,696 +10,525 @@ namespace Logica
 {
     public class LArticulo:DArticulo
     {
+        #region QUERIES
+        private string queryInsert = @"
+            INSERT INTO [articulo] (
+                idArticulo,
+                codigo,
+                nombre,
+                descripcion,
+                stockMinimo,
+                stockMaximo,
+                idCategoria
+            ) VALUES (
+                @idArticulo,
+                @codigo,
+                @nombre,
+                @descripcion,
+                @stockMinimo,
+                @stockMaximo,
+                @idCategoria
+            );
+        ";
 
-        public string Insertar(DArticulo Articulo)
+        private string queryUpdate = @"
+            UPDATE [articulo] SET
+                codigo = @codigo,
+                nombre = @nombre,
+                descripcion = @descripcion,
+                stockMinimo = @stockMinimo,
+                stockMaximo = @stockMaximo,
+                idCategoria = @idCategoria
+            WHERE idArticulo = @idArticulo;
+        ";
+
+        private string queryDelete = @"
+            DELETE * FROM [articulo] 
+            WHERE idArticulo = @idArticulo
+        ";
+
+        private string queryList = @"
+            SELECT * FROM [articulo] 
+            WHERE codigo LIKE @codigo + '%' 
+            ORDER BY codigo
+        ";
+
+        private string queryListCategory = @"
+            SELECT
+                a.idArticulo, 
+                a.codigo, 
+                a.nombre, 
+                c.nombre 
+            FROM [articulo] a 
+                INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria 
+            WHERE a.nombre LIKE @nombre + '%' 
+            ORDER BY a.codigo
+        ";
+
+        private string queryListID = @"
+            SELECT * FROM [articulo] 
+            WHERE idArticulo = @idArticulo
+        ";
+
+        private string queryListCode = @"
+            SELECT * FROM [articulo] 
+            WHERE codigo = @codigo
+        ";
+
+        private string queryInventaryDetail = @"
+            SELECT
+                a.idArticulo,
+                a.codigo,
+                a.nombre,
+                a.descripcion,
+                a.stockMinimo,
+                a.stockMaximo,
+                c.nombre,
+                ISNULL((
+                    SELECT
+                        SUM(dv.cantidad)
+                    FROM [detalleVenta] dv
+                        INNER JOIN[detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+
+                    WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida,
+                ISNULL((
+                    SELECT
+                        SUM(di.cantidadInicial)
+                    FROM[detalleIngreso] di
+                    WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada,
+                ISNULL((
+                    SELECT
+                        SUM(dd.cantidad)
+                    FROM[detalleDevolucion] dd
+                    WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta,
+                ISNULL((
+                    SELECT
+                        COUNT(DISTINCT c.idCliente)
+                    FROM[cliente] c
+                        INNER JOIN [venta] v ON v.idCliente = c.idCliente
+                        INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
+                        INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso
+                    WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente,
+                ISNULL((
+                    SELECT
+                        CAST((SUM(dv.precioVenta * dv.cantidad / ((v.impuesto / 100.0) + 1))) AS NUMERIC(38, 2))
+                    FROM[detalleVenta] dv
+                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS subtotal,
+                ISNULL((
+                    SELECT
+                        (SUM(dv.precioVenta * dv.cantidad)) AS total
+                    FROM[detalleVenta] dv
+                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS total,
+                ISNULL((
+                    SELECT
+                        CAST((SUM(dd.precio * dd.cantidad / ((v.impuesto / 100.0) + 1))) AS NUMERIC(38, 2))
+                    FROM[detalleDevolucion] dd
+                        INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = dd.idArticulo  @weekDate  ), 0) AS subtotalDevolucion,
+                ISNULL((
+                    SELECT
+                        (SUM(dd.precio * dd.cantidad))
+                    FROM[detalleDevolucion] dd
+                        INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = dd.idArticulo  @weekDate ), 0) AS totalDevolucion,
+                ISNULL((
+                    SELECT TOP 1
+                        di.precioCompra
+                    FROM[detalleIngreso] di
+                        INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = di.idArticulo @weekDate
+                    ORDER BY di.idDetalleIngreso DESC), 0) AS costoUnidad,
+                ISNULL((
+                    SELECT
+                        (SUM(di.precioCompra * dv.cantidad))
+                    FROM[detalleIngreso] di
+                        INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS compraVendida,
+                ISNULL((
+                    SELECT
+                        (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad))
+                    FROM[detalleIngreso] di
+                        INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS totalNeto
+            FROM[articulo] a
+                INNER JOIN[categoria] c ON a.idCategoria=c.idCategoria
+            WHERE a.idArticulo = @idArticulo;
+        ";
+
+        private string queryInventaryArticle = @"
+            SELECT 
+                a.stockMinimo, 
+                ISNULL((
+                    SELECT TOP 1 
+                        di.cantidadActual 
+                    FROM [detalleIngreso] di 
+                    WHERE a.idArticulo = di.idArticulo 
+                    ORDER BY di.idDetalleIngreso DESC)
+                , 0) AS cantidad 
+            FROM [articulo] a 
+            WHERE a.idArticulo = @idArticulo
+        ";
+        #endregion
+
+
+        public string Insertar(DArticulo Article)
         {
             string respuesta = "";
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
-                try
-                {
-                    conn.Open();
+                using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", LFunction.GetID("articulo", "idArticulo"));
+                comm.Parameters.AddWithValue("@codigo", Article.codigo);
+                comm.Parameters.AddWithValue("@nombre", Article.nombre);
+                comm.Parameters.AddWithValue("@descripcion", Article.descripcion);
+                comm.Parameters.AddWithValue("@stockMinimo", Article.stockMinimo);
+                comm.Parameters.AddWithValue("@stockMaximo", Article.stockMinimo);
+                comm.Parameters.AddWithValue("@idCategoria", Article.idCategoria);
 
-                    LFunction getID = new LFunction();
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro el Articulo";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Ingresado Correctamente");
+            };
+            LFunction.SafeExecutor(action);
 
-                    int ID = getID.GetID("articulo", "idArticulo");
-
-                    string queryAddArticle = @"
-                            INSERT INTO articulo (
-                                idArticulo,
-                                codigo,
-                                nombre,
-                                descripcion,
-                                stockMinimo,
-                                stockMaximo,
-                                idCategoria
-                            ) VALUES (
-                                @idArticulo,
-                                @codigo,
-                                @nombre,
-                                @descripcion,
-                                @stockMinimo,
-                                @stockMaximo,
-                                @idCategoria
-                            )
-	                ";
-
-                    using (SqlCommand comm = new SqlCommand(queryAddArticle, conn))
-                    {
-                        comm.Parameters.AddWithValue("@idArticulo", ID);
-                        comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
-                        comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
-                        comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
-                        comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
-                        comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMinimo);
-                        comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
-
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro del Articulo";
-                    }
-                }
-                catch (SqlException e)
-                {
-                    respuesta = e.Message;
-                }
-                finally
-                {
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }
-
-                return respuesta;
-            }
+            return respuesta;
         }
 
 
-        public string Editar(DArticulo Articulo)
+        public string Editar(DArticulo Article)
         {
             string respuesta = "";
 
-            string queryEditArticle = @"
-                        UPDATE articulo SET
-                            codigo = @codigo,
-                            nombre = @nombre,
-                            descripcion = @descripcion,
-                            stockMinimo = @stockMinimo,
-                            stockMaximo = @stockMaximo,
-                            idCategoria = @idCategoria
-                        WHERE idArticulo = @idArticulo;
-	        ";
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryUpdate, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@codigo", Article.codigo);
+                comm.Parameters.AddWithValue("@nombre", Article.nombre);
+                comm.Parameters.AddWithValue("@descripcion", Article.descripcion);
+                comm.Parameters.AddWithValue("@stockMinimo", Article.stockMinimo);
+                comm.Parameters.AddWithValue("@stockMaximo", Article.stockMaximo);
+                comm.Parameters.AddWithValue("@idCategoria", Article.idCategoria);
+                comm.Parameters.AddWithValue("@idArticulo", Article.idArticulo);
 
-                using (SqlCommand comm = new SqlCommand(queryEditArticle, conn))
-                {
-                    comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
-                    comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
-                    comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
-                    comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
-                    comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
-                    comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Articulo";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Actualizado Correctamente");
+            };
+            LFunction.SafeExecutor(action);
 
-                    comm.Parameters.AddWithValue("@idArticulo", Articulo.idArticulo);
-
-                    try
-                    {
-                        conn.Open();
-
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizo el Registro del Articulo";
-                    }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
-                }
-            }
+            return respuesta;
         }
 
 
-        public string Eliminar(DArticulo Articulo)
+        public string Eliminar(int IdArticle)
         {
             string respuesta = "";
 
-            string queryDeleteArticle = @"
-                        DELETE FROM articulo 
-                        WHERE idArticulo=@idArticulo
-	        ";
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
 
-                using (SqlCommand comm = new SqlCommand(queryDeleteArticle, conn))
-                {
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Registro del Articulo";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Eliminado Correctamente");
+            };
+            LFunction.SafeExecutor(action);
 
-                    comm.Parameters.AddWithValue("@idArticulo", Articulo.idArticulo);
-
-                    try
-                    {
-                        conn.Open();
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se elimino el Registro del Articulo";
-                    }
-                    catch (SqlException e)
-                    {
-                        respuesta = e.Message;
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return respuesta;
-                }
-            }
+            return respuesta;
         }
 
 
-        public List<DArticulo> Mostrar(string Buscar)
+        public List<DArticulo> Mostrar(string Code)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
-                using (SqlCommand comm = new SqlCommand())
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@codigo", Code);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT * FROM [articulo] WHERE codigo LIKE '" + Buscar + "%' ORDER BY codigo";
-
-                    try
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    idArticulo = reader.GetInt32(0),
-                                    codigo = reader.GetString(1),
-                                    nombre = reader.GetString(2),
-                                    descripcion = reader.GetString(3),
-                                    stockMinimo = reader.GetInt32(4),
-                                    stockMaximo = reader.GetInt32(5),
-                                    idCategoria = reader.GetInt32(6)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        descripcion = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        idCategoria = reader.GetInt32(6)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
 
-        public List<DArticulo> MostrarConCategoria(string Buscar)
+
+        public List<DArticulo> MostrarConCategoria(string Name)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
-                using (SqlCommand comm = new SqlCommand())
+                using SqlCommand comm = new SqlCommand(queryListCategory, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@nombre", Name);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT a.idArticulo, a.codigo, a.nombre, c.nombre as Categoria FROM [articulo] a inner join [categoria] c on a.idCategoria = c.idCategoria Where a.nombre like  '" + Buscar + "%' ORDER BY codigo";
-
-                    try
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    idArticulo = reader.GetInt32(0),
-                                    codigo = reader.GetString(1),
-                                    nombre = reader.GetString(2),
-                                    categoria = reader.GetString(3)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        categoria = reader.GetString(3)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
 
 
-        public List<DArticulo> Encontrar(int Buscar)
+        public List<DArticulo> Encontrar(int IdArticle)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT * from [articulo] WHERE idArticulo= " + Buscar + " ";
-
-                    try
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    idArticulo = reader.GetInt32(0),
-                                    codigo = reader.GetString(1),
-                                    nombre = reader.GetString(2),
-                                    descripcion = reader.GetString(3),
-                                    stockMinimo = reader.GetInt32(4),
-                                    stockMaximo = reader.GetInt32(5),
-                                    idCategoria = reader.GetInt32(6)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        descripcion = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        idCategoria = reader.GetInt32(6)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
 
 
-        public List<DArticulo> EncontrarConCodigo(string Buscar)
+        public List<DArticulo> EncontrarConCodigo(string Code)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryListCode, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@codigo", Code);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "SELECT * from [articulo] WHERE codigo= '" + Buscar + "' ";
-
-                    try
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    idArticulo = reader.GetInt32(0),
-                                    codigo = reader.GetString(1),
-                                    nombre = reader.GetString(2),
-                                    descripcion = reader.GetString(3),
-                                    stockMinimo = reader.GetInt32(4),
-                                    stockMaximo = reader.GetInt32(5),
-                                    idCategoria = reader.GetInt32(6)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        descripcion = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        idCategoria = reader.GetInt32(6)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
-
-
 
 
         public List<DArticulo> Inventario(int typeDate, DateTime firstDate, DateTime secondDate, int typeStock, int typeOrder)
         {
-
-            string dateQuery = "", orderQuery = "";
-
-            //FECHAS
-            if (typeDate <= 0 || typeDate >= 6) return null;
-            else
-            {
-                //diaria
-                if (typeDate == 1)
-                    dateQuery = " AND v.fecha = ('" + DateTime.Now.Date.ToShortDateString() + "')";
-                //semanal
-                else if (typeDate == 2)
-                    dateQuery = " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
-                //mensual
-                else if (typeDate == 3)
-                    dateQuery = " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
-                //anual
-                else if (typeDate == 4)
-                    dateQuery = " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
-                //Por Fecha
-                else if (typeDate == 5)
-                    dateQuery = " AND v.fecha = ('" + firstDate.ToShortDateString() + "')";
-                //entre fechas
-                else if (typeDate == 6)
-                    dateQuery = " AND v.fecha BETWEEN ('" + firstDate.ToShortDateString() + "') AND ('" + secondDate.ToShortDateString() + "')";
-            }
-
-            //ORDEN
-            if (typeOrder <= 0 || typeOrder >= 5) return null;
-            else
-            {
-                //alfabeticamente por Articulo
-                if (typeOrder == 1)
-                    orderQuery = " a.nombre ASC";
-                //Alfabeticamente por Categoría
-                else if (typeOrder == 2)
-                    orderQuery = " c.nombre, a.nombre ASC";
-                //mayores ventas
-                else if (typeOrder == 3)
-                    orderQuery = " vendido DESC";
-                //mayor stock
-                else if (typeOrder == 4)
-                    orderQuery = " cantidad DESC";
-            }
-
-
-            string inventaryQuery = @"
-                                SELECT 
-                                    a.idArticulo,
-                                    a.codigo, 
-                                    a.nombre, 
-                                    c.nombre,
-                                    ISNULL((
-                                        SELECT TOP 1 
-                                            di.cantidadActual 
-                                        FROM [detalleIngreso] di 
-                                        WHERE a.idArticulo = di.idArticulo 
-                                        ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
-                                    ISNULL((
-                                        SELECT 
-                                            SUM(dv.cantidad) 
-                                        FROM [detalleVenta] dv 
-		                                    INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-		                                    INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-                                        WHERE a.idArticulo = di.idArticulo " + dateQuery + @" ), 0) as vendido,
-                                    a.stockMinimo
-                                FROM [articulo] a 
-	                                INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
-                                ORDER BY " + orderQuery + @"
-            ";
-
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                string dateQuery = InventarioFecha(typeDate, firstDate, secondDate);
+                string orderQuery = InventarioOrden(typeOrder);
 
-                using (SqlCommand comm = new SqlCommand())
+                LFunction.MessageExecutor("Information", dateQuery);
+
+                if (dateQuery == null || orderQuery == null)
+                    throw new NullReferenceException("Error en los Métodos de Búsqueda, ingreselos nuevamente");
+
+                string queryInventary = @"
+                    SELECT 
+                        a.idArticulo,
+                        a.codigo, 
+                        a.nombre, 
+                        c.nombre,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.cantidadActual 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
+                        ISNULL((
+                            SELECT 
+                                SUM(dv.cantidad) 
+                            FROM [detalleVenta] dv 
+		                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
+		                        INNER JOIN [venta] v ON v.idVenta=dv.idVenta
+                            WHERE a.idArticulo = di.idArticulo " + dateQuery + @"), 0) AS vendido,
+                        a.stockMinimo
+                    FROM [articulo] a 
+	                    INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
+                    ORDER BY " + orderQuery + @"
+                ";
+
+                using SqlCommand comm = new SqlCommand(queryInventary, Conexion.ConexionSql);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = inventaryQuery;
-
-                    try
+                    int CantidadActual = reader.GetInt32(4);
+                    int StockMinimo = reader.GetInt32(6);
+                    if ((typeStock == 2 && CantidadActual < StockMinimo) || (typeStock == 3 && CantidadActual >= StockMinimo))
+                        continue;
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int CantidadActual = reader.GetInt32(4);
-                                int StockMinimo = reader.GetInt32(6);
-                                if ((typeStock == 2 && CantidadActual < StockMinimo) || (typeStock == 3 && CantidadActual >= StockMinimo))
-                                    continue;
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    idArticulo = reader.GetInt32(0),
-                                    codigo = reader.GetString(1),
-                                    nombre = reader.GetString(2),
-                                    categoria = reader.GetString(3),
-                                    cantidadActual = CantidadActual,
-                                    cantidadVendida = reader.GetInt32(5),
-                                    stockMinimo = StockMinimo
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        categoria = reader.GetString(3),
+                        cantidadActual = CantidadActual,
+                        cantidadVendida = reader.GetInt32(5),
+                        stockMinimo = StockMinimo
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
+        }
+        private string InventarioFecha(int typeDate, DateTime? firstDate, DateTime? secondDate)
+        {
+            if (typeDate <= 0 && typeDate > 6)
+                throw new NullReferenceException("Error en la Búsqueda de Fechas");
+
+            //dia
+            if (typeDate == 1) return " AND v.fecha = ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            //semana
+            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            //mes
+            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            //año
+            if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            //fecha
+            if (typeDate == 5) return " AND v.fecha = ('" + firstDate?.ToShortDateString() + "')";
+            //entre fechas
+            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate?.ToShortDateString() + "') AND ('" + secondDate?.ToShortDateString() + "')";
+
+            throw new NullReferenceException("Error en la Búsqueda de Fechas");
+        }
+        private string InventarioOrden(int typeOrder)
+        {
+            if (typeOrder <= 0 || typeOrder >= 5)
+                throw new NullReferenceException("Error en los Ordenes de Búsqueda");
+
+            //alfabeticamente por Articulo
+            if (typeOrder == 1) return " a.nombre ASC";
+            //Alfabeticamente por Categoría
+            if (typeOrder == 2) return " c.nombre, a.nombre ASC";
+            //mayores Ventas
+            else if (typeOrder == 3) return " vendido DESC";
+            //mayor Stock
+            else if (typeOrder == 4) return " cantidad DESC";
+
+            throw new NullReferenceException("Error en los Ordenes de Búsqueda");
         }
 
 
-        public List<DArticulo> SacarArticulo(int Buscar)
+        public List<DArticulo> DetalleInventario(int IdArticle)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryInventaryDetail, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@weekDate", InventarioFecha(2, null, null));
+                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "Select a.stockMinimo, ISNULL((SELECT TOP 1 di.cantidadActual FROM [detalleIngreso] di WHERE a.idArticulo = di.idArticulo ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad from [articulo] a WHERE a.idArticulo= " + Buscar + " ";
-
-                    try
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                int CantidadActual = reader.GetInt32(1);
-                                int StockMinimo = reader.GetInt32(0);
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    stockMinimo = StockMinimo,
-                                    cantidadActual = CantidadActual
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        descripcion = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        categoria = reader.GetString(6),
+                        cantidadVendida = reader.GetInt32(7),
+                        cantidadComprada = reader.GetInt32(8),
+                        cantidadDevuelta = reader.GetInt32(9),
+                        cantidadCliente = reader.GetInt32(10),
+                        subtotal = (double)reader.GetDecimal(11),
+                        total = (double)reader.GetDecimal(12),
+                        subtotalDevolucion = (double)reader.GetDecimal(13),
+                        totalDevolucion = (double)reader.GetDecimal(14),
+                        precioUnidad = (double)reader.GetDecimal(15),
+                        compraVendida = (double)reader.GetDecimal(16),
+                        totalNeto = (double)reader.GetDecimal(17)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
 
 
-
-        public List<DArticulo> DetalleInventario(int idArticle)
+        public List<DArticulo> SacarArticulo(int IdArticle)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
-                using (SqlCommand comm = new SqlCommand())
+                using SqlCommand comm = new SqlCommand(queryInventaryArticle, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    string weekDate = " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
-
-                    comm.Connection = conn;
-
-                    comm.CommandText = @"
-                                        SELECT
-                                            a.idArticulo,
-                                            a.codigo, 
-                                            a.nombre,
-									        a.descripcion,
-									        a.stockMinimo,
-									        a.stockMaximo,
-                                            c.nombre,
-                                            ISNULL((
-										        SELECT 
-											        SUM(dv.cantidad) 
-										        FROM [detalleVenta] dv 
-											        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
-										        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida, 
-									        ISNULL((
-										        SELECT 
-											        SUM(di.cantidadInicial) 
-										        FROM [detalleIngreso] di 
-										        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada, 
-									        ISNULL((
-										        SELECT 
-											        SUM(dd.cantidad) 
-										        FROM [detalleDevolucion] dd 
-										        WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta, 
-									        ISNULL((
-										        SELECT 
-											        COUNT(DISTINCT c.idCliente) 
-										        FROM [cliente] c 
-											        INNER JOIN [venta] v ON v.idCliente = c.idCliente
-											        INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
-											        INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso=dv.idDetalleIngreso
-										        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente, 
-                                            ISNULL((
-										        SELECT 
-										          CAST((SUM(dv.precioVenta * dv.cantidad/((v.impuesto/100.0)+1))) AS NUMERIC(38,2))
-										        FROM [detalleVenta] dv 
-										          INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-										          INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS subtotal,
-									        ISNULL((
-										        SELECT 
-											        (SUM(dv.precioVenta * dv.cantidad)) AS total
-										        FROM [detalleVenta] dv 
-											        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
-                                                    INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS total,
-									        ISNULL((
-										        SELECT 
-										          CAST((SUM(dd.precio * dd.cantidad/((v.impuesto/100.0)+1))) AS NUMERIC(38,2))
-										        FROM [detalleDevolucion] dd 
-											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
-											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-										        WHERE a.idArticulo = dd.idArticulo  " + weekDate + @"  ), 0) AS subtotalDevolucion,
-									        ISNULL((
-										        SELECT 
-											        (SUM(dd.precio * dd.cantidad))
-										        FROM [detalleDevolucion] dd 
-											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
-											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-										        WHERE a.idArticulo = dd.idArticulo  " + weekDate + @" ), 0) AS totalDevolucion,
-									        ISNULL((
-										        SELECT TOP 1
-										          di.precioCompra
-										        FROM [detalleIngreso] di 
-											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
-											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-										        WHERE a.idArticulo = di.idArticulo " + weekDate + @"
-										        ORDER BY di.idDetalleIngreso DESC), 0) AS costoUnidad,
-									        ISNULL((
-										        SELECT 
-										          (SUM(di.precioCompra * dv.cantidad))
-										        FROM [detalleIngreso] di 
-											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
-											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS compraVendida,
-									        ISNULL((
-										        SELECT 
-										          (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad))
-										        FROM [detalleIngreso] di 
-											        INNER JOIN  [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
-											        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-										        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS totalNeto
-                                        FROM [articulo] a 
-	                                        INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
-								        WHERE a.idArticulo= " + idArticle + @"
-                    ";
-
-                    try
+                    ListaGenerica.Add(new DArticulo
                     {
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DArticulo
-                                {
-                                    idArticulo = reader.GetInt32(0),
-                                    codigo = reader.GetString(1),
-                                    nombre = reader.GetString(2),
-                                    descripcion = reader.GetString(3),
-                                    stockMinimo = reader.GetInt32(4),
-                                    stockMaximo = reader.GetInt32(5),
-                                    categoria = reader.GetString(6),
-                                    cantidadVendida = reader.GetInt32(7),
-                                    cantidadComprada = reader.GetInt32(8),
-                                    cantidadDevuelta = reader.GetInt32(9),
-                                    cantidadCliente = reader.GetInt32(10),
-                                    subtotal = (double)reader.GetDecimal(11),
-                                    total = (double)reader.GetDecimal(12),
-                                    subtotalDevolucion = (double)reader.GetDecimal(13),
-                                    totalDevolucion = (double)reader.GetDecimal(14),
-                                    precioUnidad = (double)reader.GetDecimal(15),
-                                    compraVendida = (double)reader.GetDecimal(16),
-                                    totalNeto = (double)reader.GetDecimal(17)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        stockMinimo = reader.GetInt32(0),
+                        cantidadActual = reader.GetInt32(1)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
     }
 }

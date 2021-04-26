@@ -76,8 +76,8 @@ namespace Datos
             set { _Cliente = value; }
         }
 
-        private double _Impuesto;
-        public double impuesto
+        private int _Impuesto;
+        public int impuesto
         {
             get { return _Impuesto; }
             set { _Impuesto = value; }
@@ -111,7 +111,7 @@ namespace Datos
 
         }
 
-        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, double Descuento, double Impuesto,int MetodoPago, int Estado)
+        public DVenta(int IdVenta,int IdCliente, int IdTrabajador, DateTime Fecha, double Descuento, int Impuesto,int MetodoPago, int Estado)
         {
             this.idVenta = IdVenta;
             this.idCliente = IdCliente;

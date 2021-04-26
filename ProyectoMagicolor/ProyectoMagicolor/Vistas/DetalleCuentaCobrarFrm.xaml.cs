@@ -120,18 +120,15 @@ namespace ProyectoMagicolor.Vistas
             if (rpta == MessageBoxResult.No)
                 return;
 
-            string ok = Metodos.RegistrarCxC(UForm, DataFill.idCuentaCobrar);
+            string abonarCC = Metodos.RegistrarCxC(UForm, DataFill.idCuentaCobrar);
 
-            if (ok.Equals("OK"))
+            if (abonarCC.Equals("TOTAL"))
             {
-                if (total)
-                {
-                    MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Abono Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (abonarCC.Equals("PARCIAL"))
+            {
+                MessageBox.Show("Abono Ingresado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             this.Close();

@@ -63,6 +63,13 @@ namespace ProyectoMagicolor.Vistas
             Refresh(txtBuscar.Text);
         }
 
+        private void Reporte_Click(object sender, RoutedEventArgs e)
+        {
+            Reports.Reporte reporte = new Reports.Reporte();
+
+            reporte.ExportPDF();
+        }
+
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
@@ -86,11 +93,7 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            DArticulo item = new DArticulo()
-            {
-                idArticulo = id
-            };
-            Metodos.Eliminar(item);
+            Metodos.Eliminar(id);
             Refresh(txtBuscar.Text);
         }
 
@@ -125,6 +128,7 @@ namespace ProyectoMagicolor.Vistas
 
             //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
+
     }
 
 }

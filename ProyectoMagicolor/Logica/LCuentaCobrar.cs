@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Datos;
-
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
@@ -11,68 +10,143 @@ namespace Logica
 {
     public class LCuentaCobrar:DCuentaCobrar
     {
+        #region QUERIES
 
-        public List<DVenta> MostrarCxC(string Buscar, string Buscar2)
+        private string queryList = @"
+            SELECT 
+                v.idVenta,
+                c.tipoDocumento + '-' + c.numeroDocumento,
+                c.apellidos + ' ' + c.nombre, 
+                v.fecha, 
+                ((SUM(dv.precioVenta) * dv.cantidad) - cc.montoIngresado - v.descuento) AS montoTotal
+            FROM [venta] v 
+                INNER JOIN [cliente] c ON v.idCliente=c.idCliente 
+                INNER JOIN [trabajador] t ON v.idTrabajador=t.idTrabajador 
+                INNER JOIN [detalleVenta] dv ON v.idVenta=dv.idVenta 
+                INNER JOIN [cuentaCobrar] cc ON v.idVenta=cc.idVenta 
+            WHERE v.estado = 2 AND c.tipoDocumento LIKE @tipoDocumento + '%' AND c.numeroDocumento LIKE @numeroDocumento + '%' 
+            GROUP BY
+                v.idVenta, 
+                c.tipoDocumento, 
+                c.numeroDocumento, 
+                c.apellidos, 
+                c.nombre, 
+                v.fecha, 
+                cc.montoIngresado, 
+                dv.cantidad, 
+                v.descuento;
+        ";
+
+        private string queryInsert = @"
+            INSERT INTO [registroCuentaCobrar] (
+                idRegistro,
+                idCuentaCobrar,
+                monto,
+                fecha
+            ) VALUES (
+                @idRegistro,
+                @idCuentaCobrar,
+                @monto,
+                @fecha
+            );
+        ";
+
+        private string queryUpdate = @"
+            UPDATE [cuentaCobrar] SET
+                cuentaCobrar.montoIngresado = cuentaCobrar.montoIngresado + @monto
+            FROM [cuentaCobrar]
+            INNER JOIN (
+	            SELECT v.idVenta 
+	            FROM [venta] v
+		            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta
+                    inner join [detalleVenta] dv on dv.idVenta=v.idVenta
+		            inner join [detalleIngreso] di on di.idDetalleIngreso=dv.idDetalleIngreso
+	            WHERE v.idVenta = cc.idVenta AND v.estado = 2
+	            GROUP BY v.idVenta , cc.montoIngresado, dv.cantidad
+	            HAVING ((SUM(dv.precioVenta)*dv.cantidad) - (cc.montoIngresado + @monto)) >= 0
+            ) X
+            ON x.idVenta = cuentaCobrar.idVenta
+            WHERE cuentaCobrar.idCuentaCobrar = @idCuentaCobrar;
+            ";
+
+        private string queryComplete = @"
+            UPDATE [venta] SET venta.estado = 1
+            FROM [venta]
+            INNER JOIN [cuentaCobrar] cc ON venta.idVenta=cc.idVenta
+            INNER JOIN (
+            	SELECT v.idVenta 
+            	FROM [venta] v
+            	INNER JOIN [cuentaCobrar] cc ON v.idVenta=cc.idVenta
+            	INNER JOIN [detalleVenta] dv ON v.idVenta=dv.idVenta
+            	WHERE v.idVenta = cc.idVenta AND v.estado = 2
+            	GROUP BY v.idVenta , cc.montoIngresado, dv.cantidad, v.descuento, dv.precioVenta
+            	HAVING ((dv.precioVenta * dv.cantidad) - cc.montoIngresado - v.descuento) = 0
+            ) X
+            ON x.idVenta=cc.idVenta
+            WHERE cc.idCuentaCobrar = @idCuentaCobrar
+        ";
+
+        private string queryListID = @"
+            SELECT
+                v.idVenta,
+                cc.idCuentaCobrar,
+                c.tipoDocumento + '-' + c.numeroDocumento,
+                c.apellidos + ' ' + c.nombre,
+                v.fecha,
+                ((SUM(dv.precioVenta) * dv.cantidad) - v.descuento) AS montoTotal,
+                (SUM(dv.precioVenta) * dv.cantidad - cc.montoIngresado - v.descuento) AS monto
+            FROM [venta] v
+                INNER JOIN [cliente] c ON v.idCliente = c.idCliente
+                INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
+                INNER JOIN [cuentaCobrar] cc ON v.idVenta = cc.idVenta
+            WHERE v.estado = 2 AND v.idVenta = @idVenta 
+            GROUP BY 
+                v.idVenta, 
+                dv.cantidad, 
+                cc.idCuentaCobrar, 
+                cc.montoIngresado, 
+                c.tipoDocumento, 
+                c.numeroDocumento, 
+                c.apellidos, 
+                c.nombre, 
+                v.fecha, 
+                v.descuento 
+            ORDER BY cc.idCuentaCobrar ASC;
+        ";
+
+        private string queryListCC = @"
+            SELECT * FROM [cuentaCobrar] 
+            where idVenta = @idVenta
+        ";
+
+        #endregion
+
+        public List<DVenta> MostrarCxC(string TipoDocumento, string NumeroDocumento)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
 
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = @"SELECT 
-                                            v.idVenta,
-                                            c.tipoDocumento + '-' + c.numeroDocumento,
-                                            c.apellidos + ' ' + c.nombre, 
-                                            v.fecha, 
-                                            ((SUM(dv.precioVenta) * dv.cantidad) - cc.montoIngresado - v.descuento) as montoTotal
-                                        from [venta] v 
-                                            inner join [cliente] c on v.idCliente=c.idCliente 
-                                            inner join [trabajador] t on v.idTrabajador=t.idTrabajador 
-                                            inner join [detalleVenta] dv on v.idVenta=dv.idVenta 
-                                            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta 
-                                        where v.estado = 2 AND c.tipoDocumento LIKE '" + Buscar + "%' AND c.numeroDocumento LIKE '" + Buscar2 + "%' group by v.idVenta, c.tipoDocumento, c.numeroDocumento, c.apellidos, c.nombre, v.fecha, cc.montoIngresado, dv.cantidad, v.descuento";
-
-                    try
+                    ListaGenerica.Add(new DVenta
                     {
-
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DVenta
-                                {
-                                    idVenta = reader.GetInt32(0),
-                                    cedulaCliente = reader.GetString(1),
-                                    cliente = reader.GetString(2),
-                                    fecha = reader.GetDateTime(3),
-                                    montoTotal = (double)reader.GetDecimal(4)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idVenta = reader.GetInt32(0),
+                        cedulaCliente = reader.GetString(1),
+                        cliente = reader.GetString(2),
+                        fecha = reader.GetDateTime(3),
+                        montoTotal = (double)reader.GetDecimal(4)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
 
 
@@ -80,243 +154,102 @@ namespace Logica
         {
             string respuesta = "";
 
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idRegistro", LFunction.GetID("registroCuentaCobrar", "idRegistro"));
+                comm.Parameters.AddWithValue("@idCuentaCobrar", RegistroCuentaCobrar.idCuentaCobrar);
+                comm.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
+                comm.Parameters.AddWithValue("@fecha", DateTime.Now);
 
-                try
-                {
-                    conn.Open();
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por cobrar";
+                if (!respuesta.Equals("OK"))
+                    throw new Exception("Error en el Registro de la Cuenta a Cobrar");
 
-                    #region Actualizar Monto Cuenta Cobrar
-                    string queryUpdateCC = @"
-                              UPDATE cuentaCobrar SET
-                                   cuentaCobrar.montoIngresado = cuentaCobrar.montoIngresado + @monto
-                              FROM cuentaCobrar
-                              inner join (
-							       SELECT venta.idVenta 
-							       FROM venta 
-							           inner join [cuentaCobrar] cc on venta.idVenta=cc.idVenta
-                                       inner join [detalleVenta] dv on dv.idVenta=venta.idVenta
-							           inner join [detalleIngreso] di on di.idDetalleIngreso=dv.idDetalleIngreso
-							       WHERE venta.idVenta = cc.idVenta AND venta.estado = 2
-							       GROUP BY venta.idVenta , cc.montoIngresado, dv.cantidad
-							       HAVING ((SUM(dv.precioVenta)*dv.cantidad) - (cc.montoIngresado + @monto)) >= 0
-						      ) X
-                              ON x.idVenta = cuentaCobrar.idVenta
-                              WHERE cuentaCobrar.idCuentaCobrar = @idCuentaCobrar;
-	                ";
+                respuesta = ActualizarCxC(RegistroCuentaCobrar.monto, IdCuentaCobrar);
+            };
+            LFunction.SafeExecutor(action);
 
-                    using (SqlCommand comm = new SqlCommand(queryUpdateCC, conn))
-                    {
-                        comm.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
-                        comm.Parameters.AddWithValue("@idCuentaCobrar", IdCuentaCobrar);
+            return respuesta;
+        }
 
-                        respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó la cuenta por cobrar";
-                    }
-                    #endregion
+        private string ActualizarCxC(double Monto, int IdCuentaCobrar)
+        {
+            using SqlCommand comm = new SqlCommand(queryUpdate, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@monto", Monto);
+            comm.Parameters.AddWithValue("@idCuentaCobrar", IdCuentaCobrar);
 
-                    if (respuesta.Equals("OK"))
-                    {
-                        LFunction getID = new LFunction();
+            if(comm.ExecuteNonQuery() != 1) 
+                throw new Exception("Error al Actualizar Cuenta por Cobrar");
 
-                        int ID = getID.GetID("registroCuentaCobrar", "idRegistro");
+            return CompletarCxC(IdCuentaCobrar);
+        }
 
-                        #region Añadir Registro Cuenta Cobrar
-                        string queryAddRegCC = @"
-                                INSERT INTO registroCuentaCobrar(
-                                    idRegistro,
-                                    idCuentaCobrar,
-                                    monto,
-                                    fecha
-                                ) VALUES (
-                                    @idRegistro,
-                                    @idCuentaCobrar,
-                                    @monto,
-                                    @fecha
-                                );
-	                    ";
+        private string CompletarCxC(int IdCuentaCobrar)
+        {
+            using SqlCommand comm = new SqlCommand(queryComplete, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idCuentaCobrar", IdCuentaCobrar);
 
-
-                        using (SqlCommand comm = new SqlCommand(queryAddRegCC, conn))
-                        {
-                            comm.Parameters.AddWithValue("@idRegistro", ID);
-                            comm.Parameters.AddWithValue("@idCuentaCobrar", RegistroCuentaCobrar.idCuentaCobrar);
-                            comm.Parameters.AddWithValue("@monto", RegistroCuentaCobrar.monto);
-                            comm.Parameters.AddWithValue("@fecha", DateTime.Now);
-
-                            respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la cuenta por cobrar";
-                        }
-                        #endregion
-                    }
-                    else
-                        return "No se ingreso el Registro de la cuenta por cobrar";
-
-
-                    if (respuesta.Equals("OK"))
-                    {
-                        #region Actualizar Venta si se Completa
-                        string queryUpdateSale = @"
-                                UPDATE venta SET venta.estado = 1
-                                from [venta]
-                                inner join [cuentaCobrar] cc on venta.idVenta=cc.idVenta
-								inner join (
-									SELECT venta.idVenta 
-									FROM venta 
-									inner join [cuentaCobrar] cc on venta.idVenta=cc.idVenta
-									inner join [detalleVenta] dv on venta.idVenta=dv.idVenta
-									WHERE venta.idVenta = cc.idVenta AND venta.estado = 2
-									GROUP BY venta.idVenta , cc.montoIngresado, dv.cantidad, venta.descuento, dv.precioVenta
-									HAVING ((dv.precioVenta * dv.cantidad) - cc.montoIngresado - venta.descuento) = 0
-								) X
-								ON x.idVenta=cc.idVenta
-								WHERE cc.idCuentaCobrar = " + IdCuentaCobrar + " ";
-
-                        using (SqlCommand comm = new SqlCommand(queryUpdateSale, conn))
-                        {
-                            respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Actualizo el registro";
-                        }
-                        #endregion
-                    }
-                    else
-                        return "No se actualizó la cuenta por cobrar";
-
-                }
-                catch (SqlException e)
-                {
-                    MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                finally
-                {
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        conn.Close();
-                    }
-                }
-                return respuesta;
-            }
+            return comm.ExecuteNonQuery() == 1 ? "TOTAL" : "PARCIAL";
         }
 
 
-        public List<DVenta> EncontrarCxC(int Buscar)
+        public List<DVenta> EncontrarCxC(int IdVenta)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
 
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idVenta", IdVenta);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = @"SELECT 
-                                            v.idVenta,
-                                            cc.idCuentaCobrar,
-                                            c.tipoDocumento + '-' + c.numeroDocumento,
-                                            c.apellidos + ' ' + c.nombre, 
-                                            v.fecha, 
-                                            ((SUM(dv.precioVenta) * dv.cantidad) - v.descuento) as montoTotal,
-                                            (SUM(dv.precioVenta) * dv.cantidad - cc.montoIngresado - v.descuento) as monto
-                                        from [venta] v 
-                                            inner join [cliente] c on v.idCliente=c.idCliente 
-                                            inner join [detalleVenta] dv on v.idVenta=dv.idVenta 
-                                            inner join [cuentaCobrar] cc on v.idVenta=cc.idVenta 
-                                        where v.estado = 2 AND v.idVenta = " + Buscar + " group by v.idVenta,dv.cantidad, cc.idCuentaCobrar, cc.montoIngresado, c.tipoDocumento, c.numeroDocumento, c.apellidos, c.nombre, v.fecha, v.descuento order by cc.idCuentaCobrar ASC";
-
-
-                    try
+                    ListaGenerica.Add(new DVenta
                     {
+                        idVenta = reader.GetInt32(0),
+                        idCuentaCobrar = reader.GetInt32(1),
+                        cedulaCliente = reader.GetString(2),
+                        cliente = reader.GetString(3),
+                        fecha = reader.GetDateTime(4),
+                        monto = (double)reader.GetDecimal(5),
+                        montoTotal = (double)reader.GetDecimal(6)
 
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DVenta
-                                {
-                                    idVenta = reader.GetInt32(0),
-                                    idCuentaCobrar = reader.GetInt32(1),
-                                    cedulaCliente = reader.GetString(2),
-                                    cliente = reader.GetString(3),
-                                    fecha = reader.GetDateTime(4),
-                                    monto = (double)reader.GetDecimal(5),
-                                    montoTotal = (double)reader.GetDecimal(6)
-
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
 
 
-        public List<DCuentaCobrar> BuscarCxC(int Buscar)
+        public List<DCuentaCobrar> BuscarCxC(int IdVenta)
         {
             List<DCuentaCobrar> ListaGenerica = new List<DCuentaCobrar>();
 
-
-            using (SqlConnection conn = new SqlConnection(Conexion.CadenaConexion))
+            Action action = () =>
             {
+                using SqlCommand comm = new SqlCommand(queryListCC, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idVenta", IdVenta);
 
-                using (SqlCommand comm = new SqlCommand())
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
                 {
-                    comm.Connection = conn;
-
-                    comm.CommandText = "Select * from [cuentaCobrar] where idVenta = " + Buscar;
-
-
-                    try
+                    ListaGenerica.Add(new DCuentaCobrar
                     {
-
-                        conn.Open();
-
-                        using (SqlDataReader reader = comm.ExecuteReader())
-                        {
-
-                            while (reader.Read())
-                            {
-                                ListaGenerica.Add(new DCuentaCobrar
-                                {
-                                    idCuentaCobrar = reader.GetInt32(0),
-                                    idVenta = reader.GetInt32(1),
-                                    fechaInicio = reader.GetDateTime(2),
-                                    fechaLimite = reader.GetDateTime(3),
-                                    montoIngresado = (double)reader.GetDecimal(4)
-                                });
-                            }
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        MessageBox.Show(e.Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    finally
-                    {
-                        if (conn.State == ConnectionState.Open)
-                        {
-                            conn.Close();
-                        }
-                    }
-                    return ListaGenerica;
+                        idCuentaCobrar = reader.GetInt32(0),
+                        idVenta = reader.GetInt32(1),
+                        fechaInicio = reader.GetDateTime(2),
+                        fechaLimite = reader.GetDateTime(3),
+                        montoIngresado = (double)reader.GetDecimal(4)
+                    });
                 }
-            }
+            };
+            LFunction.SafeExecutor(action);
 
+            return ListaGenerica;
         }
     }
 }
