@@ -85,6 +85,12 @@ namespace Logica
             );
         ";
 
+        private string queryNull = @"
+            UPDATE [venta] SET
+                estado = 3
+            WHERE idVenta = @idVenta;
+        ";
+
         private string queryListActive = @"
             SELECT * FROM [venta] 
             WHERE idVenta = @idVenta AND estado = 1
@@ -103,6 +109,22 @@ namespace Logica
                 INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso 
                 INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo 
             WHERE dv.idVenta = @idVenta;
+        ";
+
+        private string queryList = @"
+            SELECT 
+                v.idVenta,
+                CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
+                CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                SUM(dv.precioVenta * dv.cantidad) AS montoTotal,
+                v.fecha,
+                v.metodoPago,
+                v.estado
+            FROM [venta] v
+                INNER JOIN [cliente] c ON v.idCliente = c.idCliente
+                INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
+            WHERE v.fecha = @fecha AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
+			GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado;
         ";
 
         #endregion
@@ -190,6 +212,24 @@ namespace Logica
         }
 
 
+        public string Anular(int IdVenta)
+        {
+            string respuesta = "";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idVenta", IdVenta);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Anuló la Venta";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Venta Anulada Correctamente");
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
         public List<DVenta> MostrarVenta(int IdVenta)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
@@ -242,6 +282,52 @@ namespace Logica
                         nombre = reader.GetString(4),
                         cantidad = reader.GetInt32(5),
                         precioVenta = (double)reader.GetDecimal(6)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+
+        public List<DVenta> MostrarGenerales(DateTime? Fecha, string Nombre)
+        {
+            List<DVenta> ListaGenerica = new List<DVenta>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@fecha", Fecha == null ? DateTime.Today : Fecha);
+                comm.Parameters.AddWithValue("@nombre", Nombre);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    string metodoPago = "", estado = "";
+
+                    if (reader.GetInt32(5) == 1)
+                        metodoPago = "Contado";
+                    else if (reader.GetInt32(5) == 2)
+                        metodoPago = "Crédito";
+
+                    if (reader.GetInt32(6) == 1)
+                        estado = "Completada";
+                    else if (reader.GetInt32(6) == 2)
+                        estado = "Faltante";
+                    else if (reader.GetInt32(6) == 3)
+                        estado = "Anulada";
+
+                    ListaGenerica.Add(new DVenta
+                    {
+                        idVenta = reader.GetInt32(0),
+                        cedulaCliente = reader.GetString(1),
+                        cliente = reader.GetString(2),
+                        montoTotal = (double)reader.GetDecimal(3),
+                        fechaString = reader.GetDateTime(4).ToShortDateString(),
+                        metodoPagoString = metodoPago,
+                        estadoString = estado
                     });
                 }
             };

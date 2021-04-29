@@ -50,9 +50,11 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <local:TextInput Grid.Column="1" x:Name="txtMonto" Placeholder="Monto a Abonar" Margin="0 0 5 0" FontSize="15"/>
+                    <Grid Grid.Column="1" Margin="10 0 0 0">
+                        <TextBlock Name="txtBucarPlaceH" Text="Monto a Abonar" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                        <TextBox Name="txtMonto" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                    </Grid>
                 </Grid>
-
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

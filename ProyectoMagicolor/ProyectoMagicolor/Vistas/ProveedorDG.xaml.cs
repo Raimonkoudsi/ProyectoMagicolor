@@ -142,6 +142,13 @@ namespace ProyectoMagicolor.Vistas
 
             Refresh(tipoDoc, txtDocumento.Text);
         }
+
+        private void Reporte_Click(object sender, RoutedEventArgs e)
+        {
+            Reports.Reporte reporte = new Reports.Reporte();
+
+            reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text), "Proveedor");
+        }
     }
 
 }

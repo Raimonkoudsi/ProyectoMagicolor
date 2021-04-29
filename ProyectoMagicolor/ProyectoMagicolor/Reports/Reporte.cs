@@ -19,27 +19,35 @@ namespace ProyectoMagicolor.Reports
     {
         LCliente Cliente = new LCliente();
 
-        public void ExportPDF()
+        public void ExportPDF<T>(List<T> MethodReport, string ReportName)
         {
-            string deviceInfo = ""; //tamaño de la pagina, default
-            string[] streamIds;
-            Warning[] warnings;
+            Action action = () =>
+            {
+                string deviceInfo = ""; //tamaño de la pagina, default
+                string[] streamIds;
+                Warning[] warnings;
 
-            string mimeType = string.Empty;
-            string encoding = string.Empty;
-            string extension = string.Empty;
+                string mimeType = string.Empty;
+                string encoding = string.Empty;
+                string extension = string.Empty;
 
-            ReportViewer viewer = new ReportViewer();
-            viewer.ProcessingMode = ProcessingMode.Local;
-            viewer.LocalReport.ReportPath = @"Reports\rptCliente.rdlc";
-            viewer.LocalReport.DataSources.Add(new ReportDataSource("ClientDS", Cliente.Mostrar("V", "")));
+                ReportViewer viewer = new ReportViewer();
+                viewer.ProcessingMode = ProcessingMode.Local;
+                viewer.LocalReport.ReportPath = @"Reports\rpt" + ReportName + ".rdlc";
+                viewer.LocalReport.DataSources.Add(new ReportDataSource((ReportName + "DS"), MethodReport));
 
-            viewer.RefreshReport();
-            var bytes = viewer.LocalReport.Render("PDF", deviceInfo, out mimeType, out encoding, out extension, out streamIds, out warnings);
+                viewer.RefreshReport();
+                var bytes = viewer.LocalReport.Render("PDF", deviceInfo, out mimeType, out encoding, out extension, out streamIds, out warnings);
 
-            string fileName = RouteSavePDF("Clients");
-            File.WriteAllBytes(fileName, bytes);
-            System.Diagnostics.Process.Start(fileName);
+                string fileName = RouteSavePDF(ReportName);
+                if(fileName != ReportName)
+                {
+                    File.WriteAllBytes(fileName, bytes);
+                    System.Diagnostics.Process.Start(fileName);
+                } else
+                    LFunction.MessageExecutor("Warning", "Operación Cancelada");
+            };
+            LFunction.SafeExecutor(action);
         }
 
         private string RouteSavePDF(string Name)

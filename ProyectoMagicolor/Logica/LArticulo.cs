@@ -44,7 +44,7 @@ namespace Logica
 
         private string queryDelete = @"
             DELETE * FROM [articulo] 
-            WHERE idArticulo = @idArticulo
+            WHERE idArticulo = @idArticulo;
         ";
 
         private string queryList = @"
@@ -58,7 +58,8 @@ namespace Logica
                 a.idArticulo, 
                 a.codigo, 
                 a.nombre, 
-                c.nombre 
+                c.nombre,
+                a.descripcion
             FROM [articulo] a 
                 INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria 
             WHERE a.nombre LIKE @nombre + '%' 
@@ -111,28 +112,28 @@ namespace Logica
                     WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente,
                 ISNULL((
                     SELECT
-                        CAST((SUM(dv.precioVenta * dv.cantidad / ((v.impuesto / 100.0) + 1))) AS NUMERIC(38, 2))
+                        CAST((SUM(dv.precioVenta * dv.cantidad / ((v.impuesto / 100.0) + 1)) - v.descuento) AS NUMERIC(38, 2))
                     FROM[detalleVenta] dv
                         INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
                         INNER JOIN [venta] v ON v.idVenta = dv.idVenta
                     WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS subtotal,
                 ISNULL((
                     SELECT
-                        (SUM(dv.precioVenta * dv.cantidad)) AS total
+                        (SUM(dv.precioVenta * dv.cantidad) - v.descuento) AS total
                     FROM[detalleVenta] dv
                         INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
                         INNER JOIN [venta] v ON v.idVenta = dv.idVenta
                     WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS total,
                 ISNULL((
                     SELECT
-                        CAST((SUM(dd.precio * dd.cantidad / ((v.impuesto / 100.0) + 1))) AS NUMERIC(38, 2))
+                        CAST((SUM(dd.precio * dd.cantidad / ((v.impuesto / 100.0) + 1)) - v.descuento) AS NUMERIC(38, 2))
                     FROM[detalleDevolucion] dd
                         INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
                         INNER JOIN [venta] v ON v.idVenta = dv.idVenta
                     WHERE a.idArticulo = dd.idArticulo  @weekDate  ), 0) AS subtotalDevolucion,
                 ISNULL((
                     SELECT
-                        (SUM(dd.precio * dd.cantidad))
+                        (SUM(dd.precio * dd.cantidad) - v.descuento)
                     FROM[detalleDevolucion] dd
                         INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
                         INNER JOIN [venta] v ON v.idVenta = dv.idVenta
@@ -154,7 +155,7 @@ namespace Logica
                     WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS compraVendida,
                 ISNULL((
                     SELECT
-                        (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad))
+                        (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad) - v.descuento)
                     FROM[detalleIngreso] di
                         INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
                         INNER JOIN [venta] v ON v.idVenta = dv.idVenta
@@ -180,7 +181,7 @@ namespace Logica
         #endregion
 
 
-        public string Insertar(DArticulo Article)
+        public string Insertar(DArticulo Articulo)
         {
             string respuesta = "";
 
@@ -188,12 +189,12 @@ namespace Logica
             {
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idArticulo", LFunction.GetID("articulo", "idArticulo"));
-                comm.Parameters.AddWithValue("@codigo", Article.codigo);
-                comm.Parameters.AddWithValue("@nombre", Article.nombre);
-                comm.Parameters.AddWithValue("@descripcion", Article.descripcion);
-                comm.Parameters.AddWithValue("@stockMinimo", Article.stockMinimo);
-                comm.Parameters.AddWithValue("@stockMaximo", Article.stockMinimo);
-                comm.Parameters.AddWithValue("@idCategoria", Article.idCategoria);
+                comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
+                comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
+                comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion == String.Empty ? "No Contiene una Descripción" : Articulo.descripcion);
+                comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
+                comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMinimo);
+                comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro el Articulo";
                 if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Ingresado Correctamente");
@@ -204,20 +205,20 @@ namespace Logica
         }
 
 
-        public string Editar(DArticulo Article)
+        public string Editar(DArticulo Articulo)
         {
             string respuesta = "";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryUpdate, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@codigo", Article.codigo);
-                comm.Parameters.AddWithValue("@nombre", Article.nombre);
-                comm.Parameters.AddWithValue("@descripcion", Article.descripcion);
-                comm.Parameters.AddWithValue("@stockMinimo", Article.stockMinimo);
-                comm.Parameters.AddWithValue("@stockMaximo", Article.stockMaximo);
-                comm.Parameters.AddWithValue("@idCategoria", Article.idCategoria);
-                comm.Parameters.AddWithValue("@idArticulo", Article.idArticulo);
+                comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
+                comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
+                comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
+                comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
+                comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
+                comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
+                comm.Parameters.AddWithValue("@idArticulo", Articulo.idArticulo);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Articulo";
                 if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Actualizado Correctamente");
@@ -228,14 +229,14 @@ namespace Logica
         }
 
 
-        public string Eliminar(int IdArticle)
+        public string Eliminar(int IdArticulo)
         {
             string respuesta = "";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Registro del Articulo";
                 if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Eliminado Correctamente");
@@ -246,14 +247,14 @@ namespace Logica
         }
 
 
-        public List<DArticulo> Mostrar(string Code)
+        public List<DArticulo> Mostrar(string Codigo)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@codigo", Code);
+                comm.Parameters.AddWithValue("@codigo", Codigo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -276,14 +277,14 @@ namespace Logica
         }
 
 
-        public List<DArticulo> MostrarConCategoria(string Name)
+        public List<DArticulo> MostrarConCategoria(string Nombre)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryListCategory, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@nombre", Name);
+                comm.Parameters.AddWithValue("@nombre", Nombre);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -293,7 +294,8 @@ namespace Logica
                         idArticulo = reader.GetInt32(0),
                         codigo = reader.GetString(1),
                         nombre = reader.GetString(2),
-                        categoria = reader.GetString(3)
+                        categoria = reader.GetString(3),
+                        descripcion = reader.GetString(4)
                     });
                 }
             };
@@ -303,14 +305,14 @@ namespace Logica
         }
 
 
-        public List<DArticulo> Encontrar(int IdArticle)
+        public List<DArticulo> Encontrar(int IdArticulo)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -333,14 +335,14 @@ namespace Logica
         }
 
 
-        public List<DArticulo> EncontrarConCodigo(string Code)
+        public List<DArticulo> EncontrarConCodigo(string Codigo)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryListCode, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@codigo", Code);
+                comm.Parameters.AddWithValue("@codigo", Codigo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -433,17 +435,17 @@ namespace Logica
                 throw new NullReferenceException("Error en la Búsqueda de Fechas");
 
             //dia
-            if (typeDate == 1) return " AND v.fecha = ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            if (typeDate == 1) return " AND v.fecha = ('" + DateTime.Today + "')";
             //semana
-            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday) + "') AND ('" + DateTime.Today + "')";
             //mes
-            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) + "') AND ('" + DateTime.Today + "')";
             //año
-            if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToShortDateString() + "') AND ('" + DateTime.Now.Date.ToShortDateString() + "')";
+            if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1) + "') AND ('" + DateTime.Today + "')";
             //fecha
-            if (typeDate == 5) return " AND v.fecha = ('" + firstDate?.ToShortDateString() + "')";
+            if (typeDate == 5) return " AND v.fecha = ('" + firstDate + "')";
             //entre fechas
-            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate?.ToShortDateString() + "') AND ('" + secondDate?.ToShortDateString() + "')";
+            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate + "') AND ('" + secondDate+ "')";
 
             throw new NullReferenceException("Error en la Búsqueda de Fechas");
         }
@@ -465,7 +467,7 @@ namespace Logica
         }
 
 
-        public List<DArticulo> DetalleInventario(int IdArticle)
+        public List<DArticulo> DetalleInventario(int IdArticulo)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
@@ -473,7 +475,7 @@ namespace Logica
             {
                 using SqlCommand comm = new SqlCommand(queryInventaryDetail, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@weekDate", InventarioFecha(2, null, null));
-                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -507,14 +509,14 @@ namespace Logica
         }
 
 
-        public List<DArticulo> SacarArticulo(int IdArticle)
+        public List<DArticulo> SacarArticulo(int IdArticulo)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryInventaryArticle, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idArticulo", IdArticle);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())

@@ -349,7 +349,7 @@
             </TablixMember>
           </TablixMembers>
         </TablixRowHierarchy>
-        <DataSetName>ClientDS</DataSetName>
+        <DataSetName>ClienteDS</DataSetName>
         <Top>0.55245cm</Top>
         <Left>0.62433cm</Left>
         <Height>1.35875cm</Height>
@@ -426,7 +426,7 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>0414-8443232</Value>
+                  <Value>0412-4456672</Value>
                   <Style>
                     <FontFamily>Nirmala UI Semilight</FontFamily>
                     <FontSize>9pt</FontSize>
@@ -705,7 +705,7 @@
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="ClientDS">
+    <DataSet Name="ClienteDS">
       <Query>
         <DataSourceName>Logica</DataSourceName>
         <CommandText>/* Local Query */</CommandText>

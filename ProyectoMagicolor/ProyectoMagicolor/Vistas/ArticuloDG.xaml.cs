@@ -67,7 +67,7 @@ namespace ProyectoMagicolor.Vistas
         {
             Reports.Reporte reporte = new Reports.Reporte();
 
-            reporte.ExportPDF();
+            reporte.ExportPDF(Metodos.MostrarConCategoria(txtBuscar.Text), "Articulo");
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -89,7 +89,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminar este item?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;

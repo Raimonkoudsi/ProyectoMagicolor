@@ -58,7 +58,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
-            txtMonto.txt.Text = DataFill.montoTotal.ToString();
+            txtMonto.Text = DataFill.montoTotal.ToString();
 
             total = true;
             Create(true);
@@ -89,7 +89,7 @@ namespace ProyectoMagicolor.Vistas
             double monto = 0F;
 
             if (!total)
-                monto = double.Parse(txtMonto.txt.Text);
+                monto = double.Parse(txtMonto.Text);
             else
                 monto = DataFill.montoTotal;
 
@@ -114,7 +114,7 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto de " + txtMonto.txt.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + "$ ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto de " + txtMonto.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.Text)).ToString() + "$ ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
 
             if (rpta == MessageBoxResult.No)
@@ -138,13 +138,13 @@ namespace ProyectoMagicolor.Vistas
 
         bool Validate()
         {
-            if ((txtMonto.txt.Text == "Monto a Abonar" || double.Parse(txtMonto.txt.Text) <= 0) && !total)
+            if ((txtMonto.Text == "Monto a Abonar" || double.Parse(txtMonto.Text) <= 0) && !total)
             {
                 MessageBox.Show("Debe Agregar un Monto para Abonar!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtMonto.Focus();
                 return true;
             }
-            else if (double.Parse(txtMonto.txt.Text) > DataFill.montoTotal && !total)
+            else if (double.Parse(txtMonto.Text) > DataFill.montoTotal && !total)
             {
                 MessageBox.Show("El Monto no debe Exceder la Deuda!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtMonto.Focus();
@@ -152,6 +152,24 @@ namespace ProyectoMagicolor.Vistas
             }
 
             return false;
+
+        }
+
+        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtMonto.Text == "")
+            {
+                txtBucarPlaceH.Text = "";
+            }
+
+        }
+
+        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtMonto.Text == "")
+            {
+                txtBucarPlaceH.Text = "Monto a Abonar";
+            }
 
         }
     }

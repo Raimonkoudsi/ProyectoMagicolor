@@ -52,7 +52,7 @@ namespace Logica
 
         private string queryList = @"
             SELECT * FROM [cliente] 
-            WHERE tipoDocumento = @tipoDocumento AND numeroDocumento LIKE @numeroDocumento + '%' 
+            WHERE tipoDocumento LIKE @tipoDocumento + '%' AND numeroDocumento LIKE @numeroDocumento + '%' 
             ORDER BY numeroDocumento;
         ";
 

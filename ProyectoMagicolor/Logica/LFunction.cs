@@ -35,13 +35,18 @@ namespace Logica
                 return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
             if (TypeError == "Information")
                 return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (TypeError == "Warning")
+                return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK);
         }
 
         public static void SafeExecutor(Action action)
         {
-            SafeExecutor(() => { action(); return 0; });
+            SafeExecutor(() => { 
+                action(); 
+                return 0; 
+            });
         }
 
         private static T SafeExecutor<T>(Func<T> action)
@@ -51,11 +56,22 @@ namespace Logica
                 Conexion.ConexionSql.Open();
                 return action();
             }
-            catch (SqlException errorSql) { MessageExecutor("Error", errorSql.Message); }
-            catch (IndexOutOfRangeException errorIndex) { MessageExecutor("Error", errorIndex.Message); }
-            catch (ArgumentNullException errorNull) { MessageExecutor("Error", errorNull.Message); }
-            catch (Exception error) { MessageExecutor("Error", error.Message); }
-            finally { if (Conexion.ConexionSql.State == ConnectionState.Open) Conexion.ConexionSql.Close(); }
+            catch (SqlException errorSql) { 
+                MessageExecutor("Error", errorSql.Message); 
+            }
+            catch (IndexOutOfRangeException errorIndex) { 
+                MessageExecutor("Error", errorIndex.Message); 
+            }
+            catch (ArgumentNullException errorNull) { 
+                MessageExecutor("Error", errorNull.Message); 
+            }
+            catch (Exception error) { 
+                MessageExecutor("Error", error.Message); 
+            }
+            finally { 
+                if (Conexion.ConexionSql.State == ConnectionState.Open) 
+                    Conexion.ConexionSql.Close(); 
+            }
 
             return default(T);
         }

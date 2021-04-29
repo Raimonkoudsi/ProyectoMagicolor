@@ -200,6 +200,9 @@
     <Compile Include="Vistas\InventarioVista.xaml.cs">
       <DependentUpon>InventarioVista.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\VentaDG.xaml.cs">
+      <DependentUpon>VentaDG.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\VentaFrm.xaml.cs">
       <DependentUpon>VentaFrm.xaml</DependentUpon>
     </Compile>
@@ -288,6 +291,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vistas\InventarioVista.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vistas\VentaDG.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -416,12 +423,18 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\rptCompra.rdlc" />
+    <EmbeddedResource Include="Reports\rptVentasGenerales.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\rptProveedor.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\rptArticulo.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\rptCliente.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\rptProveedor.rdlc" />
-    <EmbeddedResource Include="Reports\rptTrabajador.rdlc" />
     <None Include="dsPrincipal.xsc">
       <DependentUpon>dsPrincipal.xsd</DependentUpon>
     </None>

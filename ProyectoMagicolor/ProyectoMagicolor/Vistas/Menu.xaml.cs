@@ -34,35 +34,39 @@ namespace ProyectoMagicolor
             LoggedTrabajador = trabajador;
 
             var menuRegister = new List<SubItem>();
-            menuRegister.Add(new SubItem("Customer"));
-            menuRegister.Add(new SubItem("Providers"));
-            menuRegister.Add(new SubItem("Employees"));
-            menuRegister.Add(new SubItem("Products"));
-            var item5 = new ItemMenu("Register", menuRegister, PackIconKind.Register);
-            
-            
-            var menuSchedule = new List<SubItem>();
-            menuSchedule.Add(new SubItem("Articulos", new ArticuloDG()));
-            menuSchedule.Add(new SubItem("Categorias", new CategoriaDG()));
-            var item1 = new ItemMenu("Articulos", menuSchedule, PackIconKind.Schedule);
+            menuRegister.Add(new SubItem("Cliente", new ClienteDG()));
+            menuRegister.Add(new SubItem("Proveedor", new ProveedorDG()));
+            menuRegister.Add(new SubItem("Trabajador", new TrabajadoresDG()));
+            menuRegister.Add(new SubItem("Artículo", new ArticuloDG()));
+            menuRegister.Add(new SubItem("Categoría", new CategoriaDG()));
+            var item1 = new ItemMenu("Registro", menuRegister, PackIconKind.Register);
 
-            var menuReports = new List<SubItem>();
-            menuReports.Add(new SubItem("Trabajadores", new TrabajadoresDG()));
-            menuReports.Add(new SubItem("Cliente", new ClienteDG()));
-            menuReports.Add(new SubItem("Proveedor", new ProveedorDG()));
-            menuReports.Add(new SubItem("Sales", new VentaFrm(this)));
-            menuReports.Add(new SubItem("Stock", new CompraFrm(this)));
-            var item2 = new ItemMenu("Pruebas", menuReports, PackIconKind.FileReport);
+            var menuSale = new List<SubItem>();
+            menuSale.Add(new SubItem("Nueva", new VentaFrm(this)));
+            menuSale.Add(new SubItem("Listado", new VentaDG(this))); //FALTA
+            var item2 = new ItemMenu("Venta", menuSale, PackIconKind.PointOfSale);
 
-            var menuExpenses = new List<SubItem>();
-            menuExpenses.Add(new SubItem("Cuenta Pagar", new CuentaPagarDG(this)));
-            menuExpenses.Add(new SubItem("Cuenta Cobrar", new CuentaCobrarDG(this)));
-            var item3 = new ItemMenu("Expenses", menuExpenses, PackIconKind.ShoppingBasket);
+            var menuCC = new List<SubItem>();
+            menuCC.Add(new SubItem("Abono", new CuentaCobrarDG(this)));
+            menuCC.Add(new SubItem("Listado")); //FALTA
+            var item3 = new ItemMenu("Cuenta por Cobrar", menuCC, PackIconKind.Salesforce);
 
-            var menuFinancial = new List<SubItem>();
-            menuFinancial.Add(new SubItem("Cash Flow", new DevolucionInicio(this)));
-            menuFinancial.Add(new SubItem("Inventario", new InventarioDG()));
-            var item4 = new ItemMenu("Expenses", menuFinancial, PackIconKind.ScaleBalance);
+            var menuBuy = new List<SubItem>();
+            menuBuy.Add(new SubItem("Nueva", new CompraFrm(this)));
+            menuBuy.Add(new SubItem("Listado")); //FALTA
+            var item4 = new ItemMenu("Compra", menuBuy, PackIconKind.ShoppingOutline);
+
+            var menuCP = new List<SubItem>();
+            menuCP.Add(new SubItem("Abono", new CuentaPagarDG(this)));
+            menuCP.Add(new SubItem("Listado")); //FALTA
+            var item5 = new ItemMenu("Cuenta por Pagar", menuCP, PackIconKind.Salesforce);
+
+            var menuRefund = new List<SubItem>();
+            menuRefund.Add(new SubItem("Nueva", new DevolucionInicio(this)));
+            menuRefund.Add(new SubItem("Listado")); //FALTA
+            var item6 = new ItemMenu("Devolución", menuRefund, PackIconKind.CashRefund);
+
+            var item7 = new ItemMenu("Inventario", new InventarioDG(), PackIconKind.CartCheck);
 
             var item0 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
 
@@ -72,6 +76,8 @@ namespace ProyectoMagicolor
             Menu.Children.Add(new MenuItemX(item3, this));
             Menu.Children.Add(new MenuItemX(item4, this));
             Menu.Children.Add(new MenuItemX(item5, this));
+            Menu.Children.Add(new MenuItemX(item6, this));
+            Menu.Children.Add(new MenuItemX(item7, this));
 
             var Frm = new CompraFrm(this);
             ContentFrame.Content = Frm;
