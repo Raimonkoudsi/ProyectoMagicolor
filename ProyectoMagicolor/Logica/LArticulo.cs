@@ -374,8 +374,6 @@ namespace Logica
                 string dateQuery = InventarioFecha(typeDate, firstDate, secondDate);
                 string orderQuery = InventarioOrden(typeOrder);
 
-                LFunction.MessageExecutor("Information", dateQuery);
-
                 if (dateQuery == null || orderQuery == null)
                     throw new NullReferenceException("Error en los Métodos de Búsqueda, ingreselos nuevamente");
 
@@ -398,7 +396,13 @@ namespace Logica
 		                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
 		                        INNER JOIN [venta] v ON v.idVenta=dv.idVenta
                             WHERE a.idArticulo = di.idArticulo " + dateQuery + @"), 0) AS vendido,
-                        a.stockMinimo
+                        a.stockMinimo,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioVenta 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precio
                     FROM [articulo] a 
 	                    INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
                     ORDER BY " + orderQuery + @"
@@ -421,7 +425,8 @@ namespace Logica
                         categoria = reader.GetString(3),
                         cantidadActual = CantidadActual,
                         cantidadVendida = reader.GetInt32(5),
-                        stockMinimo = StockMinimo
+                        stockMinimo = StockMinimo,
+                        precioVenta = (double)reader.GetDecimal(7)
                     });
                 }
             };
@@ -435,13 +440,13 @@ namespace Logica
                 throw new NullReferenceException("Error en la Búsqueda de Fechas");
 
             //dia
-            if (typeDate == 1) return " AND v.fecha = ('" + DateTime.Today + "')";
+            if (typeDate == 1) return " AND v.fecha = ('" + DateTime.Today.ToString("MM-dd-yyyy") + "')";
             //semana
-            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday) + "') AND ('" + DateTime.Today + "')";
+            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today + "')";
             //mes
-            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) + "') AND ('" + DateTime.Today + "')";
+            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today + "')";
             //año
-            if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1) + "') AND ('" + DateTime.Today + "')";
+            if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today.ToString("MM/dd/yyyy") + "')";
             //fecha
             if (typeDate == 5) return " AND v.fecha = ('" + firstDate + "')";
             //entre fechas

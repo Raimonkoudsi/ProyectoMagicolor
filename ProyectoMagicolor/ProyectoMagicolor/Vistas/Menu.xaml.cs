@@ -20,9 +20,6 @@ using Logica;
 
 namespace ProyectoMagicolor
 {
-	/// <summary>
-	/// Lógica de interacción para MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window
 	{
         public Login ParentFrm;
@@ -39,48 +36,32 @@ namespace ProyectoMagicolor
             menuRegister.Add(new SubItem("Trabajador", new TrabajadoresDG()));
             menuRegister.Add(new SubItem("Artículo", new ArticuloDG()));
             menuRegister.Add(new SubItem("Categoría", new CategoriaDG()));
-            var item1 = new ItemMenu("Registro", menuRegister, PackIconKind.Register);
+            var item1 = new ItemMenu("Registros", menuRegister, PackIconKind.Register);
 
-            var menuSale = new List<SubItem>();
-            menuSale.Add(new SubItem("Nueva", new VentaFrm(this)));
-            menuSale.Add(new SubItem("Listado", new VentaDG(this))); //FALTA
-            var item2 = new ItemMenu("Venta", menuSale, PackIconKind.PointOfSale);
+            var menuActions = new List<SubItem>();
+            menuActions.Add(new SubItem("Venta", new VentaFrm(this)));
+            menuActions.Add(new SubItem("Compra", new CompraFrm(this)));
+            menuActions.Add(new SubItem("Cuenta por Cobrar", new CuentaCobrarDG(this)));
+            menuActions.Add(new SubItem("Cuenta por Pagar", new CuentaPagarDG(this)));
+            menuActions.Add(new SubItem("Devolución", new DevolucionInicio(this)));
+            var item2 = new ItemMenu("Acciones", menuActions, PackIconKind.PointOfSale);
 
-            var menuCC = new List<SubItem>();
-            menuCC.Add(new SubItem("Abono", new CuentaCobrarDG(this)));
-            menuCC.Add(new SubItem("Listado")); //FALTA
-            var item3 = new ItemMenu("Cuenta por Cobrar", menuCC, PackIconKind.Salesforce);
+            var menuList = new List<SubItem>();
+            menuList.Add(new SubItem("Ventas", new VentaDG(this)));
+            menuList.Add(new SubItem("Compras")); //falta
+            menuList.Add(new SubItem("Cuentas por Cobrar")); //falta
+            menuList.Add(new SubItem("Cuentas por Pagar")); //falta
+            menuList.Add(new SubItem("Devoluciones")); //falta
+            menuList.Add(new SubItem("Inventario", new InventarioDG()));
+            var item3 = new ItemMenu("Listados", menuList, PackIconKind.AccountBoxes);
 
-            var menuBuy = new List<SubItem>();
-            menuBuy.Add(new SubItem("Nueva", new CompraFrm(this)));
-            menuBuy.Add(new SubItem("Listado")); //FALTA
-            var item4 = new ItemMenu("Compra", menuBuy, PackIconKind.ShoppingOutline);
+            var item4 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
 
-            var menuCP = new List<SubItem>();
-            menuCP.Add(new SubItem("Abono", new CuentaPagarDG(this)));
-            menuCP.Add(new SubItem("Listado")); //FALTA
-            var item5 = new ItemMenu("Cuenta por Pagar", menuCP, PackIconKind.Salesforce);
-
-            var menuRefund = new List<SubItem>();
-            menuRefund.Add(new SubItem("Nueva", new DevolucionInicio(this)));
-            menuRefund.Add(new SubItem("Listado")); //FALTA
-            var item6 = new ItemMenu("Devolución", menuRefund, PackIconKind.CashRefund);
-
-            var item7 = new ItemMenu("Inventario", new InventarioDG(), PackIconKind.CartCheck);
-
-            var item0 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
-
-            Menu.Children.Add(new MenuItemX(item0, this));
             Menu.Children.Add(new MenuItemX(item1, this));
             Menu.Children.Add(new MenuItemX(item2, this));
             Menu.Children.Add(new MenuItemX(item3, this));
             Menu.Children.Add(new MenuItemX(item4, this));
-            Menu.Children.Add(new MenuItemX(item5, this));
-            Menu.Children.Add(new MenuItemX(item6, this));
-            Menu.Children.Add(new MenuItemX(item7, this));
 
-            var Frm = new CompraFrm(this);
-            ContentFrame.Content = Frm;
         }
 
         public static DTrabajador LoggedTrabajador;

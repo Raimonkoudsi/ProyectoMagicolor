@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Datos;
-
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
@@ -12,7 +10,7 @@ using System.Windows;
 
 namespace Logica
 {
-    public class LVenta : DVenta
+    public class LVenta : LDevolucion
     {
         #region QUERIES
         private string queryInsert = @"
@@ -59,7 +57,7 @@ namespace Logica
             UPDATE detalleIngreso SET 
                     detalleIngreso.cantidadActual = detalleIngreso.cantidadActual - @cantidad
             FROM [detalleIngreso]
-            inner join (
+            INNER JOIN (
 					SELECT detalleIngreso.idDetalleIngreso 
 					FROM detalleIngreso 
 					GROUP BY detalleIngreso.idDetalleIngreso, detalleIngreso.cantidadActual
@@ -85,15 +83,40 @@ namespace Logica
             );
         ";
 
-        private string queryNull = @"
-            UPDATE [venta] SET
-                estado = 3
-            WHERE idVenta = @idVenta;
-        ";
-
         private string queryListActive = @"
-            SELECT * FROM [venta] 
-            WHERE idVenta = @idVenta AND estado = 1
+            SELECT 
+                v.idVenta,
+                CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
+                CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
+                CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                c.telefono,
+                c.email,
+                (SUM(dv.precioVenta * dv.cantidad) - v.descuento) AS montoTotal,
+                v.descuento,
+                v.impuesto,
+                v.fecha,
+                v.metodoPago,
+                v.estado
+            FROM [venta] v
+                INNER JOIN [cliente] c ON v.idCliente = c.idCliente
+                INNER JOIN [trabajador] t ON t.idTrabajador = v.idTrabajador
+                INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
+            WHERE v.idVenta = @idVenta
+            GROUP BY 
+                v.idVenta, 
+                t.nombre, 
+                t.apellidos, 
+                c.tipoDocumento, 
+                c.numeroDocumento, 
+                c.nombre, 
+                c.apellidos, 
+                c.telefono, 
+                c.email, 
+                v.descuento,
+                v.impuesto,
+                v.fecha,
+                v.metodoPago,
+                v.estado
         ";
 
         private string queryListDetail = @"
@@ -108,7 +131,7 @@ namespace Logica
             FROM [detalleVenta] dv 
                 INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso 
                 INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo 
-            WHERE dv.idVenta = @idVenta;
+            WHERE dv.idVenta = @idVenta AND dv.estado <> 3 AND dv.cantidad <> 0;
         ";
 
         private string queryList = @"
@@ -117,6 +140,8 @@ namespace Logica
                 CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
                 CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
                 SUM(dv.precioVenta * dv.cantidad) AS montoTotal,
+                v.descuento,
+                v.impuesto,
                 v.fecha,
                 v.metodoPago,
                 v.estado
@@ -124,7 +149,7 @@ namespace Logica
                 INNER JOIN [cliente] c ON v.idCliente = c.idCliente
                 INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
             WHERE v.fecha = @fecha AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
-			GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado;
+			GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto;
         ";
 
         #endregion
@@ -157,6 +182,7 @@ namespace Logica
                     if (!InsertarCxC(CuentaCobrar, IDVenta).Equals("OK"))
                         throw new Exception("Error en el Registro de la Cuenta a Cobrar");
 
+                Venta.idVenta = IDVenta;
                 respuesta = InsertarDetalle(Detalle, IDVenta);
             };
             LFunction.SafeExecutor(action);
@@ -212,17 +238,29 @@ namespace Logica
         }
 
 
-        public string Anular(int IdVenta)
+        public string Anular(int IdVenta, List<DDetalle_Venta> Detalle)
         {
             string respuesta = "";
-
+            int i = 0;
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryNull, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idVenta", IdVenta);
+                foreach (DDetalle_Venta det in Detalle)
+                {
+                    if (!Restock(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
+                        throw new Exception("Error en el Actualización del Stock");
 
-                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Anuló la Venta";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Venta Anulada Correctamente");
+                    if (!ActualizarDetalleVenta(Detalle[i].cantidad, Detalle[i].idDetalleVenta, Detalle[i].idArticulo).Equals("OK"))
+                        throw new Exception("Error en la Actualizacion de los Detalles de la Venta");
+
+                    if (!EliminarDetalleVenta(Detalle[i].idDetalleVenta, Detalle[i].idArticulo).Equals("OK"))
+                        throw new Exception("Error en al Eliminar el Detalle de la Venta");
+
+                    i++;
+                }
+
+                respuesta = AnularVenta(IdVenta);
+                if(respuesta.Equals("OK"))
+                    LFunction.MessageExecutor("Information", "La Venta ha sido Anulada, regresando al Listado de Ventas");
             };
             LFunction.SafeExecutor(action);
 
@@ -240,18 +278,24 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idVenta", IdVenta);
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+                if (reader.Read())
                 {
                     ListaGenerica.Add(new DVenta
                     {
                         idVenta = reader.GetInt32(0),
-                        idCliente = reader.GetInt32(1),
-                        idTrabajador = reader.GetInt32(2),
-                        fecha = reader.GetDateTime(3),
-                        metodoPago = reader.GetInt32(4),
-                        descuento = (double)reader.GetDecimal(5),
-                        impuesto = reader.GetInt32(6),
-                        estado = reader.GetInt32(7)
+                        trabajador = reader.GetString(1),
+                        cedulaCliente = reader.GetString(2),
+                        cliente = reader.GetString(3),
+                        telefonoCliente = reader.GetString(4),
+                        emailCliente = reader.GetString(5),
+                        montoTotal = (double)reader.GetDecimal(6),
+                        descuento = (double)reader.GetDecimal(7),
+                        impuesto = reader.GetInt32(8),
+                        fechaString = reader.GetDateTime(9).ToShortDateString(),
+                        metodoPago = reader.GetInt32(10),
+                        metodoPagoString = MetodoPagoToString(reader.GetInt32(10)),
+                        estado = reader.GetInt32(11),
+                        estadoString = EstadoToString(reader.GetInt32(11))
                     });
                 }
             };
@@ -291,8 +335,7 @@ namespace Logica
         }
 
 
-
-        public List<DVenta> MostrarGenerales(DateTime? Fecha, string Nombre)
+        public List<DVenta> MostrarVentasGenerales(DateTime? Fecha, string Nombre)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
 
@@ -305,29 +348,17 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
                 {
-                    string metodoPago = "", estado = "";
-
-                    if (reader.GetInt32(5) == 1)
-                        metodoPago = "Contado";
-                    else if (reader.GetInt32(5) == 2)
-                        metodoPago = "Crédito";
-
-                    if (reader.GetInt32(6) == 1)
-                        estado = "Completada";
-                    else if (reader.GetInt32(6) == 2)
-                        estado = "Faltante";
-                    else if (reader.GetInt32(6) == 3)
-                        estado = "Anulada";
-
                     ListaGenerica.Add(new DVenta
                     {
                         idVenta = reader.GetInt32(0),
                         cedulaCliente = reader.GetString(1),
                         cliente = reader.GetString(2),
                         montoTotal = (double)reader.GetDecimal(3),
-                        fechaString = reader.GetDateTime(4).ToShortDateString(),
-                        metodoPagoString = metodoPago,
-                        estadoString = estado
+                        descuento = (double)reader.GetDecimal(4),
+                        impuesto = reader.GetInt32(5),
+                        fechaString = reader.GetDateTime(6).ToShortDateString(),
+                        metodoPagoString = MetodoPagoToString(reader.GetInt32(7)),
+                        estadoString = EstadoToString(reader.GetInt32(8))
                     });
                 }
             };
@@ -335,5 +366,24 @@ namespace Logica
 
             return ListaGenerica;
         }
+
+        private string MetodoPagoToString(int MetodoPago)
+        {
+            if (MetodoPago == 1)
+                return "Contado";
+            else
+                return "Crédito";
+        }
+
+        private string EstadoToString(int Estado)
+        {
+            if (Estado == 1)
+                return "Completada";
+            else if (Estado == 2)
+                return "Faltante";
+            else
+                return "Anulada";
+        }
+
     }
 }

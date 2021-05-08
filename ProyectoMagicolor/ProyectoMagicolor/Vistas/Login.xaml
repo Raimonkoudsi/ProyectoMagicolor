@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Login" Height="350" Width="380"
         AllowsTransparency="True" Background="Transparent"
@@ -18,24 +19,27 @@
         </Border.Background>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid>
-                <Grid Margin="0 30 0 0">
+            <Button Grid.Column="0" HorizontalAlignment="Center" Margin="320 5 0 0" Click="cerrar_Click" Background="Transparent" BorderBrush="Transparent">
+                <materialDesign:PackIcon Kind="Close" Foreground="White" Width="30" Height="30" />
+            </Button>
+            <Grid Grid.Row="1">
+                <Grid Margin="0 0 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="350"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="1" Source="..\Imagenes\LogoMagicolor.png"/>
+                    <Image Grid.Column="1" Margin="0 0 0 30" Source="..\Imagenes\LogoMagicolor.png"/>
                 </Grid>
             </Grid>
-            <StackPanel Grid.Row="1" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown">
-                <!--<local:TextInput Foreground="WhiteSmoke" x:Name="txtUsuario" Margin="50 10" FontSize="17" Placeholder="Usuario"/>-->
+            <StackPanel Grid.Row="2" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown">
                 <Grid Margin="50 10">
                     <TextBlock Name="txtUsuarioPlace" Text="Usuario" FontSize="17" Foreground="WhiteSmoke" VerticalAlignment="Center" />
-                    <local:TextInput x:Name="txtUsuario" FontSize="17" GotFocus="txtUsuario_GotFocus" LostFocus="txtUsuario_LostFocus"/>
+                    <TextBox x:Name="txtUsuario" FontSize="17" GotFocus="txtUsuario_GotFocus" LostFocus="txtUsuario_LostFocus" Foreground="WhiteSmoke"/>
                 </Grid>
                 <Grid Margin="50 10">
                     <TextBlock Name="txtContraeñaPlace" Text="Contraseña" FontSize="17" Foreground="WhiteSmoke" VerticalAlignment="Center"/>

@@ -76,7 +76,7 @@ namespace Logica
         private string queryNullSale = @"
             UPDATE [venta] SET estado = 3
 			WHERE idVenta = @idVenta
-			AND (SELECT COUNT(idDetalleVenta)
+			AND (SELECT SUM(cantidad)
 				FROM detalleVenta
 				WHERE idVenta = @idVenta) = 0
         ";
@@ -134,13 +134,13 @@ namespace Logica
                     throw new Exception("Error en el Ingreso de los Detalles de la Venta");
 
                 if (Detalle[i].dañado == 0)
-                    if (!Restock(Detalle[i]).Equals("OK"))
+                    if (!Restock(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
                         throw new Exception("Error en el Actualización del Stock");
 
-                if (!ActualizarDetalleVenta(Detalle[i]).Equals("OK"))
+                if (!ActualizarDetalleVenta(Detalle[i].cantidad, Detalle[i].idDetalleVenta, Detalle[i].idArticulo).Equals("OK"))
                     throw new Exception("Error en la Actualizacion de los Detalles de la Venta");
 
-                if (!EliminarDetalleVenta(Detalle[i]).Equals("OK"))
+                if (!EliminarDetalleVenta(Detalle[i].idDetalleVenta, Detalle[i].idArticulo).Equals("OK"))
                     throw new Exception("Error en al Eliminar el Detalle de la Venta");
 
                 i++;
@@ -149,35 +149,35 @@ namespace Logica
             return respuesta;
         }
 
-        private string Restock(DDetalle_Devolucion Detalle)
+        protected string Restock(int IdArticulo, int Cantidad)
         {
             using SqlCommand comm = new SqlCommand(queryRestock, Conexion.ConexionSql);
-            comm.Parameters.AddWithValue("@idArticulo", Detalle.idArticulo);
-            comm.Parameters.AddWithValue("@cantidad", Detalle.cantidad);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+            comm.Parameters.AddWithValue("@cantidad", Cantidad);
 
             return comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó la Actualización del Stock";
         }
 
-        private string ActualizarDetalleVenta(DDetalle_Devolucion Detalle)
+        protected string ActualizarDetalleVenta(int Cantidad, int IdDetalleVenta, int IdArticulo)
         {
             using SqlCommand comm = new SqlCommand(queryUpdateSaleDetail, Conexion.ConexionSql);
-            comm.Parameters.AddWithValue("@cantidad", Detalle.cantidad);
-            comm.Parameters.AddWithValue("@idDetalleVenta", Detalle.idDetalleVenta);
-            comm.Parameters.AddWithValue("@idArticulo", Detalle.idArticulo);
+            comm.Parameters.AddWithValue("@cantidad", Cantidad);
+            comm.Parameters.AddWithValue("@idDetalleVenta", IdDetalleVenta);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
             return comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Detalle de la Venta";
         }
 
-        private string EliminarDetalleVenta(DDetalle_Devolucion Detalle)
+        protected string EliminarDetalleVenta(int IdDetalleVenta, int IdArticulo)
         {
             using SqlCommand comm = new SqlCommand(queryDeleteSaleDetail, Conexion.ConexionSql);
-            comm.Parameters.AddWithValue("@idDetalleVenta", Detalle.idDetalleVenta);
-            comm.Parameters.AddWithValue("@idArticulo", Detalle.idArticulo);
+            comm.Parameters.AddWithValue("@idDetalleVenta", IdDetalleVenta);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
             return comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
         }
 
-        private string AnularVenta(int IdVenta)
+        protected string AnularVenta(int IdVenta)
         {
             using SqlCommand comm = new SqlCommand(queryNullSale, Conexion.ConexionSql);
             comm.Parameters.AddWithValue("@idVenta", IdVenta);

@@ -101,13 +101,7 @@
                                         CommandParameter="{Binding idVenta}"
                                         Click="txtVer_Click"
                                         Margin="5 0"
-                                        Padding="5">Ver</Button>
-                                <Button x:Name="btnEliminar"
-                                        CommandParameter="{Binding idVenta}" 
-                                        Click="btnEliminar_Click"
-                                        Background="OrangeRed" BorderBrush="OrangeRed"
-                                        Margin="5 0 0 0"
-                                        Padding="5">Anular</Button>
+                                        Padding="5">Mostrar Venta</Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

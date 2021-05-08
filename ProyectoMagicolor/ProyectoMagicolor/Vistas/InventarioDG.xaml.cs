@@ -62,15 +62,20 @@ namespace ProyectoMagicolor.Vistas
             ChBAlfabeticoOrdenar.IsChecked = true;
             CbColumnas.SelectedIndex = 0;
         }
-        
+
+        private int TipoBuscarPor = 1;
+        private DateTime FechaInicio = DateTime.Now;
+        private DateTime FechaFinal = DateTime.Now;
+        private int TipoMostrar = 1;
+        private int TipoOrdenar = 1;
 
         public void Refresh()
         {
 
-            int TipoBuscarPor = 1;
+            TipoBuscarPor = 1;
 
-            DateTime FechaInicio = DateTime.Now;
-            DateTime FechaFinal = DateTime.Now;
+            FechaInicio = DateTime.Now;
+            FechaFinal = DateTime.Now;
 
             if (RBDiaBuscar.IsChecked ?? false)
                 TipoBuscarPor = 1;
@@ -117,12 +122,12 @@ namespace ProyectoMagicolor.Vistas
                 }
             }
 
-            int TipoMostrar = 1;
+            TipoMostrar = 1;
 
             if (RBStockMostrar.IsChecked ?? false) TipoMostrar = 2;
             else if (RBSinStockMostrar.IsChecked ?? false) TipoMostrar = 3;
 
-            int TipoOrdenar = 1;
+            TipoOrdenar = 1;
 
             if (ChBAlfabeticoOrdenar.IsChecked ?? false)
             {
@@ -345,6 +350,17 @@ namespace ProyectoMagicolor.Vistas
             CloseSidebar();
         }
 
+        private void Reporte_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgOperaciones.Items.Count == 0)
+            {
+                LFunction.MessageExecutor("Error", "No se puede realizar un Reporte vacio!");
+                return;
+            }
+
+            Reports.Reporte reporte = new Reports.Reporte();
+            reporte.ExportPDF(Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar), "Inventario");
+        }
     }
 
 }

@@ -41,7 +41,6 @@ namespace ProyectoMagicolor.Vistas
                 item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
             }
 
-
             dgOperaciones.ItemsSource = items;
         }
 
@@ -145,8 +144,13 @@ namespace ProyectoMagicolor.Vistas
 
         private void Reporte_Click(object sender, RoutedEventArgs e)
         {
-            Reports.Reporte reporte = new Reports.Reporte();
+            if (dgOperaciones.Items.Count == 0)
+            {
+                LFunction.MessageExecutor("Error", "No se puede realizar un Reporte vacio!");
+                return;
+            }
 
+            Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text), "Proveedor");
         }
     }

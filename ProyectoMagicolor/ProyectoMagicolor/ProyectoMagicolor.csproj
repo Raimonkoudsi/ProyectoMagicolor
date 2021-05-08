@@ -242,6 +242,9 @@
     <Compile Include="Vistas\TextInput.xaml.cs">
       <DependentUpon>TextInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\VentaVista.xaml.cs">
+      <DependentUpon>VentaVista.xaml</DependentUpon>
+    </Compile>
     <Page Include="Vistas\InventarioDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -404,6 +407,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Vistas\VentaVista.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -422,6 +429,15 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\rptInventario.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\rptTrabajador.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\rptVenta.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\rptVentasGenerales.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -448,6 +464,22 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
+    <None Include="Properties\DataSources\Datos.Conexion.datasource" />
+    <None Include="Properties\DataSources\Datos.DArticulo.datasource" />
+    <None Include="Properties\DataSources\Datos.DCategoria.datasource" />
+    <None Include="Properties\DataSources\Datos.DCliente.datasource" />
+    <None Include="Properties\DataSources\Datos.DCuentaCobrar.datasource" />
+    <None Include="Properties\DataSources\Datos.DCuentaPagar.datasource" />
+    <None Include="Properties\DataSources\Datos.DDetalle_Devolucion.datasource" />
+    <None Include="Properties\DataSources\Datos.DDetalle_Ingreso.datasource" />
+    <None Include="Properties\DataSources\Datos.DDetalle_Venta.datasource" />
+    <None Include="Properties\DataSources\Datos.DDevolucion.datasource" />
+    <None Include="Properties\DataSources\Datos.DIngreso.datasource" />
+    <None Include="Properties\DataSources\Datos.DProveedor.datasource" />
+    <None Include="Properties\DataSources\Datos.DRegistro_CuentaCobrar.datasource" />
+    <None Include="Properties\DataSources\Datos.DRegistro_CuentaPagar.datasource" />
+    <None Include="Properties\DataSources\Datos.DTrabajador.datasource" />
+    <None Include="Properties\DataSources\Datos.DVenta.datasource" />
     <None Include="Properties\DataSources\Logica.DateTimeExtensions.datasource" />
     <None Include="Properties\DataSources\Logica.LArticulo.datasource" />
     <None Include="Properties\DataSources\Logica.LCategoria.datasource" />

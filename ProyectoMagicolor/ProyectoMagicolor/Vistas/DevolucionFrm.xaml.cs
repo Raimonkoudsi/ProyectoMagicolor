@@ -45,21 +45,16 @@ namespace ProyectoMagicolor.Vistas
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             DetalleVentas = new LVenta().MostrarDetalleVenta(Venta.idVenta);
-
+            //factura
             txtFactura.Text = "#" + Venta.idVenta;
             txtFecha.Text = Venta.fecha.ToShortDateString();
-
-            var Vendedor = new LTrabajador().Encontrar(Venta.idTrabajador)[0];
-
-            txtVendedor.Text = Vendedor.nombre + " " + Vendedor.apellidos;
-
-            var Cliente = new LCliente().Encontrar(Venta.idCliente)[0];
-
-            txtCliName.Text = Cliente.nombre + " " + Cliente.apellidos;
-
-            TxtCliDoc.Text = Cliente.tipoDocumento + "-" + Cliente.numeroDocumento;
-            TxtCliTelf.Text = Cliente.telefono;
-            TxtCliEmail.Text = Cliente.email;
+            //trabajador
+            txtVendedor.Text = Venta.trabajador;
+            //cliente
+            txtCliName.Text = Venta.cliente;
+            TxtCliDoc.Text = Venta.cedulaCliente;
+            TxtCliTelf.Text = Venta.telefonoCliente;
+            TxtCliEmail.Text = Venta.emailCliente;
 
             CbMetodoPago.SelectedIndex = Venta.metodoPago - 1;
             int MetodoCredito = 2;
@@ -235,7 +230,6 @@ namespace ProyectoMagicolor.Vistas
         private void BtnAtras_Click(object sender, RoutedEventArgs e)
         {
             ParentFrm.GetBack();
-            
         }
     }
     public class ModeloDevolucion

@@ -66,7 +66,7 @@ namespace Logica
                 MessageExecutor("Error", errorNull.Message); 
             }
             catch (Exception error) { 
-                MessageExecutor("Error", error.Message); 
+                MessageExecutor("Error", error.InnerException.InnerException.Message); 
             }
             finally { 
                 if (Conexion.ConexionSql.State == ConnectionState.Open) 

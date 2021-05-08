@@ -146,6 +146,12 @@ namespace ProyectoMagicolor.Vistas
 
         private void Reporte_Click(object sender, RoutedEventArgs e)
         {
+            if (dgOperaciones.Items.Count == 0)
+            {
+                LFunction.MessageExecutor("Error", "No se puede realizar un Reporte vacio!");
+                return;
+            }
+
             Reports.Reporte reporte = new Reports.Reporte();
 
             reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text), "Cliente");

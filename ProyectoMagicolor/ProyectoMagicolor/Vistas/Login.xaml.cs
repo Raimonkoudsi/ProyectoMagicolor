@@ -11,15 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para Login.xaml
-    /// </summary>
     public partial class Login : Window
     {
 
@@ -36,9 +32,9 @@ namespace ProyectoMagicolor.Vistas
         void Loging()
         {
 
-            if (!txtUsuario.Changed)
+            if (txtUsuario.Text == "")
             {
-                MessageBox.Show("Debes poner un Nombre de Usuario!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Debes poner un Nombre de Usuario!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtUsuario.Focus();
                 return;
             }
@@ -53,7 +49,7 @@ namespace ProyectoMagicolor.Vistas
 
                 LTrabajador metodosUsuario = new LTrabajador();
 
-                var respuesta = metodosUsuario.Login(txtUsuario.txt.Text, txtContraseña.Password);
+                var respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
 
                 if(respuesta.Count > 0)
                 {
@@ -66,8 +62,6 @@ namespace ProyectoMagicolor.Vistas
                 {
                     MessageBox.Show("Los datos son incorrectos!");
                 }
-
-                //MessageBox.Show(respuesta[0] + respuesta[1] + respuesta[2] + respuesta[3]);
             }
             catch
             {
@@ -78,6 +72,15 @@ namespace ProyectoMagicolor.Vistas
         private void login_Click(object sender, RoutedEventArgs e)
         {
             Loging();
+        }
+
+        private void cerrar_Click(object sender, RoutedEventArgs e)
+        {
+            var resp = MessageBox.Show("¿Desea Cerrar la Aplicación?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (resp == MessageBoxResult.Yes)
+            {
+                Environment.Exit(0);
+            }
         }
 
         private void txtContraseña_GotFocus(object sender, RoutedEventArgs e)

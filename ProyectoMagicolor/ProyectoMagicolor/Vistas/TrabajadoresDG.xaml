@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Background="WhiteSmoke"
@@ -16,9 +17,16 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="70 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
             <TextBlock Name="txtBucarPlaceH" Text="Buscar..." FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
             <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
             <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+            <Button Grid.Column="1" HorizontalAlignment="Center" Margin="10 0 0 0" Click="Reporte_Click" Background="#3194F7">
+                <materialDesign:PackIcon Kind="FileChartOutline" Foreground="White" Width="20" Height="20" />
+            </Button>
         </Grid>
 
         <DataGrid x:Name="dgOperaciones" 

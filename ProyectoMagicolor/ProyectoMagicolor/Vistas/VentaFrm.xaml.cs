@@ -124,6 +124,12 @@ namespace ProyectoMagicolor.Vistas
 
             if (res.Equals("OK"))
             {
+                var resp = MessageBox.Show("¡Venta Completada!" + Environment.NewLine + "¿Desea Mostrar la Factura de la Venta?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (resp == MessageBoxResult.Yes)
+                {
+                    Reports.Reporte reporte = new Reports.Reporte();
+                    reporte.ExportPDFTwoArguments(Metodo.MostrarDetalleVenta(dVenta.idVenta), "Venta", Metodo.MostrarVenta(dVenta.idVenta), "VentaGeneral", false, dVenta.idVenta.ToString());
+                }
                 Limpiar();
             }
         }

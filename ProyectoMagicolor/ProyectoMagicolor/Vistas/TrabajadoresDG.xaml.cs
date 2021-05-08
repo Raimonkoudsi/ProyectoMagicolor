@@ -55,15 +55,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgOperaciones.SelectedItems.Count > 0)
-            //{
-            //    for(int i = 0; i < dgOperaciones.SelectedItems.Count; i++)
-            //    {
-            //        MessageBox.Show(((TablaTrabajadores)dgOperaciones.SelectedItems[i]).Nombre);
-            //    }
-            //}
-            //else
-            //    MessageBox.Show("no hay");
             TrabajadoresFrm frmTrab = new TrabajadoresFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
@@ -124,8 +115,18 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
+        }
 
-            //MessageBox.Show(response[0].fechaNacimiento.ToString());
+        private void Reporte_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgOperaciones.Items.Count == 0)
+            {
+                LFunction.MessageExecutor("Error", "No se puede realizar un Reporte vacio!");
+                return;
+            }
+
+            Reports.Reporte reporte = new Reports.Reporte();
+            reporte.ExportPDF(MetodosUsuario.MostrarNombre(txtBuscar.Text), "Trabajador");
         }
     }
 

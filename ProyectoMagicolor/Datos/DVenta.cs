@@ -125,6 +125,27 @@ namespace Datos
             set { _FechaString = value; }
         }
 
+        private string _Trabajador;
+        public string trabajador
+        {
+            get { return _Trabajador; }
+            set { _Trabajador = value; }
+        }
+
+        private string _TelefonoCliente;
+        public string telefonoCliente
+        {
+            get { return _TelefonoCliente; }
+            set { _TelefonoCliente = value; }
+        }
+
+        private string _EmailCliente;
+        public string emailCliente
+        {
+            get { return _EmailCliente; }
+            set { _EmailCliente = value; }
+        }
+
 
         public DVenta()
         {

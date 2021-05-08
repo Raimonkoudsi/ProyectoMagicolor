@@ -18,10 +18,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-
-    /// <summary>
-    /// Lógica de interacción para VentaDG.xaml
-    /// </summary>
     public partial class VentaDG : Page
     {
         public LVenta Metodos = new LVenta();
@@ -39,7 +35,7 @@ namespace ProyectoMagicolor.Vistas
 
         public void Refresh(DateTime? Fecha ,string Nombre)
         {
-            List<DVenta> items = Metodos.MostrarGenerales(Fecha, Nombre);
+            List<DVenta> items = Metodos.MostrarVentasGenerales(Fecha, Nombre);
 
             dgOperaciones.ItemsSource = items;
         }
@@ -66,23 +62,13 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
 
-            reporte.ExportPDF(Metodos.MostrarGenerales(dpFecha.SelectedDate, txtNombre.Text), "VentasGenerales");
+            reporte.ExportPDF(Metodos.MostrarVentasGenerales(dpFecha.SelectedDate, txtNombre.Text), "VentasGenerales", dpFecha.SelectedDate.Value.ToShortDateString());
         }
 
 
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(dpFecha.SelectedDate, txtNombre.Text);
-        }
-
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres anular este item?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (Resp != MessageBoxResult.Yes)
-                return;
-            int id = (int)((Button)sender).CommandParameter;
-            Metodos.Anular(id);
             Refresh(dpFecha.SelectedDate, txtNombre.Text);
         }
 
@@ -116,14 +102,17 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
-            //int id = (int)((Button)sender).CommandParameter;
-            //var response = Metodos.Encontrar(id);
+            int id = (int)((Button)sender).CommandParameter;
+            var VentaResp = new LVenta().MostrarVenta(id);
 
-            //ArticuloFrm frmTrab = new ArticuloFrm();
-            //frmTrab.Type = TypeForm.Read;
-            //frmTrab.DataFill = response[0];
-            //bool Resp = frmTrab.ShowDialog() ?? false;
-            //Refresh(dpFecha.SelectedDate, txtNombre.Text);
+            DVenta Venta = VentaResp[0];
+            VentaVista Frm = new VentaVista(Venta, this);
+            Parent.SwitchScreen(Frm);
+        }
+
+        public void GetBack()
+        {
+            Parent.SwitchScreen(this);
         }
     }
 }
