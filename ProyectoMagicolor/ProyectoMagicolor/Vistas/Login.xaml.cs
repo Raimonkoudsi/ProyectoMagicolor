@@ -60,7 +60,7 @@ namespace ProyectoMagicolor.Vistas
                 }
                 else
                 {
-                    MessageBox.Show("Los datos son incorrectos!");
+                    LFunction.MessageExecutor("Error", "Los Datos son Incorrectos");
                 }
             }
             catch
@@ -143,6 +143,34 @@ namespace ProyectoMagicolor.Vistas
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+
+        private void Preguntas_Click(object sender, RoutedEventArgs e)
+        {
+            if(txtUsuario.Text == "")
+            {
+                LFunction.MessageExecutor("Information", "Debe Proporcionar un Nombre de Usuario en el Login");
+                txtUsuario.Focus();
+            }
+            else
+            {
+                LTrabajador metodosUsuario = new LTrabajador();
+
+                var respuesta = metodosUsuario.Seguridad(txtUsuario.Text);
+
+                if (respuesta.Count > 0)
+                {
+                    //var MainFrm = new PreguntasSeguridad(respuesta);
+                    PreguntasSeguridad frmPreguntas = new PreguntasSeguridad(this);
+                    frmPreguntas.DataFill = respuesta;
+                    bool Resp = frmPreguntas.ShowDialog() ?? false;
+                }
+                else
+                {
+                    LFunction.MessageExecutor("Information", "El Usuario no está Registrado");
+                }
+            }
         }
     }
 }

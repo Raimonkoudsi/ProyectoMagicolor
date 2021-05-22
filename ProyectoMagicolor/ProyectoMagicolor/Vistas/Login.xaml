@@ -48,7 +48,7 @@
                 </Grid>
                 <Button Margin="100 25" Background="#FFFF" Foreground="#3194F7" Content="Iniciar Sesión" FontSize="17" BorderBrush="{x:Null}" Click="login_Click"/>
                 <TextBlock HorizontalAlignment="Center" FontSize="15">
-                    <Hyperlink Foreground="LightGray" TextDecorations="" >
+                    <Hyperlink Foreground="LightGray" TextDecorations="" Click="Preguntas_Click" >
                         Olvidaste la Contraseña?
                     </Hyperlink>
                 </TextBlock>

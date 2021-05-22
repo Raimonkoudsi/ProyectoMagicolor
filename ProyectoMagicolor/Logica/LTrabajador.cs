@@ -128,6 +128,22 @@ namespace Logica
             WHERE usuario = @usuario AND contraseña = @contraseña;
         ";
 
+        private string queryFormSecurity = @"
+            SELECT 
+	            t.usuario,
+	            s.pregunta,
+	            s.respuesta
+            FROM [seguridad] s
+	            INNER JOIN [trabajador] t ON t.idTrabajador=s.idTrabajador
+            WHERE t.usuario = @usuario;
+        ";
+
+        string queryUpdatePassword = @"
+            UPDATE [trabajador] SET
+                contraseña = @contraseña
+            WHERE usuario = @usuario;
+	    ";
+
         private string queryUserRepeated = @"
             SELECT idTrabajador FROM [trabajador]
             WHERE usuario = @usuario;
@@ -415,6 +431,31 @@ namespace Logica
             return ListaGenerica;
         }
 
+        public List<DTrabajador> Seguridad(string User)
+        {
+            List<DTrabajador> ListaGenerica = new List<DTrabajador>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryFormSecurity, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@usuario", User);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read())
+                {
+                    ListaGenerica.Add(new DTrabajador
+                    {
+                            usuario = reader.GetString(0),
+                            pregunta = reader.GetString(1),
+                            respuesta = reader.GetString(2)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
 
         public bool UsuarioRepetido(string Usuario)
         {
@@ -447,6 +488,24 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
                 else respuesta = false;
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
+
+        public string EditarContraseña(string Usuario)
+        {
+            string respuesta = "";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryUpdatePassword, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@usuario", Usuario);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó la contraseña";
             };
             LFunction.SafeExecutor(action);
 

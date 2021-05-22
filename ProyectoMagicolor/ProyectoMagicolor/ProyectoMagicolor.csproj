@@ -168,6 +168,12 @@
     </Compile>
     <Compile Include="Reports\Reporte.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="Vistas\CambiarContraseña.xaml.cs">
+      <DependentUpon>CambiarContraseña.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\PreguntasSeguridad.xaml.cs">
+      <DependentUpon>PreguntasSeguridad.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\InventarioDG.xaml.cs">
       <DependentUpon>InventarioDG.xaml</DependentUpon>
     </Compile>
@@ -264,6 +270,14 @@
     <Compile Include="Vistas\VentaVista.xaml.cs">
       <DependentUpon>VentaVista.xaml</DependentUpon>
     </Compile>
+    <Page Include="Vistas\CambiarContraseña.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\PreguntasSeguridad.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\InventarioDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

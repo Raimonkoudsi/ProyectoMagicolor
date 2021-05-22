@@ -97,6 +97,20 @@ namespace Datos
             set { _Estado = value; }
         }
 
+        private string _Pregunta;
+        public string pregunta
+        {
+            get { return _Pregunta; }
+            set { _Pregunta = value; }
+        }
+
+        private string _Respuesta;
+        public string respuesta
+        {
+            get { return _Respuesta; }
+            set { _Respuesta = value; }
+        }
+
 
         public DTrabajador()
         {
