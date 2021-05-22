@@ -37,27 +37,6 @@ namespace ProyectoMagicolor.Vistas
             ListViewItemMenu.Content = itemMenu.Header;
 
 
-            if (itemMenu.SubItems != null)
-            {
-                if (itemMenu.SubItems[1].Backup == true)
-                {
-                    ListViewItemMenu.Click += (s, r) =>
-                    {
-                        //backup
-                        _context.Backup();
-                    };
-                }
-                if (itemMenu.SubItems[2].Restore == true)
-                {
-                    ListViewItemMenu.Click += (s, r) =>
-                    {
-                        //restore
-                        _context.Restore();
-                    };
-                }
-            }
-            
-
             if (itemMenu.SubItems == null)
             {
                 ListViewItemMenu.Click += (s, r) =>
@@ -73,7 +52,22 @@ namespace ProyectoMagicolor.Vistas
         private void LisViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (LisViewMenu.SelectedIndex < 0) return;
-            _context.SwitchScreen(((SubItem)((System.Windows.Controls.ListView)sender).SelectedItem).Screen);
+            SubItem SI = ((SubItem)((System.Windows.Controls.ListView)sender).SelectedItem);
+
+            if (SI.Backup)
+            {
+                _context.Backup();
+            }
+            else if (SI.Restore)
+            {
+                _context.Restore();
+            }
+            else
+            {
+                _context.SwitchScreen(SI.Screen);
+
+            }
+
             LisViewMenu.SelectedItem = 0;
             LisViewMenu.SelectedIndex = -1;
         }
