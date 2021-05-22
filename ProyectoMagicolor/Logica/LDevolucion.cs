@@ -27,13 +27,6 @@ namespace Logica
             );
         ";
 
-        private string queryRestock = @"
-            UPDATE [detalleIngreso] SET 
-                cantidadActual = cantidadActual + @cantidad
-            WHERE idArticulo = @idArticulo 
-            AND idDetalleIngreso = (SELECT MAX(idDetalleIngreso) FROM detalleIngreso WHERE idArticulo = @idArticulo)
-        ";
-
         private string queryInsertDetail = @"
         INSERT INTO [detalleDevolucion] (
                 idDetalleDevolucion,
@@ -52,6 +45,14 @@ namespace Logica
                 @precio,
                 @dañado
             );
+        ";
+
+        //VENTAS
+        private string queryRestockSale = @"
+            UPDATE [detalleIngreso] SET 
+                cantidadActual = cantidadActual + @cantidad
+            WHERE idArticulo = @idArticulo 
+            AND idDetalleIngreso = (SELECT MAX(idDetalleIngreso) FROM detalleIngreso WHERE idArticulo = @idArticulo)
         ";
 
         private string queryUpdateSaleDetail = @"
@@ -79,6 +80,62 @@ namespace Logica
 			AND (SELECT SUM(cantidad)
 				FROM detalleVenta
 				WHERE idVenta = @idVenta) = 0
+        ";
+
+        //COMPRAS
+        private string queryRestockBuy = @"
+            UPDATE [detalleIngreso] SET 
+                detalleIngreso.cantidadActual = detalleIngreso.cantidadActual - @cantidad
+			FROM [detalleIngreso]
+			INNER JOIN (
+				SELECT detalleIngreso.idDetalleIngreso 
+				FROM detalleIngreso 
+				GROUP BY detalleIngreso.idDetalleIngreso, detalleIngreso.cantidadActual
+				HAVING @cantidad <= detalleIngreso.cantidadActual
+			) x
+            ON x.idDetalleIngreso = detalleIngreso.idDetalleIngreso
+            WHERE idArticulo = @idArticulo 
+            AND detalleIngreso.idDetalleIngreso = (SELECT MAX(idDetalleIngreso) FROM detalleIngreso WHERE idArticulo = @idArticulo)
+        ";
+
+        private string queryUpdateBuyDetail = @"
+            UPDATE detalleIngreso SET
+                detalleIngreso.cantidadInicial = 0
+            FROM detalleIngreso
+            WHERE detalleIngreso.idDetalleIngreso = @idDetalleIngreso
+                AND detalleIngreso.idArticulo = @idArticulo
+        ";
+
+        private string queryDeleteBuyDetail = @"
+	        UPDATE detalleIngreso SET
+                detalleIngreso.estado = 0
+            FROM detalleIngreso di
+            WHERE di.idDetalleIngreso = @idDetalleIngreso
+                AND di.idArticulo = @idArticulo
+                AND di.cantidadInicial = 0;
+        ";
+
+        private string queryNullBuy = @"
+            UPDATE [ingreso] SET estado = 3
+			WHERE idIngreso = @idIngreso
+			AND (SELECT SUM(cantidadInicial)
+				FROM detalleIngreso
+				WHERE idIngreso = @idIngreso) = 0
+        ";
+
+
+        private string queryListDetail = @"
+            SELECT 
+                dd.idDetalleDevolucion, 
+                dd.idDevolucion, 
+                a.idArticulo, 
+                a.codigo, 
+                a.nombre, 
+                dd.cantidad, 
+                dd.precio 
+            FROM [detalleDevolucion] dd 
+                INNER JOIN [articulo] a ON dd.idArticulo = a.idArticulo 
+            WHERE dd.idDevolucion = @idDevolucion AND dd.cantidad <> 0;
         ";
         #endregion
 
@@ -134,7 +191,7 @@ namespace Logica
                     throw new Exception("Error en el Ingreso de los Detalles de la Venta");
 
                 if (Detalle[i].dañado == 0)
-                    if (!Restock(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
+                    if (!RestockVenta(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
                         throw new Exception("Error en el Actualización del Stock");
 
                 if (!ActualizarDetalleVenta(Detalle[i].cantidad, Detalle[i].idDetalleVenta, Detalle[i].idArticulo).Equals("OK"))
@@ -149,13 +206,14 @@ namespace Logica
             return respuesta;
         }
 
-        protected string Restock(int IdArticulo, int Cantidad)
+        //VENTAS
+        protected string RestockVenta(int IdArticulo, int Cantidad)
         {
-            using SqlCommand comm = new SqlCommand(queryRestock, Conexion.ConexionSql);
+            using SqlCommand comm = new SqlCommand(queryRestockSale, Conexion.ConexionSql);
             comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
             comm.Parameters.AddWithValue("@cantidad", Cantidad);
 
-            return comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó la Actualización del Stock";
+            return comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Stock";
         }
 
         protected string ActualizarDetalleVenta(int Cantidad, int IdDetalleVenta, int IdArticulo)
@@ -184,5 +242,197 @@ namespace Logica
 
             return comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
         }
+
+
+        //COMPRAS
+        protected string RestockIngreso(int IdArticulo, int Cantidad)
+        {
+            using SqlCommand comm = new SqlCommand(queryRestockBuy, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+            comm.Parameters.AddWithValue("@cantidad", Cantidad);
+
+            return comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Stock";
+        }
+
+        protected string ActualizarDetalleIngreso(int IdDetalleIngreso, int IdArticulo)
+        {
+            using SqlCommand comm = new SqlCommand(queryUpdateBuyDetail, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idDetalleIngreso", IdDetalleIngreso);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+            return comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Detalle de la Compra";
+        }
+
+        protected string EliminarDetalleIngreso(int IdDetalleIngreso, int IdArticulo)
+        {
+            using SqlCommand comm = new SqlCommand(queryDeleteBuyDetail, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idDetalleVenta", IdDetalleIngreso);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+            return comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
+        }
+
+        protected string AnularIngreso(int IdIngreso)
+        {
+            using SqlCommand comm = new SqlCommand(queryNullBuy, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idIngreso", IdIngreso);
+
+            return comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
+        }
+
+
+        public List<DDevolucion> MostrarDevolucionesGenerales(DateTime? Fecha, string Nombre)
+        {
+            List<DDevolucion> ListaGenerica = new List<DDevolucion>();
+
+            string queryList = @"
+                SELECT 
+					d.idDevolucion,
+                    d.idVenta,
+                    CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
+                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    SUM(dd.cantidad * dd.precio) AS montoDevolucion,
+					SUM(dd.cantidad) AS cantidadArticulos,
+                    v.fecha
+                FROM [devolucion] d
+                    INNER JOIN [cliente] c ON d.idCliente = c.idCliente
+                    INNER JOIN [detalleDevolucion] dd ON d.idDevolucion = dd.idDevolucion
+                    INNER JOIN [venta] v ON v.idVenta = d.idVenta
+				WHERE v.fecha = @fecha 
+                    AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
+			    GROUP BY 
+					d.idDevolucion,
+					d.idVenta,
+					c.tipoDocumento,
+					c.numeroDocumento,
+					c.nombre,
+					c.apellidos,
+                    v.fecha;
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@fecha", Fecha == null ? DateTime.Today : Fecha);
+                comm.Parameters.AddWithValue("@nombre", Nombre);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DDevolucion
+                    {
+                        idDevolucion = reader.GetInt32(0),
+                        idVenta = reader.GetInt32(1),
+                        cedulaCliente = reader.GetString(2),
+                        nombreCliente = reader.GetString(3),
+                        montoDevolucion = (double)reader.GetDecimal(4),
+                        cantidad = reader.GetInt32(5),
+                        fechaVenta = reader.GetDateTime(6)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DDevolucion> MostrarDevolucion(int IdDevolucion)
+        {
+            List<DDevolucion> ListaGenerica = new List<DDevolucion>();
+
+            string queryList = @"
+                SELECT 
+					d.idDevolucion,
+                    d.idVenta,
+                    CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
+                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    SUM(dd.cantidad * dd.precio) AS montoDevolucion,
+					SUM(dd.cantidad) AS cantidadArticulos,
+                    CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
+                    d.fecha,
+                    v.fecha,
+                    c.telefono,
+                    c.email
+                FROM [devolucion] d
+                    INNER JOIN [cliente] c ON d.idCliente = c.idCliente
+                    INNER JOIN [detalleDevolucion] dd ON d.idDevolucion = dd.idDevolucion
+                    INNER JOIN [trabajador] t ON d.idTrabajador = t.idTrabajador
+                    INNER JOIN [venta] v ON v.idVenta = d.idVenta
+				WHERE d.idDevolucion = @idDevolucion
+			    GROUP BY 
+					d.idDevolucion,
+					d.idVenta,
+					c.tipoDocumento,
+					c.numeroDocumento,
+					c.nombre,
+					c.apellidos,
+                    t.nombre,
+                    t.apellidos,
+                    v.fecha,
+                    d.fecha,
+                    c.telefono,
+                    c.email;
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idDevolucion", IdDevolucion);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DDevolucion
+                    {
+                        idDevolucion = reader.GetInt32(0),
+                        idVenta = reader.GetInt32(1),
+                        cedulaCliente = reader.GetString(2),
+                        nombreCliente = reader.GetString(3),
+                        montoDevolucion = (double)reader.GetDecimal(4),
+                        cantidad = reader.GetInt32(5),
+                        trabajador = reader.GetString(6),
+                        fechaString = reader.GetDateTime(7).ToShortDateString(),
+                        fechaVentaString = reader.GetDateTime(8).ToShortDateString(),
+                        telefono = reader.GetString(9),
+                        email = reader.GetString(10)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DDetalle_Devolucion> MostrarDetalleDevolucion(int IdDevolucion)
+        {
+            List<DDetalle_Devolucion> ListaGenerica = new List<DDetalle_Devolucion>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListDetail, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idDevolucion", IdDevolucion);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DDetalle_Devolucion
+                    {
+                        idDetalleDevolucion = reader.GetInt32(0),
+                        idDevolucion = reader.GetInt32(1),
+                        idArticulo = reader.GetInt32(2),
+                        codigo = reader.GetString(3),
+                        nombre = reader.GetString(4),
+                        cantidad = reader.GetInt32(5),
+                        precio = (double)reader.GetDecimal(6)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
     }
 }

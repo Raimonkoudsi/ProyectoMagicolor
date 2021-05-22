@@ -67,12 +67,12 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            txtIdVenta.Text = DataFill.idVenta.ToString();
+            txtIdVenta.Text = "ID " + DataFill.idVenta.ToString();
+            txtFecha.Text = DataFill.fecha.ToShortDateString();
             txtCliente.Text = DataFill.cliente;
             txtCedula.Text = DataFill.cedulaCliente;
-            txtFecha.Text = DataFill.fecha.ToString();
-            txtMontoRestante.Text = DataFill.monto.ToString();
-            txtMontoTotal.Text = DataFill.montoTotal.ToString();
+            txtMontoRestante.Text = "Total " + DataFill.monto.ToString();
+            txtMontoTotal.Text = "Restante " + DataFill.montoTotal.ToString();
 
         }
 

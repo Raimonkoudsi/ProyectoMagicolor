@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace Logica
 {
-    public class LIngreso : DIngreso
+    public class LIngreso : LDevolucion
     {
         #region QUERIES
         private string queryInsert = @"
@@ -44,7 +44,8 @@ namespace Logica
                 precioCompra,
                 precioVenta,
                 cantidadInicial,
-                cantidadActual
+                cantidadActual,
+                estado
             ) VALUES (
                 @idDetalleIngreso,
                 @idIngreso,
@@ -57,7 +58,8 @@ namespace Logica
                         cantidadActual
                     FROM [detalleIngreso] WHERE idArticulo = @idArticulo
                     ORDER BY idDetalleIngreso DESC
-                ),0))
+                ),0)),
+                1
             );
 	    ";
 
@@ -77,22 +79,55 @@ namespace Logica
             );
 	    ";
 
-        private string queryList = @"
+        private string queryListActive = @"
             SELECT 
-                i.idIngreso, 
-                t.cedula, 
+                i.idIngreso,
+				i.factura,
+                CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
+                CONCAT(p.tipoDocumento, '-', p.numeroDocumento) AS cedulaProveedor,
                 p.razonSocial,
-                i.fecha, 
-                i.factura, 
-                i.metodoPago, 
-                i.estado, 
-                SUM(di.precioCompra) as precioTotal 
-            FROM [ingreso] i 
-                INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor 
-                INNER JOIN [trabajador] t ON i.idTrabajador = t.idTrabajador 
-                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso 
-            WHERE tipoComprobante = @tipoComprobante AND serieComprobante LIKE @serieComprobante + '%' 
-            ORDER BY serieComprobante";
+                p.telefono,
+                p.email,
+                SUM(di.precioCompra * di.cantidadInicial) AS montoTotal,
+                i.impuesto,
+                i.fecha,
+                i.metodoPago,
+                i.estado
+            FROM [ingreso] i
+                INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor
+                INNER JOIN [trabajador] t ON t.idTrabajador = i.idTrabajador
+                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+            WHERE i.idIngreso = @idIngreso
+            GROUP BY 
+                i.idIngreso, 
+                i.factura,
+                t.nombre, 
+                t.apellidos, 
+                p.tipoDocumento, 
+                p.numeroDocumento, 
+                p.razonSocial, 
+                p.telefono, 
+                p.email, 
+                i.impuesto,
+                i.fecha,
+                i.metodoPago,
+                i.estado
+        ";
+
+        private string queryListDetail = @"
+            SELECT 
+                di.idDetalleIngreso, 
+                di.idIngreso, 
+                a.idArticulo, 
+                a.codigo, 
+                a.nombre, 
+                di.cantidadInicial, 
+                di.precioCompra
+            FROM [detalleIngreso] di 
+                INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo 
+				INNER JOIN [ingreso] i ON di.idIngreso = i.idIngreso
+            WHERE di.idIngreso = @idIngreso AND i.estado <> 3 AND di.cantidadInicial <> 0;
+        ";
 
         private string queryListStockName = @"
             SELECT 
@@ -132,12 +167,11 @@ namespace Logica
             ORDER BY idDetalleIngreso DESC;
         ";
 
-        private string queryListDetail = @"
+        private string queryListDetailID = @"
             SELECT * FROM [detalleIngreso] 
             WHERE idDetalleIngreso = @idDetalleIngreso 
             ORDER BY idDetalleIngreso DESC
         ";
-
         #endregion
 
 
@@ -211,29 +245,94 @@ namespace Logica
         }
 
 
-        public List<DIngreso> Mostrar(string TipoComprobante, string SerieComprobante)
+        public string Anular(int IdCompra, List<DDetalle_Ingreso> Detalle)
+        {
+            string respuesta = "";
+            int i = 0;
+            Action action = () =>
+            {
+                foreach (DDetalle_Ingreso det in Detalle)
+                {
+                    if (!RestockIngreso(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
+                        throw new Exception("Error en el Actualización del Stock");
+
+                    if (!ActualizarDetalleIngreso(Detalle[i].idDetalleIngreso, Detalle[i].idArticulo).Equals("OK"))
+                        throw new Exception("Error en la Actualizacion de los Detalles de la Venta");
+
+                    if (!EliminarDetalleIngreso(Detalle[i].idDetalleIngreso, Detalle[i].idArticulo).Equals("OK"))
+                        throw new Exception("Error en al Eliminar el Detalle de la Venta");
+
+                    i++;
+                }
+
+                respuesta = AnularIngreso(IdCompra);
+                if (respuesta.Equals("OK"))
+                    LFunction.MessageExecutor("Information", "La Compra ha sido Anulada, regresando al Listado de Compras");
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
+        public List<DIngreso> MostrarCompra(int IdIngreso)
         {
             List<DIngreso> ListaGenerica = new List<DIngreso>();
 
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@tipoComprobante", TipoComprobante);
-                comm.Parameters.AddWithValue("@serieComprobante", SerieComprobante);
+                using SqlCommand comm = new SqlCommand(queryListActive, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idIngreso", IdIngreso);
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+                if (reader.Read())
                 {
                     ListaGenerica.Add(new DIngreso
                     {
                         idIngreso = reader.GetInt32(0),
-                        cedulaTrabajador = reader.GetString(1),
-                        razonSocial = reader.GetString(2),
-                        fecha = reader.GetDateTime(3),
-                        factura = reader.GetString(4),
-                        metodoPago = reader.GetInt32(5),
-                        estado = reader.GetInt32(6),
-                        montoTotal = reader.GetDouble(7)
+                        factura = reader.GetString(1),
+                        trabajador = reader.GetString(2),
+                        cedulaProveedor = reader.GetString(3),
+                        razonSocial = reader.GetString(4),
+                        telefonoProveedor = reader.GetString(5),
+                        emailProveedor = reader.GetString(6),
+                        montoTotal = (double)reader.GetDecimal(7),
+                        impuesto = reader.GetInt32(8),
+                        fechaString = reader.GetDateTime(9).ToShortDateString(),
+                        metodoPago = reader.GetInt32(10),
+                        metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(10)),
+                        estado = reader.GetInt32(11),
+                        estadoString = new LVenta().EstadoToString(reader.GetInt32(11))
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DDetalle_Ingreso> MostrarDetalleCompra(int IdIngreso)
+        {
+            List<DDetalle_Ingreso> ListaGenerica = new List<DDetalle_Ingreso>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListDetail, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idIngreso", IdIngreso);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DDetalle_Ingreso
+                    {
+                        idDetalleIngreso = reader.GetInt32(0),
+                        idIngreso = reader.GetInt32(1),
+                        idArticulo = reader.GetInt32(2),
+                        codigo = reader.GetString(3),
+                        nombre = reader.GetString(4),
+                        cantidad = reader.GetInt32(5),
+                        precioCompra = (double)reader.GetDecimal(6)
                     });
                 }
             };
@@ -308,7 +407,7 @@ namespace Logica
 
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryListDetail, Conexion.ConexionSql);
+                using SqlCommand comm = new SqlCommand(queryListDetailID, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idDetalleIngreso", IdArticulo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
@@ -329,6 +428,77 @@ namespace Logica
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
+        }
+
+
+
+        public List<DIngreso> MostrarComprasGenerales(DateTime? Fecha, string Nombre, int MetodoPago)
+        {
+            List<DIngreso> ListaGenerica = new List<DIngreso>();
+
+            string queryListGeneral = @"
+                SELECT 
+                    i.idIngreso,
+				    i.factura,
+                    CONCAT(p.tipoDocumento, '-', p.numeroDocumento) AS cedulaProveedor,
+                    p.razonSocial,
+                    SUM(di.precioCompra * di.cantidadInicial) AS montoTotal,
+				    i.impuesto,
+                    i.fecha,
+                    i.metodoPago,
+                    i.estado
+                FROM [ingreso] i
+                    INNER JOIN [proveedor] p ON p.idProveedor = i.idProveedor
+                    INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+                WHERE i.fecha = @fecha 
+                    AND CONCAT(p.tipoDocumento, '-', p.numeroDocumento) LIKE @nombre + '%'
+                    " + QueryMetodoPago(MetodoPago) + @"
+			    GROUP BY 
+				    i.idIngreso, 
+				    i.factura, 
+				    p.tipoDocumento, 
+				    p.numeroDocumento, 
+				    p.razonSocial, 
+				    i.impuesto, 
+				    i.fecha, 
+				    i.metodoPago, 
+				    i.estado;
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListGeneral, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@fecha", Fecha == null ? DateTime.Today : Fecha);
+                comm.Parameters.AddWithValue("@nombre", Nombre);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DIngreso
+                    {
+                        idIngreso = reader.GetInt32(0),
+                        factura = reader.GetString(1),
+                        cedulaProveedor = reader.GetString(2),
+                        razonSocial = reader.GetString(3),
+                        montoTotal = (double)reader.GetDecimal(4),
+                        impuesto = reader.GetInt32(5),
+                        fechaString = reader.GetDateTime(6).ToShortDateString(),
+                        metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(7)),
+                        estadoString = new LVenta().EstadoToString(reader.GetInt32(8))
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+        private string QueryMetodoPago(int MetodoPago)
+        {
+            if (MetodoPago != 0)
+                return " AND i.metodoPago = " + MetodoPago;
+
+            return null;
         }
     }
 }

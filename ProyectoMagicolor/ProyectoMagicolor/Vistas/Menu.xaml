@@ -44,7 +44,7 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <Frame x:Name="ContentFrame" Grid.Row="1" Grid.Column="1" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="Gray">
+        <Frame x:Name="ContentFrame" Grid.Row="1" Grid.Column="1" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="WhiteSmoke">
         </Frame>
     </Grid>
 </Window>

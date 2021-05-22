@@ -92,7 +92,8 @@ namespace Logica
                 i.factura, 
                 i.fecha, 
                 (SUM(di.precioCompra) * di.cantidadInicial) AS montoTotal,
-                (SUM(di.precioCompra) * di.cantidadInicial - SUM(cp.montoIngresado)) AS monto
+                (SUM(di.precioCompra) * di.cantidadInicial - SUM(cp.montoIngresado)) AS monto,
+                CONCAT(p.tipoDocumento, ' ', p.numeroDocumento) AS cedulaTrabajador
             FROM [ingreso] i 
                 INNER JOIN [proveedor] p ON i.idProveedor=p.idProveedor 
                 INNER JOIN [trabajador] t ON i.idTrabajador=t.idTrabajador 
@@ -105,7 +106,9 @@ namespace Logica
                 cp.idCuentaPagar, 
                 p.razonSocial, 
                 i.factura, 
-                i.fecha 
+                i.fecha,
+                p.tipoDocumento,
+                p.numeroDocumento
             ORDER BY cp.idCuentaPagar ASC;
         ";
         #endregion
@@ -204,8 +207,8 @@ namespace Logica
                         factura = reader.GetString(3),
                         fecha = reader.GetDateTime(4),
                         monto = (double)reader.GetDecimal(5),
-                        montoTotal = (double)reader.GetDecimal(6)
-
+                        montoTotal = (double)reader.GetDecimal(6),
+                        cedulaProveedor = reader.GetString(7)
                     });
                 }
             };

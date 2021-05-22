@@ -69,8 +69,8 @@ namespace Datos
             set { _Email = value; }
         }
 
-        private string _Acceso;
-        public string acceso
+        private int _Acceso;
+        public int acceso
         {
             get { return _Acceso; }
             set { _Acceso = value; }
@@ -90,20 +90,6 @@ namespace Datos
             set { _Contraseña = value; }
         }
 
-        private string _Pregunta;
-        public string pregunta
-        {
-            get { return _Pregunta; }
-            set { _Pregunta = value; }
-        }
-
-        private string _Respuesta;
-        public string respuesta
-        {
-            get { return _Respuesta; }
-            set { _Respuesta = value; }
-        }
-
         private string _Estado;
         public string estado
         {
@@ -117,7 +103,7 @@ namespace Datos
 
         }
 
-        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion,string Telefono, string Email, string Acceso, string Usuario, string Contraseña, string Pregunta, string Respuesta, string Estado)
+        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion,string Telefono, string Email, int Acceso, string Usuario, string Contraseña, string Estado)
         {
             this.idTrabajador = IdTrabajador;
             this.nombre = Nombre;
@@ -131,8 +117,6 @@ namespace Datos
             this.acceso = Acceso;
             this.usuario = Usuario;
             this.contraseña = Contraseña;
-            this.pregunta = Pregunta;
-            this.respuesta = Respuesta;
             this.estado = Estado;
         }
     }

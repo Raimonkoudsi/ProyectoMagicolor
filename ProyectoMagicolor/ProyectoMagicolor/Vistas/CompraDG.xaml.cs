@@ -18,19 +18,20 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    public partial class VentaDG : Page
+    public partial class CompraDG : Page
     {
-        public LVenta Metodos = new LVenta();
+        public LIngreso Metodos = new LIngreso();
 
 
         public MainWindow Parent;
 
-        public VentaDG(MainWindow parent)
+        public CompraDG(MainWindow parent)
         {
             InitializeComponent();
 
             Parent = parent;
         }
+
         private int metodoPago()
         {
             if ((RBContadoMostrar.IsChecked ?? true) && (RBCreditoMostrar.IsChecked ?? true))
@@ -43,15 +44,10 @@ namespace ProyectoMagicolor.Vistas
             return 3;
         }
 
-        private void MetodoPago_Click(object sender, RoutedEventArgs e)
-        {
-            Refresh(dpFecha.SelectedDate, txtNombre.Text);
-        }
 
         public void Refresh(DateTime? Fecha ,string Nombre)
         {
-            List<DVenta> items = Metodos.MostrarVentasGenerales(Fecha, Nombre, metodoPago());
-
+            List<DIngreso> items = Metodos.MostrarComprasGenerales(Fecha, Nombre, metodoPago());
             dgOperaciones.ItemsSource = items;
         }
 
@@ -69,10 +65,13 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-
-            reporte.ExportPDF(Metodos.MostrarVentasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "VentasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+            reporte.ExportPDF(Metodos.MostrarComprasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "ComprasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
         }
 
+        private void MetodoPago_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh(dpFecha.SelectedDate, txtNombre.Text);
+        }
 
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -111,15 +110,15 @@ namespace ProyectoMagicolor.Vistas
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var VentaResp = new LVenta().MostrarVenta(id);
+            var CompraResp = new LIngreso().MostrarCompra(id);
 
-            DVenta Venta = VentaResp[0];
+            DIngreso Compra = CompraResp[0];
 
-            if(Venta.estadoString == "Anulada")
-                LFunction.MessageExecutor("Information", "La Venta ha sido Anulada, no posee detalles");
+            if (Compra.estadoString == "Anulada")
+                LFunction.MessageExecutor("Information", "La Compra ha sido Anulada, no posee detalles");
             else
             {
-                VentaVista Frm = new VentaVista(Venta, this);
+                CompraVista Frm = new CompraVista(Compra, this);
                 Parent.SwitchScreen(Frm);
             }
         }

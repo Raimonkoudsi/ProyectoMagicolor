@@ -49,6 +49,69 @@ namespace Datos
             set { _Cantidad = value; }
         }
 
+        private string _CedulaCliente;
+        public string cedulaCliente
+        {
+            get { return _CedulaCliente; }
+            set { _CedulaCliente = value; }
+        }
+
+        private string _NombreCliente;
+        public string nombreCliente
+        {
+            get { return _NombreCliente; }
+            set { _NombreCliente = value; }
+        }
+
+        private double _MontoDevolucion;
+        public double montoDevolucion
+        {
+            get { return _MontoDevolucion; }
+            set { _MontoDevolucion = value; }
+        }
+
+        private string _Trabajador;
+        public string trabajador
+        {
+            get { return _Trabajador; }
+            set { _Trabajador = value; }
+        }
+
+        private DateTime _FechaVenta;
+        public DateTime fechaVenta
+        {
+            get { return _FechaVenta; }
+            set { _FechaVenta = value; }
+        }
+
+        private string _Telefono;
+        public string telefono
+        {
+            get { return _Telefono; }
+            set { _Telefono = value; }
+        }
+
+        private string _Email;
+        public string email
+        {
+            get { return _Email; }
+            set { _Email = value; }
+        }
+
+        private string _FechaString;
+        public string fechaString
+        {
+            get { return _FechaString; }
+            set { _FechaString = value; }
+        }
+
+        private string _FechaVentaString;
+        public string fechaVentaString
+        {
+            get { return _FechaVentaString; }
+            set { _FechaVentaString = value; }
+        }
+
         public DDevolucion()
         {
 

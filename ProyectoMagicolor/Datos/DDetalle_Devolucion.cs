@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Datos
+﻿namespace Datos
 {
-    public class DDetalle_Devolucion:Conexion
+    public class DDetalle_Devolucion : Conexion
     {
         private int _IdDetalleDevolucion;
         public int idDetalleDevolucion
@@ -54,6 +50,21 @@ namespace Datos
             get { return _Dañado; }
             set { _Dañado = value; }
         }
+
+        private string _Codigo;
+        public string codigo
+        {
+            get { return _Codigo; }
+            set { _Codigo = value; }
+        }
+
+        private string _Nombre;
+        public string nombre
+        {
+            get { return _Nombre; }
+            set { _Nombre = value; }
+        }
+
         public DDetalle_Devolucion()
         {
 

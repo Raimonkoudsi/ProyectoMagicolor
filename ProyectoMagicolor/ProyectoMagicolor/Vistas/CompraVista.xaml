@@ -1,0 +1,154 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.CompraVista"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="820"
+      Loaded="Page_Loaded"
+      Title="CompraVista">
+    
+    <Grid Background="WhiteSmoke">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="0 0 1 0" BorderBrush="Gray">
+            <Grid Width="200">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Visibility="Visible">
+                    <StackPanel Margin="10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Factura " FontSize="15" FontWeight="Bold"/>
+                            <TextBlock Name="txtFactura" Text="#1231982" FontSize="15" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="7 2 0 0">
+                            <TextBlock Text="Fecha: " FontSize="14" />
+                            <TextBlock Name="txtFecha" Text="10/01/2020" FontSize="14"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Separator Margin="0 5"/>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Vendedor" FontSize="15" FontWeight="Bold"/>
+                        <TextBlock Name="txtVendedor" Text="Raimon Koudsi" Margin="7 2 0 0"/>
+                    </StackPanel>
+                    <Separator Margin="0 5"/>
+                </StackPanel>
+                <Grid Grid.Row="1" >
+                    <StackPanel  Margin="7 10 7 7">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Proveedor" FontSize="17" FontWeight="Bold"/>
+                                <TextBlock x:Name="txtProveedor" Text="John Adams Williams McArthur." FontSize="12" FontWeight="Bold" TextTrimming="CharacterEllipsis" 
+                                           Margin="4 0 5 10" 
+                                           Visibility="Visible"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel x:Name="ProveedorDatos" Visibility="Visible">
+                            <StackPanel Margin="7 0 0 0">
+                                <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProveedorDocumento" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Margin="7 5 0 0">
+                                <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProveedorTelefono" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                            <StackPanel Margin="7 5 0 0">
+                                <TextBlock Text="Email" FontSize="13" Foreground="Gray" />
+                                <TextBlock x:Name="TxtProveedorEmail" Text="Jocrod.one@gmail.com" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <Separator Margin="0 5" VerticalAlignment="Bottom"/>
+                </Grid>
+                <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
+                    <StackPanel>
+                        <TextBlock Text="Subtotal" FontSize="10" FontWeight="Bold" Margin="0 "/>
+                        <TextBlock Name="txtSubtotal" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Impuesto" FontSize="10" FontWeight="Bold" Margin="0 "/>
+                        <TextBlock Name="txtImpuesto" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Total" FontSize="15" FontWeight="Bold" Margin="0 "/>
+                        <TextBlock Name="txtTotal" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="30 15" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Name="BtnFactura" HorizontalAlignment="Left" Content="Generar Comprobante" Click="BtnComprobante_Click" Margin="10 0"/>
+                <Button Grid.Column="1" Name="BtnAnular" HorizontalAlignment="Left" Content="Anular Compra" Click="BtnAnular_Click" Background="OrangeRed" BorderBrush="OrangeRed" Margin="10 0"/>
+                <Button Grid.Column="2" Name="BtnAtras" HorizontalAlignment="Right" FontSize="11" Content="Regresar Listado Compras" Click="BtnAtras_Click" Padding="3" Margin="10 0"/>
+            </Grid>
+
+            <DataGrid x:Name="dgOperaciones"
+                  Grid.Row="1"
+                  AutoGenerateColumns="false" 
+                  IsReadOnly="true" 
+                  ColumnWidth="*" 
+                  Margin="30 0 30 30"
+                  FontSize="11"
+                  BorderThickness="0 1 0 1"
+                  BorderBrush="LightGray"
+                  Background="LightGray">
+                <DataGrid.Resources>
+                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="#f0f0f0" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Articulo" Binding="{Binding NombreArticulo}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Precio U" Binding="{Binding PrecioUnitario}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Cantidad" Binding="{Binding Cantidad}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Precio Total" Binding="{Binding PrecioTotal}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Page>

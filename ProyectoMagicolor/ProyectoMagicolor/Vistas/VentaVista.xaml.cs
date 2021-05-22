@@ -90,7 +90,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void BtnAnular_Click(object sender, RoutedEventArgs e)
         {
-            var resp = MessageBox.Show("¿Desea Anular la Venta?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            var resp = MessageBox.Show("¿Desea Anular la Venta?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (resp == MessageBoxResult.No)
                 return;
             else

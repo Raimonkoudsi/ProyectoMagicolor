@@ -86,7 +86,6 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
             string response = Metodos.Insertar(UForm);
-            MessageBox.Show(response);
             if (response == "OK")
             {
                 this.DialogResult = true;

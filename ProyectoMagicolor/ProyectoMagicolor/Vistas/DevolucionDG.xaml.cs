@@ -18,39 +18,29 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    public partial class VentaDG : Page
+    public partial class DevolucionDG : Page
     {
-        public LVenta Metodos = new LVenta();
+        public LDevolucion Metodos = new LDevolucion();
 
 
         public MainWindow Parent;
 
-        public VentaDG(MainWindow parent)
+        public DevolucionDG(MainWindow parent)
         {
             InitializeComponent();
 
             Parent = parent;
         }
-        private int metodoPago()
-        {
-            if ((RBContadoMostrar.IsChecked ?? true) && (RBCreditoMostrar.IsChecked ?? true))
-                return 0;
-            if (RBContadoMostrar.IsChecked ?? true)
-                return 1;
-            if (RBCreditoMostrar.IsChecked ?? true)
-                return 2;
 
-            return 3;
-        }
 
         private void MetodoPago_Click(object sender, RoutedEventArgs e)
         {
             Refresh(dpFecha.SelectedDate, txtNombre.Text);
         }
 
-        public void Refresh(DateTime? Fecha ,string Nombre)
+        public void Refresh(DateTime? Fecha, string Nombre)
         {
-            List<DVenta> items = Metodos.MostrarVentasGenerales(Fecha, Nombre, metodoPago());
+            List<DDevolucion> items = Metodos.MostrarDevolucionesGenerales(Fecha, Nombre);
 
             dgOperaciones.ItemsSource = items;
         }
@@ -70,7 +60,7 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
 
-            reporte.ExportPDF(Metodos.MostrarVentasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "VentasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+            reporte.ExportPDF(Metodos.MostrarDevolucionesGenerales(dpFecha.SelectedDate, txtNombre.Text), "DevolucionesGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
         }
 
 
@@ -86,7 +76,6 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtBucarPlaceH.Text = "";
             }
-
         }
 
         private void dpFecha_SelectedDateChanged(object sender, RoutedEventArgs e)
@@ -111,17 +100,12 @@ namespace ProyectoMagicolor.Vistas
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
-            var VentaResp = new LVenta().MostrarVenta(id);
+            var DevolucionResp = new LDevolucion().MostrarDevolucion(id);
 
-            DVenta Venta = VentaResp[0];
+            DDevolucion Devolucion = DevolucionResp[0];
 
-            if(Venta.estadoString == "Anulada")
-                LFunction.MessageExecutor("Information", "La Venta ha sido Anulada, no posee detalles");
-            else
-            {
-                VentaVista Frm = new VentaVista(Venta, this);
-                Parent.SwitchScreen(Frm);
-            }
+            DevolucionVista Frm = new DevolucionVista(Devolucion, this);
+            Parent.SwitchScreen(Frm);
         }
 
         public void GetBack()

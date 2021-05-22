@@ -152,22 +152,11 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             Refresh();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgOperaciones.SelectedItems.Count > 0)
-            //{
-            //    for(int i = 0; i < dgOperaciones.SelectedItems.Count; i++)
-            //    {
-            //        MessageBox.Show(((TablaTrabajadores)dgOperaciones.SelectedItems[i]).Nombre);
-            //    }
-            //}
-            //else
-            //    MessageBox.Show("no hay");
             ArticuloFrm frmTrab = new ArticuloFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh();
@@ -180,7 +169,6 @@ namespace ProyectoMagicolor.Vistas
 
             InventarioVista vista = new InventarioVista(response);
             vista.ShowDialog();
-            //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
 
         bool isAnimationCurrent = false;
@@ -196,7 +184,6 @@ namespace ProyectoMagicolor.Vistas
             SideBar.Visibility = Visibility.Visible;
 
             var easing = new CircleEase();
-            //easing.EasingMode = EasingMode.EaseOut;
 
             DoubleAnimation DAGrid = new DoubleAnimation();
             DAGrid.From = 0;
@@ -360,6 +347,11 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar), "Inventario");
+        }
+
+        private void dgOperaciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 

@@ -43,7 +43,7 @@ namespace Logica
         ";
 
         private string queryDelete = @"
-            DELETE * FROM [articulo] 
+            DELETE FROM [articulo] 
             WHERE idArticulo = @idArticulo;
         ";
 
@@ -193,7 +193,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
                 comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion == String.Empty ? "No Contiene una Descripción" : Articulo.descripcion);
                 comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
-                comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMinimo);
+                comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
                 comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro el Articulo";

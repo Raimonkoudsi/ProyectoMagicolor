@@ -71,7 +71,7 @@ namespace ProyectoMagicolor.Reports
                 viewer.RefreshReport();
                 var bytes = viewer.LocalReport.Render("PDF", deviceInfo, out mimeType, out encoding, out extension, out streamIds, out warnings);
 
-                string fileName = SaveConfirmation ? RouteSavePDF(SetReportName(ReportName, DetailName)) : ReportName;
+                string fileName = SaveConfirmation ? RouteSavePDF(SetReportName(ReportName, DetailName)) : RouteSavePDF(SetReportName(ReportName, DetailName));
                 if (fileName != SetReportName(ReportName, DetailName))
                 {
                     File.WriteAllBytes(fileName, bytes);

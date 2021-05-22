@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Windows.Forms;
 using Datos;
 using Logica;
 
@@ -23,10 +23,10 @@ namespace ProyectoMagicolor
 	public partial class MainWindow : Window
 	{
         public Login ParentFrm;
-        
-		public MainWindow(DTrabajador trabajador)
-		{
-			InitializeComponent();
+
+        public MainWindow(DTrabajador trabajador)
+        {
+            InitializeComponent();
 
             LoggedTrabajador = trabajador;
 
@@ -44,23 +44,28 @@ namespace ProyectoMagicolor
             menuActions.Add(new SubItem("Cuenta por Cobrar", new CuentaCobrarDG(this)));
             menuActions.Add(new SubItem("Cuenta por Pagar", new CuentaPagarDG(this)));
             menuActions.Add(new SubItem("Devolución", new DevolucionInicio(this)));
+            menuActions.Add(new SubItem("Inventario", new InventarioDG()));
             var item2 = new ItemMenu("Acciones", menuActions, PackIconKind.PointOfSale);
 
             var menuList = new List<SubItem>();
             menuList.Add(new SubItem("Ventas", new VentaDG(this)));
-            menuList.Add(new SubItem("Compras")); //falta
-            menuList.Add(new SubItem("Cuentas por Cobrar")); //falta
-            menuList.Add(new SubItem("Cuentas por Pagar")); //falta
-            menuList.Add(new SubItem("Devoluciones")); //falta
-            menuList.Add(new SubItem("Inventario", new InventarioDG()));
+            menuList.Add(new SubItem("Compras", new CompraDG(this)));
+            menuList.Add(new SubItem("Devoluciones", new DevolucionDG(this)));
             var item3 = new ItemMenu("Listados", menuList, PackIconKind.AccountBoxes);
 
-            var item4 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
+            var menuSetting = new List<SubItem>();
+            menuSetting.Add(new SubItem("Auditoria")); //falta
+            menuSetting.Add(new SubItem("Respaldo", null, true, false)); //falta
+            menuSetting.Add(new SubItem("Restauración", null, false, true)); //falta
+            var item4 = new ItemMenu("Configuración", menuSetting, PackIconKind.Settings);
+
+            var item5 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
 
             Menu.Children.Add(new MenuItemX(item1, this));
             Menu.Children.Add(new MenuItemX(item2, this));
             Menu.Children.Add(new MenuItemX(item3, this));
             Menu.Children.Add(new MenuItemX(item4, this));
+            Menu.Children.Add(new MenuItemX(item5, this));
 
         }
 
@@ -83,9 +88,31 @@ namespace ProyectoMagicolor
             this.Close();
         }
 
+        public void Backup()
+        {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = dlg.SelectedPath;
+                LFunction.Backup(path);
+            }
+        }
+
+        public void Restore()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "SQL SERVER database backup files|*.bak";
+            dlg.Title = "Restaurar Base de Datos";
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = dlg.FileName;
+                LFunction.Restore(path);
+            }
+        }
+
 		private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
         {
-			Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown();
         }
 
 		
@@ -114,14 +141,20 @@ namespace ProyectoMagicolor
 
 	public class SubItem
     {
-        public SubItem(string name, Page screen = null)
+        public SubItem(string name, Page screen = null, bool backup = false, bool restore = false)
         {
             Name = name;
             Screen = screen;
+            Backup = backup;
+            Restore = restore;
         }
 
         public string Name { get; private set; }
 		public Page Screen { get; private set; }
+
+        public bool Backup { get; private set; }
+
+        public bool Restore { get; private set; }
     }
 
 }

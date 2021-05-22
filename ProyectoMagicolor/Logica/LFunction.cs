@@ -66,7 +66,7 @@ namespace Logica
                 MessageExecutor("Error", errorNull.Message); 
             }
             catch (Exception error) { 
-                MessageExecutor("Error", error.InnerException.InnerException.Message); 
+                MessageExecutor("Error", error.Message); 
             }
             finally { 
                 if (Conexion.ConexionSql.State == ConnectionState.Open) 
@@ -74,6 +74,58 @@ namespace Logica
             }
 
             return default(T);
+        }
+
+
+
+        public static void Backup(string Path)
+        {
+            Action action = () =>
+            {
+                string database = Conexion.ConexionSql.Database.ToString();
+
+                if (Path == string.Empty)
+                    LFunction.MessageExecutor("Error", "Necesita una Ruta de Almacenamiento");
+                else
+                {
+                    string cmd = "BACKUP DATABASE [" + database + "] TO DISK='" + Path + "\\" + "dbMagicolor" + "-" + DateTime.Now.ToString("yyyy-MM-dd") + ".bak'";
+
+                    using (SqlCommand command = new SqlCommand(cmd, Conexion.ConexionSql))
+                    {
+                        command.ExecuteNonQuery();
+                        LFunction.MessageExecutor("Information", "Backup Almacenado Correctamente");
+                    }
+                }
+            };
+            LFunction.SafeExecutor(action);
+        }
+
+        public static void Restore(string Path)
+        {
+            Action action = () =>
+            {
+                string database = Conexion.ConexionSql.Database.ToString();
+
+                if (Path == string.Empty)
+                    LFunction.MessageExecutor("Error", "Necesita Seleccionar un Respaldo");
+                else
+                {
+                    string sqlStmt2 = string.Format("ALTER DATABASE [" + database + "] SET SINGLE_USER WITH ROLLBACK IMMEDIATE");
+                    SqlCommand bu2 = new SqlCommand(sqlStmt2, Conexion.ConexionSql);
+                    bu2.ExecuteNonQuery();
+
+                    string sqlStmt3 = "USE MASTER RESTORE DATABASE [" + database + "] FROM DISK='" + Path + "'WITH REPLACE;";
+                    SqlCommand bu3 = new SqlCommand(sqlStmt3, Conexion.ConexionSql);
+                    bu3.ExecuteNonQuery();
+
+                    string sqlStmt4 = string.Format("ALTER DATABASE [" + database + "] SET MULTI_USER");
+                    SqlCommand bu4 = new SqlCommand(sqlStmt4, Conexion.ConexionSql);
+                    bu4.ExecuteNonQuery();
+
+                    LFunction.MessageExecutor("Information", "Bas de Datos Restaurada Correctamente");
+                }
+            };
+            LFunction.SafeExecutor(action);
         }
     }
 

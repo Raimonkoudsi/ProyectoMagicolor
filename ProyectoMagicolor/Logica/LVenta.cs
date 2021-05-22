@@ -86,6 +86,7 @@ namespace Logica
         private string queryListActive = @"
             SELECT 
                 v.idVenta,
+                v.idCliente,
                 CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
                 CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
                 CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
@@ -116,7 +117,8 @@ namespace Logica
                 v.impuesto,
                 v.fecha,
                 v.metodoPago,
-                v.estado
+                v.estado,
+                v.idCliente
         ";
 
         private string queryListDetail = @"
@@ -131,25 +133,8 @@ namespace Logica
             FROM [detalleVenta] dv 
                 INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso 
                 INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo 
-            WHERE dv.idVenta = @idVenta AND dv.estado <> 3 AND dv.cantidad <> 0;
-        ";
-
-        private string queryList = @"
-            SELECT 
-                v.idVenta,
-                CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
-                SUM(dv.precioVenta * dv.cantidad) AS montoTotal,
-                v.descuento,
-                v.impuesto,
-                v.fecha,
-                v.metodoPago,
-                v.estado
-            FROM [venta] v
-                INNER JOIN [cliente] c ON v.idCliente = c.idCliente
-                INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
-            WHERE v.fecha = @fecha AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
-			GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto;
+                INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+            WHERE dv.idVenta = @idVenta AND dv.estado <> 0 AND dv.cantidad <> 0;
         ";
 
         #endregion
@@ -246,7 +231,7 @@ namespace Logica
             {
                 foreach (DDetalle_Venta det in Detalle)
                 {
-                    if (!Restock(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
+                    if (!RestockVenta(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
                         throw new Exception("Error en el Actualización del Stock");
 
                     if (!ActualizarDetalleVenta(Detalle[i].cantidad, Detalle[i].idDetalleVenta, Detalle[i].idArticulo).Equals("OK"))
@@ -283,19 +268,20 @@ namespace Logica
                     ListaGenerica.Add(new DVenta
                     {
                         idVenta = reader.GetInt32(0),
-                        trabajador = reader.GetString(1),
-                        cedulaCliente = reader.GetString(2),
-                        cliente = reader.GetString(3),
-                        telefonoCliente = reader.GetString(4),
-                        emailCliente = reader.GetString(5),
-                        montoTotal = (double)reader.GetDecimal(6),
-                        descuento = (double)reader.GetDecimal(7),
-                        impuesto = reader.GetInt32(8),
-                        fechaString = reader.GetDateTime(9).ToShortDateString(),
-                        metodoPago = reader.GetInt32(10),
-                        metodoPagoString = MetodoPagoToString(reader.GetInt32(10)),
-                        estado = reader.GetInt32(11),
-                        estadoString = EstadoToString(reader.GetInt32(11))
+                        idCliente = reader.GetInt32(1),
+                        trabajador = reader.GetString(2),
+                        cedulaCliente = reader.GetString(3),
+                        cliente = reader.GetString(4),
+                        telefonoCliente = reader.GetString(5),
+                        emailCliente = reader.GetString(6),
+                        montoTotal = (double)reader.GetDecimal(7),
+                        descuento = (double)reader.GetDecimal(8),
+                        impuesto = reader.GetInt32(9),
+                        fechaString = reader.GetDateTime(10).ToShortDateString(),
+                        metodoPago = reader.GetInt32(11),
+                        metodoPagoString = MetodoPagoToString(reader.GetInt32(11)),
+                        estado = reader.GetInt32(12),
+                        estadoString = EstadoToString(reader.GetInt32(12))
                     });
                 }
             };
@@ -335,9 +321,31 @@ namespace Logica
         }
 
 
-        public List<DVenta> MostrarVentasGenerales(DateTime? Fecha, string Nombre)
+        public List<DVenta> MostrarVentasGenerales(DateTime? Fecha, string Nombre, int MetodoPago)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
+
+            string queryList = @"
+                SELECT 
+                    v.idVenta,
+                    CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
+                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    SUM(dv.precioVenta * dv.cantidad) AS montoTotal,
+                    v.descuento,
+                    v.impuesto,
+                    v.fecha,
+                    v.metodoPago,
+                    v.estado,
+                    CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador
+                FROM [venta] v
+                    INNER JOIN [cliente] c ON v.idCliente = c.idCliente
+                    INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
+                    INNER JOIN [trabajador] t ON v.idTrabajador = t.idTrabajador
+                WHERE v.fecha = @fecha 
+                    AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
+                    " + QueryMetodoPago(MetodoPago) + @"
+			    GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto, t.nombre, t.apellidos;
+            ";
 
             Action action = () =>
             {
@@ -358,7 +366,8 @@ namespace Logica
                         impuesto = reader.GetInt32(5),
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(7)),
-                        estadoString = EstadoToString(reader.GetInt32(8))
+                        estadoString = EstadoToString(reader.GetInt32(8)),
+                        trabajador = reader.GetString(9)
                     });
                 }
             };
@@ -367,7 +376,15 @@ namespace Logica
             return ListaGenerica;
         }
 
-        private string MetodoPagoToString(int MetodoPago)
+        private string QueryMetodoPago(int MetodoPago)
+        {
+            if (MetodoPago != 0)
+                return " AND v.metodoPago = " + MetodoPago;
+
+            return null;
+        }
+
+        public string MetodoPagoToString(int MetodoPago)
         {
             if (MetodoPago == 1)
                 return "Contado";
@@ -375,7 +392,7 @@ namespace Logica
                 return "Crédito";
         }
 
-        private string EstadoToString(int Estado)
+        public string EstadoToString(int Estado)
         {
             if (Estado == 1)
                 return "Completada";

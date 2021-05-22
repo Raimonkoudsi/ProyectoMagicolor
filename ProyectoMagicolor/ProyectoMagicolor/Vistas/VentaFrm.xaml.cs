@@ -120,7 +120,6 @@ namespace ProyectoMagicolor.Vistas
                                                0);
 
             string res = Metodo.Insertar(dVenta, ListaVenta, CC);
-            MessageBox.Show(res);
 
             if (res.Equals("OK"))
             {

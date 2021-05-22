@@ -64,9 +64,11 @@ namespace ProyectoMagicolor.Vistas
         {
             int id = (int)((Button)sender).CommandParameter;
             var response = MetodosUsuario.Encontrar(id);
+            var responseSecurity = MetodosUsuario.EncontrarSeguridad(id);
 
             TrabajadoresFrm frmTrab = new TrabajadoresFrm();
             frmTrab.Type = TypeForm.Update;
+            frmTrab.ListaSeguridad = responseSecurity;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
@@ -109,9 +111,11 @@ namespace ProyectoMagicolor.Vistas
         {
             int id = (int)((Button)sender).CommandParameter;
             var response = MetodosUsuario.Encontrar(id);
+            var responseSecurity = MetodosUsuario.EncontrarSeguridad(id);
 
             TrabajadoresFrm frmTrab = new TrabajadoresFrm();
             frmTrab.Type = TypeForm.Read;
+            frmTrab.ListaSeguridad = responseSecurity;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);

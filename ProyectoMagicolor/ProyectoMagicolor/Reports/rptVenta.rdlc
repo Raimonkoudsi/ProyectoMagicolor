@@ -433,7 +433,7 @@
         <Top>2.82194cm</Top>
         <Left>0.62433cm</Left>
         <Height>1.38521cm</Height>
-        <Width>19.7554cm</Width>
+        <Width>19.75541cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -615,7 +615,7 @@
           <Border>
             <Color>#3094f7</Color>
             <Style>Solid</Style>
-            <Width>2pt</Width>
+            <Width>1.5pt</Width>
           </Border>
           <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>
@@ -653,7 +653,7 @@
           <Border>
             <Color>#3094f7</Color>
             <Style>Solid</Style>
-            <Width>2pt</Width>
+            <Width>1.5pt</Width>
           </Border>
           <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>
@@ -725,7 +725,7 @@
           <Border>
             <Color>#3094f7</Color>
             <Style>Solid</Style>
-            <Width>2pt</Width>
+            <Width>1.5pt</Width>
           </Border>
           <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>
@@ -797,7 +797,7 @@
           <Border>
             <Color>#3094f7</Color>
             <Style>Solid</Style>
-            <Width>2pt</Width>
+            <Width>1.5pt</Width>
           </Border>
           <VerticalAlign>Middle</VerticalAlign>
           <PaddingLeft>2pt</PaddingLeft>

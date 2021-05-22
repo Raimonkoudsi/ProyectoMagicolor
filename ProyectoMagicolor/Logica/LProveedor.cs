@@ -49,7 +49,7 @@ namespace Logica
         ";
 
         private string queryDelete = @"
-            DELETE * FROM [proveedor] 
+            DELETE FROM [proveedor] 
             WHERE idProveedor = @idProveedor
         ";
 

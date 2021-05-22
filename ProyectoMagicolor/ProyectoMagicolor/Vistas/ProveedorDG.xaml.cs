@@ -98,20 +98,19 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(txtDocumento.Text == "")
+            if (txtDocumento.Text == "")
             {
-                txtDocumento.Text = "";
+                txtBucarPlaceH.Text = "";
             }
-            
+
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(txtDocumento.Text == "")
+            if (txtDocumento.Text == "")
             {
-                txtDocumento.Text = "Buscar...";
+                txtBucarPlaceH.Text = "Documento";
             }
-            
         }
 
         private void txtVer_Click(object sender, RoutedEventArgs e)

@@ -46,7 +46,7 @@ namespace Logica
 	    ";
 
         private string queryDelete = @"
-            DELETE * FROM [cliente] 
+            DELETE FROM [cliente] 
             WHERE idCliente = @idCliente;
 	    ";
 

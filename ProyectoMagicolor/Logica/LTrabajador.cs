@@ -26,8 +26,6 @@ namespace Logica
                 acceso,
                 usuario,
                 contraseña,
-                pregunta,
-                respuesta,
                 estado
             ) VALUES (
                 @idTrabajador,
@@ -42,11 +40,28 @@ namespace Logica
                 @acceso,
                 @usuario,
                 @contraseña,
-                @pregunta,
-                @respuesta,
                 1
             );
         ";
+
+        private string queryInsertSecurity = @"
+            INSERT INTO [seguridad] (
+                idSeguridad,
+                idTrabajador,
+                pregunta,
+                respuesta
+            ) VALUES (
+                @idSeguridad,
+                @idTrabajador,
+                @pregunta,
+                @respuesta
+            );
+        ";
+
+        private string queryDeleteSecurity = @"
+            DELETE FROM [seguridad]
+            WHERE idTrabajador = @idTrabajador
+	    ";
 
         string queryUpdate = @"
             UPDATE [trabajador] SET
@@ -60,14 +75,12 @@ namespace Logica
                 email = @email,
                 acceso = @acceso,
                 usuario = @usuario,
-                contraseña = @contraseña,
-                pregunta = @pregunta,
-                respuesta = @respuesta
+                contraseña = @contraseña
             WHERE idTrabajador = @idTrabajador;
 	    ";
 
         private string queryDelete = @"
-            DELETE * FROM [trabajador]
+            DELETE FROM [trabajador]
             WHERE idTrabajador = @idTrabajador
 	    ";
 
@@ -105,6 +118,11 @@ namespace Logica
             WHERE idTrabajador = @idTrabajador;
         ";
 
+        private string queryListSecurity = @"
+            SELECT * FROM [seguridad] 
+            WHERE idTrabajador = @idTrabajador;
+        ";
+
         private string queryLogin = @"
             SELECT * FROM [trabajador] 
             WHERE usuario = @usuario AND contraseña = @contraseña;
@@ -120,16 +138,19 @@ namespace Logica
             WHERE cedula = @cedula;
         ";
 
+
         #endregion
 
-        public string Insertar(DTrabajador Trabajador)
+        public string Insertar(DTrabajador Trabajador, List<DSeguridad> Seguridad)
         {
             string respuesta = "";
 
             Action action = () =>
             {
+                int idTrabajador = LFunction.GetID("trabajador", "idTrabajador");
+
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idTrabajador", LFunction.GetID("trabajador", "idTrabajador"));
+                comm.Parameters.AddWithValue("@idTrabajador", idTrabajador);
                 comm.Parameters.AddWithValue("@nombre", Trabajador.nombre);
                 comm.Parameters.AddWithValue("@apellidos", Trabajador.apellidos);
                 comm.Parameters.AddWithValue("@sexo", Trabajador.sexo);
@@ -141,11 +162,10 @@ namespace Logica
                 comm.Parameters.AddWithValue("@acceso", Trabajador.acceso);
                 comm.Parameters.AddWithValue("@usuario", Trabajador.usuario);
                 comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
-                comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
-                comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Trabajador";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Ingresado Correctamente");
+                if (respuesta.Equals("OK"))
+                    respuesta = InsertarSeguridad(Seguridad, idTrabajador);
             };
             LFunction.SafeExecutor(action);
 
@@ -153,7 +173,42 @@ namespace Logica
         }
 
 
-        public string Editar(DTrabajador Trabajador)
+        private string InsertarSeguridad(List<DSeguridad> Detalle, int IdTrabajador)
+        {
+            int i = 0;
+            string respuesta = "";
+
+            foreach (DSeguridad det in Detalle)
+            {
+                using SqlCommand comm = new SqlCommand(queryInsertSecurity, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idSeguridad", LFunction.GetID("seguridad", "idSeguridad"));
+                comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
+                comm.Parameters.AddWithValue("@pregunta", Detalle[i].pregunta);
+                comm.Parameters.AddWithValue("@respuesta", Detalle[i].respuesta);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro de la Seguridad";
+                if (!respuesta.Equals("OK")) break;
+
+                i++;
+            }
+
+            return respuesta;
+        }
+
+        private string BorrarSeguridad(DTrabajador Trabajador, List<DSeguridad> Seguridad)
+        {
+            using SqlCommand comm = new SqlCommand(queryDeleteSecurity, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idTrabajador", Trabajador.idTrabajador);
+
+            string respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
+
+            if (respuesta.Equals("OK"))
+                InsertarSeguridad(Seguridad, Trabajador.idTrabajador);
+
+            return respuesta;
+        }
+
+        public string Editar(DTrabajador Trabajador, List<DSeguridad> Seguridad)
         {
             string respuesta = "";
 
@@ -171,12 +226,11 @@ namespace Logica
                 comm.Parameters.AddWithValue("@acceso", Trabajador.acceso);
                 comm.Parameters.AddWithValue("@usuario", Trabajador.usuario);
                 comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
-                comm.Parameters.AddWithValue("@pregunta", Trabajador.pregunta);
-                comm.Parameters.AddWithValue("@respuesta", Trabajador.respuesta);
                 comm.Parameters.AddWithValue("@idTrabajador", Trabajador.idTrabajador);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizo el Registro del Trabajador";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Actualizado Correctamente");
+                if (respuesta.Equals("OK"))
+                    BorrarSeguridad(Trabajador, Seguridad);
             };
             LFunction.SafeExecutor(action);
 
@@ -275,7 +329,7 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
                 {
-                    int state = reader.GetInt32(14);
+                    int state = reader.GetInt32(12);
                     ListaGenerica.Add(new DTrabajador
                         (
                             reader.GetInt32(0),
@@ -287,12 +341,35 @@ namespace Logica
                             reader.GetString(6),
                             reader.GetString(7),
                             reader.GetString(8),
-                            reader.GetString(9),
+                            reader.GetInt32(9),
                             reader.GetString(10),
                             reader.GetString(11),
-                            reader.GetString(12),
-                            reader.GetString(13),
                             state.ToString()
+                        ));
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+        public List<DSeguridad> EncontrarSeguridad(int IdTrabajador)
+        {
+            List<DSeguridad> ListaGenerica = new List<DSeguridad>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListSecurity, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DSeguridad
+                        (
+                            reader.GetInt32(1),
+                            reader.GetString(2),
+                            reader.GetString(3)
                         ));
                 }
             };
@@ -326,12 +403,10 @@ namespace Logica
                             reader.GetString(6),
                             reader.GetString(7),
                             reader.GetString(8),
-                            reader.GetString(9),
+                            reader.GetInt32(9),
                             reader.GetString(10),
                             reader.GetString(11),
-                            reader.GetString(12),
-                            reader.GetString(13),
-                            reader.GetInt32(14).ToString()
+                            reader.GetInt32(12).ToString()
                         ));
                 }
             };

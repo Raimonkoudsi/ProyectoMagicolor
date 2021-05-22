@@ -98,6 +98,54 @@ namespace Datos
             set { _IdCuentaPagar = value; }
         }
 
+        private string _CedulaProveedor;
+        public string cedulaProveedor
+        {
+            get { return _CedulaProveedor; }
+            set { _CedulaProveedor = value; }
+        }
+
+        private string _FechaString;
+        public string fechaString
+        {
+            get { return _FechaString; }
+            set { _FechaString = value; }
+        }
+
+        private string _MetodoPagoString;
+        public string metodoPagoString
+        {
+            get { return _MetodoPagoString; }
+            set { _MetodoPagoString = value; }
+        }
+
+        private string _EstadoString;
+        public string estadoString
+        {
+            get { return _EstadoString; }
+            set { _EstadoString = value; }
+        }
+
+        private string _Trabajador;
+        public string trabajador
+        {
+            get { return _Trabajador; }
+            set { _Trabajador = value; }
+        }
+
+        private string _TelefonoProveedor;
+        public string telefonoProveedor
+        {
+            get { return _TelefonoProveedor; }
+            set { _TelefonoProveedor = value; }
+        }
+
+        private string _EmailProveedor;
+        public string emailProveedor
+        {
+            get { return _EmailProveedor; }
+            set { _EmailProveedor = value; }
+        }
 
         public DIngreso()
         {

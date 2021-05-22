@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="FormTrabajadores" Height="810" Width="800" Loaded="Window_Loaded">
-
+        Title="FormTrabajadores" Height="820" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -90,12 +89,14 @@
                             <TextBlock x:Name="txtCPassPlaceholder" Text="Confirmar Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
                             <PasswordBox x:Name="txtCPassword" FontSize="13" Margin="0 10" GotFocus="txtCPassword_GotFocus" LostFocus="txtCPassword_LostFocus"/>
                         </Grid>
-                        <local:TextInput x:Name="txtPregunta" Placeholder="Pregunta" Margin="0 10" FontSize="13"/>
-                        <local:TextInput x:Name="txtRespuesta" Placeholder="Respuesta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtPregunta" Placeholder="Primera Pregunta Secreta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtRespuesta" Placeholder="Primera Respuesta Secreta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtPregunta2" Placeholder="Segunda Pregunta Secreta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtRespuesta2" Placeholder="Segunda Respuesta Secreta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtPregunta3" Placeholder="Tercera Pregunta Secreta" Margin="0 10" FontSize="13"/>
+                        <local:TextInput x:Name="txtRespuesta3" Placeholder="Tercera Respuesta Secreta" Margin="0 10" FontSize="13"/>
                     </StackPanel>
                 </GroupBox>
-                <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
-
                 <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>

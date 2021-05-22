@@ -182,6 +182,7 @@ namespace ProyectoMagicolor.Vistas
 
         public TypeForm Type;
         public DTrabajador DataFill;
+        public List<DSeguridad> DataFillSeguridad;
 
         public DTrabajador UForm;
 
@@ -199,7 +200,7 @@ namespace ProyectoMagicolor.Vistas
             if (Type == TypeForm.Read)
             {
                 txtTitulo.Text = "Leer Trabajador";
-                fillForm(DataFill);
+                fillForm(DataFill, ListaSeguridad);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
 
@@ -207,7 +208,7 @@ namespace ProyectoMagicolor.Vistas
             else if (Type == TypeForm.Update)
             {
                 txtTitulo.Text = "Editar Trabajador";
-                fillForm(DataFill);
+                fillForm(DataFill, ListaSeguridad);
             }
         } 
 
@@ -229,11 +230,9 @@ namespace ProyectoMagicolor.Vistas
             string direccion = txtDireccion.txt.Text;
             string telefono = txtTelefono.txt.Text;
             string email = txtEmail.txt.Text;
-            string acceso = CbAcceso.Text;
+            int acceso = CbAcceso.SelectedIndex;
             string usuario = txtUsuario.txt.Text;
             string contraseña = txtPassword.Password;
-            string pregunta = txtPregunta.txt.Text;
-            string respuesta = txtRespuesta.txt.Text;
 
             UForm = new DTrabajador(0,
                                     nombre,
@@ -247,9 +246,9 @@ namespace ProyectoMagicolor.Vistas
                                     acceso,
                                     usuario,
                                     contraseña,
-                                    pregunta,
-                                    respuesta,
                                     "");
+
+            AgregarSeguridad();
         }
 
         void Create()
@@ -257,14 +256,46 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
-            string response = MetodosUsuario.Insertar(UForm);
-            MessageBox.Show(response);
+
+            AgregarSeguridad();
+
+            string response = MetodosUsuario.Insertar(UForm, ListaSeguridad);
             if (response == "OK")
             {
+                LFunction.MessageExecutor("Information", "Trabajador Ingresado Correctamente");
                 this.DialogResult = true;
                 this.Close();
             }
+            else
+            {
+                LFunction.MessageExecutor("Error", response);
+            }
 
+        }
+
+
+        public List<DSeguridad> ListaSeguridad = new List<DSeguridad>();
+
+        public void AgregarSeguridad()
+        {
+            ListaSeguridad.Clear();
+
+            DSeguridad DS = new DSeguridad();
+            DSeguridad DS2 = new DSeguridad();
+            DSeguridad DS3 = new DSeguridad();
+
+            DS.pregunta = txtPregunta.Text;
+            DS.respuesta = txtRespuesta.Text;
+            ListaSeguridad.Add(DS);
+
+            DS2.pregunta = txtPregunta2.Text;
+            DS2.respuesta = txtRespuesta2.Text;
+            ListaSeguridad.Add(DS2);
+
+            DS3.pregunta = txtPregunta3.Text;
+            DS3.respuesta = txtRespuesta3.Text;
+            ListaSeguridad.Add(DS3);
+    
         }
 
         void Update()
@@ -273,12 +304,17 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
             UForm.idTrabajador = DataFill.idTrabajador;
-            string response = MetodosUsuario.Editar(UForm);
-            MessageBox.Show(response);
+
+            string response = MetodosUsuario.Editar(UForm, ListaSeguridad);
             if(response == "OK")
             {
+                LFunction.MessageExecutor("Information", "Trabajador Editado Correctamente");
                 this.DialogResult = true;
                 this.Close();
+            } 
+            else
+            {
+                LFunction.MessageExecutor("Error", response);
             }
         }
 
@@ -344,6 +380,11 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
+        private void txtUsuario_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CbTipoDocumento.SelectedIndex > -1)
@@ -369,8 +410,12 @@ namespace ProyectoMagicolor.Vistas
             txtCPassword.IsEnabled = Enable;
             txtPregunta.IsEnabled = Enable;
             txtRespuesta.IsEnabled = Enable;
+            txtPregunta2.IsEnabled = Enable;
+            txtRespuesta2.IsEnabled = Enable;
+            txtPregunta3.IsEnabled = Enable;
+            txtRespuesta3.IsEnabled = Enable;
         }
-        void fillForm(DTrabajador Data)
+        void fillForm(DTrabajador Data, List<DSeguridad> DataSeguridad)
         {
             if(Data != null)
             {
@@ -392,10 +437,17 @@ namespace ProyectoMagicolor.Vistas
                 CbAcceso.SelectedIndex = Data.acceso.Equals("Admin") ? 0 :
                                          Data.acceso.Equals("Encargado") ? 1 : 2;
                 txtUsuario.SetText(Data.usuario);
-                txtPregunta.SetText(Data.pregunta);
-                txtRespuesta.SetText(Data.respuesta);
 
-                if(Type == TypeForm.Read)
+                txtPregunta.SetText(DataSeguridad[0].pregunta);
+                txtRespuesta.SetText(DataSeguridad[0].respuesta);
+
+                txtPregunta2.SetText(DataSeguridad[1].pregunta);
+                txtRespuesta2.SetText(DataSeguridad[1].respuesta);
+
+                txtPregunta3.SetText(DataSeguridad[2].pregunta);
+                txtRespuesta3.SetText(DataSeguridad[2].respuesta);
+
+                if (Type == TypeForm.Read)
                 {
                     Password.Visibility = Visibility.Collapsed;
                     CPassword.Visibility = Visibility.Collapsed;
@@ -471,14 +523,42 @@ namespace ProyectoMagicolor.Vistas
 
             if (!txtPregunta.Changed)
             {
-                MessageBox.Show("Debes llenar el campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes llenar el primer campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtPregunta.txt.Focus();
                 return true;
             }
 
             if (!txtRespuesta.Changed)
             {
-                MessageBox.Show("Debes llenar el campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes llenar el primer campo Respuesta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtRespuesta.txt.Focus();
+                return true;
+            }
+
+            if (!txtPregunta2.Changed)
+            {
+                MessageBox.Show("Debes llenar el segundo campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPregunta.txt.Focus();
+                return true;
+            }
+
+            if (!txtRespuesta2.Changed)
+            {
+                MessageBox.Show("Debes llenar el segundo campo Respuesta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtRespuesta.txt.Focus();
+                return true;
+            }
+
+            if (!txtPregunta3.Changed)
+            {
+                MessageBox.Show("Debes llenar el tercer campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPregunta.txt.Focus();
+                return true;
+            }
+
+            if (!txtRespuesta3.Changed)
+            {
+                MessageBox.Show("Debes llenar el tercer campo Respuesta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtRespuesta.txt.Focus();
                 return true;
             }
@@ -497,15 +577,20 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
-            if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+            if(Type != TypeForm.Update)
             {
-                MessageBox.Show("La Cedula ingresada está Repetida!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtDocumento.SetText("");
-                txtDocumento.txt.Focus();
+                if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                {
+                    MessageBox.Show("La Cedula ingresada está Repetida!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    txtDocumento.SetText("");
+                    txtDocumento.txt.Focus();
+                }
             }
+
 
             return false;
         }
         #endregion
+
     }
 }

@@ -56,6 +56,27 @@ namespace Datos
             set { _CantidadActual = value; }
         }
 
+        private string _Codigo;
+        public string codigo
+        {
+            get { return _Codigo; }
+            set { _Codigo = value; }
+        }
+
+        private string _Nombre;
+        public string nombre
+        {
+            get { return _Nombre; }
+            set { _Nombre = value; }
+        }
+
+        private int _Cantidad;
+        public int cantidad
+        {
+            get { return _Cantidad; }
+            set { _Cantidad = value; }
+        }
+
         public DDetalle_Ingreso()
         {
 

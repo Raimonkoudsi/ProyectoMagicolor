@@ -31,7 +31,7 @@ namespace Logica
 	    ";
 
         private string queryDelete = @"
-            DELETE * FROM [categoria] 
+            DELETE FROM [categoria] 
             WHERE idCategoria = @idCategoria
 	    ";
 

@@ -21,27 +21,35 @@
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
             <StackPanel Width="450" Margin="0 10 0 0">
-                <!--<local:TextInput x:Name="txtNombre" Placeholder="Nombre" Margin="0 10" FontSize="15"/>-->
-                <Grid>
+                <Grid HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid x:Name="GridArticulo" VerticalAlignment="Center">
+                    <Grid x:Name="GridArticulo" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtIdVenta" Text="Lapices" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                        <TextBlock x:Name="txtCliente" Grid.Column="1" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtCedula" Grid.Column="2" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtFecha" Grid.Column="3" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtMontoTotal" Grid.Column="4" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtMontoRestante" Grid.Column="5" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="Venta" FontSize="16" VerticalAlignment="Center" />
+                        <TextBlock x:Name="txtIdVenta" Grid.Row="1" Text="Lapices" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                        <TextBlock x:Name="txtFecha" Grid.Row="2" Text="Lapices" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+
+                        <TextBlock HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="0" Text="Cliente" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock  x:Name="txtCedula"  Grid.Column="2" Grid.Row="1" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock  x:Name="txtCliente" Grid.Column="2" Grid.Row="2" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+
+                        <TextBlock HorizontalAlignment="Center"  Grid.Column="4" Grid.Row="0" Text="Monto" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="txtMontoTotal" HorizontalAlignment="Right" Grid.Column="4" Grid.Row="1" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="txtMontoRestante" HorizontalAlignment="Right" Grid.Column="4" Grid.Row="2" Text="Restante: 123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
                 <Grid Margin="0 10">

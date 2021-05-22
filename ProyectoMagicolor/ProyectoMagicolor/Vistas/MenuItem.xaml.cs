@@ -12,13 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Datos;
+using Logica;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace ProyectoMagicolor.Vistas
 {
     /// <summary>
     /// Interaction logic for MenuItem.xaml
     /// </summary>
-    public partial class MenuItemX : UserControl
+    public partial class MenuItemX : System.Windows.Controls.UserControl
     {
         MainWindow _context;
         public MenuItemX(ItemMenu itemMenu, MainWindow context)
@@ -31,7 +36,29 @@ namespace ProyectoMagicolor.Vistas
             ListViewItemMenu.Visibility = itemMenu.SubItems == null ? Visibility.Visible : Visibility.Collapsed;
             ListViewItemMenu.Content = itemMenu.Header;
 
-            if(itemMenu.SubItems == null)
+
+            if (itemMenu.SubItems != null)
+            {
+                if (itemMenu.SubItems[1].Backup == true)
+                {
+                    ListViewItemMenu.Click += (s, r) =>
+                    {
+                        //backup
+                        _context.Backup();
+                    };
+                }
+                if (itemMenu.SubItems[2].Restore == true)
+                {
+                    ListViewItemMenu.Click += (s, r) =>
+                    {
+                        //restore
+                        _context.Restore();
+                    };
+                }
+            }
+            
+
+            if (itemMenu.SubItems == null)
             {
                 ListViewItemMenu.Click += (s, r) =>
                 {
@@ -46,7 +73,7 @@ namespace ProyectoMagicolor.Vistas
         private void LisViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (LisViewMenu.SelectedIndex < 0) return;
-            _context.SwitchScreen(((SubItem)((ListView)sender).SelectedItem).Screen);
+            _context.SwitchScreen(((SubItem)((System.Windows.Controls.ListView)sender).SelectedItem).Screen);
             LisViewMenu.SelectedItem = 0;
             LisViewMenu.SelectedIndex = -1;
         }
