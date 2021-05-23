@@ -42,6 +42,20 @@ namespace Datos
             set { _Fecha = value; }
         }
 
+        private string _Usuario;
+        public string usuario
+        {
+            get { return _Usuario; }
+            set { _Usuario = value; }
+        }
+
+        private string _AccesoString;
+        public string accesoString
+        {
+            get { return _AccesoString; }
+            set { _AccesoString = value; }
+        }
+
 
         public DAuditoria()
         {

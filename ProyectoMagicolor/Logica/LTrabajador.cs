@@ -88,28 +88,27 @@ namespace Logica
             SELECT 
                 idTrabajador, 
                 cedula, 
-                nombre, 
-                apellidos, 
+                CONCAT(nombre, ' ', apellidos) as nombreCompleto, 
                 direccion, 
                 telefono, 
                 email, 
                 usuario 
             FROM [trabajador] 
-            WHERE cedula LIKE @cedula + '%' 
+            WHERE cedula LIKE @cedula + '%' AND acceso <> 0
             ORDER BY cedula
         ";
 
         private string queryListUser = @"
             SELECT 
                 cedula, 
-                nombre, 
-                apellidos, 
+                nombre,
+                apellidos,
                 direccion, 
                 telefono, 
                 email, 
                 usuario 
             FROM [trabajador] 
-            WHERE usuario LIKE @usuario + '%' 
+            WHERE usuario LIKE @usuario + '%'  AND acceso <> 0
             ORDER BY usuario
         ";
 
@@ -272,14 +271,14 @@ namespace Logica
         }
 
 
-        public List<DTrabajador> Mostrar(string Cedula)
+        public List<DTrabajador> Mostrar(string Usuario)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryListIDCard, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@cedula", Cedula);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -289,11 +288,10 @@ namespace Logica
                         idTrabajador = reader.GetInt32(0),
                         cedula = reader.GetString(1),
                         nombre = reader.GetString(2),
-                        apellidos = reader.GetString(3),
-                        direccion = reader.GetString(4),
-                        telefono = reader.GetString(5),
-                        email = reader.GetString(6),
-                        usuario = Encripter.Decrypt(reader.GetString(7))
+                        direccion = reader.GetString(3),
+                        telefono = reader.GetString(4),
+                        email = reader.GetString(5),
+                        usuario = Encripter.Decrypt(reader.GetString(6))
                     });
                 }
             };
@@ -319,11 +317,10 @@ namespace Logica
                     {
                         cedula = reader.GetString(0),
                         nombre = reader.GetString(1),
-                        apellidos = reader.GetString(2),
-                        direccion = reader.GetString(3),
-                        telefono = reader.GetString(4),
-                        email = reader.GetString(5),
-                        usuario = Encripter.Decrypt(reader.GetString(6))
+                        direccion = reader.GetString(2),
+                        telefono = reader.GetString(3),
+                        email = reader.GetString(4),
+                        usuario = Encripter.Decrypt(reader.GetString(5))
                     });
                 }
             };

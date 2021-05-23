@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="FormTrabajadores" Height="820" Width="800" Loaded="Window_Loaded">
+        Title="FormTrabajadores" Height="550" Width="600" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -75,9 +75,8 @@
                         <Grid>
                             <TextBlock x:Name="CbAccesoPlaceholder" Text="Acceso" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
                             <ComboBox x:Name="CbAcceso" Text="Sexo" Margin="0 10" FontSize="13" SelectionChanged="CbAcceso_SelectionChanged">
-                                <ComboBoxItem>Admin</ComboBoxItem>
                                 <ComboBoxItem>Encargado</ComboBoxItem>
-                                <ComboBoxItem>Trabajador</ComboBoxItem>
+                                <ComboBoxItem>Vendedor</ComboBoxItem>
                             </ComboBox>
                         </Grid>
 

@@ -56,6 +56,7 @@ namespace ProyectoMagicolor.Vistas
                 if (respuesta.Count > 0)
                 {
                     var MainFrm = new MainWindow(respuesta[0]);
+
                     this.Hide();
                     MainFrm.Show();
                     MainFrm.Closing += (s, r) => { this.Close(); };

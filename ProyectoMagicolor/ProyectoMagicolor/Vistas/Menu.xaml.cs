@@ -23,6 +23,7 @@ namespace ProyectoMagicolor
     public static class Globals
     {
         public static Int32 ACCESO_SISTEMA = 3;
+        public static Int32 ID_SISTEMA = 0;
     }
 
     public partial class MainWindow : Window
@@ -35,7 +36,18 @@ namespace ProyectoMagicolor
 
             LoggedTrabajador = trabajador;
             Globals.ACCESO_SISTEMA = trabajador.acceso;
+            Globals.ID_SISTEMA = trabajador.idTrabajador;
 
+            /*DateTime now = new DateTime();
+            now = DateTime.Now();
+
+            new LAuditoria().Insertar(
+                                        Globals.ID_SISTEMA,
+                                        "Ingresar",
+                                        "Ha ingresado al Sistema",
+                                        now
+                                     );
+            */
             var menuRegister = new List<SubItem>();
             menuRegister.Add(new SubItem("Cliente", new ClienteDG()));
             if(LoggedTrabajador.acceso==0 || LoggedTrabajador.acceso == 1)

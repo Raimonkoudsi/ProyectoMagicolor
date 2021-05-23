@@ -230,7 +230,7 @@ namespace ProyectoMagicolor.Vistas
             string direccion = txtDireccion.txt.Text;
             string telefono = txtTelefono.txt.Text;
             string email = txtEmail.txt.Text;
-            int acceso = CbAcceso.SelectedIndex;
+            int acceso = (CbAcceso.SelectedIndex + 1);
             string usuario = txtUsuario.txt.Text;
             string contraseña = txtPassword.Password;
 
@@ -434,8 +434,7 @@ namespace ProyectoMagicolor.Vistas
                 if(Data.email != "")
                     txtEmail.SetText(Data.email);
 
-                CbAcceso.SelectedIndex = Data.acceso.Equals("Admin") ? 0 :
-                                         Data.acceso.Equals("Encargado") ? 1 : 2;
+                CbAcceso.Text = Data.acceso.ToString();
                 txtUsuario.SetText(Data.usuario);
 
                 txtPregunta.SetText(DataSeguridad[0].pregunta);
