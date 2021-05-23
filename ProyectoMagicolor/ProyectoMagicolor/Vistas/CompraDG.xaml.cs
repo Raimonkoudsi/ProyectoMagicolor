@@ -53,6 +53,12 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
+                btnReport.IsEnabled = false;
+            }
+
             Refresh(dpFecha.SelectedDate, txtNombre.Text);
         }
 

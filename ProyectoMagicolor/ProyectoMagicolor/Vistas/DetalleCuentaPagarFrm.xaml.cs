@@ -18,9 +18,6 @@ using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para DetalleCuentaPagarFrm.xaml
-    /// </summary>
     public partial class DetalleCuentaPagarFrm : Window
     {
         CuentaPagarDG ParentForm;
@@ -108,11 +105,11 @@ namespace ProyectoMagicolor.Vistas
 
             if (total)
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " $ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " Bs S ?", " Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
             else
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto de" + txtMonto.txt.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + "$ ?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto de" + txtMonto.txt.Text + " Bs S para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + " Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
 
             if (rpta == MessageBoxResult.No)

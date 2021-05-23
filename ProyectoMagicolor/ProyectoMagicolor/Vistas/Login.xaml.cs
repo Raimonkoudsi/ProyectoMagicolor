@@ -29,6 +29,8 @@ namespace ProyectoMagicolor.Vistas
             txtContraseña.Foreground = System.Windows.Media.Brushes.LightGray;
         }
 
+
+
         void Loging()
         {
 
@@ -51,21 +53,37 @@ namespace ProyectoMagicolor.Vistas
 
                 var respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
 
-                if(respuesta.Count > 0)
+                if (respuesta.Count > 0)
                 {
                     var MainFrm = new MainWindow(respuesta[0]);
                     this.Hide();
                     MainFrm.Show();
-                    MainFrm.Closing += (s,r)=> { this.Close(); };
+                    MainFrm.Closing += (s, r) => { this.Close(); };
                 }
                 else
                 {
-                    LFunction.MessageExecutor("Error", "Los Datos son Incorrectos");
+                    ContadorIntentos();
                 }
             }
             catch
             {
 
+            }
+        }
+
+        private static int intentos;
+        public static void ContadorIntentos()
+        {
+            intentos++;
+
+            if (intentos < 3)
+            {
+                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (" + intentos + " intento)");
+            }
+            else if (intentos == 3)
+            {
+                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (" + intentos + " intento), se cerrará el programa");
+                Environment.Exit(0);
             }
         }
 

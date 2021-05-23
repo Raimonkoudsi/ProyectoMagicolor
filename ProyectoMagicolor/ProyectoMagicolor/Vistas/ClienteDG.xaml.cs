@@ -49,6 +49,13 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
+            if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
+                btnReport.IsEnabled = false;
+            }
+
+
             CbTipoDocumento.SelectedIndex = 0;
 
             Refresh(CbTipoDocumento.Text ,txtDocumento.Text);
@@ -89,12 +96,19 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (Resp != MessageBoxResult.Yes)
-                return;
-            int id = (int)((Button)sender).CommandParameter;
-            Metodos.Eliminar(id);
-            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+            if (Globals.ACCESO_SISTEMA == 2)
+            {
+                LFunction.MessageExecutor("Information", "Los Vendedores no pueden Eliminar Clientes!");
+            }
+            else
+            {
+                MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (Resp != MessageBoxResult.Yes)
+                    return;
+                int id = (int)((Button)sender).CommandParameter;
+                Metodos.Eliminar(id);
+                Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+            }
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)

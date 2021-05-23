@@ -40,8 +40,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="1" Margin="0 0 0 0">
-                        <TextBlock Name="txtBucarPlaceH" Text="Respuesta a Primera Pregunta" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <TextBox Name="txtRespuesta" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                        <TextBlock Name="txtBucarPlaceH" Text="Respuesta" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                        <PasswordBox Name="txtRespuesta" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
                     </Grid>
                 </Grid>
                 
@@ -65,8 +65,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="1" Margin="0 0 0 0">
-                        <TextBlock Name="txtBucarPlaceH2" Text="Respuesta a Segunda Pregunta" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <TextBox Name="txtRespuesta2" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                        <TextBlock Name="txtBucarPlaceH2" Text="Respuesta" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                        <PasswordBox Name="txtRespuesta2" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar2_GotFocus" LostFocus="txtBuscar2_LostFocus"/>
                     </Grid>
                 </Grid>
 
@@ -90,8 +90,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="1" Margin="0 0 0 0">
-                        <TextBlock Name="txtBucarPlaceH3" Text="Respuesta a Tercera Pregunta" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <TextBox Name="txtRespuesta3" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                        <TextBlock Name="txtBucarPlaceH3" Text="Respuesta" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                        <PasswordBox Name="txtRespuesta3" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar3_GotFocus" LostFocus="txtBuscar3_LostFocus"/>
                     </Grid>
                 </Grid>
                 <Grid>

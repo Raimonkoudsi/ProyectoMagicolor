@@ -48,6 +48,12 @@ namespace ProyectoMagicolor.Vistas
         {
             //contentsp.Children.Clear();
 
+            if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
+                btnReport.IsEnabled = false;
+            }
+
             CbTipoDocumento.SelectedIndex = 2;
 
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);

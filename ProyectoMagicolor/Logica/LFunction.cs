@@ -6,7 +6,8 @@ using Datos;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
-
+using System.Security.Cryptography;
+using System.IO;
 using System.Reflection;
 
 namespace Logica
@@ -43,9 +44,10 @@ namespace Logica
 
         public static void SafeExecutor(Action action)
         {
-            SafeExecutor(() => { 
-                action(); 
-                return 0; 
+            SafeExecutor(() =>
+            {
+                action();
+                return 0;
             });
         }
 
@@ -56,21 +58,26 @@ namespace Logica
                 Conexion.ConexionSql.Open();
                 return action();
             }
-            catch (SqlException errorSql) { 
-                MessageExecutor("Error", errorSql.Message); 
+            catch (SqlException errorSql)
+            {
+                MessageExecutor("Error", errorSql.Message);
             }
-            catch (IndexOutOfRangeException errorIndex) { 
-                MessageExecutor("Error", errorIndex.Message); 
+            catch (IndexOutOfRangeException errorIndex)
+            {
+                MessageExecutor("Error", errorIndex.Message);
             }
-            catch (ArgumentNullException errorNull) { 
-                MessageExecutor("Error", errorNull.Message); 
+            catch (ArgumentNullException errorNull)
+            {
+                MessageExecutor("Error", errorNull.Message);
             }
-            catch (Exception error) { 
-                MessageExecutor("Error", error.Message); 
+            catch (Exception error)
+            {
+                MessageExecutor("Error", error.Message);
             }
-            finally { 
-                if (Conexion.ConexionSql.State == ConnectionState.Open) 
-                    Conexion.ConexionSql.Close(); 
+            finally
+            {
+                if (Conexion.ConexionSql.State == ConnectionState.Open)
+                    Conexion.ConexionSql.Close();
             }
 
             return default(T);
@@ -135,6 +142,75 @@ namespace Logica
         {
             int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
             return dt.AddDays(-1 * diff).Date;
+        }
+    }
+
+    public class Encripter
+    {
+        // set permutations
+        public const String strPermutation = "ouiveyxaqtd";
+        public const Int32 bytePermutation1 = 0x19;
+        public const Int32 bytePermutation2 = 0x59;
+        public const Int32 bytePermutation3 = 0x17;
+        public const Int32 bytePermutation4 = 0x41;
+
+        // encoding
+        public static string Encrypt(string strData)
+        {
+            return Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(strData)));
+        }
+
+
+        // decoding
+        public static string Decrypt(string strData)
+        {
+            return Encoding.UTF8.GetString(Decrypt(Convert.FromBase64String(strData)));
+        }
+
+        // encrypt
+        public static byte[] Encrypt(byte[] strData)
+        {
+            PasswordDeriveBytes passbytes =
+            new PasswordDeriveBytes(Encripter.strPermutation,
+            new byte[] { Encripter.bytePermutation1,
+                         Encripter.bytePermutation2,
+                         Encripter.bytePermutation3,
+                         Encripter.bytePermutation4
+            });
+
+            MemoryStream memstream = new MemoryStream();
+            Aes aes = new AesManaged();
+            aes.Key = passbytes.GetBytes(aes.KeySize / 8);
+            aes.IV = passbytes.GetBytes(aes.BlockSize / 8);
+
+            CryptoStream cryptostream = new CryptoStream(memstream,
+            aes.CreateEncryptor(), CryptoStreamMode.Write);
+            cryptostream.Write(strData, 0, strData.Length);
+            cryptostream.Close();
+            return memstream.ToArray();
+        }
+
+        // decrypt
+        public static byte[] Decrypt(byte[] strData)
+        {
+            PasswordDeriveBytes passbytes =
+            new PasswordDeriveBytes(Encripter.strPermutation,
+            new byte[] { Encripter.bytePermutation1,
+                         Encripter.bytePermutation2,
+                         Encripter.bytePermutation3,
+                         Encripter.bytePermutation4
+            });
+
+            MemoryStream memstream = new MemoryStream();
+            Aes aes = new AesManaged();
+            aes.Key = passbytes.GetBytes(aes.KeySize / 8);
+            aes.IV = passbytes.GetBytes(aes.BlockSize / 8);
+
+            CryptoStream cryptostream = new CryptoStream(memstream,
+            aes.CreateDecryptor(), CryptoStreamMode.Write);
+            cryptostream.Write(strData, 0, strData.Length);
+            cryptostream.Close();
+            return memstream.ToArray();
         }
     }
 }

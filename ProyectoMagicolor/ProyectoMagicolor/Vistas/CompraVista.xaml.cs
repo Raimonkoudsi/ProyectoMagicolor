@@ -42,6 +42,15 @@ namespace ProyectoMagicolor.Vistas
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Globals.ACCESO_SISTEMA != 0)
+            {
+                BtnFactura.ToolTip = "Sólo el Administrador puede reimprimir Facturas";
+                BtnFactura.IsEnabled = false;
+
+                BtnAnular.ToolTip = "Sólo el Administrador puede Anular Ventas";
+                BtnAnular.IsEnabled = false;
+            }
+
             DetalleCompras = Metodos.MostrarDetalleCompra(Compra.idIngreso);
             //factura
             txtFactura.Text = "#" + Compra.factura;

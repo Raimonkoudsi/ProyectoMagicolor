@@ -110,11 +110,11 @@ namespace ProyectoMagicolor.Vistas
 
             if (total)
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " $ ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
             else
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto de " + txtMonto.Text + " $ para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.Text)).ToString() + "$ ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto de " + txtMonto.Text + " Bs S para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.Text)).ToString() + "Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
 
             if (rpta == MessageBoxResult.No)

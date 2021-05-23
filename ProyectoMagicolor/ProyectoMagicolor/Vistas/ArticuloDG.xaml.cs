@@ -17,9 +17,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class ArticuloDG : Page
     {
 
@@ -42,6 +39,12 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
+                btnReport.IsEnabled = false;
+            }
+
             //contentsp.Children.Clear();
 
             Refresh(txtBuscar.Text);

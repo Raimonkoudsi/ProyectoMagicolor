@@ -48,30 +48,30 @@ namespace ProyectoMagicolor.Vistas
 
         private bool Validate()
         {
-            if (txtRespuesta.Text == "")
+            if (txtContraseña.Password == "")
             {
-                LFunction.MessageExecutor("Information", "Debe responder la primera pregunta");
-                txtRespuesta.Focus();
+                LFunction.MessageExecutor("Information", "Debe ingresar la contraseña");
+                txtContraseña.Focus();
                 return true;
             }
-            if (txtRespuesta2.Text == "")
+            if (txtConfirmar.Password == "")
             {
-                LFunction.MessageExecutor("Information", "Debe responder la segunda pregunta");
-                txtRespuesta2.Focus();
+                LFunction.MessageExecutor("Information", "Debe confirmar la contraseña");
+                txtConfirmar.Focus();
                 return true;
             }
 
-            if(txtRespuesta.Text.Length <= 5)
+            if(txtContraseña.Password.Length <= 5)
             {
                 LFunction.MessageExecutor("Information", "La contraseña debe ser mínino 6 dígitos");
-                txtRespuesta.Focus();
+                txtContraseña.Focus();
                 return true;
             }
 
-            if (txtRespuesta.Text != txtRespuesta2.Text)
+            if (txtContraseña.Password != txtConfirmar.Password)
             {
                 LFunction.MessageExecutor("Error", "Las contraseñas deben coincidir");
-                txtRespuesta2.Focus();
+                txtConfirmar.Focus();
                 return true;
             }
 
@@ -88,13 +88,23 @@ namespace ProyectoMagicolor.Vistas
             if (rpta == MessageBoxResult.No)
                 return;
 
+            string respuesta = Metodos.EditarContraseña(usuario, txtContraseña.Password);
 
-            this.Close();
+            if (respuesta.Equals("OK"))
+            {
+                LFunction.MessageExecutor("Information", "Contraseña cambiada correctamente, regresando al Login");
+            }
+            else
+            {
+                LFunction.MessageExecutor("Information", respuesta);
+            }
+
+            this.Hide();
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (txtRespuesta.Text == "")
+            if (txtContraseña.Password == "")
             {
                 txtBucarPlaceH.Text = "";
             }
@@ -103,9 +113,28 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (txtRespuesta.Text == "")
+            if (txtContraseña.Password == "")
             {
-                txtBucarPlaceH.Text = "Monto a Abonar";
+                txtBucarPlaceH.Text = "Introducir Contraseña";
+            }
+
+        }
+
+
+        private void txtBuscar2_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtConfirmar.Password == "")
+            {
+                txtBucarPlaceH2.Text = "";
+            }
+
+        }
+
+        private void txtBuscar2_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtContraseña.Password == "")
+            {
+                txtBucarPlaceH2.Text = "Introducir Contraseña";
             }
 
         }

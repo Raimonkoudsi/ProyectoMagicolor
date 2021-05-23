@@ -20,7 +20,12 @@ using Logica;
 
 namespace ProyectoMagicolor
 {
-	public partial class MainWindow : Window
+    public static class Globals
+    {
+        public static Int32 ACCESO_SISTEMA = 3;
+    }
+
+    public partial class MainWindow : Window
 	{
         public Login ParentFrm;
 
@@ -29,42 +34,63 @@ namespace ProyectoMagicolor
             InitializeComponent();
 
             LoggedTrabajador = trabajador;
+            Globals.ACCESO_SISTEMA = trabajador.acceso;
 
             var menuRegister = new List<SubItem>();
             menuRegister.Add(new SubItem("Cliente", new ClienteDG()));
-            menuRegister.Add(new SubItem("Proveedor", new ProveedorDG()));
-            menuRegister.Add(new SubItem("Trabajador", new TrabajadoresDG()));
-            menuRegister.Add(new SubItem("Artículo", new ArticuloDG()));
-            menuRegister.Add(new SubItem("Categoría", new CategoriaDG()));
+            if(LoggedTrabajador.acceso==0 || LoggedTrabajador.acceso == 1)
+            {
+                menuRegister.Add(new SubItem("Proveedor", new ProveedorDG()));
+                menuRegister.Add(new SubItem("Artículo", new ArticuloDG()));
+                menuRegister.Add(new SubItem("Categoría", new CategoriaDG()));
+            }
             var item1 = new ItemMenu("Registros", menuRegister, PackIconKind.Register);
 
             var menuActions = new List<SubItem>();
             menuActions.Add(new SubItem("Venta", new VentaFrm(this)));
-            menuActions.Add(new SubItem("Compra", new CompraFrm(this)));
-            menuActions.Add(new SubItem("Cuenta por Cobrar", new CuentaCobrarDG(this)));
-            menuActions.Add(new SubItem("Cuenta por Pagar", new CuentaPagarDG(this)));
-            menuActions.Add(new SubItem("Devolución", new DevolucionInicio(this)));
-            menuActions.Add(new SubItem("Inventario", new InventarioDG()));
+            if (LoggedTrabajador.acceso == 0 || LoggedTrabajador.acceso == 1)
+            {
+                menuActions.Add(new SubItem("Compra", new CompraFrm(this)));
+                menuActions.Add(new SubItem("Cuenta por Cobrar", new CuentaCobrarDG(this)));
+                menuActions.Add(new SubItem("Cuenta por Pagar", new CuentaPagarDG(this)));
+            }
+            if (LoggedTrabajador.acceso == 0)
+            {
+                menuActions.Add(new SubItem("Devolución", new DevolucionInicio(this)));
+                menuActions.Add(new SubItem("Inventario", new InventarioDG()));
+            }
             var item2 = new ItemMenu("Acciones", menuActions, PackIconKind.PointOfSale);
 
             var menuList = new List<SubItem>();
             menuList.Add(new SubItem("Ventas", new VentaDG(this)));
             menuList.Add(new SubItem("Compras", new CompraDG(this)));
-            menuList.Add(new SubItem("Devoluciones", new DevolucionDG(this)));
+            if (LoggedTrabajador.acceso == 0)
+            {
+                menuList.Add(new SubItem("Devoluciones", new DevolucionDG(this)));
+            }
             var item3 = new ItemMenu("Listados", menuList, PackIconKind.AccountBoxes);
 
             var menuSetting = new List<SubItem>();
-            menuSetting.Add(new SubItem("Auditoria")); //falta
-            menuSetting.Add(new SubItem("Respaldo", null, true, false)); //falta
-            menuSetting.Add(new SubItem("Restauración", null, false, true)); //falta
-            var item4 = new ItemMenu("Configuración", menuSetting, PackIconKind.Settings);
+            if (LoggedTrabajador.acceso == 0)
+            {
+                menuSetting.Add(new SubItem("Trabajadores", new TrabajadoresDG()));
+                menuSetting.Add(new SubItem("Auditoria")); //falta
+                menuSetting.Add(new SubItem("Respaldo", null, true));
+                menuSetting.Add(new SubItem("Restauración", null, false, true));
+            }
+                menuSetting.Add(new SubItem("Ayuda", null, false, false, true));
+            var item4 = new ItemMenu("Opciones", menuSetting, PackIconKind.Settings);
 
             var item5 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
 
             Menu.Children.Add(new MenuItemX(item1, this));
             Menu.Children.Add(new MenuItemX(item2, this));
-            Menu.Children.Add(new MenuItemX(item3, this));
+            if (LoggedTrabajador.acceso == 0 || LoggedTrabajador.acceso == 1)
+            {
+                Menu.Children.Add(new MenuItemX(item3, this));
+            }
             Menu.Children.Add(new MenuItemX(item4, this));
+
             Menu.Children.Add(new MenuItemX(item5, this));
 
         }
@@ -141,12 +167,13 @@ namespace ProyectoMagicolor
 
 	public class SubItem
     {
-        public SubItem(string name, Page screen = null, bool backup = false, bool restore = false)
+        public SubItem(string name, Page screen = null, bool backup = false, bool restore = false, bool help = false)
         {
             Name = name;
             Screen = screen;
             Backup = backup;
             Restore = restore;
+            Help = help;
         }
 
         public string Name { get; private set; }
@@ -155,6 +182,8 @@ namespace ProyectoMagicolor
         public bool Backup { get; private set; }
 
         public bool Restore { get; private set; }
+
+        public bool Help { get; private set; }
     }
 
 }

@@ -176,8 +176,8 @@ namespace Logica
                 comm.Parameters.AddWithValue("@telefono", Trabajador.telefono);
                 comm.Parameters.AddWithValue("@email", Trabajador.email);
                 comm.Parameters.AddWithValue("@acceso", Trabajador.acceso);
-                comm.Parameters.AddWithValue("@usuario", Trabajador.usuario);
-                comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Trabajador.usuario));
+                comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Trabajador.contraseña));
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Trabajador";
                 if (respuesta.Equals("OK"))
@@ -199,8 +199,8 @@ namespace Logica
                 using SqlCommand comm = new SqlCommand(queryInsertSecurity, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idSeguridad", LFunction.GetID("seguridad", "idSeguridad"));
                 comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
-                comm.Parameters.AddWithValue("@pregunta", Detalle[i].pregunta);
-                comm.Parameters.AddWithValue("@respuesta", Detalle[i].respuesta);
+                comm.Parameters.AddWithValue("@pregunta", Encripter.Encrypt(Detalle[i].pregunta));
+                comm.Parameters.AddWithValue("@respuesta", Encripter.Encrypt(Detalle[i].respuesta));
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro de la Seguridad";
                 if (!respuesta.Equals("OK")) break;
@@ -240,13 +240,13 @@ namespace Logica
                 comm.Parameters.AddWithValue("@telefono", Trabajador.telefono);
                 comm.Parameters.AddWithValue("@email", Trabajador.email);
                 comm.Parameters.AddWithValue("@acceso", Trabajador.acceso);
-                comm.Parameters.AddWithValue("@usuario", Trabajador.usuario);
-                comm.Parameters.AddWithValue("@contraseña", Trabajador.contraseña);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Trabajador.usuario));
+                comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Trabajador.contraseña));
                 comm.Parameters.AddWithValue("@idTrabajador", Trabajador.idTrabajador);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizo el Registro del Trabajador";
                 if (respuesta.Equals("OK"))
-                    BorrarSeguridad(Trabajador, Seguridad);
+                    respuesta = BorrarSeguridad(Trabajador, Seguridad);
             };
             LFunction.SafeExecutor(action);
 
@@ -293,7 +293,7 @@ namespace Logica
                         direccion = reader.GetString(4),
                         telefono = reader.GetString(5),
                         email = reader.GetString(6),
-                        usuario = reader.GetString(7)
+                        usuario = Encripter.Decrypt(reader.GetString(7))
                     });
                 }
             };
@@ -310,7 +310,7 @@ namespace Logica
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryListUser, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", Usuario);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read())
@@ -323,7 +323,7 @@ namespace Logica
                         direccion = reader.GetString(3),
                         telefono = reader.GetString(4),
                         email = reader.GetString(5),
-                        usuario = reader.GetString(6)
+                        usuario = Encripter.Decrypt(reader.GetString(6))
                     });
                 }
             };
@@ -358,8 +358,8 @@ namespace Logica
                             reader.GetString(7),
                             reader.GetString(8),
                             reader.GetInt32(9),
-                            reader.GetString(10),
-                            reader.GetString(11),
+                            Encripter.Decrypt(reader.GetString(10)),
+                            Encripter.Decrypt(reader.GetString(11)),
                             state.ToString()
                         ));
                 }
@@ -384,8 +384,8 @@ namespace Logica
                     ListaGenerica.Add(new DSeguridad
                         (
                             reader.GetInt32(1),
-                            reader.GetString(2),
-                            reader.GetString(3)
+                            Encripter.Decrypt(reader.GetString(2)),
+                            Encripter.Decrypt(reader.GetString(3))
                         ));
                 }
             };
@@ -402,8 +402,8 @@ namespace Logica
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryLogin, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", User);
-                comm.Parameters.AddWithValue("@contraseña", Password);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(User));
+                comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Password));
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read())
@@ -420,8 +420,8 @@ namespace Logica
                             reader.GetString(7),
                             reader.GetString(8),
                             reader.GetInt32(9),
-                            reader.GetString(10),
-                            reader.GetString(11),
+                            Encripter.Decrypt(reader.GetString(10)),
+                            Encripter.Decrypt(reader.GetString(11)),
                             reader.GetInt32(12).ToString()
                         ));
                 }
@@ -438,16 +438,16 @@ namespace Logica
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryFormSecurity, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", User);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(User));
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                if (reader.Read())
+                while (reader.Read())
                 {
                     ListaGenerica.Add(new DTrabajador
                     {
-                            usuario = reader.GetString(0),
-                            pregunta = reader.GetString(1),
-                            respuesta = reader.GetString(2)
+                            usuario = Encripter.Decrypt(reader.GetString(0)),
+                            pregunta = Encripter.Decrypt(reader.GetString(1)),
+                            respuesta = Encripter.Decrypt(reader.GetString(2))
                     });
                 }
             };
@@ -464,7 +464,7 @@ namespace Logica
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryUserRepeated, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", Usuario);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
@@ -496,14 +496,15 @@ namespace Logica
 
 
 
-        public string EditarContraseña(string Usuario)
+        public string EditarContraseña(string Usuario, string Contraseña)
         {
             string respuesta = "";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryUpdatePassword, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", Usuario);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
+                comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Contraseña));
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se actualizó la contraseña";
             };

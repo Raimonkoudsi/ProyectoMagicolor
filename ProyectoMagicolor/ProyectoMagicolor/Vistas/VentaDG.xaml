@@ -17,7 +17,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="70 10">
+        <Grid Grid.Row="0" Margin="40 10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -29,15 +29,15 @@
                 <DatePicker x:Name="dpFecha" IsTodayHighlighted="True" FontSize="13" Focusable="False" SelectedDateChanged="dpFecha_SelectedDateChanged"/>
             </Grid>
             <Grid Grid.Column="1" Margin="10 0 0 0">
-                <TextBlock Name="txtBucarPlaceH" Text="Documento" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <TextBox Name="txtNombre" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                <TextBlock Name="txtBucarPlaceH" Text="Ingresar Nombre de Cliente . . ." FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
+                <TextBox Name="txtNombre" Text="" FontSize="15" Margin="0 0 0 9" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
                 <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
             </Grid>
             <StackPanel Grid.Column="2"  Margin="10 0 10 0">
                 <CheckBox x:Name="RBContadoMostrar" Content="Contado" FontWeight="Bold" FontSize="14" IsChecked="True" Click="MetodoPago_Click"/>
                 <CheckBox x:Name="RBCreditoMostrar" Content="Crédito" FontWeight="Bold" FontSize="14" IsChecked="True" Click="MetodoPago_Click"/>
             </StackPanel>
-            <Button Grid.Column="3" HorizontalAlignment="Center" Margin="10 0 0 0" Click="Reporte_Click" Background="#3194F7">
+            <Button Grid.Column="3" Name="btnReport" ToolTip="Generar Reporte" HorizontalAlignment="Center" Margin="10 0 0 0" Click="Reporte_Click" Background="#3194F7">
                 <materialDesign:PackIcon Kind="FileChartOutline" Foreground="White" Width="20" Height="20" />
             </Button>
         </Grid>
@@ -56,7 +56,7 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Venta" Binding="{Binding idVenta}">
+                <DataGridTextColumn Width="auto" Header="Factura" Binding="{Binding idVenta}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>

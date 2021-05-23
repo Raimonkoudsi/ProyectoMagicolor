@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="Cambiar Contraseña" Height="350" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Width="450" Loaded="Window_Loaded">
+        Title="Cambiar Contraseña" Height="350" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Width="400" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -32,7 +32,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtPregunta" HorizontalAlignment="Center" Text="Nueva Contraseña" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="Nueva Contraseña" FontSize="16" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
                 <Grid Margin="0 10">
@@ -41,7 +41,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="1" Margin="0 0 0 0">
                         <TextBlock Name="txtBucarPlaceH" Text="Introducir Contraseña" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <TextBox Name="txtRespuesta" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                        <PasswordBox Name="txtContraseña" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
                     </Grid>
                 </Grid>
                 
@@ -57,7 +57,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="txtPregunta2" HorizontalAlignment="Center" Text="Confirmar Contraseña" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="Confirmar Contraseña" FontSize="16" VerticalAlignment="Center"/>
                     </Grid>
                 </Grid>
                 <Grid Margin="0 10">
@@ -66,7 +66,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="1" Margin="0 0 0 0">
                         <TextBlock Name="txtBucarPlaceH2" Text="Introducir Contraseña" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <TextBox Name="txtRespuesta2" Text="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                        <PasswordBox Name="txtConfirmar" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar2_GotFocus" LostFocus="txtBuscar2_LostFocus"/>
                     </Grid>
                 </Grid>
                 <Grid>

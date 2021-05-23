@@ -53,19 +53,19 @@ namespace ProyectoMagicolor.Vistas
 
         private bool Validate()
         {
-            if (txtRespuesta.Text == "")
+            if (txtRespuesta.Password == "")
             {
                 LFunction.MessageExecutor("Information", "Debe Responder la Primera Pregunta");
                 txtRespuesta.Focus();
                 return true;
             }
-            if (txtRespuesta2.Text == "")
+            if (txtRespuesta2.Password == "")
             {
                 LFunction.MessageExecutor("Information", "Debe Responder la Segunda Pregunta");
                 txtRespuesta2.Focus();
                 return true;
             }
-            if (txtRespuesta3.Text == "")
+            if (txtRespuesta3.Password == "")
             {
                 LFunction.MessageExecutor("Information", "Debe Responder la Tercera Pregunta");
                 txtRespuesta3.Focus();
@@ -79,23 +79,24 @@ namespace ProyectoMagicolor.Vistas
         {
             if (Validate()) return;
 
-            if ((txtRespuesta.Text == DataFill[0].respuesta) && (txtRespuesta2.Text == DataFill[1].respuesta) && (txtRespuesta3.Text == DataFill[2].respuesta))
+            if ((txtRespuesta.Password == DataFill[0].respuesta) && (txtRespuesta2.Password == DataFill[1].respuesta) && (txtRespuesta3.Password == DataFill[2].respuesta))
             {
                 CambiarContraseña frmContraseña = new CambiarContraseña(this);
-                frmContraseña.DataFill.usuario = DataFill[0].usuario;
+                frmContraseña.DataFill = DataFill[0];
+                LFunction.MessageExecutor("Information", "Datos correctos, introducir nueva contraseña");
                 this.Hide();
                 bool Resp = frmContraseña.ShowDialog() ?? false;
             }
             else
             {
-                LFunction.MessageExecutor("Error", "Respuestas incorrectas, regresando al Login");
+                Login.ContadorIntentos();
                 this.Hide();
             }
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (txtRespuesta.Text == "")
+            if (txtRespuesta.Password == "")
             {
                 txtBucarPlaceH.Text = "";
             }
@@ -104,11 +105,45 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (txtRespuesta.Text == "")
+            if (txtRespuesta.Password == "")
             {
-                txtBucarPlaceH.Text = "Monto a Abonar";
+                txtBucarPlaceH.Text = "Respuesta";
             }
 
+        }
+
+
+        private void txtBuscar2_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtRespuesta2.Password == "")
+            {
+                txtBucarPlaceH2.Text = "";
+            }
+        }
+
+        private void txtBuscar2_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtRespuesta2.Password == "")
+            {
+                txtBucarPlaceH2.Text = "Respuesta";
+            }
+        }
+
+
+        private void txtBuscar3_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtRespuesta3.Password == "")
+            {
+                txtBucarPlaceH3.Text = "";
+            }
+        }
+
+        private void txtBuscar3_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtRespuesta3.Password == "")
+            {
+                txtBucarPlaceH3.Text = "Respuesta";
+            }
         }
     }
 }
