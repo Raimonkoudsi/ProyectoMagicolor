@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Background="WhiteSmoke"
-        Title="Seleccionar Articulo" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        Title="Seleccionar Articulo" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
     <Window.Resources>
         <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter"/>
     </Window.Resources>

@@ -74,10 +74,10 @@
                             </Grid>
                             <Grid Grid.Column="1">
                                 <TextBlock Name="PlaceDocumento" Text="Documento" Foreground="Gray" VerticalAlignment="Center" Margin="1 0 0 0"/>
-                                <TextBox x:Name="txtDocumento" MaxLength="9" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
+                                <TextBox x:Name="txtDocumento" MaxLength="10" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
                             </Grid>
                         </Grid>
-                        <Grid Margin="10 12">
+                        <Grid Margin="10 18">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="auto"/>
@@ -98,7 +98,7 @@
                         <Grid>
                             <TextBlock Name="txtImpuestoP" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBox x:Name="txtImpuesto" Text="15" MaxLength="5" Width="40" FontWeight="Bold" FontSize="15" KeyUp="txtImpuesto_KeyUp" HorizontalAlignment="Right"/>
+                                <TextBox x:Name="txtImpuesto" Text="15" MaxLength="2" Width="40" FontWeight="Bold" FontSize="15" KeyUp="txtImpuesto_KeyUp" HorizontalAlignment="Right"/>
                                 <TextBlock Text="%" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Grid>
@@ -152,7 +152,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Row="0" Margin="0 10 5 10">
                     <TextBlock Name="txtBucarPlaceH" Text="Codigo de Articulo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                    <TextBox Name="txtBuscar" Text="" FontSize="15" Margin="0" KeyDown="txtBuscar_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
+                    <TextBox Name="txtBuscar" MaxLength="16" Text="" FontSize="15" Margin="0" KeyDown="txtBuscar_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
                     <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
                 </Grid>
                 <Button Grid.Column="1" HorizontalAlignment="Right" Content="Agregar Articulo" Click="Button_Click_1" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 0"/>

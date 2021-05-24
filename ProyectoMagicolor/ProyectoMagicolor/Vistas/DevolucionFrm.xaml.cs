@@ -222,6 +222,13 @@ namespace ProyectoMagicolor.Vistas
             var resp = new LDevolucion().Insertar(Devolucion, Devoluciones);
             if(resp == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Registrar",
+                    "Ha Devuelto Artículos de la Venta N° " + Venta.idVenta
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 ParentFrm.Limpiar();
                 ParentFrm.GetBack();
             }

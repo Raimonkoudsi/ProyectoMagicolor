@@ -39,7 +39,7 @@ namespace Logica
 				INNER JOIN [trabajador] t ON t.idTrabajador=a.idTrabajador
             WHERE a.fecha = @fecha 
 				AND t.usuario LIKE @usuario + '%' 
-				AND a.accion = @accion
+				AND a.accion LIKE @accion + '%'
             ORDER BY a.idAuditoria DESC;
         ";
 
@@ -57,7 +57,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idTrabajador", Auditoria.idTrabajador);
                 comm.Parameters.AddWithValue("@accion", Auditoria.accion);
                 comm.Parameters.AddWithValue("@descripcion", Auditoria.descripcion);
-                comm.Parameters.AddWithValue("@fecha", Auditoria.fecha);
+                comm.Parameters.AddWithValue("@fecha", DateTime.Now);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "Error en el proceso de Auditoria";
             };
@@ -67,14 +67,14 @@ namespace Logica
         }
 
 
-        public List<DAuditoria> Mostrar(DateTime Fecha, string Usuario, string Accion)
+        public List<DAuditoria> Mostrar(DateTime? Fecha, string Usuario, string Accion)
         {
             List<DAuditoria> ListaGenerica = new List<DAuditoria>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@fecha", Fecha);
+                comm.Parameters.AddWithValue("@fecha", Fecha == null ? DateTime.Now : Fecha);
                 comm.Parameters.AddWithValue("@usuario", Usuario);
                 comm.Parameters.AddWithValue("@accion", Accion);
 

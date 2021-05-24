@@ -41,6 +41,8 @@ namespace ProyectoMagicolor.Vistas
 
         public LCategoria Metodos = new LCategoria();
 
+        private string nombre = "";
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Type == TypeForm.Update)
@@ -56,6 +58,13 @@ namespace ProyectoMagicolor.Vistas
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
+
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Mostrar",
+                    "Ha Visto la Categoria " + nombre
+                 );
+                new LAuditoria().Insertar(auditoria);
             }
             else if(Type == TypeForm.Update)
             {
@@ -74,7 +83,7 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            string nombre = txtNombre.txt.Text;
+            nombre = txtNombre.txt.Text;
             string descripcion = txtDescripcion.Text;
 
             UForm = new DCategoria(0, nombre, descripcion);
@@ -88,6 +97,13 @@ namespace ProyectoMagicolor.Vistas
             string response = Metodos.Insertar(UForm);
             if (response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Insertar",
+                    "Ha Registrado la Categoria " + nombre
+                 );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }
@@ -101,9 +117,16 @@ namespace ProyectoMagicolor.Vistas
                 return;
             UForm.idCategoria = DataFill.idCategoria;
             string response = Metodos.Editar(UForm);
-            MessageBox.Show(response);
+
             if(response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Editar",
+                    "Ha Editado la Categoria " + nombre
+                 );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }

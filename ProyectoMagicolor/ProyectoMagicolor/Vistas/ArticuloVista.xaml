@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Background="WhiteSmoke"
-        Title="Trabajadores" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        Title="Listado de Articulos" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
     <Grid>
         <Grid.RowDefinitions>

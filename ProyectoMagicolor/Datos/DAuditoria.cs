@@ -62,12 +62,11 @@ namespace Datos
 
         }
 
-        public DAuditoria(int IdTrabajador,string Accion, string Descripcion, DateTime Fecha)
+        public DAuditoria(int IdTrabajador,string Accion, string Descripcion)
         {
-            this.idAuditoria = IdTrabajador;
+            this.idTrabajador = IdTrabajador;
             this.accion = Accion;
             this.descripcion = Descripcion;
-            this.fecha = Fecha;
         }
     }
 }

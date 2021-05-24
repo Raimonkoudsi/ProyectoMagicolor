@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace Logica
 {
-    public class LArticulo:DArticulo
+    public class LArticulo : DArticulo
     {
         #region QUERIES
         private string queryInsert = @"
@@ -74,95 +74,6 @@ namespace Logica
         private string queryListCode = @"
             SELECT * FROM [articulo] 
             WHERE codigo = @codigo
-        ";
-
-        private string queryInventaryDetail = @"
-            SELECT
-                a.idArticulo,
-                a.codigo,
-                a.nombre,
-                a.descripcion,
-                a.stockMinimo,
-                a.stockMaximo,
-                c.nombre,
-                ISNULL((
-                    SELECT
-                        SUM(dv.cantidad)
-                    FROM [detalleVenta] dv
-                        INNER JOIN[detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
-
-                    WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida,
-                ISNULL((
-                    SELECT
-                        SUM(di.cantidadInicial)
-                    FROM[detalleIngreso] di
-                    WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada,
-                ISNULL((
-                    SELECT
-                        SUM(dd.cantidad)
-                    FROM[detalleDevolucion] dd
-                    WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta,
-                ISNULL((
-                    SELECT
-                        COUNT(DISTINCT c.idCliente)
-                    FROM[cliente] c
-                        INNER JOIN [venta] v ON v.idCliente = c.idCliente
-                        INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
-                        INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso
-                    WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente,
-                ISNULL((
-                    SELECT
-                        CAST((SUM(dv.precioVenta * dv.cantidad / ((v.impuesto / 100.0) + 1)) - v.descuento) AS NUMERIC(38, 2))
-                    FROM[detalleVenta] dv
-                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS subtotal,
-                ISNULL((
-                    SELECT
-                        (SUM(dv.precioVenta * dv.cantidad) - v.descuento) AS total
-                    FROM[detalleVenta] dv
-                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS total,
-                ISNULL((
-                    SELECT
-                        CAST((SUM(dd.precio * dd.cantidad / ((v.impuesto / 100.0) + 1)) - v.descuento) AS NUMERIC(38, 2))
-                    FROM[detalleDevolucion] dd
-                        INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = dd.idArticulo  @weekDate  ), 0) AS subtotalDevolucion,
-                ISNULL((
-                    SELECT
-                        (SUM(dd.precio * dd.cantidad) - v.descuento)
-                    FROM[detalleDevolucion] dd
-                        INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = dd.idArticulo  @weekDate ), 0) AS totalDevolucion,
-                ISNULL((
-                    SELECT TOP 1
-                        di.precioCompra
-                    FROM[detalleIngreso] di
-                        INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = di.idArticulo @weekDate
-                    ORDER BY di.idDetalleIngreso DESC), 0) AS costoUnidad,
-                ISNULL((
-                    SELECT
-                        (SUM(di.precioCompra * dv.cantidad))
-                    FROM[detalleIngreso] di
-                        INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS compraVendida,
-                ISNULL((
-                    SELECT
-                        (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad) - v.descuento)
-                    FROM[detalleIngreso] di
-                        INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
-                        INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-                    WHERE a.idArticulo = di.idArticulo @weekDate ), 0) AS totalNeto
-            FROM[articulo] a
-                INNER JOIN[categoria] c ON a.idCategoria=c.idCategoria
-            WHERE a.idArticulo = @idArticulo;
         ";
 
         private string queryInventaryArticle = @"
@@ -442,15 +353,15 @@ namespace Logica
             //dia
             if (typeDate == 1) return " AND v.fecha = ('" + DateTime.Today.ToString("MM-dd-yyyy") + "')";
             //semana
-            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today + "')";
+            if (typeDate == 2) return " AND v.fecha BETWEEN ('" + DateTime.Now.Date.StartOfWeek(DayOfWeek.Monday).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today.ToString("MM/dd/yyyy") + "')";
             //mes
-            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today + "')";
+            if (typeDate == 3) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today.ToString("MM/dd/yyyy") + "')";
             //año
             if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today.ToString("MM/dd/yyyy") + "')";
             //fecha
             if (typeDate == 5) return " AND v.fecha = ('" + firstDate + "')";
             //entre fechas
-            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate + "') AND ('" + secondDate+ "')";
+            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate + "') AND ('" + secondDate + "')";
 
             throw new NullReferenceException("Error en la Búsqueda de Fechas");
         }
@@ -476,38 +387,128 @@ namespace Logica
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryInventaryDetail, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@weekDate", InventarioFecha(2, null, null));
-                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+            string weekDate = InventarioFecha(2, null, null);
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            string queryInventaryDetail = @"
+                SELECT
+                    a.idArticulo,
+                    a.codigo,
+                    a.nombre,
+                    a.descripcion,
+                    a.stockMinimo,
+                    a.stockMaximo,
+                    c.nombre,
+                    ISNULL((
+                        SELECT
+                            SUM(dv.cantidad)
+                        FROM [detalleVenta] dv
+                            INNER JOIN[detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+
+                        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida,
+                    ISNULL((
+                        SELECT
+                            SUM(di.cantidadInicial)
+                        FROM[detalleIngreso] di
+                        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada,
+                    ISNULL((
+                        SELECT
+                            SUM(dd.cantidad)
+                        FROM[detalleDevolucion] dd
+                        WHERE a.idArticulo = dd.idArticulo), 0) AS cantidadDevuelta,
+                    ISNULL((
+                        SELECT
+                            COUNT(DISTINCT c.idCliente)
+                        FROM[cliente] c
+                            INNER JOIN [venta] v ON v.idCliente = c.idCliente
+                            INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
+                            INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso
+                        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente,
+                    ISNULL((
+                        SELECT
+                            CAST((SUM(dv.precioVenta * dv.cantidad / ((v.impuesto / 100.0) + 1))) AS NUMERIC(38, 2))
+                        FROM[detalleVenta] dv
+                            INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS subtotal,
+                    ISNULL((
+                        SELECT
+                            (SUM(dv.precioVenta * dv.cantidad)) AS total
+                        FROM[detalleVenta] dv
+                            INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = di.idArticulo " + weekDate + @"), 0) AS total,
+                    ISNULL((
+                        SELECT
+                            CAST((SUM(dd.precio * dd.cantidad / ((v.impuesto / 100.0) + 1))) AS NUMERIC(38, 2))
+                        FROM[detalleDevolucion] dd
+                            INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = dd.idArticulo  " + weekDate + @"  ), 0) AS subtotalDevolucion,
+                    ISNULL((
+                        SELECT
+                            (SUM(dd.precio * dd.cantidad))
+                        FROM[detalleDevolucion] dd
+                            INNER JOIN [detalleVenta] dv ON dv.idDetalleVenta = dd.idDetalleVenta
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = dd.idArticulo  " + weekDate + @" ), 0) AS totalDevolucion,
+                    ISNULL((
+                        SELECT TOP 1
+                            di.precioCompra
+                        FROM[detalleIngreso] di
+                            INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = di.idArticulo " + weekDate + @"
+                        ORDER BY di.idDetalleIngreso DESC), 0) AS costoUnidad,
+                    ISNULL((
+                        SELECT
+                            (SUM(di.precioCompra * dv.cantidad))
+                        FROM[detalleIngreso] di
+                            INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS compraVendida,
+                    ISNULL((
+                        SELECT
+                            (SUM(dv.precioVenta * dv.cantidad) - SUM(di.precioCompra * dv.cantidad))
+                        FROM[detalleIngreso] di
+                            INNER JOIN [detalleVenta] dv ON dv.idDetalleIngreso = di.idDetalleIngreso
+                            INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                        WHERE a.idArticulo = di.idArticulo " + weekDate + @" ), 0) AS totalNeto
+                FROM[articulo] a
+                    INNER JOIN[categoria] c ON a.idCategoria=c.idCategoria
+                WHERE a.idArticulo = @idArticulo;
+            ";
+
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DArticulo
+                    using SqlCommand comm = new SqlCommand(queryInventaryDetail, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idArticulo = reader.GetInt32(0),
-                        codigo = reader.GetString(1),
-                        nombre = reader.GetString(2),
-                        descripcion = reader.GetString(3),
-                        stockMinimo = reader.GetInt32(4),
-                        stockMaximo = reader.GetInt32(5),
-                        categoria = reader.GetString(6),
-                        cantidadVendida = reader.GetInt32(7),
-                        cantidadComprada = reader.GetInt32(8),
-                        cantidadDevuelta = reader.GetInt32(9),
-                        cantidadCliente = reader.GetInt32(10),
-                        subtotal = (double)reader.GetDecimal(11),
-                        total = (double)reader.GetDecimal(12),
-                        subtotalDevolucion = (double)reader.GetDecimal(13),
-                        totalDevolucion = (double)reader.GetDecimal(14),
-                        precioUnidad = (double)reader.GetDecimal(15),
-                        compraVendida = (double)reader.GetDecimal(16),
-                        totalNeto = (double)reader.GetDecimal(17)
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DArticulo
+                        {
+                            idArticulo = reader.GetInt32(0),
+                            codigo = reader.GetString(1),
+                            nombre = reader.GetString(2),
+                            descripcion = reader.GetString(3),
+                            stockMinimo = reader.GetInt32(4),
+                            stockMaximo = reader.GetInt32(5),
+                            categoria = reader.GetString(6),
+                            cantidadVendida = reader.GetInt32(7),
+                            cantidadComprada = reader.GetInt32(8),
+                            cantidadDevuelta = reader.GetInt32(9),
+                            cantidadCliente = reader.GetInt32(10),
+                            subtotal = (double)reader.GetDecimal(11),
+                            total = (double)reader.GetDecimal(12),
+                            subtotalDevolucion = (double)reader.GetDecimal(13),
+                            totalDevolucion = (double)reader.GetDecimal(14),
+                            precioUnidad = (double)reader.GetDecimal(15),
+                            compraVendida = (double)reader.GetDecimal(16),
+                            totalNeto = (double)reader.GetDecimal(17)
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;

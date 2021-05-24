@@ -19,9 +19,6 @@ using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para DetalleCuentaCobrarFrm.xaml
-    /// </summary>
     public partial class DetalleCuentaCobrarFrm : Window
     {
         CuentaCobrarDG ParentForm;
@@ -39,7 +36,6 @@ namespace ProyectoMagicolor.Vistas
 
 
         public DVenta DataFill;
-        //public DCuentaPagar DataCxP;
 
         public DRegistro_CuentaCobrar UForm;
 
@@ -124,10 +120,24 @@ namespace ProyectoMagicolor.Vistas
 
             if (abonarCC.Equals("TOTAL"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Registrar",
+                    "Ha Completado la Cuenta por Cobrar N° " + DataFill.idCuentaCobrar
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (abonarCC.Equals("PARCIAL"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Registrar",
+                    "Ha Abonado a la Cuenta por Cobrar N° " + DataFill.idCuentaCobrar
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 MessageBox.Show("Abono Ingresado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 

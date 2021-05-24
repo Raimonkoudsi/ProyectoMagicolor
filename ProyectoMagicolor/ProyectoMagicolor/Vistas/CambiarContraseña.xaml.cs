@@ -36,9 +36,12 @@ namespace ProyectoMagicolor.Vistas
         LTrabajador Metodos = new LTrabajador();
 
         private string usuario;
+        private int idTrabajador;
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             usuario = DataFill.usuario;
+            idTrabajador = DataFill.idTrabajador;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -92,6 +95,13 @@ namespace ProyectoMagicolor.Vistas
 
             if (respuesta.Equals("OK"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    idTrabajador,
+                    "Editar",
+                    "Ha Restaurado su Contraseña"
+                 );
+                new LAuditoria().Insertar(auditoria);
+
                 LFunction.MessageExecutor("Information", "Contraseña cambiada correctamente, regresando al Login");
             }
             else

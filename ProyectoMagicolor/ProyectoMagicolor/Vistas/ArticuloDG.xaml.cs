@@ -45,22 +45,11 @@ namespace ProyectoMagicolor.Vistas
                 btnReport.IsEnabled = false;
             }
 
-            //contentsp.Children.Clear();
-
             Refresh(txtBuscar.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgOperaciones.SelectedItems.Count > 0)
-            //{
-            //    for(int i = 0; i < dgOperaciones.SelectedItems.Count; i++)
-            //    {
-            //        MessageBox.Show(((TablaTrabajadores)dgOperaciones.SelectedItems[i]).Nombre);
-            //    }
-            //}
-            //else
-            //    MessageBox.Show("no hay");
             ArticuloFrm frmTrab = new ArticuloFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
@@ -76,6 +65,13 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(Metodos.MostrarConCategoria(txtBuscar.Text), "Articulo");
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado el Reporte de Artículos"
+             );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -101,8 +97,16 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
+            string codigo = dgOperaciones.Items[1].ToString();
             Metodos.Eliminar(id);
             Refresh(txtBuscar.Text);
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Eliminar",
+                "Ha Eliminado el Artículo Código " + codigo
+             );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)

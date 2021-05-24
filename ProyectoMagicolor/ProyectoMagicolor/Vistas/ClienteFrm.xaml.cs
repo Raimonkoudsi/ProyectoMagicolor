@@ -20,9 +20,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class ClienteFrm : Window
     {
 
@@ -43,6 +40,9 @@ namespace ProyectoMagicolor.Vistas
 
         public LCliente Metodos = new LCliente();
 
+        private string tipoDocumento = "";
+        private string documento = "";
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Type == TypeForm.Update)
@@ -58,6 +58,13 @@ namespace ProyectoMagicolor.Vistas
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
+
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Mostrar",
+                    "Ha Visto al Cliente " + tipoDocumento + "-" + documento
+                 );
+                new LAuditoria().Insertar(auditoria);
             }
             else if(Type == TypeForm.Update)
             {
@@ -78,8 +85,8 @@ namespace ProyectoMagicolor.Vistas
 
             string nombre = txtNombre.txt.Text;
             string apellidos = txtApellidos.txt.Text;
-            string tipoDocumento = CbTipoDocumento.Text;
-            string documento = txtDocumento.txt.Text;
+            tipoDocumento = CbTipoDocumento.Text;
+            documento = txtDocumento.txt.Text;
             string direccion = txtDireccion.Text;
             string telefono = txtTelefono.Changed ? txtTelefono.txt.Text : "";
             string email = txtEmail.Changed ? txtEmail.txt.Text : "";
@@ -102,6 +109,13 @@ namespace ProyectoMagicolor.Vistas
             string response = Metodos.Insertar(UForm);
             if (response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Insertar",
+                    "Ha Registrado al Cliente " + tipoDocumento + "-" + documento
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }
@@ -117,6 +131,13 @@ namespace ProyectoMagicolor.Vistas
             string response = Metodos.Editar(UForm);
             if(response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Editar",
+                    "Ha Editado al Cliente " + tipoDocumento + "-" + documento
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }

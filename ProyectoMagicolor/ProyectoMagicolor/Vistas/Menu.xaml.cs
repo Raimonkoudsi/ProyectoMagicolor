@@ -38,16 +38,14 @@ namespace ProyectoMagicolor
             Globals.ACCESO_SISTEMA = trabajador.acceso;
             Globals.ID_SISTEMA = trabajador.idTrabajador;
 
-            /*DateTime now = new DateTime();
-            now = DateTime.Now();
+            DAuditoria auditoria = new DAuditoria(
+                                                    Globals.ID_SISTEMA,
+                                                    "Ingresar",
+                                                    "Ha ingresado al Sistema"
+                                                 );
 
-            new LAuditoria().Insertar(
-                                        Globals.ID_SISTEMA,
-                                        "Ingresar",
-                                        "Ha ingresado al Sistema",
-                                        now
-                                     );
-            */
+            new LAuditoria().Insertar(auditoria);
+            
             var menuRegister = new List<SubItem>();
             menuRegister.Add(new SubItem("Cliente", new ClienteDG()));
             if(LoggedTrabajador.acceso==0 || LoggedTrabajador.acceso == 1)
@@ -86,7 +84,7 @@ namespace ProyectoMagicolor
             if (LoggedTrabajador.acceso == 0)
             {
                 menuSetting.Add(new SubItem("Trabajadores", new TrabajadoresDG()));
-                menuSetting.Add(new SubItem("Auditoria")); //falta
+                menuSetting.Add(new SubItem("Auditoria", new AuditoriaDG(this)));
                 menuSetting.Add(new SubItem("Respaldo", null, true));
                 menuSetting.Add(new SubItem("Restauración", null, false, true));
             }
@@ -153,9 +151,23 @@ namespace ProyectoMagicolor
             System.Windows.Application.Current.Shutdown();
         }
 
-		
-	}
-	public class ItemMenu
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var resp = System.Windows.MessageBox.Show("¿Desea Cerrar la Aplicación?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (resp == MessageBoxResult.Yes)
+            {
+                DAuditoria auditoria = new DAuditoria(
+                                        Globals.ID_SISTEMA,
+                                        "Salir",
+                                        "Ha cerrado el Sistema"
+                                     );
+                new LAuditoria().Insertar(auditoria);
+
+                Environment.Exit(0);
+            }
+        }
+    }
+    public class ItemMenu
     {
         public ItemMenu(string header, List<SubItem> subItems, PackIconKind icon)
         {

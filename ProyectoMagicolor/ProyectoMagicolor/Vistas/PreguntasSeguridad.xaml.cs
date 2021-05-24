@@ -19,9 +19,6 @@ using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para DetalleCuentaCobrarFrm.xaml
-    /// </summary>
     public partial class PreguntasSeguridad : Window
     {
         Login ParentForm;

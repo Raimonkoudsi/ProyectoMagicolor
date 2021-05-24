@@ -17,9 +17,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class ClienteDG : Page
     {
 
@@ -41,37 +38,23 @@ namespace ProyectoMagicolor.Vistas
                 item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
             }
 
-
             dgOperaciones.ItemsSource = items;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             if (Globals.ACCESO_SISTEMA != 0)
             {
                 btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
                 btnReport.IsEnabled = false;
             }
 
-
             CbTipoDocumento.SelectedIndex = 0;
-
             Refresh(CbTipoDocumento.Text ,txtDocumento.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgOperaciones.SelectedItems.Count > 0)
-            //{
-            //    for(int i = 0; i < dgOperaciones.SelectedItems.Count; i++)
-            //    {
-            //        MessageBox.Show(((TablaTrabajadores)dgOperaciones.SelectedItems[i]).Nombre);
-            //    }
-            //}
-            //else
-            //    MessageBox.Show("no hay");
             ClienteFrm frmTrab = new ClienteFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
@@ -102,12 +85,20 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres Eliminar el Cliente?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (Resp != MessageBoxResult.Yes)
                     return;
                 int id = (int)((Button)sender).CommandParameter;
+                string cedula = dgOperaciones.Items[1].ToString();
                 Metodos.Eliminar(id);
                 Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Eliminar",
+                    "Ha Eliminado el Cliente " + cedula
+                );
+                new LAuditoria().Insertar(auditoria);
             }
         }
 
@@ -167,8 +158,14 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-
             reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text), "Cliente");
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado el Reporte de Clientes"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
     }
 

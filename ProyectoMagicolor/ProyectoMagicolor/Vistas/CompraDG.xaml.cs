@@ -72,6 +72,13 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(Metodos.MostrarComprasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "ComprasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado el Reporte de Compras"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void MetodoPago_Click(object sender, RoutedEventArgs e)

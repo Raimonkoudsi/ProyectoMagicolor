@@ -106,15 +106,31 @@ namespace ProyectoMagicolor.Vistas
             else
             {
                 string metodoAnular = Metodos.Anular(Venta.idVenta, new LVenta().MostrarDetalleVenta(Venta.idVenta));
-                if (metodoAnular == "OK") ParentFrm.GetBack();
+                if (metodoAnular == "OK")
+                {
+                    DAuditoria auditoria = new DAuditoria(
+                        Globals.ID_SISTEMA,
+                        "Anular",
+                        "Ha Anulado la Venta N° " + Venta.idVenta
+                    );
+                    new LAuditoria().Insertar(auditoria);
+
+                    ParentFrm.GetBack();
+                }
             }
         }
 
         private void BtnFactura_Click(object sender, RoutedEventArgs e)
         {
             Reports.Reporte reporte = new Reports.Reporte();
-
             reporte.ExportPDFTwoArguments(Metodos.MostrarDetalleVenta(Venta.idVenta), "Venta", Metodos.MostrarVenta(Venta.idVenta), "VentaGeneral", true, Venta.idVenta.ToString());
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Reimpreso la Venta N° " + Venta.idVenta
+            );
+            new LAuditoria().Insertar(auditoria);
         }
     }
 

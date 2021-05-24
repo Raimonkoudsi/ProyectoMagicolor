@@ -21,9 +21,6 @@ using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class ArticuloFrm : Window
     {
 
@@ -41,7 +38,6 @@ namespace ProyectoMagicolor.Vistas
             CbCategoria.ItemsSource = LCmt;
             CbCategoria.DisplayMemberPath = "nombre";
             CbCategoria.SelectedValuePath = "idCategoria";
-            //txtCodigo.KeyDown += new KeyEventHandler(Validaciones.TextBox_CheckSpace);
         }
 
         
@@ -53,6 +49,7 @@ namespace ProyectoMagicolor.Vistas
 
         public LArticulo Metodos = new LArticulo();
 
+        private string codigo = "";
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Type == TypeForm.Update)
@@ -68,6 +65,13 @@ namespace ProyectoMagicolor.Vistas
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
+
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Mostrar",
+                    "Ha Visto el Artículo Código " + codigo
+                 );
+                new LAuditoria().Insertar(auditoria);
             }
             else if(Type == TypeForm.Update)
             {
@@ -76,7 +80,7 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-       
+
 
         void fillData()
         {
@@ -86,7 +90,7 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            string codigo = txtCodigo.txt.Text;
+            codigo = txtCodigo.txt.Text;
             string nombre = txtNombre.txt.Text;
             int idCategoria = (int)CbCategoria.SelectedValue;
             int stockminimo = int.Parse(txtStockMinimo.txt.Text);
@@ -110,6 +114,13 @@ namespace ProyectoMagicolor.Vistas
 
             if (Metodos.Insertar(UForm).Equals("OK"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                        Globals.ID_SISTEMA,
+                        "Registrar",
+                        "Ha Registrado el Artículo Código " + codigo
+                     );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }
@@ -121,13 +132,19 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
             UForm.idArticulo = DataFill.idArticulo;
-            Metodos.Editar(UForm);
-            //MessageBox.Show(response);
-            //if(response == "OK")
-            //{
-            //    this.DialogResult = true;
-            //    this.Close();
-            //}
+
+            if (Metodos.Editar(UForm).Equals("OK"))
+            {
+                DAuditoria auditoria = new DAuditoria(
+                        Globals.ID_SISTEMA,
+                        "Editar",
+                        "Ha Editado el Artículo Código " + codigo
+                     );
+                new LAuditoria().Insertar(auditoria);
+
+                this.DialogResult = true;
+                this.Close();
+            }
         }
 
         private void PlaceDescripcion_GotFocus(object sender, RoutedEventArgs e)

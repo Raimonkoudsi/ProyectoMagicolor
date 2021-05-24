@@ -18,9 +18,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para CuentaCobrarDG.xaml
-    /// </summary>
     public partial class CuentaCobrarDG : Page
     {
 
@@ -43,7 +40,6 @@ namespace ProyectoMagicolor.Vistas
 
             List<DVenta> DisplayData = Metodos.MostrarCxC(search, search2);
 
-            //dgOperaciones.ItemsSource = null;
             dgOperaciones.ItemsSource = DisplayData;
 
         }
@@ -65,7 +61,6 @@ namespace ProyectoMagicolor.Vistas
             int idIngreso = (int)((Button)sender).CommandParameter;
             var response = Metodos.EncontrarCxC(idIngreso);
 
-            //implementar lo de la ListaCP
             DetalleCuentaCobrarFrm frmDetalleCC = new DetalleCuentaCobrarFrm(this, ListaCC);
             frmDetalleCC.DataFill = response[0];
             bool Resp = frmDetalleCC.ShowDialog() ?? false;

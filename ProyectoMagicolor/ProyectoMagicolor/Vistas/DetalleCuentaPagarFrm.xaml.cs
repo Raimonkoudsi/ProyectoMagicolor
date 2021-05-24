@@ -119,10 +119,24 @@ namespace ProyectoMagicolor.Vistas
 
             if (abonarCP.Equals("TOTAL"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Registrar",
+                    "Ha Completado la Cuenta por Pagar N° " + DataFill.idCuentaPagar
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (abonarCP.Equals("PARCIAL"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Registrar",
+                    "Ha Abonado a la Cuenta por Pagar N° " + DataFill.idCuentaPagar
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 MessageBox.Show("Abono Ingresado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 

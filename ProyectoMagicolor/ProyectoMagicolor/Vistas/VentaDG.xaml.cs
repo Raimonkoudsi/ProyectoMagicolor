@@ -75,8 +75,14 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-
             reporte.ExportPDF(Metodos.MostrarVentasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "VentasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado un Reporte de Ventas"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
 

@@ -171,6 +171,9 @@
     <Compile Include="Vistas\CambiarContraseña.xaml.cs">
       <DependentUpon>CambiarContraseña.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\AuditoriaDG.xaml.cs">
+      <DependentUpon>AuditoriaDG.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\PreguntasSeguridad.xaml.cs">
       <DependentUpon>PreguntasSeguridad.xaml</DependentUpon>
     </Compile>
@@ -271,6 +274,10 @@
       <DependentUpon>VentaVista.xaml</DependentUpon>
     </Compile>
     <Page Include="Vistas\CambiarContraseña.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\AuditoriaDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

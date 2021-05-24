@@ -157,6 +157,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@impuesto", Venta.impuesto);
                 comm.Parameters.AddWithValue("@metodoPago", Venta.metodoPago);
                 comm.Parameters.AddWithValue("@estado", Venta.metodoPago);
+                Venta.idVenta = IDVenta;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se ingreso el Registro de la venta";
 

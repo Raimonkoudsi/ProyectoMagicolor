@@ -17,9 +17,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class ArticuloVista : Window
     {
 

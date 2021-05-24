@@ -192,6 +192,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
                 comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
                 comm.Parameters.AddWithValue("@estado", Ingreso.metodoPago);
+                Ingreso.idIngreso = IDCompra;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Registró la Compra";
 
@@ -229,6 +230,11 @@ namespace Logica
 
                 i++;
             }
+
+            if (respuesta.Equals("OK"))
+                LFunction.MessageExecutor("Information", "Compra Registrada Correctamente");
+            else
+                LFunction.MessageExecutor("Error", respuesta);
 
             return respuesta;
         }
@@ -432,7 +438,7 @@ namespace Logica
 
 
 
-        public List<DIngreso> MostrarComprasGenerales(DateTime? Fecha, string Nombre, int MetodoPago)
+        public List<DIngreso> MostrarComprasGenerales(DateTime? Fecha, string RazonSocial, int MetodoPago)
         {
             List<DIngreso> ListaGenerica = new List<DIngreso>();
 
@@ -451,7 +457,7 @@ namespace Logica
                     INNER JOIN [proveedor] p ON p.idProveedor = i.idProveedor
                     INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
                 WHERE i.fecha = @fecha 
-                    AND CONCAT(p.tipoDocumento, '-', p.numeroDocumento) LIKE @nombre + '%'
+                    AND p.razonSocial LIKE @razonSocial + '%'
                     " + QueryMetodoPago(MetodoPago) + @"
 			    GROUP BY 
 				    i.idIngreso, 
@@ -469,7 +475,7 @@ namespace Logica
             {
                 using SqlCommand comm = new SqlCommand(queryListGeneral, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@fecha", Fecha == null ? DateTime.Today : Fecha);
-                comm.Parameters.AddWithValue("@nombre", Nombre);
+                comm.Parameters.AddWithValue("@razonSocial", RazonSocial);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())

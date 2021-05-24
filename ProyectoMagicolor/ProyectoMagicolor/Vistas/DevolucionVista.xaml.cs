@@ -87,8 +87,14 @@ namespace ProyectoMagicolor.Vistas
         private void BtnFactura_Click(object sender, RoutedEventArgs e)
         {
             Reports.Reporte reporte = new Reports.Reporte();
-
             reporte.ExportPDFTwoArguments(Metodos.MostrarDetalleDevolucion(Devolucion.idDevolucion), "Devolucion", Metodos.MostrarDevolucion(Devolucion.idDevolucion), "DevolucionGeneral", true, Devolucion.idDevolucion.ToString());
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado el Comprobante de Reporte N° " + Devolucion.idDevolucion
+            );
+            new LAuditoria().Insertar(auditoria);
         }
     }
 

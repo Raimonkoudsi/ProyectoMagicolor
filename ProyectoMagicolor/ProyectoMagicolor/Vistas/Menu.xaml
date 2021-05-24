@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:ProyectoMagicolor"
 		xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" Height="600" Width="1080" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Foreground="White">
+        Title="Variedades Magicolor" Height="600" Width="1080" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Foreground="White"
+        Closing="Window_Closing"
+        >
 
 
 

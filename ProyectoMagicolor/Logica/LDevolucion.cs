@@ -327,7 +327,7 @@ namespace Logica
                         nombreCliente = reader.GetString(3),
                         montoDevolucion = (double)reader.GetDecimal(4),
                         cantidad = reader.GetInt32(5),
-                        fechaVenta = reader.GetDateTime(6)
+                        fechaVentaString = reader.GetDateTime(6).ToString("MM/dd/yyyy")
                     });
                 }
             };

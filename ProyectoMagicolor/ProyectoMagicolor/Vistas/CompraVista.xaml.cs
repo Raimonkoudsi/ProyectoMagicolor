@@ -42,6 +42,13 @@ namespace ProyectoMagicolor.Vistas
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Mostrar",
+                "Ha Visto la Compra N° " + Compra.idIngreso
+             );
+            new LAuditoria().Insertar(auditoria);
+
             if (Globals.ACCESO_SISTEMA != 0)
             {
                 BtnFactura.ToolTip = "Sólo el Administrador puede reimprimir Facturas";
@@ -103,15 +110,31 @@ namespace ProyectoMagicolor.Vistas
             else
             {
                 string metodoAnular = Metodos.Anular(Compra.idIngreso, new LIngreso().MostrarDetalleCompra(Compra.idIngreso));
-                if (metodoAnular == "OK") ParentFrm.GetBack();
+                if (metodoAnular == "OK")
+                {
+                    DAuditoria auditoria = new DAuditoria(
+                        Globals.ID_SISTEMA,
+                        "Anular",
+                        "Ha Anulado la Compra N° " + Compra.idIngreso
+                    );
+                    new LAuditoria().Insertar(auditoria);
+
+                    ParentFrm.GetBack();
+                }
             }
         }
 
         private void BtnComprobante_Click(object sender, RoutedEventArgs e)
         {
             Reports.Reporte reporte = new Reports.Reporte();
-
             reporte.ExportPDFTwoArguments(Metodos.MostrarDetalleCompra(Compra.idIngreso), "Compra", Metodos.MostrarCompra(Compra.idIngreso), "CompraGeneral", true, Compra.idIngreso.ToString());
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Reimpreso la Compra N° " + Compra.idIngreso
+            );
+            new LAuditoria().Insertar(auditoria);
         }
     }
 }

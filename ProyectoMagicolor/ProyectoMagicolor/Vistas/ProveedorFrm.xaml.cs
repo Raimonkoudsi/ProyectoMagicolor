@@ -20,9 +20,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class ProveedorFrm : Window
     {
 
@@ -54,6 +51,9 @@ namespace ProyectoMagicolor.Vistas
 
         public LProveedor Metodos = new LProveedor();
 
+        private string tipoDocumento = "";
+        private string documento = "";
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Type == TypeForm.Update)
@@ -69,6 +69,13 @@ namespace ProyectoMagicolor.Vistas
                 fillForm(DataFill);
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
+
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Mostrar",
+                    "Ha Visto al Proveedor " + tipoDocumento + "-" + documento
+                 );
+                new LAuditoria().Insertar(auditoria);
             }
             else if(Type == TypeForm.Update)
             {
@@ -89,8 +96,8 @@ namespace ProyectoMagicolor.Vistas
 
             string razonsocial = txtRazonSocial.txt.Text;
             string sectorcomercial = (string)CbSectorComercial.SelectedValue;
-            string tipoDocumento = CbTipoDocumento.Text;
-            string documento = txtDocumento.txt.Text;
+            tipoDocumento = CbTipoDocumento.Text;
+            documento = txtDocumento.txt.Text;
             string direccion = txtDireccion.Text;
             string telefono = txtTelefono.Changed ? txtTelefono.txt.Text : "";
             string email = txtEmail.Changed ? txtEmail.txt.Text : "";
@@ -113,9 +120,16 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
             string response = Metodos.Insertar(UForm);
-            MessageBox.Show(response);
+
             if (response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Insertar",
+                    "Ha Registrado al Proveedor " + tipoDocumento + "-" + documento
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }
@@ -129,9 +143,16 @@ namespace ProyectoMagicolor.Vistas
                 return;
             UForm.idProveedor = DataFill.idProveedor;
             string response = Metodos.Editar(UForm);
-            MessageBox.Show(response);
+
             if(response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Editar",
+                    "Ha Editado al Proveedor " + tipoDocumento + "-" + documento
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             }

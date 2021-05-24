@@ -51,6 +51,17 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             fillForm(DataFill);
+
+            int CantidadDevolver = 0;
+            if (txtcantidad.txt.Text != "")
+            {
+                CantidadDevolver = int.Parse(txtcantidad.txt.Text);
+                if (CantidadDevolver <= 0)
+                    CantidadDevolver = 0;
+            }
+
+            int cantidadRestante = DataFill.CantidadComprada - CantidadDevolver;
+            txtCantidadRestante.Text = cantidadRestante.ToString();
         }
 
         void fillData()

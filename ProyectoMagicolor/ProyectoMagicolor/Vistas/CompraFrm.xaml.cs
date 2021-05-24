@@ -19,9 +19,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for CompraFrm.xaml
-    /// </summary>
     public partial class CompraFrm : Page
     {
         public CompraFrm(MainWindow parent)
@@ -67,10 +64,10 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
-            if (!txtFactura.Changed)
+            if (txtFactura.Text == "")
             {
                 MessageBox.Show("Debes llenar el campo Factura!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtFactura.txt.Focus();
+                txtFactura.Focus();
                 return true;
             }
 
@@ -83,11 +80,9 @@ namespace ProyectoMagicolor.Vistas
             QuitarProveedor();
             CbMetodoPago.SelectedIndex = -1;
             dpFechaLimite.SelectedDate = null;
-            txtFactura.SetText("");
             txtBuscar.Text = "";
-            txtFactura.SetText("");
             txtImpuesto.Text = "15";
-
+            txtFactura.Text = "";
             DisplayData.Clear();
             ListaCompra.Clear();
             Refresh();
@@ -105,7 +100,7 @@ namespace ProyectoMagicolor.Vistas
                                              MainWindow.LoggedTrabajador.idTrabajador,
                                              Proveedor.idProveedor,
                                              DateTime.Now,
-                                             txtFactura.txt.Text,
+                                             txtFactura.Text,
                                              impuestos,
                                              CbMetodoPago.SelectedIndex + 1,
                                              0);
@@ -118,9 +113,16 @@ namespace ProyectoMagicolor.Vistas
                                                0);
 
             string res = Metodo.Insertar(dIngreso, ListaCompra, CP);
-            MessageBox.Show(res);
+
             if (res.Equals("OK"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Insertar",
+                    "Ha Registrado la Compra N° " + dIngreso.idIngreso
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 Limpiar();
             }
         }
@@ -197,7 +199,6 @@ namespace ProyectoMagicolor.Vistas
             txtProvName.Text = proveedor.razonSocial;
             txtProvName.Visibility = Visibility.Visible;
             TxtProvDoc.Text = proveedor.tipoDocumento + "-" + proveedor.numeroDocumento;
-            //TxtProvDir.Text = proveedor.direccion;
             TxtProvTelf.Text = proveedor.telefono;
             TxtProvEmail.Text = proveedor.email;
             ProveedorDatos.Visibility = Visibility.Visible;
@@ -436,6 +437,21 @@ namespace ProyectoMagicolor.Vistas
             RefreshMoney();
         }
 
+        private void Factura_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtFactura.Text == "")
+            {
+                PlaceFactura.Text = "";
+            }
+        }
+
+        private void Factura_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtFactura.Text == "")
+            {
+                PlaceFactura.Text = "Ingrese la Factura";
+            }
+        }
 
     }
 

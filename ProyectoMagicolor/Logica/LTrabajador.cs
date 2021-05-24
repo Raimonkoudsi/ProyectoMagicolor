@@ -94,7 +94,7 @@ namespace Logica
                 email, 
                 usuario 
             FROM [trabajador] 
-            WHERE cedula LIKE @cedula + '%' AND acceso <> 0
+            WHERE cedula LIKE @usuario + '%' AND acceso <> 0
             ORDER BY cedula
         ";
 
@@ -129,6 +129,7 @@ namespace Logica
 
         private string queryFormSecurity = @"
             SELECT 
+                t.idTrabajador,
 	            t.usuario,
 	            s.pregunta,
 	            s.respuesta
@@ -442,9 +443,10 @@ namespace Logica
                 {
                     ListaGenerica.Add(new DTrabajador
                     {
-                            usuario = Encripter.Decrypt(reader.GetString(0)),
-                            pregunta = Encripter.Decrypt(reader.GetString(1)),
-                            respuesta = Encripter.Decrypt(reader.GetString(2))
+                        idTrabajador = reader.GetInt32(0),
+                        usuario = Encripter.Decrypt(reader.GetString(1)),
+                        pregunta = Encripter.Decrypt(reader.GetString(2)),
+                        respuesta = Encripter.Decrypt(reader.GetString(3))
                     });
                 }
             };

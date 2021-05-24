@@ -59,8 +59,14 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-
             reporte.ExportPDF(Metodos.MostrarDevolucionesGenerales(dpFecha.SelectedDate, txtNombre.Text), "DevolucionesGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado un Listado de Devoluciones"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
 
@@ -103,8 +109,15 @@ namespace ProyectoMagicolor.Vistas
             var DevolucionResp = new LDevolucion().MostrarDevolucion(id);
 
             DDevolucion Devolucion = DevolucionResp[0];
-
             DevolucionVista Frm = new DevolucionVista(Devolucion, this);
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Mostrar",
+                "Ha Visto el Detalle de la Venta N° " + DevolucionResp[0].idVenta
+            );
+            new LAuditoria().Insertar(auditoria);
+
             Parent.SwitchScreen(Frm);
         }
 

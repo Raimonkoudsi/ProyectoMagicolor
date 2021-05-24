@@ -47,9 +47,6 @@ namespace ProyectoMagicolor.Vistas
         }
     }
 
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class InventarioDG : Page
     {
 
@@ -347,6 +344,13 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar), "Inventario");
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado un Reporte de Inventario"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void dgOperaciones_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -46,8 +46,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             Refresh(txtBuscar.Text);
         }
 
@@ -79,12 +77,20 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres Eliminar este Trabajador?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
+            string cedula = dgOperaciones.Items[1].ToString();
             MetodosUsuario.Eliminar(id);
             Refresh(txtBuscar.Text);
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Eliminar",
+                "Ha Eliminado el Tarabajador " + cedula
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
@@ -129,6 +135,13 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(MetodosUsuario.MostrarNombre(txtBuscar.Text), "Trabajador");
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado un Reporte de Trabajadores"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
     }
 

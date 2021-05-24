@@ -123,11 +123,25 @@ namespace ProyectoMagicolor.Vistas
 
             if (res.Equals("OK"))
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Insertar",
+                    "Ha Registrado la Venta N° " + dVenta.idVenta
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 var resp = MessageBox.Show("¡Venta Completada!" + Environment.NewLine + "¿Desea Mostrar la Factura de la Venta?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
                 if (resp == MessageBoxResult.Yes)
                 {
                     Reports.Reporte reporte = new Reports.Reporte();
                     reporte.ExportPDFTwoArguments(Metodo.MostrarDetalleVenta(dVenta.idVenta), "Venta", Metodo.MostrarVenta(dVenta.idVenta), "VentaGeneral", false, dVenta.idVenta.ToString());
+
+                    auditoria = new DAuditoria(
+                        Globals.ID_SISTEMA,
+                        "Generar",
+                        "Ha Impreso la Factura de la Venta N° " + dVenta.idVenta
+                    );
+                    new LAuditoria().Insertar(auditoria);
                 }
                 Limpiar();
             }

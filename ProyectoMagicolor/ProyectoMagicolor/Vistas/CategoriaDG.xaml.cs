@@ -17,9 +17,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class CategoriaDG : Page
     {
 
@@ -42,22 +39,11 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             Refresh(txtBuscar.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgOperaciones.SelectedItems.Count > 0)
-            //{
-            //    for(int i = 0; i < dgOperaciones.SelectedItems.Count; i++)
-            //    {
-            //        MessageBox.Show(((TablaTrabajadores)dgOperaciones.SelectedItems[i]).Nombre);
-            //    }
-            //}
-            //else
-            //    MessageBox.Show("no hay");
             CategoriaFrm frmTrab = new CategoriaFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
@@ -82,12 +68,20 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres Eliminar esta Categoría?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
+            string codigo = dgOperaciones.Items[1].ToString();
             Metodos.Eliminar(id);
             Refresh(txtBuscar.Text);
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Eliminar",
+                "Ha Eliminado la Categoría " + codigo
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)

@@ -17,9 +17,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class ProveedorDG : Page
     {
 
@@ -46,8 +43,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             if (Globals.ACCESO_SISTEMA != 0)
             {
                 btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
@@ -61,15 +56,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgOperaciones.SelectedItems.Count > 0)
-            //{
-            //    for(int i = 0; i < dgOperaciones.SelectedItems.Count; i++)
-            //    {
-            //        MessageBox.Show(((TablaTrabajadores)dgOperaciones.SelectedItems[i]).Nombre);
-            //    }
-            //}
-            //else
-            //    MessageBox.Show("no hay");
             ProveedorFrm frmTrab = new ProveedorFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
@@ -94,12 +80,20 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminrar este item?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres Eliminar este Proveedor?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
+            string cedula = dgOperaciones.Items[1].ToString();
             Metodos.Eliminar(id);
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Eliminar",
+                "Ha Eliminado el Proveedor " + cedula
+            );
+            new LAuditoria().Insertar(auditoria);
         }
 
         private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
@@ -157,6 +151,13 @@ namespace ProyectoMagicolor.Vistas
 
             Reports.Reporte reporte = new Reports.Reporte();
             reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text), "Proveedor");
+
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Generar",
+                "Ha Generado un Reporte de Proveedores"
+            );
+            new LAuditoria().Insertar(auditoria);
         }
     }
 

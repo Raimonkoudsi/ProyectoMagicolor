@@ -188,6 +188,8 @@ namespace ProyectoMagicolor.Vistas
 
         public LTrabajador MetodosUsuario = new LTrabajador();
 
+        private string cedula = "";
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Type == TypeForm.Update)
@@ -204,6 +206,12 @@ namespace ProyectoMagicolor.Vistas
                 SetEnable(false);
                 btnEnviar.Visibility = Visibility.Collapsed;
 
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Mostrar",
+                    "Ha Visto al Trabajador " + cedula
+                 );
+                new LAuditoria().Insertar(auditoria);
             }
             else if (Type == TypeForm.Update)
             {
@@ -226,7 +234,7 @@ namespace ProyectoMagicolor.Vistas
             string apellido = txtApellidos.txt.Text;
             string sexo = CbSexo.SelectedIndex == 0 ? "H" : "M";
             DateTime Nacimiento = DpNacimiento.SelectedDate ?? DateTime.Now;
-            string cedula = CbTipoDocumento.Text + "-" + txtDocumento.txt.Text;
+            cedula = CbTipoDocumento.Text + "-" + txtDocumento.txt.Text;
             string direccion = txtDireccion.txt.Text;
             string telefono = txtTelefono.txt.Text;
             string email = txtEmail.txt.Text;
@@ -262,13 +270,15 @@ namespace ProyectoMagicolor.Vistas
             string response = MetodosUsuario.Insertar(UForm, ListaSeguridad);
             if (response == "OK")
             {
-                LFunction.MessageExecutor("Information", "Trabajador Ingresado Correctamente");
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Insertar",
+                    "Ha Registrado al Trabajador " + cedula
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
-            }
-            else
-            {
-                LFunction.MessageExecutor("Error", response);
             }
 
         }
@@ -308,14 +318,16 @@ namespace ProyectoMagicolor.Vistas
             string response = MetodosUsuario.Editar(UForm, ListaSeguridad);
             if(response == "OK")
             {
-                LFunction.MessageExecutor("Information", "Trabajador Editado Correctamente");
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Editar",
+                    "Ha Editado al Trabajador " + cedula
+                );
+                new LAuditoria().Insertar(auditoria);
+
                 this.DialogResult = true;
                 this.Close();
             } 
-            else
-            {
-                LFunction.MessageExecutor("Error", response);
-            }
         }
 
         private void DpNacimiento_SelectedDateChanged(object sender, SelectionChangedEventArgs e)

@@ -21,9 +21,6 @@ using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class DetalleIngresoFrm : Window
     {
 
@@ -118,13 +115,12 @@ namespace ProyectoMagicolor.Vistas
             fillData();
             if (UForm == null)
                 return;
-            //UForm.idArticulo = DataFill.idArticulo;
             ParentForm.EditarArticulo(UForm, DataArticulo, idEdit);
             this.Close();
         }
 
 
-        void SetUpdate() // BOTON PARENT FORM
+        void SetUpdate()
         {
 
         }

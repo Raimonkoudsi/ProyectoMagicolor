@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="FormTrabajadores" Height="450" Width="700" Loaded="Window_Loaded">
+        Title="Variedades Magicolor" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="450" Width="450" Loaded="Window_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
