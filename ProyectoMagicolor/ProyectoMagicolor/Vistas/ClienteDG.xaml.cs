@@ -115,7 +115,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if(txtDocumento.Text == "")
             {
-                txtBucarPlaceH.Text = "Documento";
+                txtBucarPlaceH.Text = "Ingresar Cédula del Cliente . . .";
             }
             
         }

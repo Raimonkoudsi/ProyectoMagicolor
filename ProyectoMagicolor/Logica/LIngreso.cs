@@ -80,39 +80,39 @@ namespace Logica
 	    ";
 
         private string queryListActive = @"
-            SELECT 
-                i.idIngreso,
-				i.factura,
-                CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
-                CONCAT(p.tipoDocumento, '-', p.numeroDocumento) AS cedulaProveedor,
-                p.razonSocial,
-                p.telefono,
-                p.email,
-                SUM(di.precioCompra * di.cantidadInicial) AS montoTotal,
-                i.impuesto,
-                i.fecha,
-                i.metodoPago,
-                i.estado
-            FROM [ingreso] i
-                INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor
-                INNER JOIN [trabajador] t ON t.idTrabajador = i.idTrabajador
-                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
-            WHERE i.idIngreso = @idIngreso
-            GROUP BY 
-                i.idIngreso, 
-                i.factura,
-                t.nombre, 
-                t.apellidos, 
-                p.tipoDocumento, 
-                p.numeroDocumento, 
-                p.razonSocial, 
-                p.telefono, 
-                p.email, 
-                i.impuesto,
-                i.fecha,
-                i.metodoPago,
-                i.estado
-        ";
+                SELECT 
+                    i.idIngreso,
+				    i.factura,
+                    CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
+                    CONCAT(p.tipoDocumento, '-', p.numeroDocumento) AS cedulaProveedor,
+                    p.razonSocial,
+                    p.telefono,
+                    p.email,
+                    SUM(di.precioCompra * di.cantidadInicial) AS montoTotal,
+                    i.impuesto,
+                    i.fecha,
+                    i.metodoPago,
+                    i.estado
+                FROM [ingreso] i
+                    INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor
+                    INNER JOIN [trabajador] t ON t.idTrabajador = i.idTrabajador
+                    INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+                WHERE i.idIngreso = @idIngreso AND di.cantidadInicial <> 0
+                GROUP BY 
+                    i.idIngreso, 
+                    i.factura,
+                    t.nombre, 
+                    t.apellidos, 
+                    p.tipoDocumento, 
+                    p.numeroDocumento, 
+                    p.razonSocial, 
+                    p.telefono, 
+                    p.email, 
+                    i.impuesto,
+                    i.fecha,
+                    i.metodoPago,
+                    i.estado
+            ";
 
         private string queryListDetail = @"
             SELECT 
@@ -139,13 +139,13 @@ namespace Logica
                     SELECT TOP 1 
                         di.precioVenta 
                     FROM [detalleIngreso] di 
-                    WHERE a.idArticulo = di.idArticulo 
+                    WHERE a.idArticulo = di.idArticulo
                     ORDER BY di.idDetalleIngreso DESC), 0) AS PrecioVenta,
 				ISNULL((
                     SELECT TOP 1 
                         di.cantidadActual 
                     FROM [detalleIngreso] di 
-                    WHERE a.idArticulo = di.idArticulo 
+                    WHERE a.idArticulo = di.idArticulo AND di.cantidadInicial <> 0
                     ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
             FROM [articulo] a  
                 INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria
@@ -163,28 +163,28 @@ namespace Logica
                 cantidadInicial, 
                 cantidadActual 
             FROM [detalleIngreso] 
-            where idArticulo = @idArticulo AND cantidadActual > 0 
+            WHERE idArticulo = @idArticulo AND cantidadActual > 0
             ORDER BY idDetalleIngreso DESC;
         ";
 
         private string queryListDetailID = @"
             SELECT * FROM [detalleIngreso] 
-            WHERE idDetalleIngreso = @idDetalleIngreso 
+            WHERE idDetalleIngreso = @idDetalleIngreso AND cantidadInicial <> 0
             ORDER BY idDetalleIngreso DESC
         ";
         #endregion
 
 
-        public string Insertar(DIngreso Ingreso, List<DDetalle_Ingreso> Detalle, DCuentaPagar CuentaPagar)
+        public string Insertar(DIngreso Ingreso, List<DDetalle_Ingreso> Detalle = null, DCuentaPagar CuentaPagar = null, bool IngresoVacio = false)
         {
             string respuesta = "";
 
             Action action = () =>
             {
-                int IDCompra = LFunction.GetID("ingreso", "idIngreso");
+                int idIngreso = IngresoVacio == false ? LFunction.GetID("ingreso", "idIngreso") : 0;
 
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idIngreso", IDCompra);
+                comm.Parameters.AddWithValue("@idIngreso", idIngreso);
                 comm.Parameters.AddWithValue("@idTrabajador", Ingreso.idTrabajador);
                 comm.Parameters.AddWithValue("@idProveedor", Ingreso.idProveedor);
                 comm.Parameters.AddWithValue("@fecha", Ingreso.fecha);
@@ -192,18 +192,19 @@ namespace Logica
                 comm.Parameters.AddWithValue("@impuesto", Ingreso.impuesto);
                 comm.Parameters.AddWithValue("@metodoPago", Ingreso.metodoPago);
                 comm.Parameters.AddWithValue("@estado", Ingreso.metodoPago);
-                Ingreso.idIngreso = IDCompra;
+                Ingreso.idIngreso = idIngreso;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Registró la Compra";
 
-                if (!respuesta.Equals("OK"))
+                if (!respuesta.Equals("OK") && !IngresoVacio)
                     throw new Exception("Error en el Registro de la Compra");
 
-                if (Ingreso.metodoPago == 2)
-                    if(!InsertarCxP(CuentaPagar, IDCompra).Equals("OK"))
+                if (Ingreso.metodoPago == 2 && !IngresoVacio)
+                    if (!InsertarCxP(CuentaPagar, idIngreso).Equals("OK"))
                         throw new Exception("Error en el Registro de la Cuenta a Pagar");
 
-                respuesta = InsertarDetalle(Detalle, IDCompra);
+                if (!IngresoVacio)
+                    respuesta = InsertarDetalle(Detalle, idIngreso);
             };
             LFunction.SafeExecutor(action);
 
@@ -286,32 +287,32 @@ namespace Logica
             List<DIngreso> ListaGenerica = new List<DIngreso>();
 
             Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryListActive, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idIngreso", IdIngreso);
-
-                using SqlDataReader reader = comm.ExecuteReader();
-                if (reader.Read())
                 {
-                    ListaGenerica.Add(new DIngreso
+                    using SqlCommand comm = new SqlCommand(queryListActive, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@idIngreso", IdIngreso);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    if (reader.Read())
                     {
-                        idIngreso = reader.GetInt32(0),
-                        factura = reader.GetString(1),
-                        trabajador = reader.GetString(2),
-                        cedulaProveedor = reader.GetString(3),
-                        razonSocial = reader.GetString(4),
-                        telefonoProveedor = reader.GetString(5),
-                        emailProveedor = reader.GetString(6),
-                        montoTotal = (double)reader.GetDecimal(7),
-                        impuesto = reader.GetInt32(8),
-                        fechaString = reader.GetDateTime(9).ToShortDateString(),
-                        metodoPago = reader.GetInt32(10),
-                        metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(10)),
-                        estado = reader.GetInt32(11),
-                        estadoString = new LVenta().EstadoToString(reader.GetInt32(11))
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DIngreso
+                        {
+                            idIngreso = reader.GetInt32(0),
+                            factura = reader.GetString(1),
+                            trabajador = reader.GetString(2),
+                            cedulaProveedor = reader.GetString(3),
+                            razonSocial = reader.GetString(4),
+                            telefonoProveedor = reader.GetString(5),
+                            emailProveedor = reader.GetString(6),
+                            montoTotal = (double)reader.GetDecimal(7),
+                            impuesto = reader.GetInt32(8),
+                            fechaString = reader.GetDateTime(9).ToShortDateString(),
+                            metodoPago = reader.GetInt32(10),
+                            metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(10)),
+                            estado = reader.GetInt32(11),
+                            estadoString = new LVenta().EstadoToString(reader.GetInt32(11))
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
@@ -360,15 +361,18 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
                 {
-                    ListaGenerica.Add(new DArticulo
+                    if (reader.GetDecimal(4) != 0)
                     {
-                        idArticulo = reader.GetInt32(0),
-                        codigo = reader.GetString(1),
-                        nombre = reader.GetString(2),
-                        categoria = reader.GetString(3),
-                        precioVenta = (double)reader.GetDecimal(4),
-                        cantidadActual = reader.GetInt32(5)
-                    });
+                        ListaGenerica.Add(new DArticulo
+                        {
+                            idArticulo = reader.GetInt32(0),
+                            codigo = reader.GetString(1),
+                            nombre = reader.GetString(2),
+                            categoria = reader.GetString(3),
+                            precioVenta = (double)reader.GetDecimal(4),
+                            cantidadActual = reader.GetInt32(5)
+                        });
+                    }
                 }
             };
             LFunction.SafeExecutor(action);
@@ -505,6 +509,104 @@ namespace Logica
                 return " AND i.metodoPago = " + MetodoPago;
 
             return null;
+        }
+
+
+        public string InsertarDetallePrecios(DDetalle_Ingreso Detalle)
+        {
+            string respuesta = "";
+
+            //proveedor vacio
+            if (new LProveedor().Encontrar(0).Count == 0)
+            {
+                DProveedor UForm = new DProveedor(0,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString());
+
+                new LProveedor().Insertar(UForm, true);
+            }
+            //trabajador vacio
+            if (new LTrabajador().Encontrar(0).Count == 0)
+            {
+                DTrabajador UForm = new DTrabajador(0,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                DateTime.Now,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString());
+
+                new LTrabajador().Insertar(UForm, null, true);
+            }
+            //ingreso vacio
+            if (!MostrarIngresoVacio())
+            {
+                DIngreso UForm = new DIngreso(0,
+                                0,
+                                0,
+                                DateTime.Now,
+                                0.ToString(),
+                                0,
+                                0,
+                                0);
+
+                Insertar(UForm, null, null, true);
+            }
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryInsertDetail, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idDetalleIngreso", LFunction.GetID("detalleIngreso", "idDetalleIngreso"));
+                comm.Parameters.AddWithValue("@idIngreso", 0);
+                comm.Parameters.AddWithValue("@idArticulo", Detalle.idArticulo);
+                comm.Parameters.AddWithValue("@precioCompra", Detalle.precioCompra);
+                comm.Parameters.AddWithValue("@precioVenta", Detalle.precioVenta);
+                comm.Parameters.AddWithValue("@cantidadInicial", 0);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizaron los Precios";
+
+                if (!respuesta.Equals("OK"))
+                    throw new Exception("Error en el Registro de la Compra");
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+        private bool MostrarIngresoVacio()
+        {
+            bool respuesta = false;
+
+            string queryList = @"
+                SELECT 
+                    i.idIngreso
+                FROM [ingreso] i
+                WHERE i.idIngreso = 0
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read()) respuesta = true;
+                else respuesta = false;
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
         }
     }
 }

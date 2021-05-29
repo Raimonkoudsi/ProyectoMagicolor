@@ -30,6 +30,7 @@ namespace ProyectoMagicolor
 	{
         public Login ParentFrm;
 
+        public bool logout = false;
         public MainWindow(DTrabajador trabajador)
         {
             InitializeComponent();
@@ -51,7 +52,10 @@ namespace ProyectoMagicolor
             if(LoggedTrabajador.acceso==0 || LoggedTrabajador.acceso == 1)
             {
                 menuRegister.Add(new SubItem("Proveedor", new ProveedorDG()));
-                menuRegister.Add(new SubItem("Artículo", new ArticuloDG()));
+                if (LoggedTrabajador.acceso == 0)
+                {
+                    menuRegister.Add(new SubItem("Trabajador", new TrabajadoresDG()));
+                }
                 menuRegister.Add(new SubItem("Categoría", new CategoriaDG()));
             }
             var item1 = new ItemMenu("Registros", menuRegister, PackIconKind.Register);
@@ -72,6 +76,7 @@ namespace ProyectoMagicolor
             var item2 = new ItemMenu("Acciones", menuActions, PackIconKind.PointOfSale);
 
             var menuList = new List<SubItem>();
+            menuList.Add(new SubItem("Artículos", new ActualizarArticuloDG(this)));
             menuList.Add(new SubItem("Ventas", new VentaDG(this)));
             menuList.Add(new SubItem("Compras", new CompraDG(this)));
             if (LoggedTrabajador.acceso == 0)
@@ -83,7 +88,6 @@ namespace ProyectoMagicolor
             var menuSetting = new List<SubItem>();
             if (LoggedTrabajador.acceso == 0)
             {
-                menuSetting.Add(new SubItem("Trabajadores", new TrabajadoresDG()));
                 menuSetting.Add(new SubItem("Auditoria", new AuditoriaDG(this)));
                 menuSetting.Add(new SubItem("Respaldo", null, true));
                 menuSetting.Add(new SubItem("Restauración", null, false, true));
@@ -103,6 +107,11 @@ namespace ProyectoMagicolor
 
             Menu.Children.Add(new MenuItemX(item5, this));
 
+
+            int stock = new LArticulo().NotificacionStock();
+
+            //if (stock > 0)
+            //    LFunction.MessageExecutor("Information", LoggedTrabajador.usuario + " existen " + stock + " Productos sin Stock!" + Environment.NewLine + Environment.NewLine + "Por favor Ingrese a la sección de Inventario para Consultarlo");
         }
 
         public static DTrabajador LoggedTrabajador;
@@ -119,9 +128,22 @@ namespace ProyectoMagicolor
 
         public void LogOut()
         {
-            Login login = new Login();
-            login.Show();
-            this.Close();
+
+            var resp = System.Windows.MessageBox.Show("¿Desea Cerrar la Sesión?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (resp == MessageBoxResult.Yes)
+            {
+                DAuditoria auditoria = new DAuditoria(
+                                        Globals.ID_SISTEMA,
+                                        "Salir",
+                                        "Ha Cerrado la Sesión"
+                                     );
+                new LAuditoria().Insertar(auditoria);
+
+                logout = true;
+                Login login = new Login();
+                login.Show();
+                this.Close();
+            }
         }
 
         public void Backup()
@@ -153,17 +175,22 @@ namespace ProyectoMagicolor
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var resp = System.Windows.MessageBox.Show("¿Desea Cerrar la Aplicación?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
-            if (resp == MessageBoxResult.Yes)
+            if(!logout)
             {
-                DAuditoria auditoria = new DAuditoria(
-                                        Globals.ID_SISTEMA,
-                                        "Salir",
-                                        "Ha cerrado el Sistema"
-                                     );
-                new LAuditoria().Insertar(auditoria);
+                var resp = System.Windows.MessageBox.Show("¿Desea Cerrar la Aplicación?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (resp == MessageBoxResult.Yes)
+                {
+                    DAuditoria auditoria = new DAuditoria(
+                                            Globals.ID_SISTEMA,
+                                            "Salir",
+                                            "Ha Cerrado la Sesión"
+                                         );
+                    new LAuditoria().Insertar(auditoria);
 
-                Environment.Exit(0);
+                    Environment.Exit(0);
+                }
+
+                e.Cancel = true;
             }
         }
     }

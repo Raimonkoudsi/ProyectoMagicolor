@@ -47,23 +47,17 @@ namespace Logica
             WHERE idArticulo = @idArticulo;
         ";
 
-        private string queryList = @"
-            SELECT * FROM [articulo] 
-            WHERE codigo LIKE @codigo + '%' 
-            ORDER BY codigo
-        ";
-
         private string queryListCategory = @"
             SELECT
                 a.idArticulo, 
                 a.codigo, 
                 a.nombre, 
                 c.nombre,
-                a.descripcion
+                a.stockMinimo
             FROM [articulo] a 
                 INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria 
             WHERE a.nombre LIKE @nombre + '%' 
-            ORDER BY a.codigo
+            ORDER BY a.nombre ASC
         ";
 
         private string queryListID = @"
@@ -89,6 +83,23 @@ namespace Logica
             FROM [articulo] a 
             WHERE a.idArticulo = @idArticulo
         ";
+
+        private string queryNotificationStock = @"
+            SELECT
+	            a.stockMinimo,
+	            ISNULL((
+		            SELECT TOP 1 
+			            di.cantidadActual 
+		            FROM [detalleIngreso] di 
+		            WHERE a.idArticulo = di.idArticulo 
+		            ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
+            FROM [articulo] a
+        ";
+
+        private string queryCodeRepeated = @"
+            SELECT idArticulo FROM [articulo] 
+            WHERE codigo = @codigo;
+        ";
         #endregion
 
 
@@ -98,14 +109,17 @@ namespace Logica
 
             Action action = () =>
             {
+                int idArticulo = LFunction.GetID("articulo", "idArticulo");
+
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idArticulo", LFunction.GetID("articulo", "idArticulo"));
+                comm.Parameters.AddWithValue("@idArticulo", idArticulo);
                 comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
                 comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
                 comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion == String.Empty ? "No Contiene una Descripción" : Articulo.descripcion);
                 comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
                 comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
                 comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
+                Articulo.idArticulo = idArticulo;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro el Articulo";
                 if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Ingresado Correctamente");
@@ -130,6 +144,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
                 comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
                 comm.Parameters.AddWithValue("@idArticulo", Articulo.idArticulo);
+                Articulo.idArticulo = idArticulo;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Articulo";
                 if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Actualizado Correctamente");
@@ -158,36 +173,6 @@ namespace Logica
         }
 
 
-        public List<DArticulo> Mostrar(string Codigo)
-        {
-            List<DArticulo> ListaGenerica = new List<DArticulo>();
-
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@codigo", Codigo);
-
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
-                {
-                    ListaGenerica.Add(new DArticulo
-                    {
-                        idArticulo = reader.GetInt32(0),
-                        codigo = reader.GetString(1),
-                        nombre = reader.GetString(2),
-                        descripcion = reader.GetString(3),
-                        stockMinimo = reader.GetInt32(4),
-                        stockMaximo = reader.GetInt32(5),
-                        idCategoria = reader.GetInt32(6)
-                    });
-                }
-            };
-            LFunction.SafeExecutor(action);
-
-            return ListaGenerica;
-        }
-
-
         public List<DArticulo> MostrarConCategoria(string Nombre)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
@@ -206,7 +191,7 @@ namespace Logica
                         codigo = reader.GetString(1),
                         nombre = reader.GetString(2),
                         categoria = reader.GetString(3),
-                        descripcion = reader.GetString(4)
+                        stockMinimo = reader.GetInt32(4)
                     });
                 }
             };
@@ -345,7 +330,7 @@ namespace Logica
 
             return ListaGenerica;
         }
-        private string InventarioFecha(int typeDate, DateTime? firstDate, DateTime? secondDate)
+        private string InventarioFecha(int typeDate, DateTime firstDate, DateTime secondDate)
         {
             if (typeDate <= 0 && typeDate > 6)
                 throw new NullReferenceException("Error en la Búsqueda de Fechas");
@@ -359,9 +344,9 @@ namespace Logica
             //año
             if (typeDate == 4) return " AND v.fecha BETWEEN ('" + new DateTime(DateTime.Now.Year, 1, 1).ToString("MM/dd/yyyy") + "') AND ('" + DateTime.Today.ToString("MM/dd/yyyy") + "')";
             //fecha
-            if (typeDate == 5) return " AND v.fecha = ('" + firstDate + "')";
+            if (typeDate == 5) return " AND v.fecha = ('" + firstDate.ToString("MM-dd-yyyy") + "')";
             //entre fechas
-            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate + "') AND ('" + secondDate + "')";
+            if (typeDate == 6) return " AND v.fecha BETWEEN ('" + firstDate.ToString("MM-dd-yyyy") + "') AND ('" + secondDate.ToString("MM-dd-yyyy") + "')";
 
             throw new NullReferenceException("Error en la Búsqueda de Fechas");
         }
@@ -387,7 +372,7 @@ namespace Logica
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            string weekDate = InventarioFecha(2, null, null);
+            string weekDate = InventarioFecha(2, DateTime.Now, DateTime.Now);
 
             string queryInventaryDetail = @"
                 SELECT
@@ -531,6 +516,174 @@ namespace Logica
                     {
                         stockMinimo = reader.GetInt32(0),
                         cantidadActual = reader.GetInt32(1)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+        public int NotificacionStock()
+        {
+            int cantidad = 0;
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryNotificationStock, Conexion.ConexionSql);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (reader.GetInt32(0) >= reader.GetInt32(1))
+                        cantidad++;
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return cantidad;
+        }
+
+        public bool CodigoRepetido(string Codigo)
+        {
+            bool respuesta = false;
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryCodeRepeated, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@codigo", Codigo);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read()) respuesta = true;
+                else respuesta = false;
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
+        public List<DArticulo> ActualizarArticulo(string Busqueda, int TipoBusqueda)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            Action action = () =>
+            {
+                string searchQuery = "";
+
+                if (TipoBusqueda == 0 && Busqueda != "-")
+                    searchQuery = " WHERE a.codigo LIKE '" + Busqueda + "' + '%' ";
+                else if (TipoBusqueda == 1 && Busqueda != "-")
+                    searchQuery = " WHERE a.nombre LIKE '" + Busqueda + "' + '%' ";
+                    
+
+                string queryListArticlee = @"
+                    SELECT 
+                        a.idArticulo,
+                        a.codigo, 
+                        a.nombre,
+                        c.nombre,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioVenta 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioVenta,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.cantidadActual 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS cantidadActual,
+                        ISNULL((
+                            SELECT TOP 1 
+                                i.fecha 
+                            FROM [ingreso] i
+								INNER JOIN [detalleIngreso] di ON i.idIngreso=di.idIngreso
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), null) AS ultimaActualizacion
+					FROM [articulo] a
+                        INNER JOIN [categoria] c ON c.idCategoria = a.idCategoria
+					" + searchQuery + @"
+					ORDER BY ultimaActualizacion DESC
+                ";
+
+                using SqlCommand comm = new SqlCommand(queryListArticlee, Conexion.ConexionSql);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    if(reader.GetInt32(5) != 0)
+                    {
+                        ListaGenerica.Add(new DArticulo
+                        {
+                            idArticulo = reader.GetInt32(0),
+                            codigo = reader.GetString(1),
+                            nombre = reader.GetString(2),
+                            categoria = reader.GetString(3),
+                            precioVenta = (double)reader.GetDecimal(4),
+                            cantidadActual = reader.GetInt32(5),
+                            ultimaActualizacion = reader.GetDateTime(6) == null ? "Sin Actualización" : reader.GetDateTime(6).ToString("dd-MM-yyyy")
+                        });
+                    }
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+
+        public List<DArticulo> EncontrarActualizarArticulo(int IdArticulo)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            string queryListArticlee = @"
+                    SELECT 
+                        a.idArticulo,
+                        a.codigo, 
+                        a.nombre,
+                        c.nombre,
+						a.stockMinimo,
+						a.stockMaximo,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioVenta 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioVenta,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioCompra
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioCompra,
+                        a.descripcion
+					FROM [articulo] a
+                        INNER JOIN [categoria] c ON c.idCategoria=a.idCategoria
+					WHERE a.idArticulo = @idArticulo
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListArticlee, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DArticulo
+                    {
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        categoria = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        precioVenta = (double)reader.GetDecimal(6),
+                        precioCompra = (double)reader.GetDecimal(7),
+                        descripcion = reader.GetString(8)
                     });
                 }
             };

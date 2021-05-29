@@ -49,6 +49,11 @@ namespace Logica
             SELECT * FROM [categoria] 
             WHERE idCategoria = @idCategoria
         ";
+
+        private string queryCategoryRepeated = @"
+            SELECT idCategoria FROM [categoria]
+            WHERE nombre = @nombre;
+        ";
         #endregion
 
 
@@ -126,7 +131,7 @@ namespace Logica
                     {
                         idCategoria = reader.GetInt32(0),
                         nombre = reader.GetString(1),
-                        descripcion = reader["descripcion"] == DBNull.Value ? "No Contiene una Descripción" : reader.GetString(2)
+                        descripcion = reader.GetString(2) == null ? "No Contiene una Descripción" : reader.GetString(2)
                     });
                 }
             };
@@ -152,13 +157,32 @@ namespace Logica
                     {
                         idCategoria = reader.GetInt32(0),
                         nombre = reader.GetString(1),
-                        descripcion = reader["descripcion"] == DBNull.Value ? "No Contiene una Descripción" : reader.GetString(2)
+                        descripcion = reader.GetString(2)
                     });
                 }
             };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
+        }
+
+
+        public bool CategoriaRepetida(string Categoria)
+        {
+            bool respuesta = false;
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryCategoryRepeated, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@nombre", Categoria);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read()) respuesta = true;
+                else respuesta = false;
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
         }
     }
 }

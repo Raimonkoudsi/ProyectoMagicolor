@@ -20,36 +20,27 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class CategoriaFrm : Window
     {
-
-
-        public CategoriaFrm()
-        {
-            InitializeComponent();
-        }
-
-        
+        public ArticuloFrm ParentFrm;
 
         public TypeForm Type;
+
         public DCategoria DataFill;
-
         public DCategoria UForm;
-
         public LCategoria Metodos = new LCategoria();
 
         private string nombre = "";
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+        public CategoriaFrm(ArticuloFrm parent = null)
         {
-            if (Type == TypeForm.Update)
-                Update();
-            else
-                Create();
+            InitializeComponent();
+
+            ParentFrm = parent;
         }
+
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if(Type == TypeForm.Read)
@@ -57,7 +48,7 @@ namespace ProyectoMagicolor.Vistas
                 txtTitulo.Text = "Leer Categoria";
                 fillForm(DataFill);
                 SetEnable(false);
-                btnEnviar.Visibility = Visibility.Collapsed;
+                btnEnviar.Content = "Sólo Lectura";
 
                 DAuditoria auditoria = new DAuditoria(
                     Globals.ID_SISTEMA,
@@ -68,14 +59,18 @@ namespace ProyectoMagicolor.Vistas
             }
             else if(Type == TypeForm.Update)
             {
+                SetEnable(true);
+
                 txtTitulo.Text = "Editar Categoria";
                 fillForm(DataFill);
             }
+
+            txtNombre.Focus();
         }
 
        
 
-        void fillData()
+        private void fillData()
         {
             if (Validate())
             {
@@ -83,13 +78,13 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            nombre = txtNombre.txt.Text;
+            nombre = txtNombre.Text;
             string descripcion = txtDescripcion.Text;
 
             UForm = new DCategoria(0, nombre, descripcion);
         }
 
-        void Create()
+        private void Create()
         {
             fillData();
             if (UForm == null)
@@ -104,13 +99,16 @@ namespace ProyectoMagicolor.Vistas
                  );
                 new LAuditoria().Insertar(auditoria);
 
+                if (ParentFrm != null)
+                    ParentFrm.SetCategoria(UForm.nombre);
+
                 this.DialogResult = true;
                 this.Close();
             }
 
         }
 
-        void Update()
+        private void Update()
         {
             fillData();
             if (UForm == null)
@@ -132,44 +130,54 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-        private void PlaceDescripcion_GotFocus(object sender, RoutedEventArgs e)
+        private void SetEnable(bool Enable)
         {
-            if(txtDescripcion.Text == "")
-            {
-                PlaceDescripcion.Text = "";
-            }
-        }
-
-        private void PlaceDescripcion_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtDescripcion.Text == "")
-            {
-                PlaceDescripcion.Text = "Descripción";
-            }
-        }
-
-        void SetEnable(bool Enable)
-        {
-            txtNombre.IsEnabled = Enable;
+            txtNombre.IsEnabled = false;
             txtDescripcion.IsEnabled = Enable;
+            btnEnviar.IsEnabled = Enable;
         }
-        void fillForm(DCategoria Data)
+
+        private void fillForm(DCategoria Data)
         {
             if(Data != null)
             {
-                txtNombre.SetText(Data.nombre);
+                txtNombre.Text = Data.nombre;
                 txtDescripcion.Text = Data.descripcion;
-                PlaceDescripcion.Text = "";
             }
         }
+
         #region Validation
         bool Validate()
         {
-            if (!txtNombre.Changed)
+            if (txtNombre.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Nombre!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtNombre.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe colocar el nombre de la categoría");
+                txtNombre.Focus();
                 return true;
+            }
+
+            if (txtNombre.Text.Length <= 3)
+            {
+                LFunction.MessageExecutor("Error", "El nombre de la categoría debe ser mayor de 3 carácteres");
+                txtNombre.Focus();
+                return true;
+            }
+
+            if (txtDescripcion.Text.Length <= 5 && txtDescripcion.Text != "")
+            {
+                LFunction.MessageExecutor("Error", "La descripción de la categoría debe ser mayor de 5 carácteres");
+                txtNombre.Focus();
+                return true;
+            }
+
+            if (Type != TypeForm.Update)
+            {
+                if (Metodos.CategoriaRepetida(txtNombre.Text))
+                {
+                    LFunction.MessageExecutor("Error", "La categoría ya está registrada en el sistema");
+                    txtNombre.Focus();
+                    return true;
+                }
             }
 
             return false;
@@ -177,5 +185,12 @@ namespace ProyectoMagicolor.Vistas
         #endregion
 
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (Type == TypeForm.Update)
+                Update();
+            else
+                Create();
+        }
     }
 }

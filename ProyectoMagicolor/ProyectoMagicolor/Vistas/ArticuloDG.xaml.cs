@@ -31,7 +31,7 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search)
         {
 
-            List<DArticulo> items = Metodos.Mostrar(search);
+            List<DArticulo> items = Metodos.MostrarConCategoria(search);
 
 
             dgOperaciones.ItemsSource = items;
@@ -93,7 +93,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres eliminar este item?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quiere eliminar este artículo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
@@ -122,7 +122,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if(txtBuscar.Text == "")
             {
-                txtBucarPlaceH.Text = "Buscar...";
+                txtBucarPlaceH.Text = "Ingresar el Nombre del Artículo . . .";
             }
             
         }
@@ -137,8 +137,6 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
-
-            //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
 
     }

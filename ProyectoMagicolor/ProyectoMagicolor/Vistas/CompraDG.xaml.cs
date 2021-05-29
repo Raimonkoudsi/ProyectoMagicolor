@@ -70,8 +70,16 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            Reports.Reporte reporte = new Reports.Reporte();
-            reporte.ExportPDF(Metodos.MostrarComprasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "ComprasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+            if(dpFecha.SelectedDate.HasValue)
+            {
+                Reports.Reporte reporte = new Reports.Reporte();
+                reporte.ExportPDF(Metodos.MostrarComprasGenerales(dpFecha.SelectedDate, txtNombre.Text, metodoPago()), "ComprasGenerales", dpFecha.SelectedDate.Value.ToString("dd-MM-yyyy"));
+            } 
+            else
+            {
+                Reports.Reporte reporte = new Reports.Reporte();
+                reporte.ExportPDF(Metodos.MostrarComprasGenerales(DateTime.Today, txtNombre.Text, metodoPago()), "ComprasGenerales", DateTime.Today.ToString("dd-MM-yyyy"));
+            }
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,

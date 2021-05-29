@@ -94,14 +94,14 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            string razonsocial = txtRazonSocial.txt.Text;
+            string razonsocial = txtRazonSocial.Text;
             string sectorcomercial = (string)CbSectorComercial.SelectedValue;
             tipoDocumento = CbTipoDocumento.Text;
-            documento = txtDocumento.txt.Text;
+            documento = txtDocumento.Text;
             string direccion = txtDireccion.Text;
-            string telefono = txtTelefono.Changed ? txtTelefono.txt.Text : "";
-            string email = txtEmail.Changed ? txtEmail.txt.Text : "";
-            string url = txtUrl.Changed ? txtUrl.txt.Text : "";
+            string telefono = txtTelefono.Text;
+            string email = txtEmail.Text;
+            string url = txtUrl.Text;
 
             UForm = new DProveedor(0,
                                    razonsocial,
@@ -158,38 +158,6 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-        private void PlaceDescripcion_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtDireccion.Text == "")
-            {
-                PlaceDireccion.Text = "";
-            }
-        }
-
-        private void PlaceDescripcion_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtDireccion.Text == "")
-            {
-                PlaceDireccion.Text = "Dirección";
-            }
-        }
-
-
-        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbTipoDocumento.SelectedIndex > -1)
-                PlaceTipoDocumento.Text = "";
-            else
-                PlaceTipoDocumento.Text = "Tipo";
-        }
-        private void CbSectorComercial_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbSectorComercial.SelectedIndex > -1)
-                PlaceSectorComercial.Text = "";
-            else
-                PlaceSectorComercial.Text = "Sector Comercial";
-        }
-
         void SetEnable(bool Enable)
         {
             txtRazonSocial.IsEnabled = Enable;
@@ -205,64 +173,98 @@ namespace ProyectoMagicolor.Vistas
         {
             if(Data != null)
             {
-                txtRazonSocial.SetText(Data.razonSocial);
+                txtRazonSocial.Text = Data.razonSocial;
                 CbSectorComercial.SelectedValue = Data.sectorComercial;
                 CbTipoDocumento.SelectedIndex = Data.tipoDocumento == "V" ? 0 :
                                                 Data.tipoDocumento == "E" ? 1 : 
                                                 Data.tipoDocumento == "J" ? 2 :
                                                 Data.tipoDocumento == "G" ? 3 : -1;
-                txtDocumento.SetText(Data.numeroDocumento);
-                txtTelefono.SetText(Data.telefono);
-                txtEmail.SetText(Data.email);
+                txtDocumento.Text = Data.numeroDocumento;
+                txtTelefono.Text = Data.telefono;
+                txtEmail.Text = Data.email;
                 txtDireccion.Text = Data.direccion;
-                PlaceDireccion.Text = Data.direccion != "" ? "" : "Dirección";
-                txtUrl.SetText(Data.url);
+                txtUrl.Text = Data.url;
             }
         }
         #region Validation
         bool Validate()
         {
-            if (!txtRazonSocial.Changed)
+            if (txtRazonSocial.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Razón Social!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtRazonSocial.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar la razón social");
+                txtRazonSocial.Focus();
+                return true;
+            }
+            if (txtRazonSocial.Text.Length <= 4)
+            {
+                LFunction.MessageExecutor("Error", "La razón social debe ser mayor a 4 carácteres");
+                txtRazonSocial.Focus();
                 return true;
             }
             if (CbSectorComercial.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes seleccionar un Sector Comercial!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar un sector comercial");
                 CbSectorComercial.Focus();
                 return true;
             }
             if (CbTipoDocumento.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes seleccionar un Tipo de Documento!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar un tipo de documento");
                 CbTipoDocumento.Focus();
                 return true;
             }
-            if (!txtDocumento.Changed)
+            if (txtDocumento.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Documento!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtDocumento.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar el campo cocumento");
+                txtDocumento.Focus();
                 return true;
             }
-            if(txtTelefono.Changed && txtTelefono.txt.Text.Contains(" ") )
+            if(txtTelefono.Text != "" && txtTelefono.Text.Contains(" ") )
             {
-                MessageBox.Show("El campo de telefono no debe tener espacios!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtTelefono.txt.Focus();
+                LFunction.MessageExecutor("Error", "El campo de telefono no debe contener espacios en blanco");
+                txtTelefono.Focus();
                 return true;
             }
-            if (txtEmail.Changed && !Validaciones.IsValidEmail(txtEmail.txt.Text))
+            if (txtEmail.Text != "" && !Validaciones.IsValidEmail(txtEmail.Text))
             {
-                MessageBox.Show("El correo electronico es incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtEmail.txt.Focus();
+                LFunction.MessageExecutor("Error", "El correo electronico no contiene el formato correcto");
+                txtEmail.Focus();
                 return true;
             }
-            if(txtUrl.Changed && !Validaciones.ValidHttpURL(txtUrl.txt.Text))
+            if(txtUrl.Text != "" && !Validaciones.ValidHttpURL(txtUrl.Text))
             {
-                MessageBox.Show("El URl es Incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtEmail.txt.Focus();
+                LFunction.MessageExecutor("Error", "La dirección de la página web no contiene el formato correcto");
+                txtEmail.Focus();
                 return true;
+            }
+            if ((txtTelefono.Text.Length <= 10 && txtTelefono.Text != "") || txtTelefono.Text.Length >= 14)
+            {
+                LFunction.MessageExecutor("Error", "El campo del teléfono debe ser válido");
+                txtTelefono.Focus();
+                return true;
+            }
+            if (txtDocumento.Text.Length <= 6 || txtDocumento.Text.Length >= 9)
+            {
+                LFunction.MessageExecutor("Error", "El campo del documento debe ser válido");
+                txtDocumento.Focus();
+                return true;
+            }
+
+            if(txtTelefono.Text == "" && txtEmail.Text == "") 
+            {
+                LFunction.MessageExecutor("Error", "Debe proporcionar un teléfono o correo electrónico del proveedor");
+                txtTelefono.Focus();
+                return true;
+            }
+
+            if (Type != TypeForm.Update)
+            {
+                if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                {
+                    LFunction.MessageExecutor("Error", "El documento ya está registrado en el sistema");
+                    txtDocumento.Focus();
+                    return true;
+                }
             }
 
             return false;

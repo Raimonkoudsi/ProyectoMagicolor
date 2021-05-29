@@ -55,7 +55,9 @@ namespace Logica
         {
             try
             {
-                Conexion.ConexionSql.Open();
+                if(Conexion.ConexionSql.State != ConnectionState.Open)
+                    Conexion.ConexionSql.Open();
+
                 return action();
             }
             catch (SqlException errorSql)

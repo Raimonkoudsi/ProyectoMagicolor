@@ -6,7 +6,22 @@
              StartupUri="Vistas/Login.xaml">
     <Application.Resources>
 		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
+            <ControlTemplate x:Key="validationErrorTemplate">
+                <DockPanel>
+                    <TextBlock Foreground="Red" DockPanel.Dock="Top">!</TextBlock>
+                    <AdornedElementPlaceholder x:Name="ErrorAdorner"></AdornedElementPlaceholder>
+                </DockPanel>
+            </ControlTemplate>
+            <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
 				<ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />

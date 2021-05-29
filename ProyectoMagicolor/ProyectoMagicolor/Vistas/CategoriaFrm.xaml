@@ -4,37 +4,44 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" Height="350" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded">
+        Title="Variedades Magicolor" Height="355" Width="390" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#f0f0f0">
+        <Grid Grid.Row="0" Background="#3194F7">
+            <Image Width="40" Margin="30 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Source="..\Imagenes\icon-bag.png"/>
             <TextBlock Name="txtTitulo"
-                       Text="Insertar Categoria" 
+                       Text="Insertar Categoría" 
                        HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="25"
-                       Margin="0 10"/>
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       FontSize="28"
+                       Margin="0 10"
+                        />
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
-            <StackPanel Width="350" Margin="0 10 0 0">
-                <local:TextInput x:Name="txtNombre" Placeholder="Nombre" Margin="0 10" FontSize="15"/>
+            <StackPanel Width="320" Margin="0 10 -16 0">
                 <Grid Margin="0 10">
-                    <TextBlock x:Name="PlaceDescripcion" Text="Descripción" FontSize="15" Margin="1 4" Foreground="Gray"/>
-                    <TextBox x:Name="txtDescripcion" FontSize="15" Text="" 
+                    <TextBox x:Name="txtNombre" MaxLength="50" FontSize="12"
+                            materialDesign:HintAssist.Hint="Nombre de la Categoría"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                </Grid>
+                <Grid Margin="0 10">
+                    <TextBox x:Name="txtDescripcion" FontSize="12" 
                              Height="100" TextWrapping="Wrap"
                              AcceptsReturn="True"
                              HorizontalScrollBarVisibility="Disabled"
                              VerticalScrollBarVisibility="Auto"
-                             GotFocus="PlaceDescripcion_GotFocus" LostFocus="PlaceDescripcion_LostFocus"/>
+                             MaxLength="250"
+                             materialDesign:HintAssist.Hint="Descripción de la Categoría (Opcional)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 </Grid>
-                <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
-
-                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 15 0 0" Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -168,6 +168,20 @@ namespace Datos
             set { _TotalNeto = value; }
         }
 
+        private string _UltimaActualizacion;
+        public string ultimaActualizacion
+        {
+            get { return _UltimaActualizacion; }
+            set { _UltimaActualizacion = value; }
+        }
+
+        private double _PrecioCompra;
+        public double precioCompra
+        {
+            get { return _PrecioCompra; }
+            set { _PrecioCompra = value; }
+        }
+
 
         public DArticulo()
         {

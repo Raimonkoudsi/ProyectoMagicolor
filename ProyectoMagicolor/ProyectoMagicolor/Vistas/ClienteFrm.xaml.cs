@@ -228,11 +228,33 @@ namespace ProyectoMagicolor.Vistas
                 txtTelefono.txt.Focus();
                 return true;
             }
+            if((txtTelefono.txt.Text.Length <= 10 && txtTelefono.txt.Text != "") || txtTelefono.txt.Text.Length >= 14)
+            {
+                MessageBox.Show("Debe agregar un teléfono válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtTelefono.txt.Focus();
+                return true;
+            }
+            if (txtDocumento.txt.Text.Length <= 6 || txtDocumento.txt.Text.Length >= 9)
+            {
+                MessageBox.Show("El campo del documento debe ser válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtDocumento.txt.Focus();
+                return true;
+            }
             if (txtEmail.Changed && !Validaciones.IsValidEmail(txtEmail.txt.Text))
             {
                 MessageBox.Show("El correo electronico es incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtEmail.txt.Focus();
                 return true;
+            }
+
+            if (Type != TypeForm.Update)
+            {
+                if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                {
+                    LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+                    txtDocumento.txt.Focus();
+                    return true;
+                }
             }
 
             return false;

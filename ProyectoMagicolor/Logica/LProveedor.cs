@@ -68,16 +68,23 @@ namespace Logica
             SELECT * FROM [proveedor] 
             WHERE idProveedor = @idProveedor
         ";
+
+        private string queryIDCardRepeated = @"
+            SELECT idProveedor FROM [proveedor] 
+            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula;
+        ";
         #endregion
 
-        public string Insertar(DProveedor Proveedor)
+        public string Insertar(DProveedor Proveedor, bool ProveedorVacio = false)
         {
             string respuesta = "";
 
             Action action = () =>
             {
+                int idProveedor = ProveedorVacio == false ? LFunction.GetID("proveedor", "idProveedor") : 0;
+
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idProveedor", LFunction.GetID("proveedor", "idProveedor"));
+                comm.Parameters.AddWithValue("@idProveedor", idProveedor);
                 comm.Parameters.AddWithValue("@razonSocial", Proveedor.razonSocial);
                 comm.Parameters.AddWithValue("@sectorComercial", Proveedor.sectorComercial);
                 comm.Parameters.AddWithValue("@tipoDocumento", Proveedor.tipoDocumento);
@@ -88,7 +95,6 @@ namespace Logica
                 comm.Parameters.AddWithValue("@url", Proveedor.url);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Registró el Proveedor";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Proveedor Ingresado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -236,6 +242,25 @@ namespace Logica
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
+        }
+
+
+        public bool CedulaRepetida(string Cedula)
+        {
+            bool respuesta = false;
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryIDCardRepeated, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@cedula", Cedula);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read()) respuesta = true;
+                else respuesta = false;
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
         }
     }
 }

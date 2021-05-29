@@ -54,6 +54,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
+            txtBucarPlaceH.Text = "";
             txtMonto.Text = DataFill.montoTotal.ToString();
 
             total = true;
@@ -63,12 +64,15 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            txtIdVenta.Text = "ID " + DataFill.idVenta.ToString();
-            txtFecha.Text = DataFill.fecha.ToShortDateString();
+            txtTitulo.Text = "Venta N° " + DataFill.idVenta.ToString();
             txtCliente.Text = DataFill.cliente;
             txtCedula.Text = DataFill.cedulaCliente;
-            txtMontoRestante.Text = "Total " + DataFill.monto.ToString();
-            txtMontoTotal.Text = "Restante " + DataFill.montoTotal.ToString();
+
+            double z = Math.Truncate(DataFill.monto * 100) / 100;
+            txtMontoRestante.Text = z.ToString("0.00") + " Bs S";
+
+            double y = Math.Truncate(DataFill.montoTotal * 100) / 100;
+            txtMontoTotal.Text = y.ToString("0.00") + " Bs S";
 
         }
 
@@ -109,12 +113,14 @@ namespace ProyectoMagicolor.Vistas
                 rpta = MessageBox.Show("Desea Cancelar el Monto Total Restante de " + DataFill.montoTotal + " Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
             else
-            {
                 rpta = MessageBox.Show("Desea Cancelar el Monto de " + txtMonto.Text + " Bs S para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.Text)).ToString() + "Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
-            }
 
             if (rpta == MessageBoxResult.No)
+            {
+                txtBucarPlaceH.Text = "Monto a Abonar";
                 return;
+            }
+
 
             string abonarCC = Metodos.RegistrarCxC(UForm, DataFill.idCuentaCobrar);
 
@@ -127,7 +133,7 @@ namespace ProyectoMagicolor.Vistas
                 );
                 new LAuditoria().Insertar(auditoria);
 
-                MessageBox.Show("Pago Completado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                LFunction.MessageExecutor("Information", "Pago Total Completado");
             }
             else if (abonarCC.Equals("PARCIAL"))
             {
@@ -138,7 +144,7 @@ namespace ProyectoMagicolor.Vistas
                 );
                 new LAuditoria().Insertar(auditoria);
 
-                MessageBox.Show("Abono Ingresado!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                LFunction.MessageExecutor("Information", "Abono Ingresado Correctamente");
             }
 
             this.Close();
@@ -148,15 +154,15 @@ namespace ProyectoMagicolor.Vistas
 
         bool Validate()
         {
-            if ((txtMonto.Text == "Monto a Abonar" || double.Parse(txtMonto.Text) <= 0) && !total)
+            if ((txtMonto.Text != "" || double.Parse(txtMonto.Text) <= 0) && !total)
             {
-                MessageBox.Show("Debe Agregar un Monto para Abonar!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe Agregar un Monto para Abonar");
                 txtMonto.Focus();
                 return true;
             }
             else if (double.Parse(txtMonto.Text) > DataFill.montoTotal && !total)
             {
-                MessageBox.Show("El Monto no debe Exceder la Deuda!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "El Monto no debe Exceder la Deuda");
                 txtMonto.Focus();
                 return true;
             }
@@ -171,7 +177,6 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtBucarPlaceH.Text = "";
             }
-
         }
 
         private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
@@ -180,7 +185,6 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtBucarPlaceH.Text = "Monto a Abonar";
             }
-
         }
     }
 }

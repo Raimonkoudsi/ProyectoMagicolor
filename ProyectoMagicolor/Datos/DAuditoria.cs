@@ -42,6 +42,13 @@ namespace Datos
             set { _Fecha = value; }
         }
 
+        private string _FechaTime;
+        public string fechaTime
+        {
+            get { return _FechaTime; }
+            set { _FechaTime = value; }
+        }
+
         private string _Usuario;
         public string usuario
         {

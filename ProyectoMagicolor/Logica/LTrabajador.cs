@@ -94,23 +94,23 @@ namespace Logica
                 email, 
                 usuario 
             FROM [trabajador] 
-            WHERE cedula LIKE @usuario + '%' AND acceso <> 0
-            ORDER BY cedula
+            WHERE cedula LIKE @cedula + '%' AND acceso <> 0
+            ORDER BY cedula ASC
         ";
 
-        private string queryListUser = @"
+        private string queryListIDCardAdmin = @"
             SELECT 
+                idTrabajador, 
                 cedula, 
-                nombre,
-                apellidos,
+                CONCAT(nombre, ' ', apellidos) as nombreCompleto, 
                 direccion, 
                 telefono, 
                 email, 
                 usuario 
             FROM [trabajador] 
-            WHERE usuario LIKE @usuario + '%'  AND acceso <> 0
-            ORDER BY usuario
+            ORDER BY usuario ASC
         ";
+
 
         private string queryListEmployee = @"
             SELECT * FROM [trabajador] 
@@ -157,13 +157,13 @@ namespace Logica
 
         #endregion
 
-        public string Insertar(DTrabajador Trabajador, List<DSeguridad> Seguridad)
+        public string Insertar(DTrabajador Trabajador, List<DSeguridad> Seguridad = null, bool TrabajadorVacio = false)
         {
             string respuesta = "";
 
             Action action = () =>
             {
-                int idTrabajador = LFunction.GetID("trabajador", "idTrabajador");
+                int idTrabajador = TrabajadorVacio == false ? LFunction.GetID("trabajador", "idTrabajador") : 0;
 
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idTrabajador", idTrabajador);
@@ -180,8 +180,8 @@ namespace Logica
                 comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Trabajador.contraseña));
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Trabajador";
-                if (respuesta.Equals("OK"))
-                    respuesta = InsertarSeguridad(Seguridad, idTrabajador);
+                if (respuesta.Equals("OK") && !TrabajadorVacio)
+                    respuesta = InsertarSeguridad(idTrabajador, Seguridad);
             };
             LFunction.SafeExecutor(action);
 
@@ -189,7 +189,7 @@ namespace Logica
         }
 
 
-        private string InsertarSeguridad(List<DSeguridad> Detalle, int IdTrabajador)
+        private string InsertarSeguridad(int IdTrabajador, List<DSeguridad> Detalle)
         {
             int i = 0;
             string respuesta = "";
@@ -207,7 +207,6 @@ namespace Logica
 
                 i++;
             }
-
             return respuesta;
         }
 
@@ -219,7 +218,7 @@ namespace Logica
             string respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
 
             if (respuesta.Equals("OK"))
-                InsertarSeguridad(Seguridad, Trabajador.idTrabajador);
+                InsertarSeguridad(Trabajador.idTrabajador, Seguridad);
 
             return respuesta;
         }
@@ -272,14 +271,14 @@ namespace Logica
         }
 
 
-        public List<DTrabajador> Mostrar(string Usuario)
+        public List<DTrabajador> Mostrar(string Cedula)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryListIDCard, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
+                comm.Parameters.AddWithValue("@cedula", Cedula);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -301,27 +300,26 @@ namespace Logica
             return ListaGenerica;
         }
 
-
-        public List<DTrabajador> MostrarNombre(string Usuario)
+        public List<DTrabajador> MostrarConAdministrador()
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryListUser, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
+                using SqlCommand comm = new SqlCommand(queryListIDCardAdmin, Conexion.ConexionSql);
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                if (reader.Read())
+                while (reader.Read())
                 {
                     ListaGenerica.Add(new DTrabajador
                     {
-                        cedula = reader.GetString(0),
-                        nombre = reader.GetString(1),
-                        direccion = reader.GetString(2),
-                        telefono = reader.GetString(3),
-                        email = reader.GetString(4),
-                        usuario = Encripter.Decrypt(reader.GetString(5))
+                        idTrabajador = reader.GetInt32(0),
+                        cedula = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        direccion = reader.GetString(3),
+                        telefono = reader.GetString(4),
+                        email = reader.GetString(5),
+                        usuario = Encripter.Decrypt(reader.GetString(6))
                     });
                 }
             };

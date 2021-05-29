@@ -27,22 +27,6 @@ namespace Logica
             );
 	    ";
 
-        private string queryList = @"
-            SELECT
-				a.idAuditoria,
-				a.fecha,
-				a.accion,
-				a.descripcion,
-				t.usuario,
-				t.acceso
-			FROM [auditoria] a
-				INNER JOIN [trabajador] t ON t.idTrabajador=a.idTrabajador
-            WHERE a.fecha = @fecha 
-				AND t.usuario LIKE @usuario + '%' 
-				AND a.accion LIKE @accion + '%'
-            ORDER BY a.idAuditoria DESC;
-        ";
-
         #endregion
 
 
@@ -67,31 +51,53 @@ namespace Logica
         }
 
 
-        public List<DAuditoria> Mostrar(DateTime? Fecha, string Usuario, string Accion)
+        public List<DAuditoria> Mostrar(DateTime? Fecha, string Accion, string Usuario)
         {
             List<DAuditoria> ListaGenerica = new List<DAuditoria>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@fecha", Fecha == null ? DateTime.Now : Fecha);
-                comm.Parameters.AddWithValue("@usuario", Usuario);
-                comm.Parameters.AddWithValue("@accion", Accion);
+            DateTime? fecha = Fecha.HasValue ? Fecha : DateTime.Now;
+            string stringUsuario = Usuario == "" ? "" :
+                                   Usuario == "Todos los Usuarios" ? "" :
+                                   " AND t.usuario = '" + Encripter.Encrypt(Usuario) + "'";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            string queryList = @"
+                SELECT
+				    a.idAuditoria,
+				    a.fecha,
+				    a.accion,
+				    a.descripcion,
+				    t.usuario,
+				    t.acceso
+			    FROM [auditoria] a
+				    INNER JOIN [trabajador] t ON t.idTrabajador=a.idTrabajador
+                WHERE a.accion LIKE @accion + '%'
+                    AND a.fecha BETWEEN @desde AND @hasta
+                    " + stringUsuario + @"
+                ORDER BY a.fecha DESC;
+            ";
+
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DAuditoria
+
+                    using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@desde", fecha);
+                    comm.Parameters.AddWithValue("@hasta", fecha.Value.AddDays(1).AddTicks(-1));
+                    comm.Parameters.AddWithValue("@accion", Accion);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idAuditoria = reader.GetInt32(0),
-                        fecha = reader.GetDateTime(1),
-                        accion = reader.GetString(2),
-                        descripcion = reader.GetString(3),
-                        usuario = reader.GetString(4),
-                        accesoString = AccesoString(reader.GetInt32(5))
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DAuditoria
+                        {
+                            idAuditoria = reader.GetInt32(0),
+                            fechaTime = reader.GetDateTime(1).TimeOfDay.ToString(@"hh\:mm\:ss"),
+                            accion = reader.GetString(2),
+                            descripcion = reader.GetString(3),
+                            usuario = Encripter.Decrypt(reader.GetString(4)),
+                            accesoString = AccesoString(reader.GetInt32(5))
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;

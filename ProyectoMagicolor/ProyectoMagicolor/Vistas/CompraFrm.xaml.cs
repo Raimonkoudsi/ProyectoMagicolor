@@ -308,6 +308,12 @@ namespace ProyectoMagicolor.Vistas
             Refresh();
         }
 
+        public void SetNuevoArticulo(string Codigo)
+        {
+            txtBuscar.Text = Codigo;
+            SetArticulo();
+        }
+
         public void SetArticulo()
         {
             bool WillInclude = false;
@@ -322,6 +328,24 @@ namespace ProyectoMagicolor.Vistas
                 {
                     DA = response[0];
                     WillInclude = true;
+                }
+                else if (response.Count == 0)
+                {
+                    if (txtBuscar.Text.Length <= 5)
+                    {
+                        LFunction.MessageExecutor("Error", "El código debe ser mayor a 5 dígitos");
+                        txtBuscar.Focus();
+                    }
+                    else
+                    {
+                        var resp = MessageBox.Show("El artículo no se encuentra registrado" + Environment.NewLine + "¿Desea Agregarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+                        if (resp == MessageBoxResult.Yes)
+                        {
+                            ArticuloFrm Frm = new ArticuloFrm(this, txtBuscar.Text);
+                            bool? res = Frm.ShowDialog();
+                        }
+                    }
                 }
 
             }

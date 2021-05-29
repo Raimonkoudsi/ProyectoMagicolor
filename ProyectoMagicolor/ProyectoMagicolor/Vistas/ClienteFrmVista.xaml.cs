@@ -20,9 +20,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class ClienteFrmVista : Window
     {
         public ClienteFrmVista(VentaFrm parent, string tipo, string documento)
@@ -90,9 +87,16 @@ namespace ProyectoMagicolor.Vistas
             if (UForm == null)
                 return;
             string response = Metodos.Insertar(UForm);
-            MessageBox.Show(response);
+
             if (response == "OK")
             {
+                DAuditoria auditoria = new DAuditoria(
+                    Globals.ID_SISTEMA,
+                    "Registrar",
+                    "Ha Registrado el Cliente " + TipoDocumento + "-" + Documento
+                 );
+                new LAuditoria().Insertar(auditoria);
+
                 ParentFrm.AgregarCliente(UForm);
                 this.DialogResult = true;
                 this.Close();
@@ -177,10 +181,29 @@ namespace ProyectoMagicolor.Vistas
                 txtTelefono.txt.Focus();
                 return true;
             }
+            if ((txtTelefono.txt.Text.Length <= 10 && txtTelefono.txt.Text.Length > 0) || txtTelefono.txt.Text.Length >= 14)
+            {
+                MessageBox.Show("Debe agregar un teléfono válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtTelefono.txt.Focus();
+                return true;
+            }
+            if (txtDocumento.txt.Text.Length <= 6 || txtDocumento.txt.Text.Length >= 9)
+            {
+                MessageBox.Show("El campo del documento debe ser válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtDocumento.txt.Focus();
+                return true;
+            }
             if (txtEmail.Changed && !Validaciones.IsValidEmail(txtEmail.txt.Text))
             {
                 MessageBox.Show("El correo electronico es incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtEmail.txt.Focus();
+                return true;
+            }
+
+            if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+            {
+                LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+                txtDocumento.txt.Focus();
                 return true;
             }
 

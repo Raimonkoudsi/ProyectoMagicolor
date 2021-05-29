@@ -84,24 +84,6 @@ namespace ProyectoMagicolor.Vistas
             new LAuditoria().Insertar(auditoria);
         }
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-               txtBucarPlaceH.Text = "";
-            }
-            
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "Buscar...";
-            }
-            
-        }
-
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
             int id = (int)((Button)sender).CommandParameter;
@@ -112,8 +94,6 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(txtBuscar.Text);
-
-            //MessageBox.Show(response[0].fechaNacimiento.ToString());
         }
     }
 

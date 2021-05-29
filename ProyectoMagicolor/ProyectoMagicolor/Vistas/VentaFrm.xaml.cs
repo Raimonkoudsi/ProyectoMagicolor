@@ -19,9 +19,7 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for CompraFrm.xaml
-    /// </summary>
+
     public partial class VentaFrm : Page
     {
         public VentaFrm(MainWindow parent)
@@ -373,7 +371,7 @@ namespace ProyectoMagicolor.Vistas
                 }
                 else
                 {
-                    var resp = MessageBox.Show("El Codigo que ingresaste no se encuentra! ¿Deseas buscarlo manualmente?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    var resp = MessageBox.Show("El Codigo que ingresó no se encuentra! ¿Deseas buscarlo manualmente?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (resp == MessageBoxResult.No)
                         return;
                     else

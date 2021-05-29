@@ -20,12 +20,21 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid>
-                <Button x:Name="btnOpenFilters" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right" Padding="0" Margin="20 15 25 10" Click="btnOpenFilters_Click" Focusable="False">
-                    <Image Source="/ProyectoMagicolor;component/Imagenes/filter.png" />
-                </Button>
-                <Button HorizontalAlignment="Left" Margin="30 0 0 0" Click="Reporte_Click" Background="#3194F7">
-                    <materialDesign:PackIcon Kind="FileChartOutline" Foreground="White" Width="20" Height="20" />
-                </Button>
+                <Grid Grid.Row="0" Margin="30 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button HorizontalAlignment="Center" ToolTip="Generar Reporte" Margin="0 0 20 0" Width="50" Click="Reporte_Click" Background="#3194F7">
+                        <materialDesign:PackIcon Kind="FileChartOutline" Foreground="White" Width="20" Height="20" />
+                    </Button>
+                    <Grid Grid.Column="1" Margin="0 0 0 0">
+                    </Grid>
+                    <Button Grid.Column="3" x:Name="btnOpenFilters" HorizontalAlignment="Center" ToolTip="Abrir Filtración" Margin="20 0 0 0" Width="50" Click="btnOpenFilters_Click" Focusable="False">
+                        <materialDesign:PackIcon Kind="FilterList" Foreground="White" Width="20" Height="20" />
+                    </Button>
+                </Grid>
             </Grid>
             <DataGrid x:Name="dgOperaciones" 
                   Grid.Row="1"
@@ -86,14 +95,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Cantidad Vendida" Binding="{Binding cantidadVendida}">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Stock Minimo" Binding="{Binding stockMinimo}">
+                    <DataGridTextColumn Width="auto" Header="Vendida" Binding="{Binding cantidadVendida}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>

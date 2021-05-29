@@ -4,57 +4,99 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+
         mc:Ignorable="d"
-        Title="Variedades Magicolor" Height="500" Width="450" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded">
+        Title="Variedades Magicolor" Height="680" Width="480" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#f0f0f0">
+        <Grid Grid.Row="0" Background="#3194F7">
+            <Image Width="40" Margin="30 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Source="..\Imagenes\icon-bag.png"/>
             <TextBlock Name="txtTitulo"
-                       Text="Insertar Articulo" 
+                       Text="Insertar Nuevo Artículo" 
                        HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="25"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       FontSize="28"
                        Margin="0 10"/>
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
-            <StackPanel Width="350" Margin="0 10 0 0">
-                <local:TextInput x:Name="txtCodigo" Placeholder="Código" Margin="0 10" FontSize="15"/>
-                <local:TextInput x:Name="txtNombre" Placeholder="Nombre" Margin="0 10" FontSize="15"/>
+            <StackPanel Width="400" HorizontalAlignment="Center" Margin="0 10 -16 0">
                 <Grid>
-                    <TextBlock x:Name="PlaceCategoria" Text="Categoría" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                    <ComboBox x:Name="CbCategoria" Margin="0 10" FontSize="15" SelectionChanged="CbCategoria_SelectionChanged">
-                    </ComboBox>
+                    <TextBox x:Name="txtCodigo" MaxLength="18" Margin="0 10" FontSize="12"
+                            materialDesign:HintAssist.Hint="Código del Artículo"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 </Grid>
-                <Grid Margin="0 10">
+                <Grid Margin="0 5">
+                    <TextBox x:Name="txtNombre" MaxLength="50" Margin="0 10" FontSize="12"
+                            materialDesign:HintAssist.Hint="Nombre del Artículo"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                </Grid>
+                <Grid Margin="0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="CbCategoria" Margin="0 10" FontSize="12"
+                                materialDesign:HintAssist.Hint="Categoría del Artículo"
+                                Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                    </ComboBox>
+                    <Button Grid.Column="1" BorderBrush="Transparent" Name="btnCategoria" Width="50" Height="50" ToolTip="Nueva Categoría" HorizontalAlignment="Center" Margin="10 0 0 0" Click="Categoria_Click" Background="#3194F7">
+                        <materialDesign:PackIcon Kind="PlusBold" HorizontalAlignment="Center" Foreground="White" Width="20" Height="20" />
+                    </Button>
+                </Grid>
+                <Grid Margin="0 0 0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <local:TextInput Grid.Column="0" x:Name="txtStockMinimo" Placeholder="Stock Minimo" Margin="0 0 5 0" FontSize="15"/>
-                    <local:TextInput Grid.Column="1" x:Name="txtStockMaximo" Placeholder="Stock Maximo" Margin="5 0 0 0" FontSize="15"/>
+                    <Grid Grid.Column="0">
+                        <TextBox x:Name="txtStockMinimo" MaxLength="3" Margin="0 10 10 10" FontSize="12"
+                                materialDesign:HintAssist.Hint="Stock Mínimo"
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBox x:Name="txtStockMaximo" MaxLength="4" Margin="10 10 0 10" FontSize="12"
+                                materialDesign:HintAssist.Hint="Stock Máximo (Opcional)"
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
                 </Grid>
-                <Grid Margin="0 10">
-                    <TextBlock x:Name="PlaceDescripcion" Text="Descripción" FontSize="15" Margin="1 4" Foreground="Gray"/>
-                    <TextBox x:Name="txtDescripcion" FontSize="15" Text="" 
+                <Grid Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <TextBox x:Name="txtPrecioCompra" MaxLength="10" Margin="0 10 10 10" FontSize="12"
+                                materialDesign:HintAssist.Hint="Precio Compra"
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBox x:Name="txtPrecioVenta" MaxLength="10" Margin="10 10 0 10" FontSize="12"
+                                materialDesign:HintAssist.Hint="Precio Venta"
+                                Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0 5">
+                    <TextBox x:Name="txtDescripcion" FontSize="13" Text="" 
                              Height="100" TextWrapping="Wrap"
                              AcceptsReturn="True"
+                             MaxLength="250"
                              HorizontalScrollBarVisibility="Disabled"
                              VerticalScrollBarVisibility="Auto"
-                             GotFocus="PlaceDescripcion_GotFocus" LostFocus="PlaceDescripcion_LostFocus"/>
+                             materialDesign:HintAssist.Hint="Descripción del Artículo (Opcional)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 </Grid>
                 <StackPanel Background="WhiteSmoke" Visibility="Collapsed">
                     <Grid Background="Gray" Margin="0 10" HorizontalAlignment="Center">
                         <Image x:Name="imgPhoto" Width="200" Height="200" />
                     </Grid>
-                    <Button x:Name="btnLoad" Content="Cargar Imagen" HorizontalAlignment="Center" Click="btnLoad_Click"/>
                 </StackPanel>
-                <!--<local:TextInput x:Name="txtContraseña" Placeholder="Contraseña" Margin="0 10" FontSize="15"/>-->
-
-                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+                <Button Name="btnEnviar" Command="{Binding SubmitCommand}" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -96,7 +96,7 @@ namespace ProyectoMagicolor.Vistas
                     else
                     {
                         //Mensaje de Error
-                        MessageBox.Show("Debes seleccionar las dos fechas!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Debes seleccionar las dos fechas!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                         DpFechaInicio.Focus();
                         return;
                     }

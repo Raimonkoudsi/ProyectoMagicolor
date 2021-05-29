@@ -29,10 +29,10 @@ namespace ProyectoMagicolor.Vistas
         }
         
 
-        public void Refresh(string search)
+        public void Refresh(string search, string search2)
         {
 
-            List<DTrabajador> items = MetodosUsuario.Mostrar(search);
+            List<DTrabajador> items = MetodosUsuario.Mostrar((search + "-" + search2));
 
             List<TablaTrabajadores> tablaTrabajadores = new List<TablaTrabajadores>();
 
@@ -46,14 +46,14 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             TrabajadoresFrm frmTrab = new TrabajadoresFrm();
             bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -67,12 +67,12 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.ListaSeguridad = responseSecurity;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
@@ -83,7 +83,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             string cedula = dgOperaciones.Items[1].ToString();
             MetodosUsuario.Eliminar(id);
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
@@ -93,22 +93,17 @@ namespace ProyectoMagicolor.Vistas
             new LAuditoria().Insertar(auditoria);
         }
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(txtBuscar.Text == "")
-            {
-               txtBucarPlaceH.Text = "";
-            }
-            
-        }
+            if (CbTipoDocumento.SelectedIndex > -1)
+                PlaceTipoDocumento.Text = "";
+            else
+                PlaceTipoDocumento.Text = "Tipo";
 
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "Buscar...";
-            }
-            
+            var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
+                            CbTipoDocumento.SelectedIndex == 1 ? "E" : "";
+
+            Refresh(tipoDoc, txtDocumento.Text);
         }
 
         private void txtVer_Click(object sender, RoutedEventArgs e)
@@ -122,7 +117,7 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.ListaSeguridad = responseSecurity;
             frmTrab.DataFill = response[0];
             bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void Reporte_Click(object sender, RoutedEventArgs e)
@@ -134,7 +129,7 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-            reporte.ExportPDF(MetodosUsuario.MostrarNombre(txtBuscar.Text), "Trabajador");
+            reporte.ExportPDF(MetodosUsuario.Mostrar((CbTipoDocumento.Text + "-" + txtDocumento.Text)), "Trabajador");
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
@@ -142,6 +137,24 @@ namespace ProyectoMagicolor.Vistas
                 "Ha Generado un Reporte de Trabajadores"
             );
             new LAuditoria().Insertar(auditoria);
+        }
+
+        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtDocumento.Text == "")
+            {
+                txtBucarPlaceH.Text = "";
+            }
+
+        }
+
+        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtDocumento.Text == "")
+            {
+                txtBucarPlaceH.Text = "Ingresar Cédula del Trabajador";
+            }
+
         }
     }
 

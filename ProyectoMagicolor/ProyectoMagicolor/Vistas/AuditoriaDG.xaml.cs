@@ -28,6 +28,16 @@ namespace ProyectoMagicolor.Vistas
             InitializeComponent();
 
             Parent = parent;
+
+            LTrabajador Mt = new LTrabajador();
+            var LCmt = Mt.MostrarConAdministrador();
+
+            DTrabajador NCT = new DTrabajador(0, "", "" ,"", DateTime.Now, "", "", "", "", 0, "Todos los Usuarios", "", "");
+            LCmt.Add(NCT);
+
+            CbUsuario.ItemsSource = LCmt;
+            CbUsuario.DisplayMemberPath = "usuario";
+            CbUsuario.SelectedValuePath = "usuario";
         }
 
         public MainWindow Parent;
@@ -42,28 +52,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), txtUsuario.Text);
-        }
-
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), txtUsuario.Text);
-        }
-
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtUsuario.Text == "")
-            {
-                txtBuscarPlaceUsuario.Text = "";
-            }
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtUsuario.Text == "")
-            {
-                txtBuscarPlaceUsuario.Text = "Ingresar Usuario ...";
-            }
+            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.Text);
         }
 
         private void CbAcciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -73,18 +62,18 @@ namespace ProyectoMagicolor.Vistas
             else
                 PlaceAcciones.Text = "Acciones";
 
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), txtUsuario.Text);
+            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.Text);
         }
 
 
         private void dpFecha_SelectedDateChanged(object sender, RoutedEventArgs e)
         {
-            if (PlaceFecha.Text != "")
+            if (dpFecha.Text != "")
             {
                 PlaceFecha.Text = "";
             }
 
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), txtUsuario.Text);
+            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.Text);
         }
 
 
@@ -96,7 +85,21 @@ namespace ProyectoMagicolor.Vistas
                 CbAcciones.SelectedIndex == 3 ? "Editar" :
                 CbAcciones.SelectedIndex == 4 ? "Eliminar" :
                 CbAcciones.SelectedIndex == 5 ? "Generar" :
-                CbAcciones.SelectedIndex == 6 ? "Salir" : "";
+                CbAcciones.SelectedIndex == 6 ? "Salir" :
+                CbAcciones.SelectedIndex == 7 ? "" : "";
         }
+
+
+        private void CbUsuario_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbUsuario.SelectedIndex > -1)
+                PlaceUsuario.Text = "";
+            else
+                PlaceUsuario.Text = "Usuario del Sistema";
+
+            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.SelectedValue.ToString());
+        }
+
+
     }
 }

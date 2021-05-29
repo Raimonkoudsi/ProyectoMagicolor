@@ -199,6 +199,8 @@ namespace ProyectoMagicolor.Vistas
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            DpNacimiento.DisplayDateStart = DateTime.Today.AddYears(-16);
+
             if (Type == TypeForm.Read)
             {
                 txtTitulo.Text = "Leer Trabajador";
@@ -592,10 +594,37 @@ namespace ProyectoMagicolor.Vistas
             {
                 if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                 {
-                    MessageBox.Show("La Cedula ingresada está Repetida!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                    txtDocumento.SetText("");
+                    LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
                     txtDocumento.txt.Focus();
+                    return true;
                 }
+
+                if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
+                {
+                    LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
+                    txtUsuario.txt.Focus();
+                    return true;
+                }
+            }
+
+            if ((txtTelefono.txt.Text.Length <= 10 && txtTelefono.txt.Text != "") || txtTelefono.txt.Text.Length >= 14)
+            {
+                MessageBox.Show("Debe agregar un teléfono válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtTelefono.txt.Focus();
+                return true;
+            }
+            if (txtDocumento.txt.Text.Length < 6 || txtDocumento.txt.Text.Length >= 9)
+            {
+                MessageBox.Show("El campo del documento debe ser válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtDocumento.txt.Focus();
+                return true;
+            }
+
+            if (txtTelefono.txt.Text == "" && txtEmail.txt.Text == "")
+            {
+                MessageBox.Show("Debe proporcionar un teléfono o correo electrónico del Trabajador!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtTelefono.txt.Focus();
+                return true;
             }
 
 
