@@ -18,22 +18,13 @@ namespace Logica
                 p.razonSocial, 
                 i.factura, 
                 i.fecha, 
-                ((SUM(di.precioCompra) * di.cantidadInicial) - cp.montoIngresado) AS montoActual,
+                (select (SUM(precioCompra * cantidadInicial) - cp.montoIngresado) FROM detalleIngreso where idIngreso = i.idIngreso) AS montoActual,
                 t.cedula
-            FROM [ingreso] i 
+            FROM  [cuentaPagar] cp
+				INNER JOIN [ingreso] i ON i.idIngreso = cp.idIngreso 
                 INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor 
-                INNER JOIN [trabajador] t ON i.idTrabajador = t.idTrabajador 
-                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso 
-                INNER JOIN [cuentaPagar] cp ON i.idIngreso = cp.idIngreso 
+                INNER JOIN [trabajador] t ON i.idTrabajador = t.idTrabajador
             WHERE i.estado = 2 AND p.razonSocial LIKE @razonSocial + '%' 
-            GROUP BY 
-                i.idIngreso, 
-                p.razonSocial, 
-                i.factura, 
-                i.fecha, 
-                t.cedula, 
-                cp.montoIngresado, 
-                di.cantidadInicial;
         ";
 
         private string queryInsert = @"

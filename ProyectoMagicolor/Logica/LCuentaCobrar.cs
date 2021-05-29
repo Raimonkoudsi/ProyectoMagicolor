@@ -18,23 +18,12 @@ namespace Logica
                 c.tipoDocumento + '-' + c.numeroDocumento,
                 c.apellidos + ' ' + c.nombre, 
                 v.fecha, 
-                ((SUM(dv.precioVenta) * dv.cantidad) - cc.montoIngresado - v.descuento) AS montoTotal
-            FROM [venta] v 
+                (select (sum(precioVenta * cantidad) - cc.montoIngresado - v.descuento) from detalleVenta where idVenta = v.idVenta)
+            FROM [cuentaCobrar] cc
+                INNER JOIN [venta] v ON v.idVenta=cc.idVenta 
                 INNER JOIN [cliente] c ON v.idCliente=c.idCliente 
                 INNER JOIN [trabajador] t ON v.idTrabajador=t.idTrabajador 
-                INNER JOIN [detalleVenta] dv ON v.idVenta=dv.idVenta 
-                INNER JOIN [cuentaCobrar] cc ON v.idVenta=cc.idVenta 
             WHERE v.estado = 2 AND c.tipoDocumento LIKE @tipoDocumento + '%' AND c.numeroDocumento LIKE @numeroDocumento + '%' 
-            GROUP BY
-                v.idVenta, 
-                c.tipoDocumento, 
-                c.numeroDocumento, 
-                c.apellidos, 
-                c.nombre, 
-                v.fecha, 
-                cc.montoIngresado, 
-                dv.cantidad, 
-                v.descuento;
         ";
 
         private string queryInsert = @"
