@@ -193,6 +193,12 @@ namespace ProyectoMagicolor
                 e.Cancel = true;
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Dashboard dashboard = new Dashboard();
+            ContentFrame.Content = dashboard;
+        }
     }
     public class ItemMenu
     {
