@@ -32,7 +32,7 @@ namespace ProyectoMagicolor.Vistas
             LTrabajador Mt = new LTrabajador();
             var LCmt = Mt.MostrarConAdministrador();
 
-            DTrabajador NCT = new DTrabajador(0, "", "" ,"", DateTime.Now, "", "", "", "", 0, "Todos los Usuarios", "", "");
+            DTrabajador NCT = new DTrabajador(0, "", "" ,"", DateTime.Now, "", "", "", "", 0, "Todos los Usuarios", "");
             LCmt.Add(NCT);
 
             CbUsuario.ItemsSource = LCmt;

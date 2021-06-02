@@ -4,78 +4,69 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Cambiar Contraseña" Height="350" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Width="400" Loaded="Window_Loaded">
+        Title="Cambiar Contraseña" Height="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Width="380" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#f0f0f0">
-            <TextBlock
-                       Text="Nueva Contraseña" 
+        <Grid Grid.Row="0" Background="#3194F7">
+            <TextBlock Text="Nueva Contraseña" 
                        HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="25"
-                       Margin="0 10"/>
+                       TextAlignment="Center"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       FontSize="28"
+                       Margin="0 10"
+                       TextWrapping="Wrap"
+                       MaxWidth="470"
+                        />
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
-            <StackPanel Width="300" Margin="0 20 0 0">
-                <Grid HorizontalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid x:Name="GridPregunta1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock HorizontalAlignment="Center" Text="Nueva Contraseña" FontSize="16" VerticalAlignment="Center"/>
-                    </Grid>
-                </Grid>
+            <StackPanel Width="auto" Margin="25 20 8 0">
                 <Grid Margin="0 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="1" Margin="0 0 0 0">
-                        <TextBlock Name="txtBucarPlaceH" Text="Introducir Contraseña" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <PasswordBox Name="txtContraseña" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
-                    </Grid>
-                </Grid>
-                
-                
-                <Grid HorizontalAlignment="Center" Margin="0 30 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid x:Name="GridPregunta2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock HorizontalAlignment="Center" Text="Confirmar Contraseña" FontSize="16" VerticalAlignment="Center"/>
-                    </Grid>
-                </Grid>
-                <Grid Margin="0 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="1" Margin="0 0 0 0">
-                        <TextBlock Name="txtBucarPlaceH2" Text="Introducir Contraseña" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <PasswordBox Name="txtConfirmar" Password="" FontSize="15" Margin="0" GotFocus="txtBuscar2_GotFocus" LostFocus="txtBuscar2_LostFocus"/>
-                    </Grid>
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Name="btnEnviar" Width="150" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+                    <PasswordBox Name="txtContraseña" Password="" FontSize="15"
+                        Style="{StaticResource MaterialDesignOutlinedPasswordBox}" Margin="0">
+                        <materialDesign:HintAssist.Hint>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0" Margin="0 0 5 0" Kind="Password" 
+                                           Background="Transparent" HorizontalAlignment="Left" 
+                                           Width="18" Height="18" />
+                                <TextBlock Grid.Column="1" FontSize="14" VerticalAlignment="Center"  
+                                           Text="Nueva Contraseña" Background="Transparent" />
+                            </Grid>
+                        </materialDesign:HintAssist.Hint>
+                    </PasswordBox>
                 </Grid>
 
+                <Grid Margin="0 20">
+                    <PasswordBox Name="txtConfirmar" Password="" FontSize="15"
+                        Style="{StaticResource MaterialDesignOutlinedPasswordBox}" Margin="0">
+                        <materialDesign:HintAssist.Hint>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0" Margin="0 0 5 0" Kind="Password" 
+                                           Background="Transparent" HorizontalAlignment="Left" 
+                                           Width="18" Height="18" />
+                                <TextBlock Grid.Column="1" FontSize="14" VerticalAlignment="Center"  
+                                           Text="Confirmar Contraseña" Background="Transparent" />
+                            </Grid>
+                        </materialDesign:HintAssist.Hint>
+                    </PasswordBox>
+                </Grid>
+
+                <Grid Margin="0 20 0 0">
+                    <Button Name="btnEnviar" Width="150" Background="#3194F7" Content="Enviar" Click="Button_Click"/>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Grid>

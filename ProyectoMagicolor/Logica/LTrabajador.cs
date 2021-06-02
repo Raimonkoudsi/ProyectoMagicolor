@@ -75,28 +75,16 @@ namespace Logica
                 email = @email,
                 acceso = @acceso,
                 usuario = @usuario,
-                contraseña = @contraseña
+                contraseña = @contraseña,
+                estado = 1
             WHERE idTrabajador = @idTrabajador;
 	    ";
 
         private string queryDelete = @"
-            DELETE FROM [trabajador]
-            WHERE idTrabajador = @idTrabajador
+            UPDATE [trabajador] SET
+                estado = 0
+            WHERE idTrabajador = @idTrabajador;
 	    ";
-
-        private string queryListIDCard = @"
-            SELECT 
-                idTrabajador, 
-                cedula, 
-                CONCAT(nombre, ' ', apellidos) as nombreCompleto, 
-                direccion, 
-                telefono, 
-                email, 
-                usuario 
-            FROM [trabajador] 
-            WHERE cedula LIKE @cedula + '%' AND acceso <> 0
-            ORDER BY cedula ASC
-        ";
 
         private string queryListIDCardAdmin = @"
             SELECT 
@@ -108,6 +96,7 @@ namespace Logica
                 email, 
                 usuario 
             FROM [trabajador] 
+                WHERE idTrabajador <> 0
             ORDER BY usuario ASC
         ";
 
@@ -117,14 +106,19 @@ namespace Logica
             WHERE idTrabajador = @idTrabajador;
         ";
 
+        private string queryListEmployeeNull = @"
+            SELECT * FROM [trabajador] 
+            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND idTrabajador <> 0 AND estado = 0;
+        ";
+
         private string queryListSecurity = @"
             SELECT * FROM [seguridad] 
-            WHERE idTrabajador = @idTrabajador;
+            WHERE idTrabajador = @idTrabajador AND idTrabajador <> 0;
         ";
 
         private string queryLogin = @"
             SELECT * FROM [trabajador] 
-            WHERE usuario = @usuario AND contraseña = @contraseña;
+            WHERE usuario = @usuario AND contraseña = @contraseña AND idTrabajador <> 0 AND estado <> 0;
         ";
 
         private string queryFormSecurity = @"
@@ -135,7 +129,7 @@ namespace Logica
 	            s.respuesta
             FROM [seguridad] s
 	            INNER JOIN [trabajador] t ON t.idTrabajador=s.idTrabajador
-            WHERE t.usuario = @usuario;
+            WHERE t.usuario = @usuario AND t.idTrabajador <> 0 AND t.estado <> 0;
         ";
 
         string queryUpdatePassword = @"
@@ -152,6 +146,11 @@ namespace Logica
         private string queryIDCardRepeated = @"
             SELECT idTrabajador FROM [trabajador] 
             WHERE cedula = @cedula;
+        ";
+
+        private string queryUserNull = @"
+            SELECT idTrabajador FROM [trabajador]
+            WHERE usuario = @usuario AND contraseña = @contraseña AND estado = 0;
         ";
 
 
@@ -223,6 +222,7 @@ namespace Logica
             return respuesta;
         }
 
+
         public string Editar(DTrabajador Trabajador, List<DSeguridad> Seguridad)
         {
             string respuesta = "";
@@ -262,8 +262,7 @@ namespace Logica
                 using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
 
-                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Trabajador";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Eliminado Correctamente");
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Deshabilitó el Trabajador";
             };
             LFunction.SafeExecutor(action);
 
@@ -271,35 +270,57 @@ namespace Logica
         }
 
 
-        public List<DTrabajador> Mostrar(string Cedula)
+        public List<DTrabajador> Mostrar(string Cedula, int Estado)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryListIDCard, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@cedula", Cedula);
+            string queryListIDCard = @"
+                SELECT 
+                    idTrabajador, 
+                    cedula, 
+                    CONCAT(nombre, ' ', apellidos) as nombreCompleto, 
+                    direccion, 
+                    telefono, 
+                    email, 
+                    usuario,
+                    acceso,
+                    estado
+                FROM [trabajador] 
+                WHERE cedula LIKE @cedula + '%' AND acceso <> 0 AND idTrabajador <> 0  " + new LProveedor().BuscarEstado(Estado) + @"
+                ORDER BY cedula ASC
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+                Action action = () =>
                 {
-                    ListaGenerica.Add(new DTrabajador
+                    using SqlCommand comm = new SqlCommand(queryListIDCard, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@cedula", Cedula);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idTrabajador = reader.GetInt32(0),
-                        cedula = reader.GetString(1),
-                        nombre = reader.GetString(2),
-                        direccion = reader.GetString(3),
-                        telefono = reader.GetString(4),
-                        email = reader.GetString(5),
-                        usuario = Encripter.Decrypt(reader.GetString(6))
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DTrabajador
+                        {
+                            idTrabajador = reader.GetInt32(0),
+                            cedula = reader.GetString(1),
+                            nombre = reader.GetString(2),
+                            direccion = reader.GetString(3),
+                            telefono = reader.GetString(4),
+                            email = reader.GetString(5),
+                            usuario = Encripter.Decrypt(reader.GetString(6)),
+                            accesoString = reader.GetInt32(7) == 1 ? "Encargado" : "Vendedor",
+                            estado = reader.GetInt32(8),
+                            accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA,
+                            nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
         }
 
+
+        //auditoria
         public List<DTrabajador> MostrarConAdministrador()
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
@@ -339,31 +360,31 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    int state = reader.GetInt32(12);
                     ListaGenerica.Add(new DTrabajador
-                        (
-                            reader.GetInt32(0),
-                            reader.GetString(1),
-                            reader.GetString(2),
-                            reader.GetString(3),
-                            reader.GetDateTime(4),
-                            reader.GetString(5),
-                            reader.GetString(6),
-                            reader.GetString(7),
-                            reader.GetString(8),
-                            reader.GetInt32(9),
-                            Encripter.Decrypt(reader.GetString(10)),
-                            Encripter.Decrypt(reader.GetString(11)),
-                            state.ToString()
-                        ));
+                    {
+                        idTrabajador = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        apellidos = reader.GetString(2),
+                        sexo = reader.GetString(3),
+                        fechaNacimiento = reader.GetDateTime(4),
+                        cedula = reader.GetString(5),
+                        direccion = reader.GetString(6),
+                        telefono = reader.GetString(7),
+                        email = reader.GetString(8),
+                        acceso = reader.GetInt32(9),
+                        usuario = Encripter.Decrypt(reader.GetString(10)),
+                        contraseña = Encripter.Decrypt(reader.GetString(11)),
+                        estado = reader.GetInt32(12)
+                    });
                 }
             };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
         }
+
 
         public List<DSeguridad> EncontrarSeguridad(int IdTrabajador)
         {
@@ -405,21 +426,21 @@ namespace Logica
                 if (reader.Read())
                 {
                     ListaGenerica.Add(new DTrabajador
-                        (
-                            reader.GetInt32(0),
-                            reader.GetString(1),
-                            reader.GetString(2),
-                            reader.GetString(3),
-                            reader.GetDateTime(4),
-                            reader.GetString(5),
-                            reader.GetString(6),
-                            reader.GetString(7),
-                            reader.GetString(8),
-                            reader.GetInt32(9),
-                            Encripter.Decrypt(reader.GetString(10)),
-                            Encripter.Decrypt(reader.GetString(11)),
-                            reader.GetInt32(12).ToString()
-                        ));
+                    {
+                        idTrabajador = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        apellidos = reader.GetString(2),
+                        sexo = reader.GetString(3),
+                        fechaNacimiento = reader.GetDateTime(4),
+                        cedula = reader.GetString(5),
+                        direccion = reader.GetString(6),
+                        telefono = reader.GetString(7),
+                        email = reader.GetString(8),
+                        acceso = reader.GetInt32(9),
+                        usuario = Encripter.Decrypt(reader.GetString(10)),
+                        contraseña = Encripter.Decrypt(reader.GetString(11)),
+                        estado = reader.GetInt32(12)
+                    });
                 }
             };
             LFunction.SafeExecutor(action);
@@ -427,14 +448,15 @@ namespace Logica
             return ListaGenerica;
         }
 
-        public List<DTrabajador> Seguridad(string User)
+
+        public List<DTrabajador> Seguridad(string Usuario)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryFormSecurity, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(User));
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -491,6 +513,61 @@ namespace Logica
             return respuesta;
         }
 
+
+        public List<DTrabajador> CedulaRepetidaAnulada(string Cedula)
+        {
+            List<DTrabajador> ListaGenerica = new List<DTrabajador>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListEmployeeNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@cedula", Cedula);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read())
+                {
+                    ListaGenerica.Add(new DTrabajador
+                    {
+                        idTrabajador = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        apellidos = reader.GetString(2),
+                        sexo = reader.GetString(3),
+                        fechaNacimiento = reader.GetDateTime(4),
+                        cedula = reader.GetString(5),
+                        direccion = reader.GetString(6),
+                        telefono = reader.GetString(7),
+                        email = reader.GetString(8),
+                        acceso = reader.GetInt32(9),
+                        usuario = Encripter.Decrypt(reader.GetString(10)),
+                        contraseña = Encripter.Decrypt(reader.GetString(11)),
+                        estado = reader.GetInt32(12)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public bool UsuarioAnulado(string Usuario, string Contraseña)
+        {
+            bool respuesta = false;
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryUserNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
+                comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Contraseña));
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read()) respuesta = true;
+                else respuesta = false;
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
 
 
         public string EditarContraseña(string Usuario, string Contraseña)

@@ -20,11 +20,6 @@ using Logica;
 
 namespace ProyectoMagicolor
 {
-    public static class Globals
-    {
-        public static Int32 ACCESO_SISTEMA = 3;
-        public static Int32 ID_SISTEMA = 0;
-    }
 
     public partial class MainWindow : Window
 	{
@@ -38,6 +33,7 @@ namespace ProyectoMagicolor
             LoggedTrabajador = trabajador;
             Globals.ACCESO_SISTEMA = trabajador.acceso;
             Globals.ID_SISTEMA = trabajador.idTrabajador;
+            Globals.TRABAJADOR_SISTEMA = (trabajador.cedula + " " + trabajador.apellidos + " " + trabajador.nombre);
 
             DAuditoria auditoria = new DAuditoria(
                                                     Globals.ID_SISTEMA,

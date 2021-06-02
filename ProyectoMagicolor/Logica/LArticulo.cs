@@ -19,7 +19,8 @@ namespace Logica
                 descripcion,
                 stockMinimo,
                 stockMaximo,
-                idCategoria
+                idCategoria,
+                estado
             ) VALUES (
                 @idArticulo,
                 @codigo,
@@ -27,7 +28,8 @@ namespace Logica
                 @descripcion,
                 @stockMinimo,
                 @stockMaximo,
-                @idCategoria
+                @idCategoria,
+                1
             );
         ";
 
@@ -38,12 +40,8 @@ namespace Logica
                 descripcion = @descripcion,
                 stockMinimo = @stockMinimo,
                 stockMaximo = @stockMaximo,
-                idCategoria = @idCategoria
-            WHERE idArticulo = @idArticulo;
-        ";
-
-        private string queryDelete = @"
-            DELETE FROM [articulo] 
+                idCategoria = @idCategoria,
+                estado = 1
             WHERE idArticulo = @idArticulo;
         ";
 
@@ -100,6 +98,59 @@ namespace Logica
             SELECT idArticulo FROM [articulo] 
             WHERE codigo = @codigo;
         ";
+
+
+        //parte de deshabilitar articulo
+        private string queryDeshabilitarArticulo = @"
+            UPDATE [articulo] SET
+                estado = 0
+            WHERE idArticulo = @idArticulo;
+        ";
+
+        private string queryDeshabilitarDetalleIngresoArticulo = @"
+            UPDATE [detalleIngreso] SET
+                estadoArticulo = 0
+            WHERE idArticulo = @idArticulo;
+        ";
+
+        private string queryInsertarDetalleIngresoVacio = @"
+            INSERT INTO [detalleIngreso] (
+                idDetalleIngreso,
+                idIngreso,
+                idArticulo,
+                precioCompra,
+                precioVenta,
+                cantidadInicial,
+                cantidadActual,
+                estado,
+                estadoArticulo
+            ) VALUES (
+                @idDetalleIngreso,
+                0,
+                @idArticulo,
+                (ISNULL((
+                    SELECT TOP 1
+                        precioCompra
+                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo
+                    ORDER BY idDetalleIngreso DESC
+                ),0)),
+                (ISNULL((
+                    SELECT TOP 1
+                        precioVenta
+                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo
+                    ORDER BY idDetalleIngreso DESC
+                ),0)),
+                0,
+                (ISNULL((
+                    SELECT TOP 1
+                        cantidadActual
+                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo
+                    ORDER BY idDetalleIngreso DESC
+                ),0)),
+                1,
+                1
+            );
+	    ";
         #endregion
 
 
@@ -122,7 +173,6 @@ namespace Logica
                 Articulo.idArticulo = idArticulo;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro el Articulo";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Ingresado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -147,25 +197,6 @@ namespace Logica
                 Articulo.idArticulo = idArticulo;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Articulo";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Actualizado Correctamente");
-            };
-            LFunction.SafeExecutor(action);
-
-            return respuesta;
-        }
-
-
-        public string Eliminar(int IdArticulo)
-        {
-            string respuesta = "";
-
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
-
-                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Registro del Articulo";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Articulo Eliminado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -322,7 +353,8 @@ namespace Logica
                         cantidadActual = CantidadActual,
                         cantidadVendida = reader.GetInt32(5),
                         stockMinimo = StockMinimo,
-                        precioVenta = (double)reader.GetDecimal(7)
+                        precioVenta = (double)reader.GetDecimal(7),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };
@@ -563,7 +595,68 @@ namespace Logica
         }
 
 
-        public List<DArticulo> ActualizarArticulo(string Busqueda, int TipoBusqueda)
+        public List<DArticulo> CodigoRepetidoAnulado(string Codigo)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+
+            string queryCodeRepeatedNull = @"
+                    SELECT 
+                        a.idArticulo,
+                        a.codigo, 
+                        a.nombre,
+                        c.nombre,
+						a.stockMinimo,
+						a.stockMaximo,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioVenta 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioVenta,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioCompra
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioCompra,
+                        a.descripcion,
+                        a.estado
+					FROM [articulo] a
+                        INNER JOIN [categoria] c ON c.idCategoria=a.idCategoria
+                    WHERE codigo = @codigo AND estado = 0;
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryCodeRepeatedNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@codigo", Codigo);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read())
+                {
+                    ListaGenerica.Add(new DArticulo
+                    {
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        categoria = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        precioVenta = (double)reader.GetDecimal(6),
+                        precioCompra = (double)reader.GetDecimal(7),
+                        descripcion = reader.GetString(8),
+                        estado = reader.GetInt32(9)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DArticulo> ActualizarArticulo(string Busqueda, int TipoBusqueda, int Estado)
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
@@ -601,10 +694,11 @@ namespace Logica
                             FROM [ingreso] i
 								INNER JOIN [detalleIngreso] di ON i.idIngreso=di.idIngreso
                             WHERE a.idArticulo = di.idArticulo 
-                            ORDER BY di.idDetalleIngreso DESC), null) AS ultimaActualizacion
+                            ORDER BY di.idDetalleIngreso DESC), null) AS ultimaActualizacion,
+                        a.estado
 					FROM [articulo] a
                         INNER JOIN [categoria] c ON c.idCategoria = a.idCategoria
-					" + searchQuery + @"
+					" + searchQuery + BuscarEstado(Estado) + @"
 					ORDER BY ultimaActualizacion DESC
                 ";
 
@@ -613,7 +707,9 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
                 {
-                    if(reader.GetInt32(5) != 0)
+                    int cantidadActual = reader.GetInt32(5);
+                    int estado = reader.GetInt32(7);
+                    if (cantidadActual != 0 || (cantidadActual == 0 && estado == 0))
                     {
                         ListaGenerica.Add(new DArticulo
                         {
@@ -622,8 +718,11 @@ namespace Logica
                             nombre = reader.GetString(2),
                             categoria = reader.GetString(3),
                             precioVenta = (double)reader.GetDecimal(4),
-                            cantidadActual = reader.GetInt32(5),
-                            ultimaActualizacion = reader.GetDateTime(6) == null ? "Sin Actualización" : reader.GetDateTime(6).ToString("dd-MM-yyyy")
+                            cantidadActual = cantidadActual,
+                            ultimaActualizacion = reader.GetDateTime(6) == null ? "Sin Actualización" : reader.GetDateTime(6).ToString("dd-MM-yyyy"),
+                            estado = estado,
+                            accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA,
+                            nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                         });
                     }
                 }
@@ -632,7 +731,6 @@ namespace Logica
 
             return ListaGenerica;
         }
-
 
 
         public List<DArticulo> EncontrarActualizarArticulo(int IdArticulo)
@@ -659,7 +757,8 @@ namespace Logica
                             FROM [detalleIngreso] di 
                             WHERE a.idArticulo = di.idArticulo 
                             ORDER BY di.idDetalleIngreso DESC), 0) AS precioCompra,
-                        a.descripcion
+                        a.descripcion,
+                        a.estado
 					FROM [articulo] a
                         INNER JOIN [categoria] c ON c.idCategoria=a.idCategoria
 					WHERE a.idArticulo = @idArticulo
@@ -683,7 +782,8 @@ namespace Logica
                         stockMaximo = reader.GetInt32(5),
                         precioVenta = (double)reader.GetDecimal(6),
                         precioCompra = (double)reader.GetDecimal(7),
-                        descripcion = reader.GetString(8)
+                        descripcion = reader.GetString(8),
+                        estado = reader.GetInt32(9)
                     });
                 }
             };
@@ -691,5 +791,129 @@ namespace Logica
 
             return ListaGenerica;
         }
+
+
+
+        public string DeshabilitarArticulo(int IdArticulo, string tipoAnulacion)
+        {
+            string respuesta = "";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryDeshabilitarArticulo, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Articulo";
+
+                if (respuesta.Equals("OK") && tipoAnulacion == "Completo")
+                    respuesta = DeshabilitarArticuloEnIngreso(IdArticulo);
+                else if (respuesta.Equals("OK") && tipoAnulacion == "Parcial")
+                    respuesta = InsertarDetalleIngresoVacio(IdArticulo);
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
+        private string DeshabilitarArticuloEnIngreso(int IdArticulo)
+        {
+            string respuesta = "";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryDeshabilitarDetalleIngresoArticulo, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
+
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
+        private string InsertarDetalleIngresoVacio(int IdArticulo)
+        {
+            string respuesta = "";
+
+            //proveedor vacio
+            if (new LProveedor().Encontrar(0).Count == 0)
+            {
+                DProveedor UForm = new DProveedor(0,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString());
+
+                new LProveedor().Insertar(UForm, true);
+            }
+            //trabajador vacio
+            if (new LTrabajador().Encontrar(0).Count == 0)
+            {
+                DTrabajador UForm = new DTrabajador(0,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                DateTime.Now,
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0.ToString(),
+                                0,
+                                0.ToString(),
+                                0.ToString());
+
+                new LTrabajador().Insertar(UForm, null, true);
+            }
+            //ingreso vacio
+            if (new LIngreso().MostrarIngresoVacio() == false)
+            {
+                DIngreso UForm = new DIngreso(0,
+                                0,
+                                0,
+                                DateTime.Now,
+                                0.ToString(),
+                                0,
+                                0,
+                                0);
+
+                new LIngreso().Insertar(UForm, null, null, true);
+            }
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryInsertarDetalleIngresoVacio, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idDetalleIngreso", LFunction.GetID("detalleIngreso", "idDetalleIngreso"));
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el articulo";
+
+                if (!respuesta.Equals("OK"))
+                    throw new Exception("Error en actualización del artículo");
+            };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+
+        private string BuscarEstado(int Estado)
+        {
+            if (Estado == 1)
+                return "AND a.estado = 1";
+            if (Estado == 2)
+                return "AND a.estado = 0";
+            if (Estado == 3)
+                return "";
+
+            return "AND a.estado = 2";
+        }
+
     }
 }

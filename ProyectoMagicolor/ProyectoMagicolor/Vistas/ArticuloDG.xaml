@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Background="WhiteSmoke"
+        Background="White"
         Title="Trabajadores" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
     <Grid>
@@ -16,7 +16,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="70 10">
+        <Grid Grid.Row="0" Margin="70 20 70 20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
@@ -38,10 +38,11 @@
                   Margin="30 0"
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
-                  Background="WhiteSmoke">
+                  Background="White">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#f0f0f0" />
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>

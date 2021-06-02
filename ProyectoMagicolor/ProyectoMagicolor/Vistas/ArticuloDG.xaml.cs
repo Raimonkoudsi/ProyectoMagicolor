@@ -98,7 +98,7 @@ namespace ProyectoMagicolor.Vistas
                 return;
             int id = (int)((Button)sender).CommandParameter;
             string codigo = dgOperaciones.Items[1].ToString();
-            Metodos.Eliminar(id);
+            //Metodos.Eliminar(id);
             Refresh(txtBuscar.Text);
 
             DAuditoria auditoria = new DAuditoria(

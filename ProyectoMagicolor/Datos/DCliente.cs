@@ -20,13 +20,6 @@ namespace Datos
             set { _Nombre = value; }
         }
 
-        private string _Apellidos;
-        public string apellidos
-        {
-            get { return _Apellidos; }
-            set { _Apellidos = value; }
-        }
-
         private string _TipoDocumento;
         public string tipoDocumento
         {
@@ -62,17 +55,37 @@ namespace Datos
             set { _Email = value; }
         }
 
+        private int _Estado;
+        public int estado
+        {
+            get { return _Estado; }
+            set { _Estado = value; }
+        }
+
+        private int _AccesoTrabajadorIngresado;
+        public int accesoTrabajadorIngresado
+        {
+            get { return _AccesoTrabajadorIngresado; }
+            set { _AccesoTrabajadorIngresado = value; }
+        }
+
+
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
+        }
 
         public DCliente()
         {
 
         }
 
-        public DCliente(int IdCliente, string Nombre, string Apellidos, string TipoDocumento, string NumeroDocumento, string Direccion, string Telefono, string Email)
+        public DCliente(int IdCliente, string Nombre, string TipoDocumento, string NumeroDocumento, string Direccion, string Telefono, string Email)
         {
             this.idCliente = IdCliente;
             this.nombre = Nombre;
-            this.apellidos = Apellidos;
             this.tipoDocumento = TipoDocumento;
             this.numeroDocumento = NumeroDocumento;
             this.direccion = Direccion;

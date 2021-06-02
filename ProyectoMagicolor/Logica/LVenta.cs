@@ -282,7 +282,8 @@ namespace Logica
                         metodoPago = reader.GetInt32(11),
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(11)),
                         estado = reader.GetInt32(12),
-                        estadoString = EstadoToString(reader.GetInt32(12))
+                        estadoString = EstadoToString(reader.GetInt32(12)),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };
@@ -368,7 +369,8 @@ namespace Logica
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(7)),
                         estadoString = EstadoToString(reader.GetInt32(8)),
-                        trabajador = reader.GetString(9)
+                        trabajador = reader.GetString(9),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };

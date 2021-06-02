@@ -33,8 +33,13 @@ namespace ProyectoMagicolor.Vistas
 
             List<DCategoria> items = Metodos.Mostrar(search);
 
-
             dgOperaciones.ItemsSource = items;
+
+
+            if (items.Count == 0)
+                SinRegistro.Visibility = Visibility.Visible;
+            else
+                SinRegistro.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

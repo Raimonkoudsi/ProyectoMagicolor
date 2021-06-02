@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="615" Width="470" Loaded="Window_Loaded">
+        Title="Variedades Magicolor (Formulario Proveedor)" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="615" Width="480" Loaded="Window_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -25,13 +25,34 @@
                         />
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
-            <StackPanel Width="380" Margin="17 0 0 0">
+            <StackPanel Width="auto" Margin="25 0 10 0">
                 <Grid Margin="0 20 0 15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <ComboBox x:Name="CbTipoDocumento" FontSize="12" LostFocus="CbTipoDocumento_LostFocus"
+                            materialDesign:HintAssist.Hint="Tipo"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                            <ComboBoxItem>V</ComboBoxItem>
+                            <ComboBoxItem>E</ComboBoxItem>
+                            <ComboBoxItem>J</ComboBoxItem>
+                            <ComboBoxItem>G</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Margin="10 0 0 0" Grid.Column="1">
+                        <TextBox x:Name="txtDocumento" MaxLength="9" FontSize="12"
+                            materialDesign:HintAssist.Hint="Número Documento" LostFocus="txtDocumento_LostFocus"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0 15">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid Margin="0 0">
+                    <Grid>
                         <TextBox x:Name="txtRazonSocial" MaxLength="100" FontSize="12"
                             materialDesign:HintAssist.Hint="Razón Social"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
@@ -42,27 +63,6 @@
                             Style="{StaticResource MaterialDesignOutlinedComboBox}">
                         </ComboBox>
                     </Grid>
-                </Grid>
-                <Grid Margin="0 15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid>
-                        <ComboBox x:Name="CbTipoDocumento" FontSize="12"
-                            materialDesign:HintAssist.Hint="Tipo"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                            <ComboBoxItem>V</ComboBoxItem>
-                            <ComboBoxItem>E</ComboBoxItem>
-                            <ComboBoxItem>J</ComboBoxItem>
-                            <ComboBoxItem>G</ComboBoxItem>
-                        </ComboBox>
-                    </Grid>
-                    <Grid Margin="10 0 0 0" Grid.Column="1">
-                        <TextBox x:Name="txtDocumento" MaxLength="50" FontSize="12"
-                            materialDesign:HintAssist.Hint="Número Documento"
-                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
-                    </Grid>                
                 </Grid>
                 <Grid Margin="0 15">
                     <Grid.ColumnDefinitions>
@@ -90,7 +90,7 @@
                              MaxLength="100"
                              HorizontalScrollBarVisibility="Disabled"
                              VerticalScrollBarVisibility="Auto"
-                             materialDesign:HintAssist.Hint="Descripción (Opcional)"
+                             materialDesign:HintAssist.Hint="Dirección (Opcional)"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 </Grid>
                 <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>

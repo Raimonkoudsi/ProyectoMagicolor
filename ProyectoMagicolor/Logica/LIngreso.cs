@@ -45,7 +45,8 @@ namespace Logica
                 precioVenta,
                 cantidadInicial,
                 cantidadActual,
-                estado
+                estado,
+                estadoArticulo
             ) VALUES (
                 @idDetalleIngreso,
                 @idIngreso,
@@ -59,6 +60,7 @@ namespace Logica
                     FROM [detalleIngreso] WHERE idArticulo = @idArticulo
                     ORDER BY idDetalleIngreso DESC
                 ),0)),
+                1,
                 1
             );
 	    ";
@@ -309,7 +311,8 @@ namespace Logica
                             metodoPago = reader.GetInt32(10),
                             metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(10)),
                             estado = reader.GetInt32(11),
-                            estadoString = new LVenta().EstadoToString(reader.GetInt32(11))
+                            estadoString = new LVenta().EstadoToString(reader.GetInt32(11)),
+                            nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                         });
                     }
                 };
@@ -494,7 +497,8 @@ namespace Logica
                         impuesto = reader.GetInt32(5),
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(7)),
-                        estadoString = new LVenta().EstadoToString(reader.GetInt32(8))
+                        estadoString = new LVenta().EstadoToString(reader.GetInt32(8)),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };
@@ -545,7 +549,6 @@ namespace Logica
                                 0.ToString(),
                                 0,
                                 0.ToString(),
-                                0.ToString(),
                                 0.ToString());
 
                 new LTrabajador().Insertar(UForm, null, true);
@@ -585,7 +588,7 @@ namespace Logica
             return respuesta;
         }
 
-        private bool MostrarIngresoVacio()
+        public bool MostrarIngresoVacio()
         {
             bool respuesta = false;
 

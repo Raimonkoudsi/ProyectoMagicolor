@@ -21,7 +21,8 @@ namespace Logica
                 direccion,
                 telefono,
                 email,
-                url
+                url,
+                estado
             ) VALUES (
                 @idProveedor,
                 @razonSocial,
@@ -31,7 +32,8 @@ namespace Logica
                 @direccion,
                 @telefono,
                 @email,
-                @url
+                @url,
+                1
             );
         ";
 
@@ -44,19 +46,15 @@ namespace Logica
                 direccion = @direccion,
                 telefono = @telefono,
                 email = @email,
-                url = @url
+                url = @url,
+                estado = 1
             WHERE idProveedor = @idProveedor;
         ";
 
         private string queryDelete = @"
-            DELETE FROM [proveedor] 
-            WHERE idProveedor = @idProveedor
-        ";
-
-        private string queryListGeneral = @"
-            SELECT * FROM [proveedor] 
-            WHERE tipoDocumento = @tipoDocumento AND numeroDocumento like @numeroDocumento + '%' 
-            ORDER BY numeroDocumento
+            UPDATE [proveedor] SET 
+                estado = 0
+            WHERE idProveedor = @idProveedor;
         ";
 
         private string queryListSpecific = @"
@@ -71,7 +69,12 @@ namespace Logica
 
         private string queryIDCardRepeated = @"
             SELECT idProveedor FROM [proveedor] 
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula;
+            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado <> 0;
+        ";
+
+        private string queryIDCardRepeatedNull = @"
+            SELECT * FROM [proveedor]
+            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado = 0;
         ";
         #endregion
 
@@ -137,8 +140,7 @@ namespace Logica
                 using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idProveedor", IdProveedor);
 
-                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Proveedor";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Proveedor Eliminado Correctamente");
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Deshabilitó el Proveedor";
             };
             LFunction.SafeExecutor(action);
 
@@ -146,36 +148,56 @@ namespace Logica
         }
 
 
-        public List<DProveedor> Mostrar(string TipoDocumento, string NumeroDocumento)
+        public List<DProveedor> Mostrar(string TipoDocumento, string NumeroDocumento, int Estado)
         {
             List<DProveedor> ListaGenerica = new List<DProveedor>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryListGeneral, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
-                comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+            string queryListGeneral = @"
+                SELECT * FROM [proveedor] 
+                WHERE tipoDocumento = @tipoDocumento AND numeroDocumento LIKE @numeroDocumento + '%' " + BuscarEstado(Estado) + @"
+                ORDER BY numeroDocumento
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DProveedor
+                    using SqlCommand comm = new SqlCommand(queryListGeneral, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                    comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idProveedor = reader.GetInt32(0),
-                        razonSocial = reader.GetString(1),
-                        sectorComercial = reader.GetString(2),
-                        tipoDocumento = reader.GetString(3),
-                        numeroDocumento = reader.GetString(4),
-                        direccion = reader.GetString(5),
-                        telefono = reader.GetString(6),
-                        email = reader.GetString(7),
-                        url = reader.GetString(8)
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DProveedor
+                        {
+                            idProveedor = reader.GetInt32(0),
+                            razonSocial = reader.GetString(1),
+                            sectorComercial = reader.GetString(2),
+                            numeroDocumento = reader.GetString(3) + "-" + reader.GetString(4),
+                            direccion = reader.GetString(5),
+                            telefono = reader.GetString(6) == null ? "Sin Teléfono" : reader.GetString(6),
+                            email = reader.GetString(7),
+                            url = reader.GetString(8),
+                            estado = reader.GetInt32(9),
+                            accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA,
+                            nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
+        }
+
+        public string BuscarEstado(int Estado)
+        {
+            if (Estado == 1)
+                return "AND estado = 1";
+            if (Estado == 2)
+                return "AND estado = 0";
+            if (Estado == 3)
+                return "";
+
+            return "AND estado = 2";
         }
 
 
@@ -201,7 +223,8 @@ namespace Logica
                         direccion = reader.GetString(5),
                         telefono = reader.GetString(6),
                         email = reader.GetString(7),
-                        url = reader.GetString(8)
+                        url = reader.GetString(8),
+                        estado = reader.GetInt32(9)
                     });
                 }
             };
@@ -223,7 +246,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+                if (reader.Read())
                 {
                     ListaGenerica.Add(new DProveedor
                     {
@@ -235,7 +258,8 @@ namespace Logica
                         direccion = reader.GetString(5),
                         telefono = reader.GetString(6),
                         email = reader.GetString(7),
-                        url = reader.GetString(8)
+                        url = reader.GetString(8),
+                        estado = reader.GetInt32(9)
                     });
                 }
             };
@@ -261,6 +285,37 @@ namespace Logica
             LFunction.SafeExecutor(action);
 
             return respuesta;
+        }
+
+        public List<DProveedor> CedulaRepetidaAnulada(string Cedula)
+        {
+            List<DProveedor> ListaGenerica = new List<DProveedor>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryIDCardRepeatedNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@cedula", Cedula);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read())
+                {
+                    ListaGenerica.Add(new DProveedor
+                    {
+                        idProveedor = reader.GetInt32(0),
+                        razonSocial = reader.GetString(1),
+                        sectorComercial = reader.GetString(2),
+                        tipoDocumento = reader.GetString(3),
+                        numeroDocumento = reader.GetString(4),
+                        direccion = reader.GetString(5),
+                        telefono = reader.GetString(6),
+                        email = reader.GetString(7),
+                        url = reader.GetString(8)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
         }
     }
 }

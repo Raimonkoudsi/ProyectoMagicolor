@@ -22,23 +22,33 @@ namespace ProyectoMagicolor.Vistas
 
         public LCliente Metodos = new LCliente();
 
+        List<DCliente> items = new List<DCliente>();
+
         public ClienteDG()
         {
             InitializeComponent();
+
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
         
 
         public void Refresh(string typeSearch, string search)
         {
 
-            List<DCliente> items = Metodos.Mostrar(typeSearch, search);
-
-            foreach(DCliente item in items)
-            {
-                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
-            }
+            items = Metodos.Mostrar(typeSearch, search, TipoEstadoBusqueda());
 
             dgOperaciones.ItemsSource = items;
+
+            if (items.Count == 0)
+            {
+                btnReport.IsEnabled = false;
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                btnReport.IsEnabled = true;
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -50,6 +60,8 @@ namespace ProyectoMagicolor.Vistas
             }
 
             CbTipoDocumento.SelectedIndex = 0;
+            txtDocumento.Focus();
+
             Refresh(CbTipoDocumento.Text ,txtDocumento.Text);
         }
 
@@ -68,56 +80,35 @@ namespace ProyectoMagicolor.Vistas
             ClienteFrm frm = new ClienteFrm();
             frm.Type = TypeForm.Update;
             frm.DataFill = response[0];
-            bool Resp = frm.ShowDialog() ?? false;
-            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
-        }
 
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
+            if (response[0].estado == 0)
+            {
+                MessageBoxResult RespHab = MessageBox.Show("¿Desea habilitar el Cliente?" + Environment.NewLine + "(Abrirá el formulario para editar datos relevantes)", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (RespHab == MessageBoxResult.No)
+                    return;
+            }
+
+            bool Resp = frm.ShowDialog() ?? false;
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            if (Globals.ACCESO_SISTEMA == 2)
-            {
-                LFunction.MessageExecutor("Information", "Los Vendedores no pueden Eliminar Clientes!");
-            }
-            else
-            {
-                MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres Eliminar el Cliente?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (Resp != MessageBoxResult.Yes)
-                    return;
-                int id = (int)((Button)sender).CommandParameter;
-                string cedula = dgOperaciones.Items[1].ToString();
-                Metodos.Eliminar(id);
-                Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quiere deshabilitar este Proveedor?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (Resp != MessageBoxResult.Yes)
+                return;
+            int id = (int)((Button)sender).CommandParameter;
+            string cedula = dgOperaciones.Items[1].ToString();
+            Metodos.Eliminar(id);
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
 
-                DAuditoria auditoria = new DAuditoria(
+            DAuditoria auditoria = new DAuditoria(
                     Globals.ID_SISTEMA,
                     "Eliminar",
-                    "Ha Eliminado el Cliente " + cedula
+                    "Ha Deshabilitado el Cliente " + cedula
                 );
-                new LAuditoria().Insertar(auditoria);
-            }
-        }
+            new LAuditoria().Insertar(auditoria);
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtDocumento.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
-            
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtDocumento.Text == "")
-            {
-                txtBucarPlaceH.Text = "Ingresar Cédula del Cliente . . .";
-            }
-            
         }
 
         private void txtVer_Click(object sender, RoutedEventArgs e)
@@ -135,10 +126,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbTipoDocumento.SelectedIndex > -1)
-                PlaceTipoDocumento.Text = "";
-            else
-                PlaceTipoDocumento.Text = "Tipo";
 
             var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
                             CbTipoDocumento.SelectedIndex == 1 ? "E" :
@@ -158,7 +145,7 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-            reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text), "Cliente");
+            reporte.ExportPDF(Metodos.Mostrar(CbTipoDocumento.Text, txtDocumento.Text, TipoEstadoBusqueda()), "Cliente");
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
@@ -166,6 +153,29 @@ namespace ProyectoMagicolor.Vistas
                 "Ha Generado el Reporte de Clientes"
             );
             new LAuditoria().Insertar(auditoria);
+        }
+
+
+        private int TipoEstadoBusqueda()
+        {
+            if (RBHabilitado.IsChecked == true && RBDeshabilitado.IsChecked == true)
+                return 3;
+            if (RBHabilitado.IsChecked == true && RBDeshabilitado.IsChecked == false)
+                return 1;
+            if (RBHabilitado.IsChecked == false && RBDeshabilitado.IsChecked == true)
+                return 2;
+
+            return 0;
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+        }
+
+        private void RBHabilitado_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
     }
 

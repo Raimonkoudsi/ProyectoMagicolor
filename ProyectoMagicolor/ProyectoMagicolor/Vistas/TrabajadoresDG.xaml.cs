@@ -23,6 +23,8 @@ namespace ProyectoMagicolor.Vistas
 
         public LTrabajador MetodosUsuario = new LTrabajador();
 
+        List<DTrabajador> items = new List<DTrabajador>();
+
         public TrabajadoresDG()
         {
             InitializeComponent();
@@ -32,21 +34,28 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string search, string search2)
         {
 
-            List<DTrabajador> items = MetodosUsuario.Mostrar((search + "-" + search2));
+            items = MetodosUsuario.Mostrar((search + "-" + search2), TipoEstadoBusqueda());
 
-            List<TablaTrabajadores> tablaTrabajadores = new List<TablaTrabajadores>();
+            dgOperaciones.ItemsSource = items;
 
-            foreach (DTrabajador it in items)
+
+            if (items.Count == 0)
             {
-                tablaTrabajadores.Add(new TablaTrabajadores(it.idTrabajador, it.cedula, it.nombre, it.apellidos, it.direccion, it.telefono, it.email));
+                btnReport.IsEnabled = false;
+                SinRegistro.Visibility = Visibility.Visible;
             }
-
-            dgOperaciones.ItemsSource = tablaTrabajadores;
+            else
+            {
+                btnReport.IsEnabled = true;
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+
+            CbTipoDocumento.SelectedIndex = 0;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -66,6 +75,14 @@ namespace ProyectoMagicolor.Vistas
             frmTrab.Type = TypeForm.Update;
             frmTrab.ListaSeguridad = responseSecurity;
             frmTrab.DataFill = response[0];
+
+            if (response[0].estado == 0)
+            {
+                MessageBoxResult RespHab = MessageBox.Show("¿Desea habilitar el Trabajador?" + Environment.NewLine + "(Abrirá el formulario para editar datos relevantes)", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (RespHab == MessageBoxResult.No)
+                    return;
+            }
+
             bool Resp = frmTrab.ShowDialog() ?? false;
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
@@ -95,10 +112,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbTipoDocumento.SelectedIndex > -1)
-                PlaceTipoDocumento.Text = "";
-            else
-                PlaceTipoDocumento.Text = "Tipo";
 
             var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
                             CbTipoDocumento.SelectedIndex == 1 ? "E" : "";
@@ -129,7 +142,7 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-            reporte.ExportPDF(MetodosUsuario.Mostrar((CbTipoDocumento.Text + "-" + txtDocumento.Text)), "Trabajador");
+            reporte.ExportPDF(MetodosUsuario.Mostrar((CbTipoDocumento.Text + "-" + txtDocumento.Text), TipoEstadoBusqueda()), "Trabajador");
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
@@ -139,45 +152,22 @@ namespace ProyectoMagicolor.Vistas
             new LAuditoria().Insertar(auditoria);
         }
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
+        private int TipoEstadoBusqueda()
         {
-            if (txtDocumento.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
+            if (RBHabilitado.IsChecked == true && RBDeshabilitado.IsChecked == true)
+                return 3;
+            if (RBHabilitado.IsChecked == true && RBDeshabilitado.IsChecked == false)
+                return 1;
+            if (RBHabilitado.IsChecked == false && RBDeshabilitado.IsChecked == true)
+                return 2;
 
+            return 0;
         }
 
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
+        private void RBHabilitado_Click(object sender, RoutedEventArgs e)
         {
-            if (txtDocumento.Text == "")
-            {
-                txtBucarPlaceH.Text = "Ingresar Cédula del Trabajador";
-            }
-
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
-    }
-
-    public class TablaTrabajadores
-    {
-        public TablaTrabajadores(int id, string cedula, string nombre, string apellidos, string direccion, string telefono, string email)
-        {
-            Id = id;
-            Cedula = cedula;
-            Nombre = nombre;
-            Apellidos = apellidos;
-            Direccion = direccion;
-            Telefono = telefono;
-            Email = email;
-        }
-
-        public int Id { get; set; }
-        public string Cedula { get; set; }
-        public string Nombre { get; set; }
-        public string Apellidos { get; set; }
-        public string Direccion { get; set; }
-        public string Telefono { get; set; }
-        public string Email { get; set; }
     }
 
 }

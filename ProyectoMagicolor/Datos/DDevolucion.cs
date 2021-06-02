@@ -112,6 +112,13 @@ namespace Datos
             set { _FechaVentaString = value; }
         }
 
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
+        }
+
         public DDevolucion()
         {
 

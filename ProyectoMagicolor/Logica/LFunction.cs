@@ -12,6 +12,13 @@ using System.Reflection;
 
 namespace Logica
 {
+    public static class Globals
+    {
+        public static Int32 ACCESO_SISTEMA = 3;
+        public static Int32 ID_SISTEMA = 0;
+        public static String TRABAJADOR_SISTEMA = "";
+    }
+
     public class LFunction : Conexion
     {
         public static int GetID(string Table, string Parameter)

@@ -327,7 +327,8 @@ namespace Logica
                         nombreCliente = reader.GetString(3),
                         montoDevolucion = (double)reader.GetDecimal(4),
                         cantidad = reader.GetInt32(5),
-                        fechaVentaString = reader.GetDateTime(6).ToString("MM/dd/yyyy")
+                        fechaVentaString = reader.GetDateTime(6).ToString("MM/dd/yyyy"),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };
@@ -395,7 +396,8 @@ namespace Logica
                         fechaString = reader.GetDateTime(7).ToShortDateString(),
                         fechaVentaString = reader.GetDateTime(8).ToShortDateString(),
                         telefono = reader.GetString(9),
-                        email = reader.GetString(10)
+                        email = reader.GetString(10),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };

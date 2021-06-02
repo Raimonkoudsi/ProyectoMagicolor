@@ -124,7 +124,15 @@ namespace ProyectoMagicolor.Vistas
 
             if (!Char.IsDigit(ch))
             {
-         
+                e.Handled = true;
+            }
+        }
+
+
+        public static void DontPressNumber(object sender, KeyEventArgs e)
+        {
+            if (!Regex.IsMatch(GetCharFromKey(e.Key).ToString(), @"[a-zA-Z/]"))
+            {
                 e.Handled = true;
             }
         }
@@ -164,22 +172,10 @@ namespace ProyectoMagicolor.Vistas
             }
         }
     }
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
+
+
     public partial class TrabajadoresFrm : Window
     {
-
-
-        public TrabajadoresFrm()
-        {
-            InitializeComponent();
-            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
-            txtTelefono.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
-        }
-
-        
-
         public TypeForm Type;
         public DTrabajador DataFill;
         public List<DSeguridad> DataFillSeguridad;
@@ -190,6 +186,19 @@ namespace ProyectoMagicolor.Vistas
 
         private string cedula = "";
 
+
+        public TrabajadoresFrm()
+        {
+            InitializeComponent();
+
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+            txtTelefono.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+
+            txtNombre.KeyDown += new KeyEventHandler(Validaciones.DontPressNumber);
+            txtApellidos.KeyDown += new KeyEventHandler(Validaciones.DontPressNumber);
+        }
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Type == TypeForm.Update)
@@ -197,16 +206,18 @@ namespace ProyectoMagicolor.Vistas
             else
                 Create();
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DpNacimiento.DisplayDateStart = DateTime.Today.AddYears(-16);
+            DpNacimiento.DisplayDateEnd = DateTime.Today.AddYears(-18);
 
             if (Type == TypeForm.Read)
             {
                 txtTitulo.Text = "Leer Trabajador";
                 fillForm(DataFill, ListaSeguridad);
                 SetEnable(false);
-                btnEnviar.Visibility = Visibility.Collapsed;
+                btnEnviar.IsEnabled = false;
+                btnEnviar.Content = "Sólo Lectura";
 
                 DAuditoria auditoria = new DAuditoria(
                     Globals.ID_SISTEMA,
@@ -219,12 +230,14 @@ namespace ProyectoMagicolor.Vistas
             {
                 txtTitulo.Text = "Editar Trabajador";
                 fillForm(DataFill, ListaSeguridad);
+
+                SetEnable(true);
             }
         } 
 
        
 
-        void fillData()
+        private void fillData()
         {
             if (Validate())
             {
@@ -232,16 +245,16 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            string nombre = txtNombre.txt.Text;
-            string apellido = txtApellidos.txt.Text;
+            string nombre = txtNombre.Text;
+            string apellido = txtApellidos.Text;
             string sexo = CbSexo.SelectedIndex == 0 ? "H" : "M";
             DateTime Nacimiento = DpNacimiento.SelectedDate ?? DateTime.Now;
-            cedula = CbTipoDocumento.Text + "-" + txtDocumento.txt.Text;
-            string direccion = txtDireccion.txt.Text;
-            string telefono = txtTelefono.txt.Text;
-            string email = txtEmail.txt.Text;
+            cedula = CbTipoDocumento.Text + "-" + txtDocumento.Text;
+            string direccion = txtDireccion.Text;
+            string telefono = txtTelefono.Text;
+            string email = txtEmail.Text;
             int acceso = (CbAcceso.SelectedIndex + 1);
-            string usuario = txtUsuario.txt.Text;
+            string usuario = txtUsuario.Text;
             string contraseña = txtPassword.Password;
 
             UForm = new DTrabajador(0,
@@ -255,13 +268,12 @@ namespace ProyectoMagicolor.Vistas
                                     email,
                                     acceso,
                                     usuario,
-                                    contraseña,
-                                    "");
+                                    contraseña);
 
             AgregarSeguridad();
         }
 
-        void Create()
+        private void Create()
         {
             fillData();
             if (UForm == null)
@@ -310,7 +322,7 @@ namespace ProyectoMagicolor.Vistas
     
         }
 
-        void Update()
+        private void Update()
         {
             fillData();
             if (UForm == null)
@@ -332,94 +344,19 @@ namespace ProyectoMagicolor.Vistas
             } 
         }
 
-        private void DpNacimiento_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(DpNacimiento.SelectedDate != null)
-            {
-                dpNacPlaceholder.Text = "";
-            }
-            else
-            {
-                dpNacPlaceholder.Text = "Fecha de Nacimiento";
-            }
-
-        }
-
-        private void CbSexo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbSexo.SelectedIndex > -1)
-                CbSexoPlaceholder.Text = "";
-            else
-                CbSexoPlaceholder.Text = "Sexo";
-        }
-
-        private void CbAcceso_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbAcceso.SelectedIndex > -1)
-                CbAccesoPlaceholder.Text = "";
-            else
-                CbAccesoPlaceholder.Text = "Acceso";
-        }
-
-        private void txtPassword_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtPassword.Password == "")
-            {
-                txtPassPlaceholder.Text = "";
-            }
-        }
-
-        private void txtPassword_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtPassword.Password == "")
-            {
-                txtPassPlaceholder.Text = "Contraseña";
-            }
-        }
-
-        private void txtCPassword_LostFocus(object sender, RoutedEventArgs e)
-        {
-            
-            if (txtCPassword.Password == "")
-            {
-                txtCPassPlaceholder.Text = "Confirmar Contraseña";
-            }
-        }
-
-        private void txtCPassword_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtCPassword.Password == "")
-            {
-                txtCPassPlaceholder.Text = "";
-            }
-        }
-
-        private void txtUsuario_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbTipoDocumento.SelectedIndex > -1)
-                PlaceTipoDocumento.Text = "";
-            else
-                PlaceTipoDocumento.Text = "Tipo";
-        }
-
-        void SetEnable(bool Enable)
+        private void SetEnable(bool Enable)
         {
             txtNombre.IsEnabled = Enable;
             txtApellidos.IsEnabled = Enable;
             CbSexo.IsEnabled = Enable;
             DpNacimiento.IsEnabled = Enable;
-            txtDocumento.IsEnabled = Enable;
+            txtDocumento.IsEnabled = false;
             txtDireccion.IsEnabled = Enable;
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
             CbAcceso.IsEnabled = Enable;
-            CbTipoDocumento.IsEnabled = Enable;
-            txtUsuario.IsEnabled = Enable;
+            CbTipoDocumento.IsEnabled = false;
+            txtUsuario.IsEnabled = false;
             txtPassword.IsEnabled = Enable;
             txtCPassword.IsEnabled = Enable;
             txtPregunta.IsEnabled = Enable;
@@ -429,202 +366,222 @@ namespace ProyectoMagicolor.Vistas
             txtPregunta3.IsEnabled = Enable;
             txtRespuesta3.IsEnabled = Enable;
         }
-        void fillForm(DTrabajador Data, List<DSeguridad> DataSeguridad)
+
+        private void fillForm(DTrabajador Data, List<DSeguridad> DataSeguridad)
         {
             if(Data != null)
             {
-                txtNombre.SetText(Data.nombre);
-                txtApellidos.SetText(Data.apellidos);
+                txtNombre.Text = Data.nombre;
+                txtApellidos.Text = Data.apellidos;
                 CbSexo.SelectedIndex = Data.sexo == "H" ? 0 : 1;
                 DpNacimiento.SelectedDate = Data.fechaNacimiento;
 
                 CbTipoDocumento.SelectedIndex = Data.cedula.Contains("V") == true ? 0 : 1;
-                txtDocumento.SetText(Data.cedula.Remove(0,2));
+                txtDocumento.Text = Data.cedula.Remove(0,2);
 
-                if(Data.direccion != "")
-                    txtDireccion.SetText(Data.direccion);
-                if(Data.telefono != "")
-                    txtTelefono.SetText(Data.telefono);
-                if(Data.email != "")
-                    txtEmail.SetText(Data.email);
+                txtDireccion.Text = Data.direccion;
+                txtTelefono.Text = Data.telefono;
+                txtEmail.Text = Data.email;
 
-                CbAcceso.Text = Data.acceso.ToString();
-                txtUsuario.SetText(Data.usuario);
+                if (Data.acceso == 1)
+                    CbAcceso.SelectedIndex = 0;
+                else
+                    CbAcceso.SelectedIndex = 1;
 
-                txtPregunta.SetText(DataSeguridad[0].pregunta);
-                txtRespuesta.SetText(DataSeguridad[0].respuesta);
+                txtUsuario.Text = Data.usuario;
+                txtPassword.Password = Data.contraseña;
+                txtCPassword.Password = Data.contraseña;
 
-                txtPregunta2.SetText(DataSeguridad[1].pregunta);
-                txtRespuesta2.SetText(DataSeguridad[1].respuesta);
+                txtPregunta.Text = DataSeguridad[0].pregunta;
+                txtRespuesta.Text = DataSeguridad[0].respuesta;
 
-                txtPregunta3.SetText(DataSeguridad[2].pregunta);
-                txtRespuesta3.SetText(DataSeguridad[2].respuesta);
+                txtPregunta2.Text = DataSeguridad[1].pregunta;
+                txtRespuesta2.Text = DataSeguridad[1].respuesta;
 
-                if (Type == TypeForm.Read)
-                {
-                    Password.Visibility = Visibility.Collapsed;
-                    CPassword.Visibility = Visibility.Collapsed;
-                }
+                txtPregunta3.Text = DataSeguridad[2].pregunta;
+                txtRespuesta3.Text = DataSeguridad[2].respuesta;
             }
         }
+
         #region Validation
-        bool Validate()
+        private bool Validate()
         {
-            if (!txtNombre.Changed)
+
+            if (CbTipoDocumento.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Nombre!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtNombre.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe seleccionar el tipo de cédula");
+                txtDocumento.Focus();
                 return true;
             }
 
-            if (!txtApellidos.Changed)
+            if (txtDocumento.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Apellidos!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtApellidos.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar el campo de cédula");
+                txtDocumento.Focus();
+                return true;
+            }
+
+            if (txtDocumento.Text.Length < 6 || txtDocumento.Text.Length >= 9)
+            {
+                LFunction.MessageExecutor("Error", "El campo del documento debe ser válido");
+                txtDocumento.Focus();
+                return true;
+            }
+
+            if (txtNombre.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar el campo de nombre");
+                txtNombre.Focus();
+                return true;
+            }
+
+            if (txtApellidos.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar el campo de apellido");
+                txtApellidos.Focus();
                 return true;
             }
 
             if (CbSexo.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes seleccionar el Sexo!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar el sexo");
                 CbSexo.Focus();
                 return true;
             }
 
             if (DpNacimiento.SelectedDate == null)
             {
-                MessageBox.Show("Debes llenar la Fecha de Nacimiento!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar la fecha de nacimiento");
                 DpNacimiento.Focus();
                 return true;
             }
 
-            if (!txtDocumento.Changed)
+            if ((txtTelefono.Text.Length <= 10 && txtTelefono.Text != "") || txtTelefono.Text.Length >= 14)
             {
-                MessageBox.Show("Debes llenar el campo Cedula!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtDocumento.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar un teléfono váido");
+                txtTelefono.Focus();
                 return true;
             }
 
-            if (!txtUsuario.Changed)
+            if (txtTelefono.Text == "" && txtEmail.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Usuario!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtUsuario.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar un teléfono o correo del trabajador");
+                txtTelefono.Focus();
+                return true;
+            }
+
+            if (txtUsuario.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar el campo de usuario");
+                txtUsuario.Focus();
                 return true;
             }
 
             if (CbAcceso.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes seleccionar el Acceso!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar el nivel de acceso");
                 CbAcceso.Focus();
                 return true;
             }
 
-
-            if (txtPassword.Password == "" && Type != TypeForm.Update)
+            if (txtPassword.Password == "")
             {
+                LFunction.MessageExecutor("Error", "Debe ingresar la contraseña");
                 MessageBox.Show("Debes llenar el campo Contraseña!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtPassword.Focus();
                 return true;
             }
 
-            if (((txtCPassword.Password == "" && Type != TypeForm.Update) || (Type == TypeForm.Update && txtCPassword.Password == "" && txtPassword.Password != "")))
+            if (txtPassword.Password.Length <= 5)
             {
-                MessageBox.Show("Debes llenar el campo de Confirmar Contraseña!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Las contraseña debe ser mayor a 6 dígitos");
                 txtCPassword.Focus();
                 return true;
             }
 
-            if (!txtPregunta.Changed)
+            if (txtCPassword.Password == "")
             {
-                MessageBox.Show("Debes llenar el primer campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPregunta.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe confirmar la contraseña");
+                txtCPassword.Focus();
                 return true;
             }
 
-            if (!txtRespuesta.Changed)
+            if (txtCPassword.Password != txtPassword.Password)
             {
-                MessageBox.Show("Debes llenar el primer campo Respuesta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtRespuesta.txt.Focus();
+                LFunction.MessageExecutor("Error", "Las contraseñas deben coincidir");
+                txtCPassword.Focus();
                 return true;
             }
 
-            if (!txtPregunta2.Changed)
+            if (txtPregunta.Text == "")
             {
-                MessageBox.Show("Debes llenar el segundo campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPregunta.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar la primera pregunta");
+                txtPregunta.Focus();
                 return true;
             }
 
-            if (!txtRespuesta2.Changed)
+            if (txtRespuesta.Text == "")
             {
-                MessageBox.Show("Debes llenar el segundo campo Respuesta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtRespuesta.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar la primera respuesta");
+                txtRespuesta.Focus();
                 return true;
             }
 
-            if (!txtPregunta3.Changed)
+            if (txtPregunta2.Text == "")
             {
-                MessageBox.Show("Debes llenar el tercer campo Pregunta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPregunta.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar la segunda pregunta");
+                txtPregunta.Focus();
                 return true;
             }
 
-            if (!txtRespuesta3.Changed)
+            if (txtRespuesta2.Text == "")
             {
-                MessageBox.Show("Debes llenar el tercer campo Respuesta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtRespuesta.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar la segunda respuesta");
+                txtRespuesta.Focus();
                 return true;
             }
 
-            if (txtEmail.txt.Text != "" && !Validaciones.IsValidEmail(txtEmail.txt.Text))
+            if (txtPregunta3.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar la tercera pregunta");
+                txtPregunta.Focus();
+                return true;
+            }
+
+            if (txtRespuesta3.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar la tercera respuesta");
+                txtRespuesta.Focus();
+                return true;
+            }
+
+            if (txtEmail.Text != "" && !Validaciones.IsValidEmail(txtEmail.Text))
             {
                 MessageBox.Show("El correo electronico es incorrecto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtEmail.txt.Focus();
-                return true;
-            }
-
-            if (txtPassword.Password != txtCPassword.Password)
-            {
-                MessageBox.Show("Los campos Contraseña y su confirmación no son iguales!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPassword.Focus();
+                txtEmail.Focus();
                 return true;
             }
 
             if(Type != TypeForm.Update)
             {
+                if (ActivarAnulado())
+                {
+                    return true;
+                }
+
                 if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                 {
                     LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
-                    txtDocumento.txt.Focus();
+                    txtDocumento.Focus();
                     return true;
                 }
 
                 if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
                 {
                     LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
-                    txtUsuario.txt.Focus();
+                    txtUsuario.Focus();
                     return true;
                 }
-            }
-
-            if ((txtTelefono.txt.Text.Length <= 10 && txtTelefono.txt.Text != "") || txtTelefono.txt.Text.Length >= 14)
-            {
-                MessageBox.Show("Debe agregar un teléfono válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtTelefono.txt.Focus();
-                return true;
-            }
-            if (txtDocumento.txt.Text.Length < 6 || txtDocumento.txt.Text.Length >= 9)
-            {
-                MessageBox.Show("El campo del documento debe ser válido!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtDocumento.txt.Focus();
-                return true;
-            }
-
-            if (txtTelefono.txt.Text == "" && txtEmail.txt.Text == "")
-            {
-                MessageBox.Show("Debe proporcionar un teléfono o correo electrónico del Trabajador!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtTelefono.txt.Focus();
-                return true;
             }
 
 
@@ -632,5 +589,72 @@ namespace ProyectoMagicolor.Vistas
         }
         #endregion
 
+
+        private bool ActivarAnulado()
+        {
+            List<DTrabajador> response = MetodosUsuario.CedulaRepetidaAnulada((CbTipoDocumento.Text + "-" + txtDocumento.Text));
+
+            if (response.Count > 0)
+            {
+                MessageBoxResult Resp = MessageBox.Show("El Trabajador está Anulado" + Environment.NewLine + "¿Desea reactivarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (Resp == MessageBoxResult.Yes)
+                {
+                    Type = TypeForm.Read;
+
+                    txtTitulo.Text = "Editar Trabajador";
+                    txtDocumento.IsEnabled = false;
+                    CbTipoDocumento.IsEnabled = false;
+                    txtUsuario.IsEnabled = false;
+                    fillForm(response[0], new LTrabajador().EncontrarSeguridad(response[0].idTrabajador));
+
+                    txtNombre.Focus();
+                }
+                else
+                {
+                    txtDocumento.Text = "";
+                    CbTipoDocumento.Text = "";
+
+                    CbTipoDocumento.Focus();
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+
+        private void txtDocumento_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if(CbTipoDocumento.Text != "" && txtDocumento.Text != "")
+                if(!ActivarAnulado())
+                    if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                    {
+                        LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+                        txtDocumento.Focus();
+                    }
+        }
+
+        private void CbTipoDocumento_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (CbTipoDocumento.Text != "" && txtDocumento.Text != "")
+                if (!ActivarAnulado())
+                    if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                    {
+                        LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+                        txtDocumento.Focus();
+                    }
+        }
+
+        private void txtUsuario_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Type != TypeForm.Update)
+            {
+                if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
+                {
+                    LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
+                    txtUsuario.Focus();
+                }
+            }
+        }
     }
 }

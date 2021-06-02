@@ -328,6 +328,21 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
+            if (Type != TypeForm.Update)
+            {
+                if (ActivarAnulado())
+                {
+                    return true;
+                }
+
+                if (Metodos.CodigoRepetido(txtCodigo.Text))
+                {
+                    LFunction.MessageExecutor("Error", "El artículo ya está registrado en el sistema");
+                    txtCodigo.Focus();
+                    return true;
+                }
+            }
+
             return false;
         }
         #endregion
@@ -344,6 +359,67 @@ namespace ProyectoMagicolor.Vistas
                 Update();
             else
                 Create();
+        }
+
+        private void txtDocumento_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtCodigo.Text != "")
+                if (!ActivarAnulado())
+                    if (Metodos.CodigoRepetido(txtCodigo.Text))
+                    {
+                        LFunction.MessageExecutor("Error", "El Artículo ya está Registrado en el Sistema");
+                        txtCodigo.Focus();
+                    }
+        }
+
+        private void CbTipoDocumento_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtCodigo.Text != "")
+                if (!ActivarAnulado())
+                    if (Metodos.CodigoRepetido(txtCodigo.Text))
+                    {
+                        LFunction.MessageExecutor("Error", "El Artículo ya está Registrado en el Sistema");
+                        txtCodigo.Focus();
+                    }
+        }
+
+
+        private bool ActivarAnulado()
+        {
+            List<DArticulo> response = Metodos.CodigoRepetidoAnulado(txtCodigo.Text);
+
+            if (response.Count > 0)
+            {
+                if (Globals.ACCESO_SISTEMA == 0 || Globals.ACCESO_SISTEMA == 1)
+                {
+                    MessageBoxResult Resp = MessageBox.Show("El Artículo está Deshabilitado" + Environment.NewLine + "¿Desea reactivarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (Resp == MessageBoxResult.Yes)
+                    {
+                        Type = TypeForm.Read;
+
+                        txtTitulo.Text = "Editar Artículo";
+                        txtCodigo.IsEnabled = false;
+                        fillForm(response[0]);
+
+                        txtNombre.Focus();
+                    }
+                    else
+                    {
+                        txtCodigo.Text = "";
+                        txtCodigo.Focus();
+                    }
+                }
+                else
+                {
+                    LFunction.MessageExecutor("Error", "El Artículo está Deshabilitado" + Environment.NewLine + "Sólo el Administrador o Encargado pueden reactivarlo");
+
+                    txtCodigo.Text = "";
+                    txtCodigo.Focus();
+                }
+
+                return true;
+            }
+            return false;
         }
     }
 }

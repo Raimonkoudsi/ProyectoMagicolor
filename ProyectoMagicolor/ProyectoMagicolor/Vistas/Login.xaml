@@ -7,7 +7,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Login" Height="350" Width="380"
+        Title="Login" Height="380" Width="380"
         AllowsTransparency="True" Background="Transparent"
         WindowStyle="None" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
@@ -25,7 +25,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Button Grid.Column="0" HorizontalAlignment="Center" Margin="320 5 0 0" Click="cerrar_Click" Background="Transparent" BorderBrush="Transparent">
-                <materialDesign:PackIcon Kind="Close" Foreground="White" Width="30" Height="30" />
+                <materialDesign:PackIcon Kind="Power" Foreground="White" Width="30" Height="30" />
             </Button>
             <Grid Grid.Row="1">
                 <Grid Margin="0 0 0 0">
@@ -34,22 +34,51 @@
                         <ColumnDefinition Width="350"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="1" Margin="0 0 0 30" Source="..\Imagenes\LogoMagicolor.png"/>
+                    <Image Grid.Column="1" Margin="0 0 0 0" Source="..\Imagenes\LogoMagicolor.png"/>
                 </Grid>
             </Grid>
             <StackPanel Grid.Row="2" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown">
                 <Grid Margin="50 10">
-                    <TextBlock Name="txtUsuarioPlace" Text="Usuario" FontSize="17" Foreground="WhiteSmoke" VerticalAlignment="Center" />
-                    <TextBox x:Name="txtUsuario" FontSize="17" GotFocus="txtUsuario_GotFocus" LostFocus="txtUsuario_LostFocus" Foreground="WhiteSmoke"/>
+                    <TextBox x:Name="txtUsuario" FontSize="14" Background="Transparent" BorderBrush="White"
+                             Foreground="White" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <materialDesign:HintAssist.Hint>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0" Margin="0 0 5 0" Kind="Account" 
+                                           Background="Transparent" HorizontalAlignment="Left" Foreground="White" 
+                                           Width="18" Height="18" />
+                                <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  
+                                           Text="Usuario del Sistema" Background="Transparent" />
+                            </Grid>
+                        </materialDesign:HintAssist.Hint>
+                    </TextBox>
+                    
                 </Grid>
                 <Grid Margin="50 10">
-                    <TextBlock Name="txtContraeñaPlace" Text="Contraseña" FontSize="17" Foreground="WhiteSmoke" VerticalAlignment="Center"/>
-                    <PasswordBox x:Name="txtContraseña" FontSize="17" GotFocus="txtContraseña_GotFocus" LostFocus="txtContraseña_LostFocus"/>
+                    <PasswordBox x:Name="txtContraseña" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
+                                 FontSize="14" BorderBrush="White">
+                        <materialDesign:HintAssist.Hint>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon Grid.Column="0" Margin="0 0 5 0" Kind="Password" 
+                                           Background="Transparent" HorizontalAlignment="Left" Foreground="White" 
+                                           Width="18" Height="18" />
+                                <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  
+                                           Text="Contraseña" Background="Transparent" />
+                            </Grid>
+                        </materialDesign:HintAssist.Hint>
+                    </PasswordBox>
                 </Grid>
                 <Button Margin="100 25" Background="#FFFF" Foreground="#3194F7" Content="Iniciar Sesión" FontSize="17" BorderBrush="{x:Null}" Click="login_Click"/>
                 <TextBlock HorizontalAlignment="Center" FontSize="15">
-                    <Hyperlink Foreground="LightGray" TextDecorations="" Click="Preguntas_Click" >
-                        Olvidaste la Contraseña?
+                    <Hyperlink Foreground="WhiteSmoke" TextDecorations="" Click="Preguntas_Click">
+                        ¿Olvidaste la Contraseña?
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>

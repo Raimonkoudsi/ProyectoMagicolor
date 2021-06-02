@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Background="WhiteSmoke"
-        Title="Seleccionar Cliente" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" d:DesignHeight="500" d:DesignWidth="750" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        Title="Variedades Magicolor (Seleccionar Cliente)" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" d:DesignHeight="500" d:DesignWidth="700" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,24 +16,26 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="70 10">
+        <Grid Grid.Row="0" Margin="60 20 60 20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Margin="0 0 10 0" Width="50">
-                <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged" >
+            <Grid Margin="0 0 5 0" Width="auto">
+                <ComboBox x:Name="CbTipoDocumento" FontSize="12" SelectionChanged="CbTipoDocumento_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Tipo"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
                     <ComboBoxItem>V</ComboBoxItem>
                     <ComboBoxItem>E</ComboBoxItem>
                     <ComboBoxItem>J</ComboBoxItem>
                     <ComboBoxItem>G</ComboBoxItem>
                 </ComboBox>
             </Grid>
-            <Grid Grid.Column="1" Margin="10 0 0 0">
-                <TextBlock Name="txtBucarPlaceH" Text="Documento" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <TextBox Name="txtDocumento" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
-                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+            <Grid Grid.Column="1" Margin="5 0 0 0">
+                <TextBox Name="txtDocumento" Text="" FontSize="12" Margin="0" KeyUp="TextBox_KeyDown"
+                            materialDesign:HintAssist.Hint="Documento"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
             </Grid>
         </Grid>
 
@@ -44,10 +47,14 @@
                   Margin="30 0 30 30"
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
-                  Background="WhiteSmoke">
+                  Background="WhiteSmoke"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#f0f0f0" />
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
@@ -55,20 +62,26 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding numeroDocumento}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="110" Header="Apellidos" Binding="{Binding apellidos}">
+                <DataGridTextColumn Width="*" Header="Nombre" Binding="{Binding nombre}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Width="110" Header="Nombre" Binding="{Binding nombre}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding nombre}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -76,30 +89,72 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding telefono}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Email" Binding="{Binding email}">
+                <DataGridTextColumn Width="auto" Header="Correo Electrónico" Binding="{Binding email}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding email}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn Width="auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Width="auto">
+                            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                                 <Button CommandParameter="{Binding idCliente}"
+                                        x:Name="btnEditar"
                                         Click="Button_Click_1"
                                         Margin="0 0 5 0"
-                                        Padding="5">Seleccionar</Button>
+                                        Padding="5"
+                                        Background="Green" BorderBrush="Green"
+                                        ToolTip="Seleccionar Cliente"
+                                        HorizontalAlignment="Center">
+
+                                    <materialDesign:PackIcon Kind="UserCheck" 
+                                            Foreground="White" Width="20" Height="20" />
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <!--<Button Grid.Row="2" Content="Agregar" HorizontalAlignment="Center" Margin="0 10" Click="Button_Click" Background="ForestGreen" BorderBrush="ForestGreen"/>-->
+        <Grid Grid.Row="1" HorizontalAlignment="Center" x:Name="SinRegistro">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Búsqueda sin Registros" 
+                          Margin="0 0 0 0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="22"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
+                          HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="28" Height="28"/>
+        </Grid>
+        <TextBlock Grid.Row="2" Text="Seleccionar el Cliente Requerido" 
+                          Margin="0 0 0 10"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="16"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
     </Grid>
 </Window>
