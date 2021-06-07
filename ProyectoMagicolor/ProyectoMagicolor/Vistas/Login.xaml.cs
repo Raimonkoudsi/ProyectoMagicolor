@@ -61,6 +61,10 @@ namespace ProyectoMagicolor.Vistas
                     intentos = 0;
                     this.Hide();
                     MainFrm.Show();
+
+                    VistaPrincipal Frm = new VistaPrincipal(MainFrm);
+                    MainFrm.SwitchScreen(Frm);
+
                     MainFrm.Closing += (s, r) => { this.Close(); };
                 }
                 else

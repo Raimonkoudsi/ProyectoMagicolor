@@ -464,6 +464,7 @@ namespace Logica
                     INNER JOIN [proveedor] p ON p.idProveedor = i.idProveedor
                     INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
                 WHERE i.fecha = @fecha 
+                    AND i.idIngreso <> 0
                     AND p.razonSocial LIKE @razonSocial + '%'
                     " + QueryMetodoPago(MetodoPago) + @"
 			    GROUP BY 

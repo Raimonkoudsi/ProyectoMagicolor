@@ -868,7 +868,7 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>="Página " &amp; Globals!PageNumber &amp; " de " &amp; Globals!TotalPages</Value>
+                  <Value>="Emitido por: " &amp; First(Fields!nombreTrabajadorIngresado.Value, "ArticuloDS")</Value>
                   <Style>
                     <FontFamily>Nirmala UI Semilight</FontFamily>
                     <FontWeight>Normal</FontWeight>
@@ -937,6 +937,10 @@
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
+        <Field Name="accesoTrabajadorIngresado">
+          <DataField>accesoTrabajadorIngresado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="cantidadActual">
           <DataField>cantidadActual</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -995,6 +999,10 @@
         </Field>
         <Field Name="nombre">
           <DataField>nombre</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="nombreTrabajadorIngresado">
+          <DataField>nombreTrabajadorIngresado</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="precioCompra">

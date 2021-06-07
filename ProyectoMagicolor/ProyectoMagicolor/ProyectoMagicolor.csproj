@@ -168,6 +168,12 @@
     </Compile>
     <Compile Include="Reports\Reporte.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="Vistas\CambiarIVA.xaml.cs">
+      <DependentUpon>CambiarIVA.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\VistaPrincipal.xaml.cs">
+      <DependentUpon>VistaPrincipal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ArticuloVista.xaml.cs">
       <DependentUpon>ArticuloVista.xaml</DependentUpon>
     </Compile>
@@ -273,6 +279,14 @@
     <Compile Include="Vistas\VentaVista.xaml.cs">
       <DependentUpon>VentaVista.xaml</DependentUpon>
     </Compile>
+    <Page Include="Vistas\CambiarIVA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\VistaPrincipal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\ArticuloVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -597,6 +611,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\icon-bag.png" />
+    <Resource Include="Imagenes\LogoReport.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

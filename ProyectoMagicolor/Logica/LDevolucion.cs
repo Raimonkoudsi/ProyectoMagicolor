@@ -17,13 +17,15 @@ namespace Logica
                 idCliente,
                 idTrabajador,
                 idVenta,
-                fecha
+                fecha,
+                motivo
             ) VALUES (
                 @idDevolucion,
                 @idCliente,
                 @idTrabajador,
                 @idVenta,
-                @fecha
+                @fecha,
+                @motivo
             );
         ";
 
@@ -154,6 +156,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idTrabajador", Devolucion.idTrabajador);
                 comm.Parameters.AddWithValue("@idVenta", Devolucion.idVenta);
                 comm.Parameters.AddWithValue("@fecha", Devolucion.fecha);
+                comm.Parameters.AddWithValue("@motivo", Devolucion.motivo);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro de la Devolución";
 
@@ -354,7 +357,8 @@ namespace Logica
                     d.fecha,
                     v.fecha,
                     c.telefono,
-                    c.email
+                    c.email,
+                    d.motivo
                 FROM [devolucion] d
                     INNER JOIN [cliente] c ON d.idCliente = c.idCliente
                     INNER JOIN [detalleDevolucion] dd ON d.idDevolucion = dd.idDevolucion
@@ -373,7 +377,8 @@ namespace Logica
                     v.fecha,
                     d.fecha,
                     c.telefono,
-                    c.email;
+                    c.email,
+                    d.motivo;
             ";
 
             Action action = () =>
@@ -397,6 +402,7 @@ namespace Logica
                         fechaVentaString = reader.GetDateTime(8).ToShortDateString(),
                         telefono = reader.GetString(9),
                         email = reader.GetString(10),
+                        motivo = reader.GetString(11),
                         nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }

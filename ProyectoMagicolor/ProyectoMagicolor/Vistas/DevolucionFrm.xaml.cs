@@ -19,9 +19,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for CompraFrm.xaml
-    /// </summary>
     public partial class DevolucionFrm : Page
     {
         DevolucionInicio ParentFrm;
@@ -54,7 +51,6 @@ namespace ProyectoMagicolor.Vistas
             txtCliName.Text = Venta.cliente;
             TxtCliDoc.Text = Venta.cedulaCliente;
             TxtCliTelf.Text = Venta.telefonoCliente;
-            TxtCliEmail.Text = Venta.emailCliente;
 
             CbMetodoPago.SelectedIndex = Venta.metodoPago - 1;
             int MetodoCredito = 2;
@@ -204,8 +200,23 @@ namespace ProyectoMagicolor.Vistas
 
         bool Validate()
         {
-            return false;
+            if(txtMotivo.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar el motivo de la Devolución");
+                txtMotivo.Focus();
 
+                return true;
+            }
+
+            if (txtMotivo.Text.Length <= 5)
+            {
+                LFunction.MessageExecutor("Error", "El motivo debe tener más de 5 carácteres");
+                txtMotivo.Focus();
+
+                return true;
+            }
+
+            return false;
         }
 
         private void BtnProcesarDevolucion_Click(object sender, RoutedEventArgs e)
@@ -217,7 +228,8 @@ namespace ProyectoMagicolor.Vistas
                                                      Venta.idCliente,
                                                      MainWindow.LoggedTrabajador.idTrabajador,
                                                      Venta.idVenta,
-                                                     DateTime.Now);
+                                                     DateTime.Now,
+                                                     txtMotivo.Text);
 
             var resp = new LDevolucion().Insertar(Devolucion, Devoluciones);
             if(resp == "OK")

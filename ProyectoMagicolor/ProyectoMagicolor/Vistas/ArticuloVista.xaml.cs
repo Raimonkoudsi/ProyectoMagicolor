@@ -41,7 +41,7 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh()
         {
 
-            List<DArticulo> items = new LArticulo().MostrarConCategoria(txtBuscar.Text);
+            List<DArticulo> items = new LArticulo().MostrarConCategoria(txtNombre.Text);
             if (filterDG)
             {
                 foreach (int item in Actual)
@@ -52,14 +52,20 @@ namespace ProyectoMagicolor.Vistas
                 }
             }
 
-
             dgOperaciones.ItemsSource = items;
+
+            if (items.Count == 0)
+            {
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             Refresh();
         }
 
@@ -79,25 +85,6 @@ namespace ProyectoMagicolor.Vistas
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             Refresh();
-        }
-
-
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-               txtBucarPlaceH.Text = "";
-            }
-            
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "Buscar...";
-            }
-            
         }
     }
 

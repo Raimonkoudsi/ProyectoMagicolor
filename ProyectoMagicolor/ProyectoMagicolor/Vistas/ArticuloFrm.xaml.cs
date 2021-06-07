@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,6 +22,7 @@ namespace ProyectoMagicolor.Vistas
     public partial class ArticuloFrm : Window
     {
         public CompraFrm ParentFrm;
+        public DetalleIngresoFrm SecondParentFrm;
 
         public TypeForm Type;
 
@@ -37,11 +37,12 @@ namespace ProyectoMagicolor.Vistas
         public string codigoParaEnviarCompra = "";
 
 
-        public ArticuloFrm(CompraFrm parent = null, string codigo = "")
+        public ArticuloFrm(CompraFrm parent = null, string codigo = "", DetalleIngresoFrm secondParent = null)
         {
             InitializeComponent();
 
             ParentFrm = parent;
+            SecondParentFrm = secondParent;
             codigoParaEnviarCompra = codigo;
 
             txtCodigo.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
@@ -147,6 +148,9 @@ namespace ProyectoMagicolor.Vistas
 
                     if (ParentFrm != null)
                         ParentFrm.SetNuevoArticulo(UForm.codigo);
+
+                    if (SecondParentFrm != null)
+                        SecondParentFrm.AgregarArticulo(UForm);
 
                     this.DialogResult = true;
                     this.Close();
@@ -361,18 +365,7 @@ namespace ProyectoMagicolor.Vistas
                 Create();
         }
 
-        private void txtDocumento_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtCodigo.Text != "")
-                if (!ActivarAnulado())
-                    if (Metodos.CodigoRepetido(txtCodigo.Text))
-                    {
-                        LFunction.MessageExecutor("Error", "El Artículo ya está Registrado en el Sistema");
-                        txtCodigo.Focus();
-                    }
-        }
-
-        private void CbTipoDocumento_LostFocus(object sender, RoutedEventArgs e)
+        private void txtCodigo_LostFocus(object sender, RoutedEventArgs e)
         {
             if (txtCodigo.Text != "")
                 if (!ActivarAnulado())
@@ -421,5 +414,6 @@ namespace ProyectoMagicolor.Vistas
             }
             return false;
         }
+
     }
 }

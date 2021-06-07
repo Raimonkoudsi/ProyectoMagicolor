@@ -317,5 +317,100 @@ namespace Logica
 
             return ListaGenerica;
         }
+
+
+
+        public List<DProveedor> ListadoProveedorArticulo(int IdArticulo)
+        {
+            List<DProveedor> ListaGenerica = new List<DProveedor>();
+
+            string queryListArticlee = @"
+                SELECT 
+	                p.razonSocial,
+	                (ISNULL((
+                        SELECT TOP 1
+                            i.fecha
+                        FROM [ingreso] i 
+			                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+			                INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo
+		                WHERE a.idArticulo = @idArticulo
+			                AND i.idProveedor = p.idProveedor
+                            AND i.estado <> 0
+                        ORDER BY di.idDetalleIngreso DESC
+                    ), '01/01/2000')) AS ultimaCompra,
+	                (ISNULL((
+                        SELECT TOP 1
+                            di.precioCompra
+                        FROM [ingreso] i 
+			                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+			                INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo
+		                WHERE a.idArticulo = @idArticulo
+			                AND i.idProveedor = p.idProveedor
+                            AND i.estado <> 0
+                        ORDER BY di.idDetalleIngreso DESC
+                    ), 0)) AS ultimoPrecio
+                FROM [proveedor] p
+                WHERE p.razonSocial <> '0'
+	                AND p.estado <> 0
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListArticlee, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    if(reader.GetDecimal(2) != 0)
+                    {
+                        ListaGenerica.Add(new DProveedor
+                        {
+                            razonSocial = reader.GetString(0),
+                            ultimaCompra = reader.GetDateTime(1).ToString("dd/MM/yyyy"),
+                            ultimoPrecio = (double)reader.GetDecimal(2)
+                        });
+                    }
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DProveedor> ListadoProveedorCategoria(string Categoria)
+        {
+            List<DProveedor> ListaGenerica = new List<DProveedor>();
+
+            string queryListArticlee = @"
+                SELECT 
+	                p.razonSocial,
+	                p.sectorComercial
+                FROM [proveedor] p
+                WHERE p.razonSocial <> '0'
+	                AND p.estado <> 0
+	                AND (p.sectorComercial = @categoria OR p.sectorComercial = 'Variedades')
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListArticlee, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@categoria", Categoria);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DProveedor
+                    {
+                        razonSocial = reader.GetString(0),
+                        sectorComercial = reader.GetString(1)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
     }
 }

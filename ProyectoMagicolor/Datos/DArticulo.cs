@@ -154,6 +154,20 @@ namespace Datos
             set { _TotalDevolucion = value; }
         }
 
+        private double _SubtotalCompra;
+        public double subtotalCompra
+        {
+            get { return _SubtotalCompra; }
+            set { _SubtotalCompra = value; }
+        }
+
+        private double _TotalCompra;
+        public double totalCompra
+        {
+            get { return _TotalCompra; }
+            set { _TotalCompra = value; }
+        }
+
         private double _PrecioUnidad;
         public double precioUnidad
         {

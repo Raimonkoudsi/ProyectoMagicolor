@@ -12,21 +12,6 @@ namespace Logica
     {
         #region QUERIES
 
-        private string queryList = @"
-            SELECT 
-                i.idIngreso,
-                p.razonSocial, 
-                i.factura, 
-                i.fecha, 
-                (select (SUM(precioCompra * cantidadInicial) - cp.montoIngresado) FROM detalleIngreso where idIngreso = i.idIngreso) AS montoActual,
-                t.cedula
-            FROM  [cuentaPagar] cp
-				INNER JOIN [ingreso] i ON i.idIngreso = cp.idIngreso 
-                INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor 
-                INNER JOIN [trabajador] t ON i.idTrabajador = t.idTrabajador
-            WHERE i.estado = 2 AND p.razonSocial LIKE @razonSocial + '%' 
-        ";
-
         private string queryInsert = @"
             INSERT INTO [registroCuentaPagar] (
                 idRegistro,
@@ -105,29 +90,48 @@ namespace Logica
         #endregion
 
 
-        public List<DIngreso> MostrarCxP(string RazonSocial)
+        public List<DIngreso> MostrarCxP(string TipoDocumento, string NumeroDocumento, int Tipo)
         {
             List<DIngreso> ListaGenerica = new List<DIngreso>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@razonSocial", RazonSocial);
+            string queryList = @"
+                SELECT 
+                    i.idIngreso,
+                    p.razonSocial, 
+                    p.tipoDocumento + '-' + p.numeroDocumento,
+                    i.factura, 
+                    i.fecha, 
+                    (select (SUM(precioCompra * cantidadInicial) - cp.montoIngresado) FROM detalleIngreso where idIngreso = i.idIngreso) AS montoActual,
+                    t.cedula
+                FROM  [cuentaPagar] cp
+				    INNER JOIN [ingreso] i ON i.idIngreso = cp.idIngreso 
+                    INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor 
+                    INNER JOIN [trabajador] t ON i.idTrabajador = t.idTrabajador
+                WHERE i.estado = 2 AND p.tipoDocumento LIKE @tipoDocumento + '%' 
+                    AND p.numeroDocumento LIKE @numeroDocumento + '%' 
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DIngreso
+                    using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                    comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idIngreso = reader.GetInt32(0),
-                        razonSocial = reader.GetString(1),
-                        factura = reader.GetString(2),
-                        fecha = reader.GetDateTime(3),
-                        montoTotal = (double)reader.GetDecimal(4),
-                        cedulaTrabajador = reader.GetString(5)
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DIngreso
+                        {
+                            idIngreso = reader.GetInt32(0),
+                            razonSocial = reader.GetString(1),
+                            cedulaProveedor = reader.GetString(2),
+                            factura = reader.GetString(3),
+                            fecha = reader.GetDateTime(4),
+                            montoTotal = (double)reader.GetDecimal(5),
+                            cedulaTrabajador = reader.GetString(6)
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;

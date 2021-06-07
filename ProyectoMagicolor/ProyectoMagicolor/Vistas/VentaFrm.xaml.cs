@@ -412,8 +412,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            //SetArticulo();
-
             DetalleVentaFrm DVFrm = new DetalleVentaFrm(this, ListaVenta);
             DVFrm.Type = TypeForm.Create;
             DVFrm.ShowDialog();
@@ -521,6 +519,9 @@ namespace ProyectoMagicolor.Vistas
                 impuestos = 0;
                 total = 0;
                 descuento = 0;
+
+                txtDescuento.Text = "";
+                txtDescuento.Focus();
             }
 
             txtDescuento.Text = Monto.ToString("0.00");
@@ -531,6 +532,11 @@ namespace ProyectoMagicolor.Vistas
             Refresh();
             txtDocumento.Focus();
             dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
+
+            CbTipoDocumento.SelectedIndex = 0;
+
+            txtImpuesto.IsEnabled = false;
+            txtImpuesto.Text = LFunction.MostrarIVA().ToString();
         }
 
         private void dpFechaLimite_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -547,7 +553,27 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtDescuento_KeyUp(object sender, KeyEventArgs e)
         {
+            double Monto = 0;
+
+            if(txtDescuento.Text != "")
+                Monto = Convert.ToDouble(txtDescuento.Text);
+
+            if(Monto > subtotal)
+            {
+                MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                Monto = 0;
+                subtotal = 0;
+                impuestos = 0;
+                total = 0;
+                descuento = 0;
+
+                txtDescuento.Text = "";
+                txtDescuento.Focus();
+            }
+
             RefreshMoney();
+
+            txtDescuento.Text = Monto.ToString("0.00");
         }
 
         private void txtBuscar_KeyDown(object sender, KeyEventArgs e)

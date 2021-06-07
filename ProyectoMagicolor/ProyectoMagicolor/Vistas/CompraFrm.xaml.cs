@@ -30,7 +30,7 @@ namespace ProyectoMagicolor.Vistas
             txtImpuesto.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public DProveedor Proveedor;
 
@@ -308,6 +308,8 @@ namespace ProyectoMagicolor.Vistas
 
         public void AgregarArticulo(DDetalle_Ingreso DDI, DArticulo DA)
         {
+
+            //ACA VA LO DE SUMAR LAS CANTIDADES
             ModeloCompra MCN = new ModeloCompra(DisplayData.Count,
                                                 DA.nombre,
                                                 DDI.precioCompra,
@@ -430,7 +432,9 @@ namespace ProyectoMagicolor.Vistas
             EliminarArticulo(id);
         }
 
-        public double subtotal, impuestos, total;
+        public double subtotal, total;
+
+        public int impuestos;
 
         public void RefreshMoney()
         {
@@ -451,7 +455,7 @@ namespace ProyectoMagicolor.Vistas
             double Total = Subtotal + imp;
 
             subtotal = Subtotal;
-            impuestos = impPer;
+            impuestos = int.Parse(txtImpuesto.Text);
             total = Total;
 
 
@@ -469,6 +473,11 @@ namespace ProyectoMagicolor.Vistas
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Refresh();
+
+            txtImpuesto.IsEnabled = false;
+            txtImpuesto.Text = LFunction.MostrarIVA().ToString();
+
+            CbTipoDocumento.SelectedIndex = 2;
             dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
         }
 

@@ -17,9 +17,6 @@ using Datos;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for InventarioVista.xaml
-    /// </summary>
     public partial class InventarioVista : Window
     {
         public InventarioVista(DArticulo Datos)
@@ -34,11 +31,12 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            string bs = "Bs. ";
+            string bs = " Bs. S";
 
             //articulo
             txtCodigoArticulo.Text = InventarioDatos.codigo;
             txtNombreArticulo.Text = InventarioDatos.nombre;
+            txtCantidadArticulo.Text = "(" + InventarioDatos.cantidadActual.ToString() + " Unidades Restantes)";
             txtDescripcionArticulo.Text = InventarioDatos.descripcion;
             txtCategoriaArticulo.Text = InventarioDatos.categoria;
             txtStockMinArticulo.Text = InventarioDatos.stockMinimo.ToString();
@@ -53,17 +51,34 @@ namespace ProyectoMagicolor.Vistas
 
 
             //Montos
-            txtVentasMonto.Text = bs + InventarioDatos.total.ToString();
-            txtImpuestoVentas.Text = bs + (InventarioDatos.total - InventarioDatos.subtotal).ToString();
-            txtVentasTotal.Text = bs + InventarioDatos.subtotal.ToString();
+            txtVentasMonto.Text = InventarioDatos.total.ToString() + bs;
+            txtImpuestoVentas.Text = (InventarioDatos.total - InventarioDatos.subtotal).ToString() + bs;
+            txtVentasTotal.Text = InventarioDatos.subtotal.ToString() + bs;
 
-            txtDevolucionesMonto.Text = bs + InventarioDatos.subtotalDevolucion.ToString();
-            txtImpuestosDevoluciones.Text = bs + (InventarioDatos.totalDevolucion - InventarioDatos.subtotalDevolucion).ToString();
-            txtDevolucionesTotal.Text = bs + InventarioDatos.totalDevolucion.ToString();
+            txtComprasMonto.Text = InventarioDatos.subtotalCompra.ToString() + bs;
+            txtImpuestoCompras.Text = (InventarioDatos.totalCompra - InventarioDatos.subtotalCompra).ToString() + bs;
+            txtComprasTotal.Text = InventarioDatos.totalCompra.ToString() + bs;
 
-            txtCompraUnitaria.Text = bs + InventarioDatos.precioUnidad.ToString();
-            txtCompraVendido.Text = bs + InventarioDatos.compraVendida.ToString();
-            txtGananciasNetas.Text = bs + (InventarioDatos.subtotal - InventarioDatos.compraVendida).ToString(); ;
+            txtDevolucionesMonto.Text = InventarioDatos.subtotalDevolucion.ToString() + bs;
+            txtImpuestoDevoluciones.Text = (InventarioDatos.totalDevolucion - InventarioDatos.subtotalDevolucion).ToString() + bs;
+            txtDevolucionesTotal.Text = InventarioDatos.totalDevolucion.ToString() + bs;
+
+            double total = InventarioDatos.subtotal - InventarioDatos.subtotalCompra - InventarioDatos.subtotalDevolucion + (InventarioDatos.totalDevolucion - InventarioDatos.subtotalDevolucion);
+
+            txtGananciasNetas.Text = total.ToString() + bs;
+
+            LProveedor Metodos = new LProveedor();
+
+            List<DProveedor> items = Metodos.ListadoProveedorArticulo(InventarioDatos.idArticulo);
+            dgOperaciones.ItemsSource = items;
+
+            List<DProveedor> items2 = Metodos.ListadoProveedorCategoria(InventarioDatos.categoria);
+            dgOperaciones2.ItemsSource = items2;
+        }
+
+        private void btnVer_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

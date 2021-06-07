@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 
 using Datos;
 using Logica;
-using Microsoft.Win32;
 
 
 namespace ProyectoMagicolor.Vistas
@@ -54,7 +53,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
-            txtBucarPlaceH.Text = "";
             txtMonto.Text = DataFill.montoTotal.ToString();
 
             total = true;
@@ -117,7 +115,6 @@ namespace ProyectoMagicolor.Vistas
 
             if (rpta == MessageBoxResult.No)
             {
-                txtBucarPlaceH.Text = "Monto a Abonar";
                 return;
             }
 
@@ -154,7 +151,7 @@ namespace ProyectoMagicolor.Vistas
 
         bool Validate()
         {
-            if ((txtMonto.Text != "" || double.Parse(txtMonto.Text) <= 0) && !total)
+            if ((txtMonto.Text == "" || double.Parse(txtMonto.Text) <= 0) && !total)
             {
                 LFunction.MessageExecutor("Error", "Debe Agregar un Monto para Abonar");
                 txtMonto.Focus();
@@ -169,22 +166,6 @@ namespace ProyectoMagicolor.Vistas
 
             return false;
 
-        }
-
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtMonto.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtMonto.Text == "")
-            {
-                txtBucarPlaceH.Text = "Monto a Abonar";
-            }
         }
     }
 }

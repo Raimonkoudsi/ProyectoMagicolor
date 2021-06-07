@@ -66,8 +66,14 @@ namespace ProyectoMagicolor.Vistas
         private int TipoMostrar = 1;
         private int TipoOrdenar = 1;
 
+        private bool SinVentas = false;
+
         public void Refresh()
         {
+            SinVentas = false;
+
+            if (RBSinVentas.IsChecked ?? false)
+                SinVentas = true;
 
             TipoBuscarPor = 1;
 
@@ -140,9 +146,11 @@ namespace ProyectoMagicolor.Vistas
                 }
             }
             else if (ChBMayoresVentasOrdenar.IsChecked ?? false) TipoOrdenar = 3;
-            else if (ChBMayorStockOrdenar.IsChecked ?? false) TipoOrdenar = 4;
+            else if (ChBMenoresVentasOrdenar.IsChecked ?? false) TipoOrdenar = 4;
+            else if (ChBMayorDevolucion.IsChecked ?? false) TipoOrdenar = 5;
+            else if (ChBMayorStockOrdenar.IsChecked ?? false) TipoOrdenar = 6;
 
-            List<DArticulo> items = Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar);
+            List<DArticulo> items = Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar, SinVentas);
 
             dgOperaciones.ItemsSource = items;
         }
@@ -152,12 +160,6 @@ namespace ProyectoMagicolor.Vistas
             Refresh();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ArticuloFrm frmTrab = new ArticuloFrm();
-            bool Resp = frmTrab.ShowDialog() ?? false;
-            Refresh();
-        }
 
         private void txtVer_Click(object sender, RoutedEventArgs e)
         {
@@ -343,7 +345,7 @@ namespace ProyectoMagicolor.Vistas
             }
 
             Reports.Reporte reporte = new Reports.Reporte();
-            reporte.ExportPDF(Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar), "Inventario");
+            reporte.ExportPDF(Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar, SinVentas), "Inventario");
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
@@ -354,6 +356,11 @@ namespace ProyectoMagicolor.Vistas
         }
 
         private void dgOperaciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void RBSinVentas_Click(object sender, RoutedEventArgs e)
         {
 
         }

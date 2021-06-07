@@ -18,45 +18,77 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para CuentaPagarDG.xaml
-    /// </summary>
     public partial class CuentaPagarDG : Page
     {
 
         public LCuentaPagar Metodos = new LCuentaPagar();
 
-        public CuentaPagarDG(MainWindow parent)
+        public List<DRegistro_CuentaPagar> ListaCP = new List<DRegistro_CuentaPagar>();
+
+        public new MainWindow Parent;
+
+        private int TipoFecha;
+        private string tipoDoc;
+
+        public CuentaPagarDG(MainWindow parent = null, int tipoFecha = 0)
         {
             InitializeComponent();
 
             Parent = parent;
+            TipoFecha = tipoFecha;
 
         }
 
-        public List<DRegistro_CuentaPagar> ListaCP = new List<DRegistro_CuentaPagar>();
-
-        public MainWindow Parent;
-
-        public void Refresh(string search)
+        public void Refresh(string search, string search2)
         {
 
-            List<DIngreso> DisplayData = Metodos.MostrarCxP(search);
-
-            //dgOperaciones.ItemsSource = null;
+            List<DIngreso> DisplayData = Metodos.MostrarCxP(search, search2, TipoFechaBusqueda());
             dgOperaciones.ItemsSource = DisplayData;
 
+            if (DisplayData.Count == 0)
+            {
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private int TipoFechaBusqueda()
+        {
+            if (RBFecha.IsChecked == true && RBFechaLimite.IsChecked == true)
+                return 3;
+            if (RBFecha.IsChecked == true && RBFechaLimite.IsChecked == false)
+                return 1;
+            if (RBFecha.IsChecked == false && RBFechaLimite.IsChecked == true)
+                return 2;
+
+            return 0;
         }
 
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            if (TipoFecha == 1)
+            {
+                RBFecha.IsChecked = true;
+                RBFechaLimite.IsChecked = false;
+            }
+            if (TipoFecha == 2)
+            {
+                RBFecha.IsChecked = false;
+                RBFechaLimite.IsChecked = true;
+            }
+
+            CbTipoDocumento.SelectedIndex = 4;
+
+            Refresh(tipoDoc, txtDocumento.Text);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(txtBuscar.Text);
+            Refresh(tipoDoc, txtDocumento.Text);
         }
 
         private void btnAgregarPago_Click(object sender, RoutedEventArgs e)
@@ -65,28 +97,31 @@ namespace ProyectoMagicolor.Vistas
             int idIngreso = (int)((Button)sender).CommandParameter;
             var response = Metodos.EncontrarCxP(idIngreso);
 
-            //implementar lo de la ListaCP
             DetalleCuentaPagarFrm frmDetalleCP = new DetalleCuentaPagarFrm(this, ListaCP);
             frmDetalleCP.DataFill = response[0];
             bool Resp = frmDetalleCP.ShowDialog() ?? false;
-            Refresh(txtBuscar.Text);
+            Refresh(tipoDoc, txtDocumento.Text);
         }
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
+        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
 
+            tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
+                            CbTipoDocumento.SelectedIndex == 1 ? "E" :
+                            CbTipoDocumento.SelectedIndex == 2 ? "J" :
+                            CbTipoDocumento.SelectedIndex == 3 ? "G" : "";
+
+            if (CbTipoDocumento.SelectedIndex == 4)
+                txtDocumento.IsEnabled = false;
+            else
+                txtDocumento.IsEnabled = true;
+
+            Refresh(tipoDoc, txtDocumento.Text);
         }
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "Buscar...";
-            }
 
+        private void RBFecha_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh(tipoDoc, txtDocumento.Text);
         }
 
     }

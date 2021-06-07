@@ -97,6 +97,21 @@ namespace Datos
             set { _NombreTrabajadorIngresado = value; }
         }
 
+
+        private string _UltimaCompra;
+        public string ultimaCompra
+        {
+            get { return _UltimaCompra; }
+            set { _UltimaCompra = value; }
+        }
+
+        private double _UltimoPrecio;
+        public double ultimoPrecio
+        {
+            get { return _UltimoPrecio; }
+            set { _UltimoPrecio = value; }
+        }
+
         public DProveedor()
         {
 

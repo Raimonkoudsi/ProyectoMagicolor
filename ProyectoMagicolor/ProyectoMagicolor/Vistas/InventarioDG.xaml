@@ -102,6 +102,13 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Devuelta" Binding="{Binding cantidadDevuelta}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTemplateColumn Width="auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -132,11 +139,14 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Grid>
-                        <TextBlock Text="Filtros de Busqueda" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                        <TextBlock Text="Filtros de Búsqueda" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" FontWeight="Bold"/>
                     </Grid>
                     <ScrollViewer Grid.Row="1">
                         <StackPanel Margin="10">
-                            <StackPanel Margin="0 10">
+                            <StackPanel>
+                                <CheckBox Grid.Column="2" x:Name="RBSinVentas" Content="Artículos sin Ventas"
+                                      IsChecked="false" Click="RBSinVentas_Click"
+                                      Background="#3194F7" FontWeight="Bold" FontSize="14"/>
                                 <TextBlock x:Name="txtBuscarPor" Text="Buscar por:" FontWeight="Bold" FontSize="17" Margin="5 5"/>
                                 <StackPanel x:Name="BuscarPorPanel">
                                     <RadioButton x:Name="RBDiaBuscar" Content="Dia" FontWeight="Bold" FontSize="14"/>
@@ -166,7 +176,7 @@
                             
                             <StackPanel Margin="0 10">
                                 <TextBlock Text="Ordenar:" TextWrapping="Wrap" TextAlignment="Center" FontSize="17" FontWeight="Bold"/>
-                                <RadioButton x:Name="ChBAlfabeticoOrdenar" Content="Alfabeticamente" FontWeight="Bold" FontSize="14" Checked="ChBAlfabeticoOrdenar_Checked" Unchecked="ChBAlfabeticoOrdenar_Checked"/>
+                                <RadioButton x:Name="ChBAlfabeticoOrdenar" Content="Alfabéticamente" FontWeight="Bold" FontSize="14" Checked="ChBAlfabeticoOrdenar_Checked" Unchecked="ChBAlfabeticoOrdenar_Checked"/>
                                 <StackPanel x:Name="ValoresPanel" Margin="15 5 0 5" Visibility="Visible">
                                     <Grid Width="150" HorizontalAlignment="Left">
                                         <TextBlock x:Name="CbColumnasPlaceholder" Text="Columnas" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
@@ -177,6 +187,8 @@
                                     </Grid>
                                 </StackPanel>
                                 <RadioButton x:Name="ChBMayoresVentasOrdenar" Content="Mayores Ventas" FontWeight="Bold" FontSize="14"/>
+                                <RadioButton x:Name="ChBMenoresVentasOrdenar" Content="Menores Ventas" FontWeight="Bold" FontSize="14"/>
+                                <RadioButton x:Name="ChBMayorDevolucion" Content="Mayores Devoluciones" FontWeight="Bold" FontSize="14"/>
                                 <RadioButton x:Name="ChBMayorStockOrdenar" Content="Mayor Stock" FontWeight="Bold" FontSize="14"/>
                             </StackPanel>
                         </StackPanel>

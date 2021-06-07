@@ -65,6 +65,7 @@
                                     <ComboBoxItem>V</ComboBoxItem>
                                     <ComboBoxItem>E</ComboBoxItem>
                                     <ComboBoxItem>J</ComboBoxItem>
+                                    <ComboBoxItem>G</ComboBoxItem>
                                 </ComboBox>
                             </Grid>
                             <Grid Grid.Column="1">

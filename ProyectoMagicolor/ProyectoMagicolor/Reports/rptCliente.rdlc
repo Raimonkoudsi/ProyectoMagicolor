@@ -2,14 +2,14 @@
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <Body>
     <ReportItems>
-      <Tablix Name="Tablix2">
+      <Tablix Name="Tablix1">
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>3.83333cm</Width>
+              <Width>3.90903cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>5.78552cm</Width>
+              <Width>5.70233cm</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>4.32674cm</Width>
@@ -20,11 +20,11 @@
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.70583cm</Height>
+              <Height>0.81167cm</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox2">
+                    <Textbox Name="Textbox3">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
@@ -35,7 +35,7 @@
                               <Style>
                                 <FontFamily>Nirmala UI Semilight</FontFamily>
                                 <FontSize>12pt</FontSize>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>SemiBold</FontWeight>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -44,7 +44,7 @@
                           </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox2</rd:DefaultName>
+                      <rd:DefaultName>Textbox3</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>#3094f7</Color>
@@ -54,6 +54,7 @@
                         <BottomBorder>
                           <Width>1.5pt</Width>
                         </BottomBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -64,7 +65,7 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox6">
+                    <Textbox Name="Textbox5">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
@@ -75,7 +76,7 @@
                               <Style>
                                 <FontFamily>Nirmala UI Semilight</FontFamily>
                                 <FontSize>12pt</FontSize>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>SemiBold</FontWeight>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -84,7 +85,7 @@
                           </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox6</rd:DefaultName>
+                      <rd:DefaultName>Textbox5</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>#3094f7</Color>
@@ -94,6 +95,7 @@
                         <BottomBorder>
                           <Width>1.5pt</Width>
                         </BottomBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -104,7 +106,7 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox11">
+                    <Textbox Name="Textbox12">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
@@ -115,7 +117,7 @@
                               <Style>
                                 <FontFamily>Nirmala UI Semilight</FontFamily>
                                 <FontSize>12pt</FontSize>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>SemiBold</FontWeight>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -124,7 +126,7 @@
                           </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox11</rd:DefaultName>
+                      <rd:DefaultName>Textbox12</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>#3094f7</Color>
@@ -134,6 +136,7 @@
                         <BottomBorder>
                           <Width>1.5pt</Width>
                         </BottomBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -144,18 +147,18 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox8">
+                    <Textbox Name="Textbox9">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Email</Value>
+                              <Value>CorreoElectrónico</Value>
                               <Style>
                                 <FontFamily>Nirmala UI Semilight</FontFamily>
                                 <FontSize>12pt</FontSize>
-                                <FontWeight>Bold</FontWeight>
+                                <FontWeight>SemiBold</FontWeight>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -164,7 +167,7 @@
                           </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox8</rd:DefaultName>
+                      <rd:DefaultName>Textbox9</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>#3094f7</Color>
@@ -174,6 +177,7 @@
                         <BottomBorder>
                           <Width>1.5pt</Width>
                         </BottomBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -189,7 +193,7 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="tipoDocumento">
+                    <Textbox Name="tipoDocumento1">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
@@ -197,15 +201,15 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!tipoDocumento.Value &amp; "-" &amp; Fields!numeroDocumento.Value</Value>
-                              <Style>
-                                <FontSize>11pt</FontSize>
-                              </Style>
+                              <Style />
                             </TextRun>
                           </TextRuns>
-                          <Style />
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>tipoDocumento</rd:DefaultName>
+                      <rd:DefaultName>tipoDocumento1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -214,6 +218,7 @@
                         <TopBorder>
                           <Style>None</Style>
                         </TopBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -224,23 +229,21 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="nombre">
+                    <Textbox Name="nombre1">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!apellidos.Value &amp; " " &amp; Fields!nombre.Value</Value>
-                              <Style>
-                                <FontSize>11pt</FontSize>
-                              </Style>
+                              <Value>=Fields!nombre.Value</Value>
+                              <Style />
                             </TextRun>
                           </TextRuns>
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>nombre</rd:DefaultName>
+                      <rd:DefaultName>nombre1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -249,6 +252,7 @@
                         <TopBorder>
                           <Style>None</Style>
                         </TopBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -259,7 +263,7 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="telefono1">
+                    <Textbox Name="telefono">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
@@ -267,15 +271,15 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!telefono.Value</Value>
-                              <Style>
-                                <FontSize>11pt</FontSize>
-                              </Style>
+                              <Style />
                             </TextRun>
                           </TextRuns>
-                          <Style />
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>telefono1</rd:DefaultName>
+                      <rd:DefaultName>telefono</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -284,6 +288,7 @@
                         <TopBorder>
                           <Style>None</Style>
                         </TopBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -294,7 +299,7 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="email1">
+                    <Textbox Name="email">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
@@ -302,15 +307,13 @@
                           <TextRuns>
                             <TextRun>
                               <Value>=Fields!email.Value</Value>
-                              <Style>
-                                <FontSize>11pt</FontSize>
-                              </Style>
+                              <Style />
                             </TextRun>
                           </TextRuns>
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>email1</rd:DefaultName>
+                      <rd:DefaultName>email</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -319,6 +322,7 @@
                         <TopBorder>
                           <Style>None</Style>
                         </TopBorder>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -345,15 +349,15 @@
               <KeepWithGroup>After</KeepWithGroup>
             </TablixMember>
             <TablixMember>
-              <Group Name="Detalles1" />
+              <Group Name="Detalles" />
             </TablixMember>
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>ClienteDS</DataSetName>
-        <Top>0.55245cm</Top>
-        <Left>0.62433cm</Left>
-        <Height>1.35875cm</Height>
-        <Width>19.7554cm</Width>
+        <Top>0.53549cm</Top>
+        <Left>0.63182cm</Left>
+        <Height>1.46458cm</Height>
+        <Width>19.74791cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -361,7 +365,7 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>2.30875cm</Height>
+    <Height>2.54687cm</Height>
     <Style />
   </Body>
   <Width>20.67667cm</Width>
@@ -651,9 +655,9 @@
           </Paragraphs>
           <rd:DefaultName>Textbox19</rd:DefaultName>
           <Top>0.52656cm</Top>
-          <Left>7.26647cm</Left>
+          <Left>13.11376cm</Left>
           <Height>0.67938cm</Height>
-          <Width>13.11326cm</Width>
+          <Width>7.26597cm</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -678,6 +682,42 @@
             </Border>
           </Style>
         </Line>
+        <Textbox Name="Textbox25">
+          <CanGrow>true</CanGrow>
+          <KeepTogether>true</KeepTogether>
+          <Paragraphs>
+            <Paragraph>
+              <TextRuns>
+                <TextRun>
+                  <Value>="Emitido por: " &amp; First(Fields!nombreTrabajadorIngresado.Value, "ClienteDS")</Value>
+                  <Style>
+                    <FontFamily>Nirmala UI Semilight</FontFamily>
+                    <FontWeight>Normal</FontWeight>
+                  </Style>
+                </TextRun>
+              </TextRuns>
+              <Style>
+                <TextAlign>Left</TextAlign>
+              </Style>
+            </Paragraph>
+          </Paragraphs>
+          <rd:DefaultName>Textbox19</rd:DefaultName>
+          <Top>0.52656cm</Top>
+          <Left>0.62433cm</Left>
+          <Height>0.67938cm</Height>
+          <Width>12.31304cm</Width>
+          <ZIndex>2</ZIndex>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+            <VerticalAlign>Middle</VerticalAlign>
+            <PaddingLeft>2pt</PaddingLeft>
+            <PaddingRight>2pt</PaddingRight>
+            <PaddingTop>2pt</PaddingTop>
+            <PaddingBottom>2pt</PaddingBottom>
+          </Style>
+        </Textbox>
       </ReportItems>
       <Style>
         <Border>
@@ -703,17 +743,24 @@
       </ConnectionProperties>
       <rd:DataSourceID>a28c2e77-265f-407f-a51d-7afc4c637998</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="Datos">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>bdacdc5a-38ce-4fef-b862-8578e3c7b76b</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="ClienteDS">
       <Query>
-        <DataSourceName>Logica</DataSourceName>
+        <DataSourceName>Datos</DataSourceName>
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
-        <Field Name="apellidos">
-          <DataField>apellidos</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="accesoTrabajadorIngresado">
+          <DataField>accesoTrabajadorIngresado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="direccion">
           <DataField>direccion</DataField>
@@ -723,12 +770,20 @@
           <DataField>email</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="estado">
+          <DataField>estado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="idCliente">
           <DataField>idCliente</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="nombre">
           <DataField>nombre</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="nombreTrabajadorIngresado">
+          <DataField>nombreTrabajadorIngresado</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="numeroDocumento">
@@ -745,9 +800,9 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>Logica</rd:DataSetName>
-        <rd:TableName>LCliente</rd:TableName>
-        <rd:ObjectDataSourceType>Logica.LCliente, Logica, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:DataSetName>Datos</rd:DataSetName>
+        <rd:TableName>DCliente</rd:TableName>
+        <rd:ObjectDataSourceType>Datos.DCliente, Datos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
