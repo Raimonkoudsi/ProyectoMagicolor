@@ -349,9 +349,6 @@ namespace Logica
                             FROM [detalleIngreso] di 
                             WHERE a.idArticulo = di.idArticulo 
                                 AND di.estado <> 0 
-                                AND di.cantidadActual <> 0
-                                AND di.cantidadInicial <> 0
-                                OR a.idArticulo <> 0 
                             ORDER BY di.idDetalleIngreso DESC), -1) AS cantidad, 
                         ISNULL((
                             SELECT 
@@ -359,7 +356,7 @@ namespace Logica
                             FROM [detalleVenta] dv 
 		                        INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso 
 		                        INNER JOIN [venta] v ON v.idVenta=dv.idVenta
-                            WHERE a.idArticulo = di.idArticulo " + dateQuery + @"), 0) AS vendido,
+                            WHERE a.idArticulo = di.idArticulo AND di.estado <> 0  " + dateQuery + @"), 0) AS vendido,
                         ISNULL((
                             SELECT
                                 SUM(dd.cantidad)
@@ -371,7 +368,7 @@ namespace Logica
                             SELECT TOP 1 
                                 di.precioVenta 
                             FROM [detalleIngreso] di 
-                            WHERE a.idArticulo = di.idArticulo
+                            WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
                             ORDER BY di.idDetalleIngreso DESC), 0) AS precio
                     FROM [articulo] a 
 	                    INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
@@ -500,12 +497,12 @@ namespace Logica
                         FROM [detalleVenta] dv
                             INNER JOIN[detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
 
-                        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadVendida,
+                        WHERE a.idArticulo = di.idArticulo AND dv.estado <> 0), 0) AS cantidadVendida,
                     ISNULL((
                         SELECT
                             SUM(di.cantidadInicial)
-                        FROM[detalleIngreso] di
-                        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadComprada,
+                        FROM [detalleIngreso] di
+                        WHERE a.idArticulo = di.idArticulo AND di.estado <> 0), 0) AS cantidadComprada,
                     ISNULL((
                         SELECT
                             SUM(dd.cantidad)
@@ -518,7 +515,7 @@ namespace Logica
                             INNER JOIN [venta] v ON v.idCliente = c.idCliente
                             INNER JOIN [detalleVenta] dv ON dv.idVenta = v.idVenta
                             INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso
-                        WHERE a.idArticulo = di.idArticulo), 0) AS cantidadCliente,
+                        WHERE a.idArticulo = di.idArticulo AND dv.estado <> 0), 0) AS cantidadCliente,
                     ISNULL((
                         SELECT
                             CAST(SUM(dv.precioVenta * dv.cantidad / ((v.impuesto / 100.0) + 1)) AS NUMERIC(38, 2))
@@ -526,7 +523,7 @@ namespace Logica
                             INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
                             INNER JOIN [venta] v ON v.idVenta = dv.idVenta
                         WHERE a.idArticulo = di.idArticulo
-							AND v.estado <> 0 AND dv.estado <> 0 " + weekDate + @"
+							AND v.estado <> 0 AND dv.estado <> 0 AND di.estado <> 0 " + weekDate + @"
 						), 0) AS subtotal,
                     ISNULL((
                         SELECT
@@ -535,7 +532,7 @@ namespace Logica
                             INNER JOIN [detalleIngreso] di ON dv.idDetalleIngreso = di.idDetalleIngreso
                             INNER JOIN [venta] v ON v.idVenta = dv.idVenta
                         WHERE a.idArticulo = di.idArticulo 
-							AND v.estado <> 0 AND dv.estado <> 0 " + weekDate + @"
+							AND v.estado <> 0 AND dv.estado <> 0 AND di.estado <> 0" + weekDate + @"
 						), 0) AS total,
                     ISNULL((
                         SELECT
@@ -588,7 +585,7 @@ namespace Logica
                         ORDER BY di.idDetalleIngreso DESC), 0) AS cantidadActual
                 FROM [articulo] a
                     INNER JOIN[categoria] c ON a.idCategoria=c.idCategoria
-                WHERE a.idArticulo = @idArticulo;
+                WHERE a.idArticulo = @idArticulo AND di.estado <> 0;
             ";
 
             Action action = () =>
@@ -806,7 +803,7 @@ namespace Logica
                 {
                     int cantidadActual = reader.GetInt32(5);
                     int estado = reader.GetInt32(7);
-                    if (cantidadActual != 0 || (cantidadActual == 0 && estado == 0))
+                    if (cantidadActual != 0 || cantidadActual == 0 || (cantidadActual == 0 && estado == 0))
                     {
                         ListaGenerica.Add(new DArticulo
                         {
@@ -1027,9 +1024,6 @@ namespace Logica
                             FROM [detalleIngreso] di 
                             WHERE a.idArticulo = di.idArticulo 
                                 AND di.estado <> 0 
-                                AND di.cantidadActual <> 0
-                                AND di.cantidadInicial <> 0
-                                OR a.idArticulo <> 0 
                             ORDER BY di.idDetalleIngreso DESC), -1) AS cantidad, 
                         a.stockMinimo
                     FROM [articulo] a 

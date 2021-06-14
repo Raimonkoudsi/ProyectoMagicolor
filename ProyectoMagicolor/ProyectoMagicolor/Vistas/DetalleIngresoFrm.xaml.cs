@@ -115,26 +115,33 @@ namespace ProyectoMagicolor.Vistas
 
         bool ArticuloSetted = false;
 
-        public void AgregarArticulo(DArticulo Articulo)
+        public void AgregarArticulo(DArticulo Articulo = null)
         {
-            ArticuloSetted = true;
-            DataArticulo = Articulo;
+            if(Articulo != null)
+            {
+                ArticuloSetted = true;
+                DataArticulo = Articulo;
 
-            gridArticuloLleno.Visibility = Visibility.Visible;
-            gridArticuloVacio.Visibility = Visibility.Collapsed;
-            txtArticulo.Text = Articulo.nombre;
-            txtArticuloCod.Text = Articulo.codigo;
-            txtCantidadActual.Text = Articulo.cantidadActual.ToString();
-            txtCantidadMaxima.Text = Articulo.stockMaximo.ToString();
+                gridArticuloLleno.Visibility = Visibility.Visible;
+                gridArticuloVacio.Visibility = Visibility.Collapsed;
+                txtArticulo.Text = Articulo.nombre;
+                txtArticuloCod.Text = Articulo.codigo;
+                txtCantidadActual.Text = Articulo.cantidadActual.ToString();
+                txtCantidadMaxima.Text = Articulo.stockMaximo.ToString();
 
-            BtnAgregarArticulo.Background = System.Windows.Media.Brushes.OrangeRed;
-            BtnAgregarArticulo.BorderBrush = System.Windows.Media.Brushes.OrangeRed;
+                BtnAgregarArticulo.Background = System.Windows.Media.Brushes.OrangeRed;
+                BtnAgregarArticulo.BorderBrush = System.Windows.Media.Brushes.OrangeRed;
 
-            BtnRegistrarArticulo.Visibility = Visibility.Collapsed;
-            IconoBoton.Visibility = Visibility.Collapsed;
+                BtnRegistrarArticulo.Visibility = Visibility.Collapsed;
+                IconoBoton.Visibility = Visibility.Collapsed;
 
-            NombreBoton.Text = "Cancelar Selección";
-            IconoBoton.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
+                NombreBoton.Text = "Cancelar Selección";
+                IconoBoton.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
+            }
+            else
+            {
+                QuitarArticulo();
+            }
         }
 
         public void QuitarArticulo()

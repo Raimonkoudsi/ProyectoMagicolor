@@ -1,19 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -153,9 +141,6 @@ namespace ProyectoMagicolor.Vistas
                 }
                 Refresh();
             }
-
-            MessageBox.Show("La cantidad a Devolver al Cliente es el de " + MontoDevolverFormatted.ToString("0.00") + " Bs S", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
-            ParentFrm.GetBack();
         }
 
         private void BtnDevolver_Click(object sender, RoutedEventArgs e)
@@ -245,6 +230,8 @@ namespace ProyectoMagicolor.Vistas
                     "Ha Devuelto Artículos de la Venta N° " + Venta.idVenta
                 );
                 new LAuditoria().Insertar(auditoria);
+
+                MessageBox.Show("La cantidad a Devolver al Cliente es el de " + MontoDevolverFormatted.ToString("0.00") + " Bs S", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 ParentFrm.Limpiar();
                 ParentFrm.GetBack();

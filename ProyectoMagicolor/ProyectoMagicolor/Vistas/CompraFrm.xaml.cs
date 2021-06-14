@@ -38,35 +38,35 @@ namespace ProyectoMagicolor.Vistas
         {
             if (!ProveedorSetted)
             {
-                MessageBox.Show("Debes Seleccionar un Proveedor!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes Seleccionar un Proveedor!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 TxtProvDoc.Focus();
                 return true;
             }
 
             if(ListaCompra.Count == 0)
             {
-                MessageBox.Show("Debes Agregar Articulos!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes Agregar Articulos!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtBuscar.Focus();
                 return true;
             }
 
             if(CbMetodoPago.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes Seleccionar un Metodo de Pago!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes Seleccionar un Metodo de Pago!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 CbMetodoPago.Focus();
                 return true;
             }
 
             if(CbMetodoPago.SelectedIndex == 1 && dpFechaLimite.SelectedDate == null)
             {
-                MessageBox.Show("Debes Seleccionar una Fecha Limite!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes Seleccionar una Fecha Limite!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 dpFechaLimite.Focus();
                 return true;
             }
 
             if (txtFactura.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Factura!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debes llenar el campo Factura!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtFactura.Focus();
                 return true;
             }
@@ -396,6 +396,13 @@ namespace ProyectoMagicolor.Vistas
                         {
                             ArticuloFrm Frm = new ArticuloFrm(this, txtBuscar.Text);
                             bool? res = Frm.ShowDialog();
+
+                            response = Metodo.EncontrarConCodigo(txtBuscar.Text);
+                            if (response.Count > 0)
+                            {
+                                DA = response[0];
+                                WillInclude = true;
+                            }
                         }
                     }
                 }
@@ -406,8 +413,13 @@ namespace ProyectoMagicolor.Vistas
             if(WillInclude)
             {
                 DIFrm.AgregarArticulo(DA);
+                DIFrm.ShowDialog();
+            } 
+            else
+            {
+                DIFrm.AgregarArticulo(null);
+                DIFrm.ShowDialog();
             }
-            DIFrm.ShowDialog();
         }
 
         void OpenToEdit(int id)
