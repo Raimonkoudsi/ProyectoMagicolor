@@ -4,35 +4,42 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      Background="WhiteSmoke"
+      Background="White"
       Loaded="Window_Loaded"
-      Title="CuentaPagar" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
+      Title="Cuenta a Cobrar" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    
+    <Page.Resources>
+        <local:ChangeRedColorRowDate x:Key="ChangeRedColorRowDate"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="70 10">
+        <Grid Grid.Row="0" Margin="70 20 70 20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Margin="0 0 10 0" Width="50">
-                <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged" >
+            <Grid Margin="0 0 5 0" Width="auto">
+                <ComboBox x:Name="CbTipoDocumento" FontSize="12" SelectionChanged="CbTipoDocumento_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Tipo"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
                     <ComboBoxItem>V</ComboBoxItem>
                     <ComboBoxItem>E</ComboBoxItem>
                     <ComboBoxItem>J</ComboBoxItem>
                     <ComboBoxItem>G</ComboBoxItem>
+                    <ComboBoxItem>Todos</ComboBoxItem>
                 </ComboBox>
             </Grid>
-            <Grid Grid.Column="1" Margin="10 0 0 0">
-                <TextBlock Name="txtBucarPlaceH" Text="Documento" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <TextBox Name="txtDocumento" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
-                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+            <Grid Grid.Column="1" Margin="5 0 0 0">
+                <TextBox Name="txtDocumento" Text="" FontSize="12" Margin="0" KeyUp="TextBox_KeyDown"
+                            materialDesign:HintAssist.Hint="Documento"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
             </Grid>
         </Grid>
 
@@ -44,17 +51,37 @@
                   Margin="30 0"
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
-                  Background="WhiteSmoke">
+                  Background="White"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#f0f0f0" />
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Foreground">
+                        <Setter.Value>
+                            <Binding Path="fecha" Converter="{StaticResource ChangeRedColorRowDate}" />
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Venta" Binding="{Binding idVenta}">
+                <DataGridTextColumn Width="auto" Header="Venta" Binding="{Binding idVenta}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding idVenta}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -62,31 +89,57 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding cliente}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Cedula" Binding="{Binding cedulaCliente}">
+                <DataGridTextColumn Width="auto" Header="Cedula" Binding="{Binding cedulaCliente}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding cedulaCliente}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Fecha" Binding="{Binding fecha}">
+                <DataGridTextColumn Width="auto" Header="Fecha Límite" Binding="{Binding fecha}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding fecha}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Monto Restante" Binding="{Binding montoTotal}">
+                <DataGridTextColumn Width="auto" Header="Monto Restante" Binding="{Binding montoTotal}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding montoTotal}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn Width="auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="auto">
@@ -95,12 +148,55 @@
                                         Click="btnAgregarPago_Click"
                                         Background="ForestGreen" BorderBrush="ForestGreen"
                                         Margin="5 0 0 0"
-                                        Padding="5">Agregar Pago</Button>
+                                        Padding="5" ToolTip="Agregar Pago">
+                                    <materialDesign:PackIcon Kind="Money" Foreground="White" Width="20" Height="20" />
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Center" x:Name="SinRegistro">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Búsqueda sin Registros" 
+                          Margin="0 0 0 0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="24"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
+                          HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="30" Height="30"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="1" Text="Mostrar: " 
+                          Margin="0 0 10 0"
+                          VerticalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="14"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <CheckBox Grid.Column="2" x:Name="RBFecha" Content="En Proceso" FontSize="12" 
+                          IsChecked="True" Click="RBFecha_Click"
+                          Style="{StaticResource MaterialDesignFilterChipOutlineCheckBox}"
+                          Background="#3194F7"/>
+
+            <CheckBox Grid.Column="3" x:Name="RBFechaLimite" Content="No Pagado en Fecha" FontSize="12" 
+                          IsChecked="True" Click="RBFecha_Click" Foreground="Red"
+                          Style="{StaticResource MaterialDesignFilterChipOutlineCheckBox}"
+                          Background="#3194F7" Margin="0 10 40 10"/>
+        </Grid>
     </Grid>
 </Page>

@@ -98,7 +98,7 @@
                         <Grid>
                             <TextBlock Name="txtImpuestoP" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBox x:Name="txtImpuesto" Text="15" MaxLength="2" Width="40" FontWeight="Bold" FontSize="15" KeyUp="txtImpuesto_KeyUp" HorizontalAlignment="Right"/>
+                                <TextBox x:Name="txtImpuesto" Text="15" Width="40" FontWeight="Bold" FontSize="15" KeyUp="txtImpuesto_KeyUp" HorizontalAlignment="Right"/>
                                 <TextBlock Text="%" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Grid>

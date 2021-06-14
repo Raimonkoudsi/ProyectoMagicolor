@@ -23,7 +23,7 @@ namespace ProyectoMagicolor.Vistas
         public LDevolucion Metodos = new LDevolucion();
 
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public DevolucionDG(MainWindow parent)
         {

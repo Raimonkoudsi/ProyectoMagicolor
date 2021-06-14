@@ -12,6 +12,14 @@ using System.Reflection;
 
 namespace Logica
 {
+    public static class Globals
+    {
+        public static Int32 ACCESO_SISTEMA = 3;
+        public static Int32 ID_SISTEMA = 0;
+        public static String TRABAJADOR_SISTEMA = "";
+        public static String USUARIO_SISTEMA = "";
+    }
+
     public class LFunction : Conexion
     {
         public static int GetID(string Table, string Parameter)
@@ -25,6 +33,50 @@ namespace Logica
             if (reader.Read() && !reader.IsDBNull(0)) ID = reader.GetInt32(0) + 1;
 
             return ID;
+        }
+
+        public static string EditarIVA(int IVA)
+        {
+            string respuesta = "";
+
+            string queryUpdate = @"
+                UPDATE [configuracion] SET 
+                    iva = @iva
+	        ";
+
+            Action action = () =>
+                {
+                    using SqlCommand comm = new SqlCommand(queryUpdate, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@iva", IVA);
+
+                    respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el IVA";
+                };
+            LFunction.SafeExecutor(action);
+
+            return respuesta;
+        }
+
+        public static int MostrarIVA()
+        {
+            int IVA = 0;
+
+            string queryListID = @"
+                SELECT iva FROM [configuracion] 
+            ";
+
+            Action action = () =>
+                {
+                    using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        IVA = reader.GetInt32(0);
+                    };
+                };
+            LFunction.SafeExecutor(action);
+
+            return IVA;
         }
 
 

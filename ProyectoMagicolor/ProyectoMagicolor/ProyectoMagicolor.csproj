@@ -168,6 +168,12 @@
     </Compile>
     <Compile Include="Reports\Reporte.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="Vistas\ProveedorArticuloDG.xaml.cs">
+      <DependentUpon>ProveedorArticuloDG.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vistas\VistaPrincipal.xaml.cs">
+      <DependentUpon>VistaPrincipal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\ArticuloVista.xaml.cs">
       <DependentUpon>ArticuloVista.xaml</DependentUpon>
     </Compile>
@@ -189,14 +195,8 @@
     <Compile Include="Vistas\InventarioDG.xaml.cs">
       <DependentUpon>InventarioDG.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Vistas\ArticuloDG.xaml.cs">
-      <DependentUpon>ArticuloDG.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Vistas\DevolucionDetalleFrm.xaml.cs">
       <DependentUpon>DevolucionDetalleFrm.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Vistas\ClienteFrmVista.xaml.cs">
-      <DependentUpon>ClienteFrmVista.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\ClienteVista.xaml.cs">
       <DependentUpon>ClienteVista.xaml</DependentUpon>
@@ -279,6 +279,14 @@
     <Compile Include="Vistas\VentaVista.xaml.cs">
       <DependentUpon>VentaVista.xaml</DependentUpon>
     </Compile>
+    <Page Include="Vistas\ProveedorArticuloDG.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Vistas\VistaPrincipal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Vistas\ArticuloVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -307,15 +315,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Vistas\ArticuloDG.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Vistas\DevolucionDetalleFrm.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Vistas\ClienteFrmVista.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -423,10 +423,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Vistas\FTrabajadores.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Vistas\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -450,9 +446,6 @@
     </Compile>
     <Compile Include="Vistas\TrabajadoresDG.xaml.cs">
       <DependentUpon>TrabajadoresDG.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Vistas\FTrabajadores.xaml.cs">
-      <DependentUpon>FTrabajadores.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -618,6 +611,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\icon-bag.png" />
+    <Resource Include="Imagenes\LogoReport.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -632,9 +626,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BackupFolder\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

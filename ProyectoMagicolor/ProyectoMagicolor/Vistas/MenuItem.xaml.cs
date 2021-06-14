@@ -20,9 +20,6 @@ using System.Windows.Forms;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for MenuItem.xaml
-    /// </summary>
     public partial class MenuItemX : System.Windows.Controls.UserControl
     {
         MainWindow _context;
@@ -41,7 +38,6 @@ namespace ProyectoMagicolor.Vistas
             {
                 ListViewItemMenu.Click += (s, r) =>
                 {
-                    //_context.SwitchScreen(itemMenu.Screen);
                     _context.LogOut();
                 };
             }
@@ -61,6 +57,10 @@ namespace ProyectoMagicolor.Vistas
             else if (SI.Restore)
             {
                 _context.Restore();
+            }
+            else if (SI.Help)
+            {
+                _context.AbrirManual();
             }
             else
             {

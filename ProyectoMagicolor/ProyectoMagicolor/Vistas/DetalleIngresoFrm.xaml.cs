@@ -1,23 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
-using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
@@ -25,6 +12,17 @@ namespace ProyectoMagicolor.Vistas
     {
 
         CompraFrm ParentForm;
+
+        public TypeForm Type;
+        public DDetalle_Ingreso DataFill;
+        public DArticulo DataArticulo;
+
+        public DDetalle_Ingreso UForm;
+
+        public LArticulo Metodos = new LArticulo();
+
+        public int idEdit;
+        public List<DDetalle_Ingreso> ActualDetalle;
 
         public DetalleIngresoFrm(CompraFrm parentfrm, List<DDetalle_Ingreso> actualDetalle)
         {
@@ -39,18 +37,6 @@ namespace ProyectoMagicolor.Vistas
             txtCantidad.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
 
-        
-
-        public TypeForm Type;
-        public DDetalle_Ingreso DataFill;
-        public DArticulo DataArticulo;
-
-        public DDetalle_Ingreso UForm;
-
-        public LArticulo Metodos = new LArticulo();
-
-        public int idEdit;
-        public List<DDetalle_Ingreso> ActualDetalle;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -59,6 +45,7 @@ namespace ProyectoMagicolor.Vistas
             else
                 Create();
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if(Type == TypeForm.Read)
@@ -75,9 +62,15 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-       
 
-        void fillData()
+        private void BtnRegistrarArticulo_Click(object sender, RoutedEventArgs e)
+        {
+            ArticuloFrm Frm = new ArticuloFrm(null, "", this);
+            bool? res = Frm.ShowDialog();
+        }
+
+
+        private void fillData()
         {
             if (Validate())
             {
@@ -86,9 +79,9 @@ namespace ProyectoMagicolor.Vistas
             }
 
             int idArticulo = DataArticulo.idArticulo;
-            double precioCompra = double.Parse(txtPrecioCompra.txt.Text);
-            double precioVenta = double.Parse(txtPrecioVenta.txt.Text);
-            int Cantidad = int.Parse(txtCantidad.txt.Text);
+            double precioCompra = double.Parse(txtPrecioCompra.Text);
+            double precioVenta = double.Parse(txtPrecioVenta.Text);
+            int Cantidad = int.Parse(txtCantidad.Text);
 
 
             UForm = new DDetalle_Ingreso(0,
@@ -120,11 +113,6 @@ namespace ProyectoMagicolor.Vistas
         }
 
 
-        void SetUpdate()
-        {
-
-        }
-
         bool ArticuloSetted = false;
 
         public void AgregarArticulo(DArticulo Articulo)
@@ -132,12 +120,21 @@ namespace ProyectoMagicolor.Vistas
             ArticuloSetted = true;
             DataArticulo = Articulo;
 
-            GridArticulo.Visibility = Visibility.Visible;
+            gridArticuloLleno.Visibility = Visibility.Visible;
+            gridArticuloVacio.Visibility = Visibility.Collapsed;
             txtArticulo.Text = Articulo.nombre;
             txtArticuloCod.Text = Articulo.codigo;
+            txtCantidadActual.Text = Articulo.cantidadActual.ToString();
+            txtCantidadMaxima.Text = Articulo.stockMaximo.ToString();
 
+            BtnAgregarArticulo.Background = System.Windows.Media.Brushes.OrangeRed;
+            BtnAgregarArticulo.BorderBrush = System.Windows.Media.Brushes.OrangeRed;
 
-            BtnAgregarArticulo.Content = "Cambiar";
+            BtnRegistrarArticulo.Visibility = Visibility.Collapsed;
+            IconoBoton.Visibility = Visibility.Collapsed;
+
+            NombreBoton.Text = "Cancelar Selección";
+            IconoBoton.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
         }
 
         public void QuitarArticulo()
@@ -145,11 +142,19 @@ namespace ProyectoMagicolor.Vistas
             ArticuloSetted = false;
             DataArticulo = null;
 
-            GridArticulo.Visibility = Visibility.Collapsed;
+            gridArticuloLleno.Visibility = Visibility.Collapsed;
+            gridArticuloVacio.Visibility = Visibility.Visible;
             txtArticulo.Text = "";
             txtArticuloCod.Text = "";
 
-            BtnAgregarArticulo.Content = "Buscar Artículo";
+            BtnAgregarArticulo.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3194F7"));
+            BtnAgregarArticulo.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3194F7"));
+
+            BtnRegistrarArticulo.Visibility = Visibility.Visible;
+            IconoBoton.Visibility = Visibility.Visible;
+
+            NombreBoton.Text = "  Buscar Artículo  ";
+            IconoBoton.Kind = MaterialDesignThemes.Wpf.PackIconKind.Search;
         }
 
 
@@ -176,50 +181,89 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-        void SetEnable(bool Enable)
+        private void SetEnable(bool Enable)
         {
             BtnAgregarArticulo.Visibility = Enable ? Visibility.Visible : Visibility.Collapsed;
             txtPrecioCompra.IsEnabled = Enable;
             txtPrecioVenta.IsEnabled = Enable;
             txtCantidad.IsEnabled = Enable;
         }
-        void fillForm(DDetalle_Ingreso Data, DArticulo Articulo)
+
+        private void fillForm(DDetalle_Ingreso Data, DArticulo Articulo)
         {
             if(Data != null)
             {
                 AgregarArticulo(DataArticulo);
-                txtPrecioCompra.SetText(Data.precioCompra.ToString());
-                txtPrecioVenta.SetText(Data.precioVenta.ToString());
-                txtCantidad.SetText(Data.cantidadInicial.ToString());
+                txtPrecioCompra.Text = Data.precioCompra.ToString();
+                txtPrecioVenta.Text = Data.precioVenta.ToString();
+                txtCantidad.Text = Data.cantidadInicial.ToString();
             }
         }
+
+
         #region Validation
         bool Validate()
         {
-            if (!txtPrecioCompra.Changed)
+            if (txtPrecioCompra.Text == "")
             {
-                MessageBox.Show("Debes llenar el Precio Compra!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPrecioCompra.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar el precio de compra");
+                txtPrecioCompra.Focus();
                 return true;
             }
 
-            if (!txtPrecioVenta.Changed)
+            if (Int32.Parse(txtPrecioCompra.Text) <= 0)
             {
-                MessageBox.Show("Debes llenar el campo Precio Venta!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtPrecioVenta.txt.Focus();
+                LFunction.MessageExecutor("Error", "El precio de la compra no puede ser 0");
+                txtPrecioCompra.Focus();
                 return true;
             }
 
-            if (!txtCantidad.Changed)
+            if (txtPrecioVenta.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Cantidad!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtCantidad.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar el precio de venta");
+                txtPrecioVenta.Focus();
+                return true;
+            }
+
+
+            if (Int32.Parse(txtPrecioVenta.Text) <= 0)
+            {
+                LFunction.MessageExecutor("Error", "El precio de la venta no puede ser 0");
+                txtPrecioCompra.Focus();
+                return true;
+            }
+
+            if (Int32.Parse(txtPrecioVenta.Text) <= Int32.Parse(txtPrecioCompra.Text))
+            {
+                LFunction.MessageExecutor("Error", "El precio de la venta no puede ser menor a la de compra");
+                txtPrecioVenta.Focus();
+                return true;
+            }
+
+            if (txtCantidad.Text == "")
+            {
+                LFunction.MessageExecutor("Error", "Debe ingresar la cantidad de la compra");
+                txtCantidad.Focus();
+                return true;
+            }
+
+            if (Int32.Parse(txtCantidad.Text) <= 0)
+            {
+                LFunction.MessageExecutor("Error", "La cantidad de la compra no puede ser 0");
+                txtCantidad.Focus();
+                return true;
+            }
+
+            if ((Int32.Parse(txtCantidad.Text) + Int32.Parse(txtCantidadActual.Text)) > Int32.Parse(txtCantidadMaxima.Text))
+            {
+                LFunction.MessageExecutor("Error", "El artículo no puede sobrepasarse d ela cantidad máxima");
+                txtCantidad.Focus();
                 return true;
             }
 
             if (!ArticuloSetted)
             {
-                MessageBox.Show("Debes seleccionar un Articulo!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar un articulo");
                 txtArticulo.Focus();
                 return true;
             }

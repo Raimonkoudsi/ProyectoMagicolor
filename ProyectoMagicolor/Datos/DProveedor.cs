@@ -69,6 +69,48 @@ namespace Datos
             set { _Url = value; }
         }
 
+        private int _Estado;
+        public int estado
+        {
+            get { return _Estado; }
+            set { _Estado = value; }
+        }
+
+        private int _AccesoTrabajadorIngresado;
+        public int accesoTrabajadorIngresado
+        {
+            get { return _AccesoTrabajadorIngresado; }
+            set { _AccesoTrabajadorIngresado = value; }
+        }
+
+        private int _TrabajadorIngresado;
+        public int trabajadorIngresado
+        {
+            get { return _TrabajadorIngresado; }
+            set { _TrabajadorIngresado = value; }
+        }
+
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
+        }
+
+
+        private string _UltimaCompra;
+        public string ultimaCompra
+        {
+            get { return _UltimaCompra; }
+            set { _UltimaCompra = value; }
+        }
+
+        private double _UltimoPrecio;
+        public double ultimoPrecio
+        {
+            get { return _UltimoPrecio; }
+            set { _UltimoPrecio = value; }
+        }
 
         public DProveedor()
         {
@@ -77,7 +119,6 @@ namespace Datos
 
         public DProveedor(int IdProveedor, string RazonSocial, string SectorComercial, string TipoDocumento, string NumeroDocumento, string Direccion, string Telefono, string Email, string Url)
         {
-            this.idProveedor = IdProveedor;
             this.razonSocial = RazonSocial;
             this.sectorComercial = SectorComercial;
             this.tipoDocumento = TipoDocumento;
@@ -86,6 +127,7 @@ namespace Datos
             this.telefono = Telefono;
             this.email = Email;
             this.url = Url;
+
         }
     }
 }

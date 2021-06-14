@@ -56,6 +56,13 @@ namespace Datos
             set { _IdCategoria = value; }
         }
 
+        private int _Estado;
+        public int estado
+        {
+            get { return _Estado; }
+            set { _Estado = value; }
+        }
+
         private double _PrecioVenta;
         public double precioVenta
         {
@@ -147,6 +154,20 @@ namespace Datos
             set { _TotalDevolucion = value; }
         }
 
+        private double _SubtotalCompra;
+        public double subtotalCompra
+        {
+            get { return _SubtotalCompra; }
+            set { _SubtotalCompra = value; }
+        }
+
+        private double _TotalCompra;
+        public double totalCompra
+        {
+            get { return _TotalCompra; }
+            set { _TotalCompra = value; }
+        }
+
         private double _PrecioUnidad;
         public double precioUnidad
         {
@@ -180,6 +201,21 @@ namespace Datos
         {
             get { return _PrecioCompra; }
             set { _PrecioCompra = value; }
+        }
+
+
+        private int _AccesoTrabajadorIngresado;
+        public int accesoTrabajadorIngresado
+        {
+            get { return _AccesoTrabajadorIngresado; }
+            set { _AccesoTrabajadorIngresado = value; }
+        }
+
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
         }
 
 

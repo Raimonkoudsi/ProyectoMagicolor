@@ -427,7 +427,7 @@
         <Top>0.44069cm</Top>
         <Left>0.62433cm</Left>
         <Height>1.37639cm</Height>
-        <Width>19.7554cm</Width>
+        <Width>19.75541cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -725,9 +725,9 @@
           </Paragraphs>
           <rd:DefaultName>Textbox19</rd:DefaultName>
           <Top>0.52656cm</Top>
-          <Left>7.26647cm</Left>
+          <Left>14.20909cm</Left>
           <Height>0.67938cm</Height>
-          <Width>13.11326cm</Width>
+          <Width>6.17064cm</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -752,6 +752,42 @@
             </Border>
           </Style>
         </Line>
+        <Textbox Name="Textbox25">
+          <CanGrow>true</CanGrow>
+          <KeepTogether>true</KeepTogether>
+          <Paragraphs>
+            <Paragraph>
+              <TextRuns>
+                <TextRun>
+                  <Value>="Emitido por: " &amp; First(Fields!nombreTrabajadorIngresado.Value, "TrabajadorDS")</Value>
+                  <Style>
+                    <FontFamily>Nirmala UI Semilight</FontFamily>
+                    <FontWeight>Normal</FontWeight>
+                  </Style>
+                </TextRun>
+              </TextRuns>
+              <Style>
+                <TextAlign>Left</TextAlign>
+              </Style>
+            </Paragraph>
+          </Paragraphs>
+          <rd:DefaultName>Textbox19</rd:DefaultName>
+          <Top>0.52656cm</Top>
+          <Left>0.62433cm</Left>
+          <Height>0.67938cm</Height>
+          <Width>13.40837cm</Width>
+          <ZIndex>2</ZIndex>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+            <VerticalAlign>Middle</VerticalAlign>
+            <PaddingLeft>2pt</PaddingLeft>
+            <PaddingRight>2pt</PaddingRight>
+            <PaddingTop>2pt</PaddingTop>
+            <PaddingBottom>2pt</PaddingBottom>
+          </Style>
+        </Textbox>
       </ReportItems>
       <Style>
         <Border>
@@ -794,7 +830,15 @@
       <Fields>
         <Field Name="acceso">
           <DataField>acceso</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="accesoString">
+          <DataField>accesoString</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="accesoTrabajadorIngresado">
+          <DataField>accesoTrabajadorIngresado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="apellidos">
           <DataField>apellidos</DataField>
@@ -818,7 +862,7 @@
         </Field>
         <Field Name="estado">
           <DataField>estado</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="fechaNacimiento">
           <DataField>fechaNacimiento</DataField>
@@ -830,6 +874,10 @@
         </Field>
         <Field Name="nombre">
           <DataField>nombre</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="nombreTrabajadorIngresado">
+          <DataField>nombreTrabajadorIngresado</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="pregunta">
@@ -847,6 +895,10 @@
         <Field Name="telefono">
           <DataField>telefono</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="trabajadorIngresado">
+          <DataField>trabajadorIngresado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="usuario">
           <DataField>usuario</DataField>

@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 
 using Datos;
 using Logica;
-using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
@@ -53,7 +52,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
-            txtMonto.txt.Text = DataFill.montoTotal.ToString();
+            txtMonto.Text = DataFill.montoTotal.ToString();
 
             total = true;
             Create(true);
@@ -61,14 +60,15 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            txtTitulo.Text = "Compra N° " + DataFill.idIngreso.ToString();
+            txtProveedor.Text = DataFill.razonSocial;
+            txtCedula.Text = DataFill.cedulaProveedor;
 
-            txtIdIngreso.Text = "ID " + DataFill.idIngreso.ToString();
-            txtRazonSocial.Text = DataFill.razonSocial;
-            txtFactura.Text = DataFill.factura;
-            txtFecha.Text = DataFill.fecha.ToShortDateString();
-            txtMontoRestante.Text = "Total " + DataFill.monto.ToString();
-            txtMontoTotal.Text = "Restante " + DataFill.montoTotal.ToString();
-            txtCedulaProveedor.Text = DataFill.cedulaProveedor;
+            double z = Math.Truncate(DataFill.monto * 100) / 100;
+            txtMontoRestante.Text = z.ToString("0.00") + " Bs S";
+
+            double y = Math.Truncate(DataFill.montoTotal * 100) / 100;
+            txtMontoTotal.Text = y.ToString("0.00") + " Bs S";
         }
 
         void fillData(bool total)
@@ -84,7 +84,7 @@ namespace ProyectoMagicolor.Vistas
             double monto = 0F;
 
             if (!total)
-                monto = double.Parse(txtMonto.txt.Text);
+                monto = double.Parse(txtMonto.Text);
             else
                 monto = DataFill.monto;
 
@@ -109,7 +109,7 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                rpta = MessageBox.Show("Desea Cancelar el Monto de" + txtMonto.txt.Text + " Bs S para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.txt.Text)).ToString() + " Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                rpta = MessageBox.Show("Desea Cancelar el Monto de" + txtMonto.Text + " Bs S para dejar un restante de " + (DataFill.montoTotal - double.Parse(txtMonto.Text)).ToString() + " Bs S ?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
             }
 
             if (rpta == MessageBoxResult.No)
@@ -147,15 +147,15 @@ namespace ProyectoMagicolor.Vistas
 
         bool Validate()
         {
-            if ((txtMonto.txt.Text == "Monto a Abonar" || double.Parse(txtMonto.txt.Text) <= 0) && !total)
+            if ((txtMonto.Text == "" || double.Parse(txtMonto.Text) <= 0) && !total)
             {
-                MessageBox.Show("Debe Agregar un Monto para Abonar!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe Agregar un Monto para Abonar");
                 txtMonto.Focus();
                 return true;
             }
-            else if (double.Parse(txtMonto.txt.Text) > DataFill.montoTotal && !total)
+            else if (double.Parse(txtMonto.Text) > DataFill.montoTotal && !total)
             {
-                MessageBox.Show("El Monto no debe Exceder la Deuda!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "El Monto no debe Exceder la Deuda");
                 txtMonto.Focus();
                 return true;
             }
@@ -163,7 +163,5 @@ namespace ProyectoMagicolor.Vistas
             return false;
 
         }
-
-
     }
 }

@@ -32,7 +32,7 @@ namespace ProyectoMagicolor.Vistas
             LTrabajador Mt = new LTrabajador();
             var LCmt = Mt.MostrarConAdministrador();
 
-            DTrabajador NCT = new DTrabajador(0, "", "" ,"", DateTime.Now, "", "", "", "", 0, "Todos los Usuarios", "", "");
+            DTrabajador NCT = new DTrabajador(0, "", "" ,"", DateTime.Now, "", "", "", "", 0, "Todos los Usuarios", "");
             LCmt.Add(NCT);
 
             CbUsuario.ItemsSource = LCmt;
@@ -40,11 +40,11 @@ namespace ProyectoMagicolor.Vistas
             CbUsuario.SelectedValuePath = "usuario";
         }
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
-        public void Refresh(DateTime? search, string search2, string search3)
+        public void Refresh(DateTime? search, DateTime? search2, string search3, string search4)
         {
-            List<DAuditoria> DisplayData = Metodos.Mostrar(search, search2, search3);
+            List<DAuditoria> DisplayData = Metodos.Mostrar(search, search2, search3, search4);
 
             dgOperaciones.ItemsSource = DisplayData;
         }
@@ -52,28 +52,56 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.Text);
+            dpHasta.IsEnabled = false;
+            CbAcciones.IsEnabled = false;
+            CbUsuario.IsEnabled = false;
+
+            dpDesde.Text = "";
+            dpHasta.Text = "";
+            CbAcciones.Text = "";
+            CbUsuario.Text = "";
+
+            dpDesde.Focus();
         }
+
+
+        private void dpDesde_SelectedDateChanged(object sender, RoutedEventArgs e)
+        {
+            if (dpHasta.SelectedDate != null)
+            {
+                Refresh(dpDesde.SelectedDate, dpHasta.SelectedDate, CambiarAccion(), CbUsuario.Text);
+                return;
+            }
+
+            dpHasta.IsEnabled = true;
+            dpHasta.Focus();
+
+
+            dpHasta.DisplayDateStart = dpDesde.SelectedDate.Value.AddDays(-1);
+        }
+
+
+        private void dpHasta_SelectedDateChanged(object sender, RoutedEventArgs e)
+        {
+            Refresh(dpDesde.SelectedDate, dpHasta.SelectedDate, CambiarAccion(), CbUsuario.Text);
+
+            CbAcciones.IsEnabled = true;
+            CbUsuario.IsEnabled = true;
+            CbAcciones.Focus();
+
+            dpDesde.DisplayDateEnd = dpHasta.SelectedDate.Value.AddDays(1);
+        }
+
 
         private void CbAcciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbAcciones.SelectedIndex > -1)
-                PlaceAcciones.Text = "";
-            else
-                PlaceAcciones.Text = "Acciones";
-
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.Text);
+            Refresh(dpDesde.SelectedDate, dpHasta.SelectedDate, CambiarAccion(), CbUsuario.Text);
+            CbUsuario.Focus();
         }
 
-
-        private void dpFecha_SelectedDateChanged(object sender, RoutedEventArgs e)
+        private void CbUsuario_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dpFecha.Text != "")
-            {
-                PlaceFecha.Text = "";
-            }
-
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.Text);
+            Refresh(dpDesde.SelectedDate, dpHasta.SelectedDate, CambiarAccion(), CbUsuario.SelectedValue.ToString());
         }
 
 
@@ -83,21 +111,10 @@ namespace ProyectoMagicolor.Vistas
                 CbAcciones.SelectedIndex == 1 ? "Registrar" :
                 CbAcciones.SelectedIndex == 2 ? "Mostrar" :
                 CbAcciones.SelectedIndex == 3 ? "Editar" :
-                CbAcciones.SelectedIndex == 4 ? "Eliminar" :
+                CbAcciones.SelectedIndex == 4 ? "Deshabilitar" :
                 CbAcciones.SelectedIndex == 5 ? "Generar" :
                 CbAcciones.SelectedIndex == 6 ? "Salir" :
                 CbAcciones.SelectedIndex == 7 ? "" : "";
-        }
-
-
-        private void CbUsuario_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbUsuario.SelectedIndex > -1)
-                PlaceUsuario.Text = "";
-            else
-                PlaceUsuario.Text = "Usuario del Sistema";
-
-            Refresh(dpFecha.SelectedDate, CambiarAccion(), CbUsuario.SelectedValue.ToString());
         }
 
 

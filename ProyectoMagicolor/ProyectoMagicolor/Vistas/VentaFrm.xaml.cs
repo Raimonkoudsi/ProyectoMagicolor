@@ -32,11 +32,11 @@ namespace ProyectoMagicolor.Vistas
             txtDescuento.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public DCliente Cliente;
 
-        bool Validate()
+        private bool Validate()
         {
             if (!ClienteSetted)
             {
@@ -71,7 +71,7 @@ namespace ProyectoMagicolor.Vistas
         }
 
 
-        void Limpiar()
+        private void Limpiar()
         {
             QuitarCliente();
             double Monto = 0;
@@ -212,10 +212,9 @@ namespace ProyectoMagicolor.Vistas
             Cliente = cliente;
 
             ClienteBuscar.Visibility = Visibility.Collapsed;
-            txtCliName.Text = cliente.nombre + " " + cliente.apellidos;
+            txtCliName.Text = cliente.nombre;
             txtCliName.Visibility = Visibility.Visible;
             TxtCliDoc.Text = cliente.tipoDocumento + "-" + cliente.numeroDocumento;
-            //TxtProvDir.Text = proveedor.direccion;
             TxtCliTelf.Text = cliente.telefono;
             TxtCliEmail.Text = cliente.email;
             ClienteDatos.Visibility = Visibility.Visible;
@@ -246,29 +245,52 @@ namespace ProyectoMagicolor.Vistas
             BtnAbrir.Visibility = Visibility.Visible;
         }
 
-        void setCliente()
+        private void setCliente()
         {
             if (CbTipoDocumento.SelectedIndex > -1 && txtDocumento.Text != "")
             {
                 LCliente Metodo = new LCliente();
-                var response = Metodo.EncontrarConDocumento(CbTipoDocumento.Text, txtDocumento.Text);
 
+                var response = Metodo.EncontrarConDocumento(CbTipoDocumento.Text, txtDocumento.Text);
                 if (response.Count > 0)
                 {
                     AgregarCliente(response[0]);
+                    txtBuscar.Focus();
                     return;
                 }
-                else
+
+                response = Metodo.CedulaRepetidaAnulada((CbTipoDocumento.Text + "-" + txtDocumento.Text));
+                if (response.Count > 0)
                 {
-                    var resp = MessageBox.Show("Esta cedula no está en la base de datos! ¿Desea agregarlo?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                    if(resp == MessageBoxResult.Yes)
+                    if (Globals.ACCESO_SISTEMA == 0)
                     {
-                        ClienteFrmVista Frm = new ClienteFrmVista(this, CbTipoDocumento.Text, txtDocumento.Text);
-                        bool? res = Frm.ShowDialog();
+                        var respuesta = MessageBox.Show("El cliente está deshabilitado en el sistema ¿Desea habilitarlo?" + Environment.NewLine + "(Abrirá el formulario para editar datos relevantes)", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        if (respuesta == MessageBoxResult.Yes)
+                        {
+                            ClienteFrm frm = new ClienteFrm(this, CbTipoDocumento.Text, txtDocumento.Text);
+                            frm.Type = TypeForm.Update;
+                            frm.DataFill = response[0];
+
+                            bool res = frm.ShowDialog() ?? false;
+                            return;
+                        }
                     }
+                    LFunction.MessageExecutor("Error", "El cliente está deshabilitado, no se puede asignar");
+                    txtDocumento.Focus();
+                    return;
                 }
 
+                var resp = MessageBox.Show("El cliente no está registrado ¿Desea agregarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (resp == MessageBoxResult.Yes)
+                {
+                    ClienteFrm Frm = new ClienteFrm(this, CbTipoDocumento.Text, txtDocumento.Text);
+                    bool res = Frm.ShowDialog() ?? false;
+                    return;
+                }
             }
+            ClienteVista PVFrm = new ClienteVista(this);
+
+            PVFrm.ShowDialog();
         }
 
         private void BtnAbrir_Click(object sender, RoutedEventArgs e)
@@ -390,8 +412,6 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            //SetArticulo();
-
             DetalleVentaFrm DVFrm = new DetalleVentaFrm(this, ListaVenta);
             DVFrm.Type = TypeForm.Create;
             DVFrm.ShowDialog();
@@ -499,6 +519,9 @@ namespace ProyectoMagicolor.Vistas
                 impuestos = 0;
                 total = 0;
                 descuento = 0;
+
+                txtDescuento.Text = "";
+                txtDescuento.Focus();
             }
 
             txtDescuento.Text = Monto.ToString("0.00");
@@ -509,6 +532,11 @@ namespace ProyectoMagicolor.Vistas
             Refresh();
             txtDocumento.Focus();
             dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
+
+            CbTipoDocumento.SelectedIndex = 0;
+
+            txtImpuesto.IsEnabled = false;
+            txtImpuesto.Text = LFunction.MostrarIVA().ToString();
         }
 
         private void dpFechaLimite_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -525,7 +553,27 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtDescuento_KeyUp(object sender, KeyEventArgs e)
         {
+            double Monto = 0;
+
+            if(txtDescuento.Text != "")
+                Monto = Convert.ToDouble(txtDescuento.Text);
+
+            if(Monto > subtotal)
+            {
+                MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                Monto = 0;
+                subtotal = 0;
+                impuestos = 0;
+                total = 0;
+                descuento = 0;
+
+                txtDescuento.Text = "";
+                txtDescuento.Focus();
+            }
+
             RefreshMoney();
+
+            txtDescuento.Text = Monto.ToString("0.00");
         }
 
         private void txtBuscar_KeyDown(object sender, KeyEventArgs e)

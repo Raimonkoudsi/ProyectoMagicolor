@@ -17,9 +17,6 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
     public partial class ProveedorVista : Window
     {
 
@@ -37,21 +34,18 @@ namespace ProyectoMagicolor.Vistas
         public void Refresh(string typeSearch, string search)
         {
 
-            List<DProveedor> items = Metodos.Mostrar(typeSearch, search);
-
-            foreach (DProveedor item in items)
-            {
-                item.numeroDocumento = item.tipoDocumento + "-" + item.numeroDocumento;
-            }
-
+            List<DProveedor> items = Metodos.Mostrar(typeSearch, search, 1);
 
             dgOperaciones.ItemsSource = items;
+
+            if (items.Count == 0)
+                SinRegistro.Visibility = Visibility.Visible;
+            else
+                SinRegistro.Visibility = Visibility.Collapsed;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
             CbTipoDocumento.SelectedIndex = 2;
 
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
@@ -72,31 +66,8 @@ namespace ProyectoMagicolor.Vistas
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtDocumento.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
-
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtDocumento.Text == "")
-            {
-                txtBucarPlaceH.Text = "Documento";
-            }
-
-        }
-
         private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbTipoDocumento.SelectedIndex > -1)
-                PlaceTipoDocumento.Text = "";
-            else
-                PlaceTipoDocumento.Text = "Tipo";
-
             var tipoDoc = CbTipoDocumento.SelectedIndex == 0 ? "V" :
                             CbTipoDocumento.SelectedIndex == 1 ? "E" :
                             CbTipoDocumento.SelectedIndex == 2 ? "J" :

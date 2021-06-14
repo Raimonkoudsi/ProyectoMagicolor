@@ -3,73 +3,101 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="310" Width="450" Loaded="Window_Loaded">
+        Title="Variedades Magicolor (Agregar Pago)" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Height="370" Width="450" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#f0f0f0">
+        <Grid Grid.Row="0" Background="#3194F7">
             <TextBlock Name="txtTitulo"
-                       Text="Agregar Pago" 
+                       Text="Agregar Pago Compra N° 123" 
                        HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="25"
-                       Margin="0 10"/>
+                       TextWrapping="Wrap"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       FontSize="28"
+                       Margin="0 10"
+                        />
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
             <StackPanel Width="450" Margin="0 10 0 0">
-                <Grid HorizontalAlignment="Center"> 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid x:Name="GridArticulo" VerticalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
+                <Border BorderBrush="Black" Margin="20 0 25 0" BorderThickness="0">
+                    <Grid HorizontalAlignment="Center" Background="WhiteSmoke">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="50"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock HorizontalAlignment="Center" Text="Venta" FontSize="16" VerticalAlignment="Center" />
-                        <TextBlock x:Name="txtIdIngreso" Grid.Row="1" Text="Lapices" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                        <TextBlock x:Name="txtFactura" Grid.Row="2" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtFecha" Grid.Row="3" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                        <Grid Width="400" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" BorderBrush="Black" Margin="0" BorderThickness="1">
+                                <Grid Width="240" Height="145" Margin="0,0,0,0" VerticalAlignment="Bottom">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Border BorderThickness="0 0 0 1" BorderBrush="#3094f7">
+                                        <TextBlock HorizontalAlignment="Center"  Grid.Column="0" Grid.Row="0" FontFamily="Nirmala UI" Text="Datos del Proveedor" FontSize="18" VerticalAlignment="Center"/>
+                                    </Border>
 
-                        <TextBlock HorizontalAlignment="Center" Grid.Column="2" Text="Proveedor" FontSize="16" VerticalAlignment="Center" />
-                        <TextBlock x:Name="txtCedulaProveedor" Grid.Column="2" Grid.Row="1" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtRazonSocial" Grid.Column="2" Grid.Row="2" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="5 5 0 0" Text="Documento de Identidad: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock  x:Name="txtCedula" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Margin="5 0 0 0" Text=" V-26038078" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
 
-                        <TextBlock HorizontalAlignment="Center"  Grid.Column="4" Grid.Row="0" Text="Monto" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtMontoTotal" HorizontalAlignment="Right" Grid.Column="4" Grid.Row="1" Text="123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="txtMontoRestante" HorizontalAlignment="Right" Grid.Column="4" Grid.Row="2" Text="Restante: 123123" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="3" TextWrapping="Wrap" Margin="5 5 0 0" Text="Nombre o Razón Social: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock  x:Name="txtProveedor" VerticalAlignment="Center" Margin="5 0 0 5" Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="Raimon Samir Koudsi Chad Chad" FontWeight="Bold" FontSize="16"/>
+                                </Grid>
+                            </Border>
+                            <Border Grid.Column="1" BorderBrush="Black" Margin="0" BorderThickness="1">
+                                <Grid Width="150" Height="145">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Border BorderThickness="0 0 0 1" BorderBrush="#3094f7">
+                                        <TextBlock HorizontalAlignment="Center"  Grid.Column="0" Grid.Row="0" FontFamily="Nirmala UI" Text="Monto" FontSize="18" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="5 5 0 0" Text="Monto Total:" FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtMontoRestante" Margin="5 0 0 5" Grid.Row="2" Text="1000,00 Bs S" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Row="3" TextWrapping="Wrap" Margin="5 5 0 0" Text="Monto Restante: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtMontoTotal" Margin="5 0 0 5" Grid.Row="4" Text="800,00 Bs S" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Border>
                 <Grid Margin="0 10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <local:TextInput Grid.Column="1" x:Name="txtMonto" Placeholder="Monto a Abonar" Margin="0 0 5 0" FontSize="15"/>
+                    <Grid Grid.Column="1" Margin="0 0">
+                        <TextBox x:Name="txtMonto" MaxLength="10" FontSize="12"
+                            materialDesign:HintAssist.Hint="Monto a Abonar"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
                 </Grid>
-
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnEnviar" Width="150" Background="#3194F7" Content="Abonar" Margin="0 30 0 0" Click="Button_Click"/>
-                    <Button Name="btnEnviarTotal" Width="150" Grid.Column="1" Background="#3194F7" Content="Abonar Total" Margin="0 30 0 0" Click="Button2_Click"/>
+                    <Button Name="btnEnviar" Width="150" Background="#3194F7" Content="Abonar" Margin="0 8 0 0" Click="Button_Click"/>
+                    <Button Name="btnEnviarTotal" Width="150" Grid.Column="1" Background="#3194F7" Content="Abonar Total" Margin="0 8 12 0" Click="Button2_Click"/>
                 </Grid>
 
             </StackPanel>

@@ -23,7 +23,7 @@ namespace ProyectoMagicolor.Vistas
         public LIngreso Metodos = new LIngreso();
 
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public CompraDG(MainWindow parent)
         {

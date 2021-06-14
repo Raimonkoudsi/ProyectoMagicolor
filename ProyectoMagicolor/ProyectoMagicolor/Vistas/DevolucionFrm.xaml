@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="820"
@@ -58,23 +59,25 @@
                                 <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliDoc" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
-                            <!--<StackPanel Margin="7 10 0 0">
-                                <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
-                                <TextBlock x:Name="TxtCliDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
-                            </StackPanel>-->
                             <StackPanel Margin="7 5 0 0">
                                 <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
-                            </StackPanel>
-                            <StackPanel Margin="7 5 0 0">
-                                <TextBlock Text="Email" FontSize="13" Foreground="Gray" />
-                                <TextBlock x:Name="TxtCliEmail" Text="Jocrod.one@gmail.com" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
                     <Separator Margin="0 5" VerticalAlignment="Bottom"/>
                 </Grid>
                 <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
+                    <Grid Margin="0 10">
+                        <TextBox x:Name="txtMotivo" FontSize="12" Text="" 
+                             Height="80" TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             MaxLength="100"
+                             HorizontalScrollBarVisibility="Disabled"
+                             VerticalScrollBarVisibility="Auto"
+                             materialDesign:HintAssist.Hint="Motivo de Devolucion"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    </Grid>
                     <StackPanel>
                         <TextBlock Text="Total Restante" FontSize="15" FontWeight="Bold" Margin="0 "/>
                         <TextBlock Name="txtTotal" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>

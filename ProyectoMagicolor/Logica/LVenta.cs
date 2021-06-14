@@ -89,7 +89,7 @@ namespace Logica
                 v.idCliente,
                 CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
                 CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                c.nombre,
                 c.telefono,
                 c.email,
                 (SUM(dv.precioVenta * dv.cantidad) - v.descuento) AS montoTotal,
@@ -110,7 +110,6 @@ namespace Logica
                 c.tipoDocumento, 
                 c.numeroDocumento, 
                 c.nombre, 
-                c.apellidos, 
                 c.telefono, 
                 c.email, 
                 v.descuento,
@@ -282,7 +281,8 @@ namespace Logica
                         metodoPago = reader.GetInt32(11),
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(11)),
                         estado = reader.GetInt32(12),
-                        estadoString = EstadoToString(reader.GetInt32(12))
+                        estadoString = EstadoToString(reader.GetInt32(12)),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };
@@ -330,7 +330,7 @@ namespace Logica
                 SELECT 
                     v.idVenta,
                     CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    c.nombre,
                     SUM(dv.precioVenta * dv.cantidad) AS montoTotal,
                     v.descuento,
                     v.impuesto,
@@ -343,9 +343,9 @@ namespace Logica
                     INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
                     INNER JOIN [trabajador] t ON v.idTrabajador = t.idTrabajador
                 WHERE v.fecha = @fecha 
-                    AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
+                    AND c.nombre LIKE @nombre + '%'
                     " + QueryMetodoPago(MetodoPago) + @"
-			    GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto, t.nombre, t.apellidos;
+			    GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto, t.nombre, t.apellidos;
             ";
 
             Action action = () =>
@@ -368,7 +368,8 @@ namespace Logica
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(7)),
                         estadoString = EstadoToString(reader.GetInt32(8)),
-                        trabajador = reader.GetString(9)
+                        trabajador = reader.GetString(9),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };

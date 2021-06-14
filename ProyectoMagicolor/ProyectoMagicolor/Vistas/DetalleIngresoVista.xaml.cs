@@ -17,9 +17,7 @@ using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FTrabajadores.xaml
-    /// </summary>
+
     public partial class DetalleIngresoVista : Window
     {
 
@@ -61,15 +59,22 @@ namespace ProyectoMagicolor.Vistas
                 }
             }
 
-
             dgOperaciones.ItemsSource = items;
+
+
+            if (items.Count == 0)
+            {
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //contentsp.Children.Clear();
-
-            Refresh(txtBuscar.Text);
+            Refresh(txtNombre.Text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -78,7 +83,7 @@ namespace ProyectoMagicolor.Vistas
             var resp = new LArticulo().SacarArticulo(id)[0];
             if(resp.cantidadActual == 0)
             {
-                MessageBox.Show("El Producto que has seleccionado tiene un stock de 0!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("El Producto que has seleccionado tiene un stock de 0!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             var response = Metodos.Encontrar(id);
@@ -93,26 +98,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Refresh(txtBuscar.Text);
-        }
-
-
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-               txtBucarPlaceH.Text = "";
-            }
-            
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "Buscar...";
-            }
-            
+            Refresh(txtNombre.Text);
         }
     }
 

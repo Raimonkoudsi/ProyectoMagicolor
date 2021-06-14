@@ -12,20 +12,6 @@ namespace Logica
     {
         #region QUERIES
 
-        private string queryList = @"
-            SELECT 
-                v.idVenta,
-                c.tipoDocumento + '-' + c.numeroDocumento,
-                c.apellidos + ' ' + c.nombre, 
-                v.fecha, 
-                (select (sum(precioVenta * cantidad) - cc.montoIngresado - v.descuento) from detalleVenta where idVenta = v.idVenta)
-            FROM [cuentaCobrar] cc
-                INNER JOIN [venta] v ON v.idVenta=cc.idVenta 
-                INNER JOIN [cliente] c ON v.idCliente=c.idCliente 
-                INNER JOIN [trabajador] t ON v.idTrabajador=t.idTrabajador 
-            WHERE v.estado = 2 AND c.tipoDocumento LIKE @tipoDocumento + '%' AND c.numeroDocumento LIKE @numeroDocumento + '%' 
-        ";
-
         private string queryInsert = @"
             INSERT INTO [registroCuentaCobrar] (
                 idRegistro,
@@ -80,7 +66,7 @@ namespace Logica
                 v.idVenta,
                 cc.idCuentaCobrar,
                 c.tipoDocumento + '-' + c.numeroDocumento,
-                c.apellidos + ' ' + c.nombre,
+                c.nombre,
                 v.fecha,
                 ((SUM(dv.precioVenta) * dv.cantidad) - v.descuento) AS montoTotal,
                 (SUM(dv.precioVenta) * dv.cantidad - cc.montoIngresado - v.descuento) AS monto
@@ -110,29 +96,49 @@ namespace Logica
 
         #endregion
 
-        public List<DVenta> MostrarCxC(string TipoDocumento, string NumeroDocumento)
+        public List<DVenta> MostrarCxC(string TipoDocumento, string NumeroDocumento, int Tipo)
         {
             List<DVenta> ListaGenerica = new List<DVenta>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
-                comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+            string queryList = @"
+                SELECT 
+                    v.idVenta,
+                    c.tipoDocumento + '-' + c.numeroDocumento,
+                    c.nombre, 
+                    v.fecha, 
+                    (select (sum(precioVenta * cantidad) - cc.montoIngresado - v.descuento) from detalleVenta where idVenta = v.idVenta)
+                FROM [cuentaCobrar] cc
+                    INNER JOIN [venta] v ON v.idVenta=cc.idVenta 
+                    INNER JOIN [cliente] c ON v.idCliente=c.idCliente 
+                    INNER JOIN [trabajador] t ON v.idTrabajador=t.idTrabajador 
+                WHERE v.estado = 2 AND c.tipoDocumento LIKE @tipoDocumento + '%' 
+                    AND c.numeroDocumento LIKE @numeroDocumento + '%' 
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DVenta
+                    using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                    comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idVenta = reader.GetInt32(0),
-                        cedulaCliente = reader.GetString(1),
-                        cliente = reader.GetString(2),
-                        fecha = reader.GetDateTime(3),
-                        montoTotal = (double)reader.GetDecimal(4)
-                    });
-                }
-            };
+                        DateTime fecha = reader.GetDateTime(3);
+
+                        if ((Tipo == 1 && fecha >= DateTime.Today) || (Tipo == 2 && fecha < DateTime.Today) || Tipo == 3)
+                        {
+                            ListaGenerica.Add(new DVenta
+                            {
+                                idVenta = reader.GetInt32(0),
+                                cedulaCliente = reader.GetString(1),
+                                cliente = reader.GetString(2),
+                                fecha = fecha,
+                                montoTotal = (double)reader.GetDecimal(4)
+                            });
+                        }
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;

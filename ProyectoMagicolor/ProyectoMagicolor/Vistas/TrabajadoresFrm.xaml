@@ -3,100 +3,283 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="550" Width="500" Loaded="Window_Loaded">
+        Title="Variedades Magicolor" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="665" Width="840" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.GroupBox.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#f0f0f0">
+        <Grid Grid.Row="0" Background="#3194F7">
+            <Image Width="40" Margin="30 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Source="..\Imagenes\icon-bag.png"/>
             <TextBlock Name="txtTitulo"
                        Text="Insertar Trabajador" 
                        HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="25"
-                       Margin="0 10"/>
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       FontSize="28"
+                       Margin="0 10"
+                        />
         </Grid>
         <ScrollViewer Grid.Row="1">
-            <StackPanel Width="350" Margin="0 10">
+            <StackPanel Width="auto" Margin="25 10 10 0">
                 <Grid Margin="0 10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <local:TextInput Grid.Column="0" x:Name="txtNombre" Placeholder="Nombre" Margin="0 0 5 0" FontSize="15"/>
-                    <local:TextInput Grid.Column="1" x:Name="txtApellidos" Placeholder="Apellidos" Margin="5 0 0 0" FontSize="15"/>
-                </Grid>
-                <Grid Margin="0 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" Margin="0 0 5 0">
-                        <TextBlock x:Name="CbSexoPlaceholder" Text="Sexo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <ComboBox x:Name="CbSexo" Text="Sexo" FontSize="15" SelectionChanged="CbSexo_SelectionChanged">
-                            <ComboBoxItem>Hombre</ComboBoxItem>
-                            <ComboBoxItem>Mujer</ComboBoxItem>
-                        </ComboBox>
-                    </Grid>
-                    <Grid Grid.Column="1" Margin="5 0 0 0">
-                        <TextBlock x:Name="dpNacPlaceholder" Text="Fecha de Nacimiento" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                        <DatePicker x:Name="DpNacimiento" Text="Fecha Nacimiento" FontSize="15" Focusable="False" SelectedDateChanged="DpNacimiento_SelectedDateChanged"/>
-                    </Grid>
-                </Grid>
-                <Grid Margin="0 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid>
-                            <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                            <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged">
-                                <ComboBoxItem>V</ComboBoxItem>
-                                <ComboBoxItem>E</ComboBoxItem>
-                            </ComboBox>
-                        </Grid>
-                        <local:TextInput Grid.Column="1" x:Name="txtDocumento" Placeholder="Documento" Margin="5 0 0 0" FontSize="15"/>
-                    </Grid>
-                    <local:TextInput Grid.Column="1" x:Name="txtTelefono" Placeholder="Telefono" Margin="5 0 0 0" FontSize="15"/>
-                </Grid>
-                <local:TextInput x:Name="txtDireccion" Placeholder="Direccion" Margin="0 10" FontSize="15"/>
-                <local:TextInput x:Name="txtEmail" Placeholder="Email" Margin="0 10" FontSize="15"/>
-                <GroupBox Header="Perfil" FontSize="15" Foreground="#3194F7">
-                    <StackPanel>
-                        <local:TextInput x:Name="txtUsuario" Placeholder="Usuario" Margin="0 10" FontSize="13" LostFocus="txtUsuario_LostFocus"/>
-                        <Grid>
-                            <TextBlock x:Name="CbAccesoPlaceholder" Text="Acceso" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
-                            <ComboBox x:Name="CbAcceso" Text="Sexo" Margin="0 10" FontSize="13" SelectionChanged="CbAcceso_SelectionChanged">
-                                <ComboBoxItem>Encargado</ComboBoxItem>
-                                <ComboBoxItem>Vendedor</ComboBoxItem>
-                            </ComboBox>
-                        </Grid>
 
-                        <Grid x:Name="Password">
-                            <TextBlock x:Name="txtPassPlaceholder" Text="Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
-                            <PasswordBox x:Name="txtPassword" FontSize="13" Margin="0 10" GotFocus="txtPassword_GotFocus" LostFocus="txtPassword_LostFocus"/>
+                    <GroupBox Grid.Column="0"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="0 0 10 0"
+                            FontSize="14">
+                        <GroupBox.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  Text="DATOS PERSONALES" Background="Transparent" />
+                                <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="Account" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                            </Grid>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Margin="0 10" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Margin="0 0 5 0">
+                                    <ComboBox x:Name="CbTipoDocumento" FontSize="12" LostFocus="CbTipoDocumento_LostFocus"
+                                                materialDesign:HintAssist.Hint="Tipo"
+                                                Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                        <ComboBoxItem>V</ComboBoxItem>
+                                        <ComboBoxItem>E</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                                <TextBox x:Name="txtDocumento" MaxLength="9" FontSize="12" Height="49.5" 
+                                    Grid.Column="1" Margin="5 0 0 0" LostFocus="txtDocumento_LostFocus"
+                                    materialDesign:HintAssist.Hint="Documento"
+                                    Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                            </Grid>
+                            <Grid Margin="0 10" Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtNombre" MaxLength="20" FontSize="12" Grid.Column="0" Margin="0 0 5 0"
+                                    materialDesign:HintAssist.Hint="Nombre"
+                                    Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                <TextBox x:Name="txtApellidos" MaxLength="40" FontSize="12" Grid.Column="1" Margin="5 0 0 0"
+                                    materialDesign:HintAssist.Hint="Apellidos"
+                                    Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                            </Grid>
+                            <Grid Margin="0 10" Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0" Margin="0 0 5 0">
+                                    <ComboBox x:Name="CbSexo" Text="Sexo" FontSize="12"
+                                        materialDesign:HintAssist.Hint="Sexo"
+                                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                        <ComboBoxItem>Hombre</ComboBoxItem>
+                                        <ComboBoxItem>Mujer</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+                                <Grid Grid.Column="1" Margin="5 0 0 0">
+                                    <DatePicker x:Name="DpNacimiento" Text="Fecha Nacimiento" FontSize="12" Focusable="False" 
+                                                materialDesign:HintAssist.Hint="Fecha de Nacimiento"
+                                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
+                                </Grid>
+                            </Grid>
+                            <GroupBox Grid.Row="3"
+                                BorderThickness="0"
+                                      Margin="-10 10"
+                                FontSize="14">
+                                <GroupBox.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  Text="CONTACTO" Background="Transparent" />
+                                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="Phone" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                                    </Grid>
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="0 10" Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtTelefono" MaxLength="13" FontSize="12" Margin="0 0 5 0"
+                                        materialDesign:HintAssist.Hint="Telefono            "
+                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                    <TextBox x:Name="txtEmail" MaxLength="50" FontSize="12" Margin="5 0 0 0" Grid.Column="1"
+                                        materialDesign:HintAssist.Hint="Correo Electrónico (Opcional)"
+                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                </Grid>
+                                <Grid Margin="0 10 0 0" Grid.Row="1">
+                                    <TextBox x:Name="txtDireccion" FontSize="12" Text="" 
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     MaxLength="100"
+                                     HorizontalScrollBarVisibility="Disabled"
+                                     VerticalScrollBarVisibility="Auto"
+                                     materialDesign:HintAssist.Hint="Dirección (Opcional)"
+                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                </Grid>
+                                </Grid>
+                            </GroupBox>
                         </Grid>
-                        <Grid x:Name="CPassword">
-                            <TextBlock x:Name="txtCPassPlaceholder" Text="Confirmar Contraseña" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
-                            <PasswordBox x:Name="txtCPassword" FontSize="13" Margin="0 10" GotFocus="txtCPassword_GotFocus" LostFocus="txtCPassword_LostFocus"/>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10 0 0 0"
+                            FontSize="14">
+                        <GroupBox.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  Text="DATOS DE USUARIO" Background="Transparent" />
+                                <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="PasswordVerified" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                            </Grid>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Margin="0 10" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtUsuario" MaxLength="50" FontSize="12" Grid.Column="0" Margin="0 0 5 0"
+                                    materialDesign:HintAssist.Hint="Usuario del Sistema" LostFocus="txtUsuario_LostFocus"
+                                    Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                <Grid Margin="5 0 0 0" Grid.Column="1">
+                                    <ComboBox x:Name="CbAcceso" Text="Sexo" FontSize="12"
+                                                materialDesign:HintAssist.Hint="Nivel de Acceso"
+                                                Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                        <ComboBoxItem>Encargado</ComboBoxItem>
+                                        <ComboBoxItem>Vendedor</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+
+                            </Grid>
+                            <Grid Margin="0 10" Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid x:Name="Password" Grid.Column="0">
+                                    <PasswordBox x:Name="txtPassword" MaxLength="50" Height="49" FontSize="12" Margin="0 0 5 0"
+                                        materialDesign:HintAssist.Hint="Contraseña"
+                                        Style="{StaticResource MaterialDesignOutlinedPasswordBox}"/>
+                                </Grid>
+                                <materialDesign:PackIcon Grid.Column="1" Kind="PasswordQuestion" Background="Transparent" 
+                                                         HorizontalAlignment="Center" Foreground="Gray" Width="22" Height="22" FontStyle="Italic"
+                                                         VerticalAlignment="Center" ToolTip="La contraseña debe contener al menos una minúscula, una mayúscula, un dígito y no debe contener espacios en blanco"/>
+                                <Grid x:Name="CPassword" Grid.Column="2">
+                                    <PasswordBox x:Name="txtCPassword" MaxLength="50" Height="49" FontSize="12" Margin="5 0 0 0"
+                                        materialDesign:HintAssist.Hint="Confirmar Contraseña"
+                                        Style="{StaticResource MaterialDesignOutlinedPasswordBox}"/>
+                                </Grid>
+                            </Grid>
+                            <GroupBox
+                                Margin="-10 10" Grid.Row="2"
+                                BorderThickness="0"
+                                FontSize="14">
+                                <GroupBox.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  Text="SEGURIDAD" Background="Transparent" />
+                                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="ForgotPassword" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                                    </Grid>
+                                </GroupBox.Header>
+                                <Grid Margin="0 0 0 0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0" Margin="0 10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="txtPregunta" MaxLength="50" Grid.Column="0" FontSize="12" Margin="0 0 5 0"
+                                            materialDesign:HintAssist.Hint="Primera Pregunta Secreta"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                        <TextBox x:Name="txtRespuesta" MaxLength="50" Grid.Column="1"  FontSize="12" Margin="5 0 0 0"
+                                            materialDesign:HintAssist.Hint="Primera Respuesta Secreta"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                    </Grid>
+                                    <Grid Grid.Row="1" Margin="0 10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="txtPregunta2" MaxLength="50" Grid.Column="0" FontSize="12" Margin="0 0 5 0"
+                                            materialDesign:HintAssist.Hint="Segunda Pregunta Secreta"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                        <TextBox x:Name="txtRespuesta2" MaxLength="50" Grid.Column="1"  FontSize="12" Margin="5 0 0 0"
+                                            materialDesign:HintAssist.Hint="Segunda Respuesta Secreta"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                    </Grid>
+                                    <Grid Grid.Row="2" Margin="0 10 0 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="txtPregunta3" MaxLength="50" Grid.Column="0" FontSize="12" Margin="0 0 5 0"
+                                            materialDesign:HintAssist.Hint="Tercera Pregunta Secreta"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                        <TextBox x:Name="txtRespuesta3" MaxLength="50" Grid.Column="1"  FontSize="12" Margin="5 0 0 0"
+                                            materialDesign:HintAssist.Hint="Tercera Respuesta Secreta"
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                                    </Grid>
+                                </Grid>
+                            </GroupBox>
                         </Grid>
-                        <local:TextInput x:Name="txtPregunta" Placeholder="Primera Pregunta Secreta" Margin="0 10" FontSize="13"/>
-                        <local:TextInput x:Name="txtRespuesta" Placeholder="Primera Respuesta Secreta" Margin="0 10" FontSize="13"/>
-                        <local:TextInput x:Name="txtPregunta2" Placeholder="Segunda Pregunta Secreta" Margin="0 10" FontSize="13"/>
-                        <local:TextInput x:Name="txtRespuesta2" Placeholder="Segunda Respuesta Secreta" Margin="0 10" FontSize="13"/>
-                        <local:TextInput x:Name="txtPregunta3" Placeholder="Tercera Pregunta Secreta" Margin="0 10" FontSize="13"/>
-                        <local:TextInput x:Name="txtRespuesta3" Placeholder="Tercera Respuesta Secreta" Margin="0 10" FontSize="13"/>
-                    </StackPanel>
-                </GroupBox>
-                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 30 0 0" Click="Button_Click"/>
+                    </GroupBox>
+                    </Grid>
+                <Button Name="btnEnviar" Width="300" Background="#3194F7" Content="Enviar" Margin="0 15 0 0" Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

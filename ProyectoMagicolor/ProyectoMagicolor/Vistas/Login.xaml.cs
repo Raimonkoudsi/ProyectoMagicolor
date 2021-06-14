@@ -18,40 +18,42 @@ namespace ProyectoMagicolor.Vistas
 {
     public partial class Login : Window
     {
+        List<DTrabajador> respuesta = new List<DTrabajador>();
+        LTrabajador metodosUsuario = new LTrabajador();
 
         public Login()
         {
             InitializeComponent();
 
-            txtUsuario.BorderBrush = System.Windows.Media.Brushes.LightGray;
-            txtContraseña.BorderBrush = System.Windows.Media.Brushes.LightGray;
-            txtUsuario.Foreground = System.Windows.Media.Brushes.LightGray;
-            txtContraseña.Foreground = System.Windows.Media.Brushes.LightGray;
+            txtContraseña.Foreground = System.Windows.Media.Brushes.White;
         }
 
 
 
-        void Loging()
+        private void Loging()
         {
 
             if (txtUsuario.Text == "")
             {
-                System.Windows.MessageBox.Show("Debes poner un Nombre de Usuario!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe ingresar un nombre de Usuario");
                 txtUsuario.Focus();
                 return;
             }
             if (txtContraseña.Password == "")
             {
-                MessageBox.Show("Debes poner la Contraseña!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe ingresar la Contraseña");
                 txtContraseña.Focus();
                 return;
             }
-            try
+
+            if (metodosUsuario.UsuarioAnulado(txtUsuario.Text, txtContraseña.Password))
             {
-
-                LTrabajador metodosUsuario = new LTrabajador();
-
-                var respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
+                LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
+                Environment.Exit(0);
+            } 
+            else
+            {
+                respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
 
                 if (respuesta.Count > 0)
                 {
@@ -59,16 +61,16 @@ namespace ProyectoMagicolor.Vistas
                     intentos = 0;
                     this.Hide();
                     MainFrm.Show();
+
+                    VistaPrincipal Frm = new VistaPrincipal(MainFrm);
+                    MainFrm.SwitchScreen(Frm);
+
                     MainFrm.Closing += (s, r) => { this.Close(); };
                 }
                 else
                 {
                     ContadorIntentos();
                 }
-            }
-            catch
-            {
-
             }
         }
 
@@ -77,13 +79,13 @@ namespace ProyectoMagicolor.Vistas
         {
             intentos++;
 
-            if (intentos < 3)
-            {
-                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (" + intentos + " intento)");
-            }
+            if (intentos == 1)
+                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (primer intento)");
+            else if (intentos == 2)
+                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (segundo intento)");
             else if (intentos == 3)
             {
-                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (" + intentos + " intento), se cerrará el programa");
+                LFunction.MessageExecutor("Error", "Los Datos son Incorrectos (tercer intento), se cerrará el programa");
                 Environment.Exit(0);
             }
         }
@@ -95,55 +97,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void cerrar_Click(object sender, RoutedEventArgs e)
         {
-            var resp = MessageBox.Show("¿Desea Cerrar la Aplicación?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
-            if (resp == MessageBoxResult.Yes)
-            {
-                Environment.Exit(0);
-            }
-        }
-
-        private void txtContraseña_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if(txtContraseña.Password == "")
-            {
-                txtContraeñaPlace.Text = "";
-            }
-
-            txtContraseña.BorderBrush = System.Windows.Media.Brushes.White;
-            txtContraseña.Foreground = System.Windows.Media.Brushes.White;
-        }
-
-        private void txtContraseña_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtContraseña.Password == "")
-            {
-                txtContraeñaPlace.Text = "Contraseña";
-            }
-
-            txtContraseña.BorderBrush = System.Windows.Media.Brushes.LightGray;
-            txtContraseña.Foreground = System.Windows.Media.Brushes.LightGray;
-        }
-
-        private void txtUsuario_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtUsuario.Text == "")
-            {
-                txtUsuarioPlace.Text = "";
-            }
-
-            txtUsuario.BorderBrush = System.Windows.Media.Brushes.White;
-            txtUsuario.Foreground = System.Windows.Media.Brushes.White;
-        }
-
-        private void txtUsuario_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtUsuario.Text == "")
-            {
-                txtUsuarioPlace.Text = "Usuario";
-            }
-
-            txtUsuario.BorderBrush = System.Windows.Media.Brushes.LightGray;
-            txtUsuario.Foreground = System.Windows.Media.Brushes.LightGray;
+            Environment.Exit(0);
         }
 
         private void StackPanel_KeyDown(object sender, KeyEventArgs e)
@@ -172,15 +126,17 @@ namespace ProyectoMagicolor.Vistas
                 LFunction.MessageExecutor("Information", "Debe Proporcionar un Nombre de Usuario en el Login");
                 txtUsuario.Focus();
             }
+            else if (metodosUsuario.UsuarioAnulado(txtUsuario.Text, txtContraseña.Password))
+            {
+                LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
+                Environment.Exit(0);
+            }
             else
             {
-                LTrabajador metodosUsuario = new LTrabajador();
-
-                var respuesta = metodosUsuario.Seguridad(txtUsuario.Text);
+                respuesta = metodosUsuario.Seguridad(txtUsuario.Text);
 
                 if (respuesta.Count > 0)
                 {
-                    //var MainFrm = new PreguntasSeguridad(respuesta);
                     PreguntasSeguridad frmPreguntas = new PreguntasSeguridad(this);
                     frmPreguntas.DataFill = respuesta;
                     bool Resp = frmPreguntas.ShowDialog() ?? false;

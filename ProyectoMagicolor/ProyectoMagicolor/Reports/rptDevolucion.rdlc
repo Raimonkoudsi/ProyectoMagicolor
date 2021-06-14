@@ -955,9 +955,9 @@
           </Paragraphs>
           <rd:DefaultName>Textbox19</rd:DefaultName>
           <Top>0.52656cm</Top>
-          <Left>7.26647cm</Left>
+          <Left>14.20909cm</Left>
           <Height>0.67938cm</Height>
-          <Width>13.11326cm</Width>
+          <Width>6.17064cm</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -982,6 +982,42 @@
             </Border>
           </Style>
         </Line>
+        <Textbox Name="Textbox25">
+          <CanGrow>true</CanGrow>
+          <KeepTogether>true</KeepTogether>
+          <Paragraphs>
+            <Paragraph>
+              <TextRuns>
+                <TextRun>
+                  <Value>="Emitido por: " &amp; First(Fields!nombreTrabajadorIngresado.Value, "DevolucionGeneralDS")</Value>
+                  <Style>
+                    <FontFamily>Nirmala UI Semilight</FontFamily>
+                    <FontWeight>Normal</FontWeight>
+                  </Style>
+                </TextRun>
+              </TextRuns>
+              <Style>
+                <TextAlign>Left</TextAlign>
+              </Style>
+            </Paragraph>
+          </Paragraphs>
+          <rd:DefaultName>Textbox19</rd:DefaultName>
+          <Top>0.5202cm</Top>
+          <Left>0.62433cm</Left>
+          <Height>0.67938cm</Height>
+          <Width>13.40837cm</Width>
+          <ZIndex>2</ZIndex>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+            <VerticalAlign>Middle</VerticalAlign>
+            <PaddingLeft>2pt</PaddingLeft>
+            <PaddingRight>2pt</PaddingRight>
+            <PaddingTop>2pt</PaddingTop>
+            <PaddingBottom>2pt</PaddingBottom>
+          </Style>
+        </Textbox>
       </ReportItems>
       <Style>
         <Border>
@@ -1072,6 +1108,10 @@
         </Field>
         <Field Name="nombreCliente">
           <DataField>nombreCliente</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="nombreTrabajadorIngresado">
+          <DataField>nombreTrabajadorIngresado</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="telefono">

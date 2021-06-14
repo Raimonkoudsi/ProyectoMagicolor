@@ -30,7 +30,7 @@ namespace ProyectoMagicolor.Vistas
             txtImpuesto.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public DProveedor Proveedor;
 
@@ -75,7 +75,7 @@ namespace ProyectoMagicolor.Vistas
 
         }
 
-        void Limpiar()
+        private void Limpiar()
         {
             QuitarProveedor();
             CbMetodoPago.SelectedIndex = -1;
@@ -225,23 +225,59 @@ namespace ProyectoMagicolor.Vistas
             BtnProveedor.Content = "Encontrar";
         }
 
-        void setProveedor()
+        public void setProveedor()
         {
             if (CbTipoDocumento.SelectedIndex > -1 && txtDocumento.Text != "")
             {
                 LProveedor Metodo = new LProveedor();
-                var response = Metodo.EncontrarConDocumento(CbTipoDocumento.Text, txtDocumento.Text);
 
+                var response = Metodo.EncontrarConDocumento(CbTipoDocumento.Text, txtDocumento.Text);
                 if (response.Count > 0)
                 {
                     AgregarProveedor(response[0]);
+                    txtBuscar.Focus();
                     return;
                 }
 
+                response = Metodo.CedulaRepetidaAnulada((CbTipoDocumento.Text + "-" + txtDocumento.Text));
+                if (response.Count > 0)
+                {
+                    if(Globals.ACCESO_SISTEMA == 0)
+                    {
+                        var respuesta = MessageBox.Show("El proveedor está deshabilitado en el sistema ¿Desea habilitarlo?" + Environment.NewLine + "(Abrirá el formulario para editar datos relevantes)", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        if (respuesta == MessageBoxResult.Yes)
+                        {
+                            ProveedorFrm frm = new ProveedorFrm(this, CbTipoDocumento.Text, txtDocumento.Text);
+                            frm.Type = TypeForm.Update;
+                            frm.DataFill = response[0];
+
+                            bool res = frm.ShowDialog() ?? false;
+                            return;
+                        }
+                    }
+                    LFunction.MessageExecutor("Error", "El proveedor está deshabilitado, no se puede asignar");
+                    txtDocumento.Focus();
+                    return;
+                }
+
+                var resp = MessageBox.Show("El proveedor no está registrado ¿Desea agregarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (resp == MessageBoxResult.Yes)
+                {
+                    ProveedorFrm Frm = new ProveedorFrm(this, CbTipoDocumento.Text, txtDocumento.Text);
+                    bool res = Frm.ShowDialog() ?? false;
+                    return;
+                }
             }
             ProveedorVista PVFrm = new ProveedorVista(this);
 
             PVFrm.ShowDialog();
+        }
+
+        public void SetNuevoProveedor(string TipoDocumento, string Documento)
+        {
+            CbTipoDocumento.Text = TipoDocumento;
+            txtDocumento.Text = Documento;
+            setProveedor();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -272,6 +308,8 @@ namespace ProyectoMagicolor.Vistas
 
         public void AgregarArticulo(DDetalle_Ingreso DDI, DArticulo DA)
         {
+
+            //ACA VA LO DE SUMAR LAS CANTIDADES
             ModeloCompra MCN = new ModeloCompra(DisplayData.Count,
                                                 DA.nombre,
                                                 DDI.precioCompra,
@@ -394,7 +432,9 @@ namespace ProyectoMagicolor.Vistas
             EliminarArticulo(id);
         }
 
-        public double subtotal, impuestos, total;
+        public double subtotal, total;
+
+        public int impuestos;
 
         public void RefreshMoney()
         {
@@ -415,7 +455,7 @@ namespace ProyectoMagicolor.Vistas
             double Total = Subtotal + imp;
 
             subtotal = Subtotal;
-            impuestos = impPer;
+            impuestos = int.Parse(txtImpuesto.Text);
             total = Total;
 
 
@@ -433,6 +473,11 @@ namespace ProyectoMagicolor.Vistas
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Refresh();
+
+            txtImpuesto.IsEnabled = false;
+            txtImpuesto.Text = LFunction.MostrarIVA().ToString();
+
+            CbTipoDocumento.SelectedIndex = 2;
             dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
         }
 

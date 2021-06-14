@@ -90,8 +90,8 @@ namespace Datos
             set { _Contraseña = value; }
         }
 
-        private string _Estado;
-        public string estado
+        private int _Estado;
+        public int estado
         {
             get { return _Estado; }
             set { _Estado = value; }
@@ -111,13 +111,40 @@ namespace Datos
             set { _Respuesta = value; }
         }
 
+        private int _AccesoTrabajadorIngresado;
+        public int accesoTrabajadorIngresado
+        {
+            get { return _AccesoTrabajadorIngresado; }
+            set { _AccesoTrabajadorIngresado = value; }
+        }
+
+        private int _TrabajadorIngresado;
+        public int trabajadorIngresado
+        {
+            get { return _TrabajadorIngresado; }
+            set { _TrabajadorIngresado = value; }
+        }
+
+        private string _AccesoString;
+        public string accesoString
+        {
+            get { return _AccesoString; }
+            set { _AccesoString = value; }
+        }
+
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
+        }
 
         public DTrabajador()
         {
 
         }
 
-        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion,string Telefono, string Email, int Acceso, string Usuario, string Contraseña, string Estado)
+        public DTrabajador(int IdTrabajador, string Nombre, string Apellidos, string Sexo, DateTime FechaNacimiento, string Cedula, string Direccion,string Telefono, string Email, int Acceso, string Usuario, string Contraseña)
         {
             this.idTrabajador = IdTrabajador;
             this.nombre = Nombre;
@@ -131,7 +158,6 @@ namespace Datos
             this.acceso = Acceso;
             this.usuario = Usuario;
             this.contraseña = Contraseña;
-            this.estado = Estado;
         }
     }
 }

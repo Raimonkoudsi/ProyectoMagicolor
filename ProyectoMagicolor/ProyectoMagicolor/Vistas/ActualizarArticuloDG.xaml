@@ -6,11 +6,17 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
       mc:Ignorable="d" 
-      Background="WhiteSmoke"
+      Background="White"
       Loaded="Window_Loaded"
       d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-      Title="CompraDG">
-
+      Title="Articulos">
+    <Page.Resources>
+        <local:DesactivateButtonNullArticlee x:Key="DesactivateButtonNullArticlee"/>
+        <local:ChangeRedColorRowNull x:Key="ChangeRedColorRowNull"/>
+        <local:ChangeEditButtonNull x:Key="ChangeEditButtonNull"/>
+        <local:ChangeEditTextButtonNull x:Key="ChangeEditTextButtonNull"/>
+        <local:ChangeEditAccessButtonNullArticlee x:Key="ChangeEditAccessButtonNullArticlee"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -18,13 +24,14 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="40 10">
+        <Grid Grid.Row="0" Margin="70 20 70 20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" Margin="0 5 0 0">
-                <ComboBox x:Name="CbTipoBusqueda" FontSize="15" SelectionChanged="CbTipoBusqueda_SelectionChanged" 
+                <ComboBox x:Name="CbTipoBusqueda" FontSize="12" SelectionChanged="CbTipoBusqueda_SelectionChanged" 
                             materialDesign:HintAssist.Hint="Tipo de Búsqueda"
                             Style="{StaticResource MaterialDesignOutlinedComboBox}">
                     <ComboBoxItem>Código</ComboBoxItem>
@@ -32,11 +39,14 @@
                 </ComboBox>
             </Grid>
             <Grid Grid.Column="1" Margin="10 5 0 0">
-                <TextBox Name="txtBusqueda" Text="" FontSize="15" Margin="0" KeyUp="txtBusqueda_KeyDown" 
+                <TextBox Name="txtBusqueda" Text="" FontSize="12" Margin="0" KeyDown="txtBusqueda_KeyDown" 
                             materialDesign:HintAssist.Hint="Búsqueda"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
             </Grid>
+            <Button Grid.Column="2" Name="btnReport" Width="55" Height="50" ToolTip="Generar Reporte"  HorizontalAlignment="Center" Margin="10 5 0 0" Click="Reporte_Click" Background="#3194F7">
+                <materialDesign:PackIcon Kind="FileChartOutline" HorizontalAlignment="Center" Foreground="White" Width="22" Height="22" />
+            </Button>
         </Grid>
         <DataGrid x:Name="dgOperaciones" 
                   Grid.Row="1"
@@ -44,19 +54,37 @@
                   IsReadOnly="true" 
                   ColumnWidth="*" 
                   Margin="30 0"
-                  BorderThickness="0 1 0 1"
-                  BorderBrush="LightGray"
-                  Background="WhiteSmoke">
+                  Background="White"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#f0f0f0" />
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Foreground">
+                        <Setter.Value>
+                            <Binding Path="estado" Converter="{StaticResource ChangeRedColorRowNull}" />
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Código" Binding="{Binding codigo}">
+                <DataGridTextColumn Width="auto" Header="    Código    " Binding="{Binding codigo}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding codigo}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -64,6 +92,12 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding nombre}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -71,7 +105,13 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding precioVenta}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -80,6 +120,12 @@
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding cantidadActual}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -88,33 +134,113 @@
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                             <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding ultimaActualizacion}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn Width="auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="auto">
                                 <Button CommandParameter="{Binding idArticulo}"
+                                        x:Name="btnEditar"
                                         Click="Button_Click_1"
                                         Margin="0 0 5 0"
-                                        Padding="5">Editar</Button>
-                                <Button Name="txtVer"
+                                        Padding="5"
+                                        Background="Green" BorderBrush="Green">
+                                    <Button.ToolTip>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Path=estado, Converter={StaticResource ChangeEditTextButtonNull}}" />
+                                            <TextBlock Grid.Column="1" Text=" Artículo" />
+                                        </Grid>
+                                    </Button.ToolTip>
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource ChangeEditAccessButtonNullArticlee}">
+                                            <Binding Path="estado"/>
+                                            <Binding Path="accesoTrabajadorIngresado"/>
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+
+                                    <materialDesign:PackIcon Kind="{Binding Path=estado, Converter={StaticResource ChangeEditButtonNull}}" 
+                                            Foreground="White" Width="20" Height="20" />
+                                </Button>
+                                <Button x:Name="btnVer"
                                         CommandParameter="{Binding idArticulo}"
                                         Click="txtVer_Click"
                                         Margin="5 0"
-                                        Padding="5">Ver</Button>
+                                        Padding="5" ToolTip="Mostrar Artículo">
+                                    <materialDesign:PackIcon Kind="Magnify" Foreground="White" Width="20" Height="20" />
+                                </Button>
                                 <Button x:Name="btnEliminar"
                                         CommandParameter="{Binding idArticulo}" 
                                         Click="btnEliminar_Click"
                                         Background="OrangeRed" BorderBrush="OrangeRed"
                                         Margin="5 0 0 0"
-                                        Padding="5">Eliminar</Button>
+                                        Padding="5"
+                                        ToolTip="Deshabilitar Artículo">
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource DesactivateButtonNullArticlee}">
+                                            <Binding Path="estado"/>
+                                            <Binding Path="accesoTrabajadorIngresado"/>
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+                                    <materialDesign:PackIcon Kind="TrashCanOutline" Foreground="White" Width="20" Height="20" />
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Center" x:Name="SinRegistro">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Búsqueda sin Registros" 
+                          Margin="0 0 0 0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="24"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
+                          HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="30" Height="30"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0 10" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="1" Text="Mostrar: " 
+                          Margin="0 0 10 0"
+                          VerticalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="14"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <CheckBox Grid.Column="2" x:Name="RBHabilitado" Content="Habilitados" FontSize="12" 
+                          IsChecked="True" Click="RBHabilitado_Click"
+                          Style="{StaticResource MaterialDesignFilterChipOutlineCheckBox}"
+                          Background="#3194F7"/>
+
+            <CheckBox Grid.Column="3" x:Name="RBDeshabilitado" Content="Deshabilitados" FontSize="12" 
+                          IsChecked="False" Click="RBHabilitado_Click" Foreground="Red"
+                          Style="{StaticResource MaterialDesignFilterChipOutlineCheckBox}"
+                          Background="#3194F7" Margin="0 0 40 0"/>
+        </Grid>
     </Grid>
 </Page>

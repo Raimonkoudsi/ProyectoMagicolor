@@ -7,65 +7,88 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Background="WhiteSmoke"
+        Background="White"
         Title="Trabajadores" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
+    <Page.Resources>
+        <local:DesactivateButtonNull x:Key="DesactivateButtonNull"/>
+        <local:ChangeRedColorRowNull x:Key="ChangeRedColorRowNull"/>
+        <local:ChangeEditButtonNull x:Key="ChangeEditButtonNull"/>
+        <local:ChangeEditTextButtonNull x:Key="ChangeEditTextButtonNull"/>
+        <local:ChangeEditAccessButtonNull x:Key="ChangeEditAccessButtonNull"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="70 10">
+        <Grid Grid.Row="0" Margin="70 20 70 20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Grid Margin="0 0 10 0" Width="50">
-                <TextBlock x:Name="PlaceTipoDocumento" Text="Tipo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <ComboBox x:Name="CbTipoDocumento" FontSize="15" SelectionChanged="CbTipoDocumento_SelectionChanged" >
+            <Grid Margin="0 0 5 0" Width="auto">
+                <ComboBox x:Name="CbTipoDocumento" FontSize="12" SelectionChanged="CbTipoDocumento_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Tipo"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
                     <ComboBoxItem>V</ComboBoxItem>
                     <ComboBoxItem>E</ComboBoxItem>
                     <ComboBoxItem>J</ComboBoxItem>
                     <ComboBoxItem>G</ComboBoxItem>
                 </ComboBox>
             </Grid>
-            <Grid Grid.Column="1" Margin="10 0 0 0">
-                <TextBlock Name="txtBucarPlaceH" Text="Documento" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <TextBox Name="txtDocumento" Text="" FontSize="15" Margin="0" KeyUp="TextBox_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
-                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+            <Grid Grid.Column="1" Margin="5 0 0 0">
+                <TextBox Name="txtDocumento" Text="" FontSize="12" Margin="0" KeyUp="TextBox_KeyDown"
+                            materialDesign:HintAssist.Hint="Documento"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
             </Grid>
-            <Button Grid.Column="2" Name="btnReport" ToolTip="Generar Reporte" HorizontalAlignment="Center" Margin="10 0 0 0" Click="Reporte_Click" Background="#3194F7">
-                <materialDesign:PackIcon Kind="FileChartOutline" Foreground="White" Width="20" Height="20" />
+            <Button Grid.Column="3" Name="btnReport" Width="55" Height="50" ToolTip="Generar Reporte"  HorizontalAlignment="Center" Margin="10 0 0 0" Click="Reporte_Click" Background="#3194F7">
+                <materialDesign:PackIcon Kind="FileChartOutline" HorizontalAlignment="Center" Foreground="White" Width="22" Height="22" />
             </Button>
         </Grid>
+        
         <DataGrid x:Name="dgOperaciones" 
                   Grid.Row="1"
                   AutoGenerateColumns="false" 
                   IsReadOnly="true" 
                   ColumnWidth="*" 
                   Margin="30 0"
-                  BorderThickness="0 1 0 1"
-                  BorderBrush="LightGray"
-                  Background="WhiteSmoke">
+                  BorderThickness="1"
+                  BorderBrush="Black"
+                  Background="White"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#f0f0f0" />
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Foreground">
+                        <Setter.Value>
+                            <Binding Path="estado" Converter="{StaticResource ChangeRedColorRowNull}" />
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Width="auto" Header="Documento" Binding="{Binding numeroDocumento}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Apellidos" Binding="{Binding apellidos}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding numeroDocumento}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -73,20 +96,39 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding nombre}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Telefono" Binding="{Binding telefono}">
+                <DataGridTextColumn Width="auto" Header="Teléfono" Binding="{Binding telefono}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding telefono}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Email" Binding="{Binding email}">
+                <DataGridTextColumn Width="*" Header="Correo Electrónico" Binding="{Binding email}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding email}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -95,26 +137,113 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="auto">
                                 <Button CommandParameter="{Binding idCliente}"
+                                        x:Name="btnEditar"
                                         Click="Button_Click_1"
                                         Margin="0 0 5 0"
-                                        Padding="5">Editar</Button>
-                                <Button Name="txtVer"
+                                        Padding="5"
+                                        Background="Green" BorderBrush="Green">
+                                    <Button.ToolTip>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Path=estado, Converter={StaticResource ChangeEditTextButtonNull}}" />
+                                            <TextBlock Grid.Column="1" Text=" Cliente" />
+                                        </Grid>
+                                    </Button.ToolTip>
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource ChangeEditAccessButtonNull}">
+                                            <Binding Path="estado"/>
+                                            <Binding Path="accesoTrabajadorIngresado"/>
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+
+                                    <materialDesign:PackIcon Kind="{Binding Path=estado, Converter={StaticResource ChangeEditButtonNull}}" 
+                                            Foreground="White" Width="20" Height="20" />
+                                </Button>
+                                <Button x:Name="btnVer"
                                         CommandParameter="{Binding idCliente}"
                                         Click="txtVer_Click"
                                         Margin="5 0"
-                                        Padding="5">Ver</Button>
+                                        Padding="5" ToolTip="Mostrar Cliente">
+                                    <materialDesign:PackIcon Kind="Magnify" Foreground="White" Width="20" Height="20" />
+                                </Button>
                                 <Button x:Name="btnEliminar"
                                         CommandParameter="{Binding idCliente}" 
                                         Click="btnEliminar_Click"
                                         Background="OrangeRed" BorderBrush="OrangeRed"
                                         Margin="5 0 0 0"
-                                        Padding="5">Eliminar</Button>
+                                        Padding="5"
+                                        ToolTip="Deshabilitar Cliente">
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource DesactivateButtonNull}">
+                                            <Binding Path="estado"/>
+                                            <Binding Path="accesoTrabajadorIngresado"/>
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+                                    <materialDesign:PackIcon Kind="TrashCanOutline" Foreground="White" Width="20" Height="20" />
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Grid.Row="2" Content="Agregar" HorizontalAlignment="Center" Margin="0 10" Click="Button_Click" Background="ForestGreen" BorderBrush="ForestGreen"/>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Center" x:Name="SinRegistro">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Búsqueda sin Registros" 
+                          Margin="0 0 0 0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="24"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
+                          HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="30" Height="30"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" FontSize="12" Height="35" 
+                Padding="10 0" HorizontalAlignment="Left" Margin="40 10" Click="Button_Click" 
+                Background="ForestGreen" BorderBrush="ForestGreen">
+                <Button.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" FontSize="14" VerticalAlignment="Center"  Text="Agregar Nuevo Cliente" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="AccountAdd" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </Button.Content>
+            </Button>
+
+            <TextBlock Grid.Column="1" Text="Mostrar: " 
+                          Margin="0 0 10 0"
+                          VerticalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="14"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <CheckBox Grid.Column="2" x:Name="RBHabilitado" Content="Habilitados" FontSize="12" 
+                          IsChecked="True" Click="RBHabilitado_Click"
+                          Style="{StaticResource MaterialDesignFilterChipOutlineCheckBox}"
+                          Background="#3194F7"/>
+
+            <CheckBox Grid.Column="3" x:Name="RBDeshabilitado" Content="Deshabilitados" FontSize="12" 
+                          IsChecked="False" Click="RBHabilitado_Click" Foreground="Red"
+                          Style="{StaticResource MaterialDesignFilterChipOutlineCheckBox}"
+                          Background="#3194F7" Margin="0 0 40 0"/>
+        </Grid>
     </Grid>
 </Page>

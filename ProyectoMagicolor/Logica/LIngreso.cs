@@ -45,7 +45,8 @@ namespace Logica
                 precioVenta,
                 cantidadInicial,
                 cantidadActual,
-                estado
+                estado,
+                estadoArticulo
             ) VALUES (
                 @idDetalleIngreso,
                 @idIngreso,
@@ -59,6 +60,7 @@ namespace Logica
                     FROM [detalleIngreso] WHERE idArticulo = @idArticulo
                     ORDER BY idDetalleIngreso DESC
                 ),0)),
+                1,
                 1
             );
 	    ";
@@ -255,9 +257,23 @@ namespace Logica
         public string Anular(int IdCompra, List<DDetalle_Ingreso> Detalle)
         {
             string respuesta = "";
-            int i = 0;
+            int i = 0, j = 0;
+            string fueraStock = "";
             Action action = () =>
             {
+                foreach (DDetalle_Ingreso det in Detalle)
+                {
+                    string fueraStockFunction = ComprobarCantidadDisponibleParaRestock(Detalle[j].idArticulo, Detalle[j].cantidad);
+
+                    if (!fueraStockFunction.Equals(""))
+                        fueraStock += fueraStockFunction + Environment.NewLine;
+
+                    j++;
+                }
+
+                if(fueraStock != "")
+                    throw new Exception("La Compra no puede ser Anulada, existen Artículos sin Disponibilidad para la Devolución. Los cuales son:" + Environment.NewLine + Environment.NewLine + fueraStock);
+
                 foreach (DDetalle_Ingreso det in Detalle)
                 {
                     if (!RestockIngreso(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))
@@ -309,7 +325,8 @@ namespace Logica
                             metodoPago = reader.GetInt32(10),
                             metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(10)),
                             estado = reader.GetInt32(11),
-                            estadoString = new LVenta().EstadoToString(reader.GetInt32(11))
+                            estadoString = new LVenta().EstadoToString(reader.GetInt32(11)),
+                            nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                         });
                     }
                 };
@@ -461,6 +478,7 @@ namespace Logica
                     INNER JOIN [proveedor] p ON p.idProveedor = i.idProveedor
                     INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
                 WHERE i.fecha = @fecha 
+                    AND i.idIngreso <> 0
                     AND p.razonSocial LIKE @razonSocial + '%'
                     " + QueryMetodoPago(MetodoPago) + @"
 			    GROUP BY 
@@ -494,7 +512,8 @@ namespace Logica
                         impuesto = reader.GetInt32(5),
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(7)),
-                        estadoString = new LVenta().EstadoToString(reader.GetInt32(8))
+                        estadoString = new LVenta().EstadoToString(reader.GetInt32(8)),
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
             };
@@ -545,7 +564,6 @@ namespace Logica
                                 0.ToString(),
                                 0,
                                 0.ToString(),
-                                0.ToString(),
                                 0.ToString());
 
                 new LTrabajador().Insertar(UForm, null, true);
@@ -585,7 +603,7 @@ namespace Logica
             return respuesta;
         }
 
-        private bool MostrarIngresoVacio()
+        public bool MostrarIngresoVacio()
         {
             bool respuesta = false;
 

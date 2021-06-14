@@ -23,7 +23,7 @@ namespace ProyectoMagicolor.Vistas
         public LVenta Metodos = new LVenta();
 
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public VentaDG(MainWindow parent)
         {

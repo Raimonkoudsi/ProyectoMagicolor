@@ -15,46 +15,41 @@ namespace Logica
             INSERT INTO [cliente] (
                 idCliente,
                 nombre,
-                apellidos,
                 tipoDocumento,
                 numeroDocumento,
                 direccion,
                 telefono,
-                email
+                email,
+                estado
             ) VALUES (
                 @idCliente,
                 @nombre,
-                @apellidos,
                 @tipoDocumento,
                 @numeroDocumento,
                 @direccion,
                 @telefono,
-                @email
+                @email,
+                1
             );
 	    ";
 
         private string queryUpdate = @"
             UPDATE [cliente] SET 
                 nombre = @nombre,
-                apellidos = @apellidos,
                 tipoDocumento = @tipoDocumento,
                 numeroDocumento = @numeroDocumento,
                 direccion = @direccion,
                 telefono = @telefono,
-                email = @email
+                email = @email,
+                estado = 1
             WHERE idCliente = @idCliente;
 	    ";
 
         private string queryDelete = @"
-            DELETE FROM [cliente] 
+            UPDATE [cliente] SET 
+                estado = 0
             WHERE idCliente = @idCliente;
 	    ";
-
-        private string queryList = @"
-            SELECT * FROM [cliente] 
-            WHERE tipoDocumento LIKE @tipoDocumento + '%' AND numeroDocumento LIKE @numeroDocumento + '%' 
-            ORDER BY numeroDocumento;
-        ";
 
         private string queryListID = @"
             SELECT * FROM [cliente] 
@@ -68,7 +63,12 @@ namespace Logica
 
         private string queryIDCardRepeated = @"
             SELECT idCliente FROM [cliente] 
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula;
+            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado <> 0;
+        ";
+
+        private string queryIDCardRepeatedNull = @"
+            SELECT * FROM [cliente]
+            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado = 0;
         ";
         #endregion
 
@@ -82,7 +82,6 @@ namespace Logica
                 using SqlCommand comm = new SqlCommand(queryInsert, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idCliente", LFunction.GetID("cliente", "idCliente"));
                 comm.Parameters.AddWithValue("@nombre", Client.nombre);
-                comm.Parameters.AddWithValue("@apellidos", Client.apellidos);
                 comm.Parameters.AddWithValue("@tipoDocumento", Client.tipoDocumento);
                 comm.Parameters.AddWithValue("@numeroDocumento", Client.numeroDocumento);
                 comm.Parameters.AddWithValue("@direccion", Client.direccion);
@@ -90,7 +89,6 @@ namespace Logica
                 comm.Parameters.AddWithValue("@email", Client.email);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro del Cliente";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Ingresado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -106,7 +104,6 @@ namespace Logica
             {
                 using SqlCommand comm = new SqlCommand(queryUpdate, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@nombre", Client.nombre);
-                comm.Parameters.AddWithValue("@apellidos", Client.apellidos);
                 comm.Parameters.AddWithValue("@tipoDocumento", Client.tipoDocumento);
                 comm.Parameters.AddWithValue("@numeroDocumento", Client.numeroDocumento);
                 comm.Parameters.AddWithValue("@direccion", Client.direccion);
@@ -115,7 +112,6 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idCliente", Client.idCliente);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Cliente";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Actualizado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -132,8 +128,7 @@ namespace Logica
                 using SqlCommand comm = new SqlCommand(queryDelete, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@idCliente", IdCliente);
 
-                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Registro del Cliente";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Eliminado Correctamente");
+                respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Deshabilitó el Registro del Cliente";
             };
             LFunction.SafeExecutor(action);
 
@@ -141,32 +136,39 @@ namespace Logica
         }
 
 
-        public List<DCliente> Mostrar(string TipoDocumento, string NumeroDocumento)
+        public List<DCliente> Mostrar(string TipoDocumento, string NumeroDocumento, int Estado)
         {
             List<DCliente> ListaGenerica = new List<DCliente>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
-                comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+            string queryList = @"
+                SELECT * FROM [cliente] 
+                WHERE tipoDocumento = @tipoDocumento AND numeroDocumento LIKE @numeroDocumento + '%' " + new LProveedor().BuscarEstado(Estado) + @"
+                ORDER BY numeroDocumento;
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DCliente
+                    using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@tipoDocumento", TipoDocumento);
+                    comm.Parameters.AddWithValue("@numeroDocumento", NumeroDocumento);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idCliente = reader.GetInt32(0),
-                        nombre = reader.GetString(1),
-                        apellidos = reader.GetString(2),
-                        tipoDocumento = reader.GetString(3),
-                        numeroDocumento = reader.GetString(4),
-                        direccion = reader.GetString(5),
-                        telefono = reader.GetString(6),
-                        email = reader.GetString(7),
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DCliente
+                        {
+                            idCliente = reader.GetInt32(0),
+                            nombre = reader.GetString(1),
+                            numeroDocumento = reader.GetString(2) + "-" + reader.GetString(3),
+                            direccion = reader.GetString(4) == null ? "Sin Dirección" : reader.GetString(4),
+                            telefono = reader.GetString(5) == null ? "Sin Teléfono" : reader.GetString(5),
+                            email = reader.GetString(6) == null ? "Sin Correo" : reader.GetString(6),
+                            estado = reader.GetInt32(7),
+                            accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA,
+                            nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
@@ -189,12 +191,12 @@ namespace Logica
                     {
                         idCliente = reader.GetInt32(0),
                         nombre = reader.GetString(1),
-                        apellidos = reader.GetString(2),
-                        tipoDocumento = reader.GetString(3),
-                        numeroDocumento = reader.GetString(4),
-                        direccion = reader.GetString(5),
-                        telefono = reader.GetString(6),
-                        email = reader.GetString(7)
+                        tipoDocumento = reader.GetString(2),
+                        numeroDocumento = reader.GetString(3),
+                        direccion = reader.GetString(4),
+                        telefono = reader.GetString(5),
+                        email = reader.GetString(6),
+                        estado = reader.GetInt32(7)
                     });
                 }
             };
@@ -221,12 +223,12 @@ namespace Logica
                     {
                         idCliente = reader.GetInt32(0),
                         nombre = reader.GetString(1),
-                        apellidos = reader.GetString(2),
-                        tipoDocumento = reader.GetString(3),
-                        numeroDocumento = reader.GetString(4),
-                        direccion = reader.GetString(5),
-                        telefono = reader.GetString(6),
-                        email = reader.GetString(7),
+                        tipoDocumento = reader.GetString(2),
+                        numeroDocumento = reader.GetString(3),
+                        direccion = reader.GetString(4),
+                        telefono = reader.GetString(5),
+                        email = reader.GetString(6),
+                        estado = reader.GetInt32(7)
                     });
                 }
             };
@@ -234,7 +236,6 @@ namespace Logica
 
             return ListaGenerica;
         }
-
 
 
         public bool CedulaRepetida(string Cedula)
@@ -253,6 +254,37 @@ namespace Logica
             LFunction.SafeExecutor(action);
 
             return respuesta;
+        }
+
+
+
+        public List<DCliente> CedulaRepetidaAnulada(string Cedula)
+        {
+            List<DCliente> ListaGenerica = new List<DCliente>();
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryIDCardRepeatedNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@cedula", Cedula);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                if (reader.Read())
+                {
+                    ListaGenerica.Add(new DCliente
+                    {
+                        idCliente = reader.GetInt32(0),
+                        nombre = reader.GetString(1),
+                        tipoDocumento = reader.GetString(2),
+                        numeroDocumento = reader.GetString(3),
+                        direccion = reader.GetString(4),
+                        telefono = reader.GetString(5),
+                        email = reader.GetString(6)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
         }
     }
 }

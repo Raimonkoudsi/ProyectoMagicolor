@@ -15,11 +15,13 @@ namespace Logica
             INSERT INTO [categoria] (
                 idCategoria,
                 nombre,
-                descripcion
+                descripcion,
+                estado
             ) VALUES (
                 @idCategoria,
                 @nombre,
-                @descripcion
+                @descripcion,
+                1
             );
 	    ";
 
@@ -31,8 +33,9 @@ namespace Logica
 	    ";
 
         private string queryDelete = @"
-            DELETE FROM [categoria] 
-            WHERE idCategoria = @idCategoria
+            UPDATE [categoria] SET 
+                estado = 0
+            WHERE idCategoria = @idCategoria;
 	    ";
 
         private string queryList = @"
@@ -41,18 +44,18 @@ namespace Logica
                 nombre,
                 descripcion
             FROM [categoria]
-            WHERE nombre LIKE @nombre + '%' 
-            ORDER BY nombre
+            WHERE nombre LIKE @nombre + '%' AND  estado <> 0
+            ORDER BY nombre;
         ";
 
         private string queryListID = @"
             SELECT * FROM [categoria] 
-            WHERE idCategoria = @idCategoria
+            WHERE idCategoria = @idCategoria AND estado <> 0;
         ";
 
         private string queryCategoryRepeated = @"
             SELECT idCategoria FROM [categoria]
-            WHERE nombre = @nombre;
+            WHERE nombre = @nombre AND estado <> 0;
         ";
         #endregion
 
@@ -107,7 +110,6 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idCategoria", IdCategory);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Eliminó el Registro de la Categoria";
-                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Categoría Eliminada Correctamente");
             };
             LFunction.SafeExecutor(action);
 

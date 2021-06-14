@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition">
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="Logica">
@@ -9,14 +9,25 @@
       </ConnectionProperties>
       <rd:DataSourceID>a28c2e77-265f-407f-a51d-7afc4c637998</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="Datos">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>0144015b-107e-4d28-b1b0-a41d1e961ff0</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="InventarioDS">
       <Query>
-        <DataSourceName>Logica</DataSourceName>
+        <DataSourceName>Datos</DataSourceName>
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
+        <Field Name="accesoTrabajadorIngresado">
+          <DataField>accesoTrabajadorIngresado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="cantidadActual">
           <DataField>cantidadActual</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -57,6 +68,10 @@
           <DataField>descripcion</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="estado">
+          <DataField>estado</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="idArticulo">
           <DataField>idArticulo</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -72,6 +87,14 @@
         <Field Name="nombre">
           <DataField>nombre</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="nombreTrabajadorIngresado">
+          <DataField>nombreTrabajadorIngresado</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="precioCompra">
+          <DataField>precioCompra</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
         </Field>
         <Field Name="precioUnidad">
           <DataField>precioUnidad</DataField>
@@ -109,11 +132,15 @@
           <DataField>totalNeto</DataField>
           <rd:TypeName>System.Double</rd:TypeName>
         </Field>
+        <Field Name="ultimaActualizacion">
+          <DataField>ultimaActualizacion</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>Logica</rd:DataSetName>
-        <rd:TableName>LArticulo</rd:TableName>
-        <rd:ObjectDataSourceType>Logica.LArticulo, Logica, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:DataSetName>Datos</rd:DataSetName>
+        <rd:TableName>DArticulo</rd:TableName>
+        <rd:ObjectDataSourceType>Datos.DArticulo, Datos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -125,7 +152,7 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>2.70766cm</Width>
+                  <Width>3.21037cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>4.95899cm</Width>
@@ -137,10 +164,10 @@
                   <Width>2.80157cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.79633cm</Width>
+                  <Width>2.47883cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.01936cm</Width>
+                  <Width>2.83415cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -648,6 +675,8 @@
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <UseValueAsLabel>true</UseValueAsLabel>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style>
                         <Color>SteelBlue</Color>
@@ -964,6 +993,15 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>InventarioDS</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!cantidadVendida.Value</FilterExpression>
+                <Operator>NotEqual</Operator>
+                <FilterValues>
+                  <FilterValue DataType="Integer">0</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <Left>0.46063cm</Left>
             <Height>5cm</Height>
             <Width>12.07902cm</Width>
@@ -1012,6 +1050,8 @@
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <Label>#PERCENT</Label>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -1203,6 +1243,7 @@
                       </Style>
                       <Length>0.5</Length>
                     </ChartMinorTickMarks>
+                    <MarksAlwaysAtPlotEdge>true</MarksAlwaysAtPlotEdge>
                     <CrossAt>NaN</CrossAt>
                     <Minimum>NaN</Minimum>
                     <Maximum>NaN</Maximum>
@@ -1322,6 +1363,15 @@
               </Style>
             </ChartNoDataMessage>
             <DataSetName>InventarioDS</DataSetName>
+            <Filters>
+              <Filter>
+                <FilterExpression>=Fields!cantidadVendida.Value</FilterExpression>
+                <Operator>NotEqual</Operator>
+                <FilterValues>
+                  <FilterValue DataType="Integer">0</FilterValue>
+                </FilterValues>
+              </Filter>
+            </Filters>
             <Left>12.71604cm</Left>
             <Height>5cm</Height>
             <Width>7.5cm</Width>
@@ -1334,6 +1384,7 @@
               <BackgroundColor>White</BackgroundColor>
               <BackgroundGradientType>None</BackgroundGradientType>
             </Style>
+            <cl:ComponentMetadata />
           </Chart>
         </ReportItems>
         <Height>7.52208cm</Height>
@@ -1626,9 +1677,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox19</rd:DefaultName>
               <Top>0.52656cm</Top>
-              <Left>7.26647cm</Left>
+              <Left>13.45687cm</Left>
               <Height>0.67938cm</Height>
-              <Width>13.11326cm</Width>
+              <Width>6.92286cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1653,6 +1704,42 @@
                 </Border>
               </Style>
             </Line>
+            <Textbox Name="Textbox26">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Emitido por: " &amp; First(Fields!nombreTrabajadorIngresado.Value, "InventarioDS")</Value>
+                      <Style>
+                        <FontFamily>Nirmala UI Semilight</FontFamily>
+                        <FontWeight>Normal</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox19</rd:DefaultName>
+              <Top>0.52656cm</Top>
+              <Left>0.46063cm</Left>
+              <Height>0.67938cm</Height>
+              <Width>12.81985cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
           </ReportItems>
           <Style>
             <Border>

@@ -2,29 +2,15 @@
 using ProyectoMagicolor.Vistas;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Datos;
 using Logica;
 
 namespace ProyectoMagicolor
 {
-    public static class Globals
-    {
-        public static Int32 ACCESO_SISTEMA = 3;
-        public static Int32 ID_SISTEMA = 0;
-    }
 
     public partial class MainWindow : Window
 	{
@@ -38,6 +24,8 @@ namespace ProyectoMagicolor
             LoggedTrabajador = trabajador;
             Globals.ACCESO_SISTEMA = trabajador.acceso;
             Globals.ID_SISTEMA = trabajador.idTrabajador;
+            Globals.TRABAJADOR_SISTEMA = (trabajador.cedula + " " + trabajador.apellidos + " " + trabajador.nombre);
+            Globals.USUARIO_SISTEMA = trabajador.usuario;
 
             DAuditoria auditoria = new DAuditoria(
                                                     Globals.ID_SISTEMA,
@@ -71,7 +59,7 @@ namespace ProyectoMagicolor
             if (LoggedTrabajador.acceso == 0)
             {
                 menuActions.Add(new SubItem("Devolución", new DevolucionInicio(this)));
-                menuActions.Add(new SubItem("Inventario", new InventarioDG()));
+                menuActions.Add(new SubItem("Inventario", new InventarioDG(this)));
             }
             var item2 = new ItemMenu("Acciones", menuActions, PackIconKind.PointOfSale);
 
@@ -83,19 +71,20 @@ namespace ProyectoMagicolor
             {
                 menuList.Add(new SubItem("Devoluciones", new DevolucionDG(this)));
             }
+            menuList.Add(new SubItem("Articulos por Proveedor", new ProveedorArticuloDG(this)));
             var item3 = new ItemMenu("Listados", menuList, PackIconKind.AccountBoxes);
 
             var menuSetting = new List<SubItem>();
             if (LoggedTrabajador.acceso == 0)
             {
                 menuSetting.Add(new SubItem("Auditoria", new AuditoriaDG(this)));
-                menuSetting.Add(new SubItem("Respaldo", null, true));
-                menuSetting.Add(new SubItem("Restauración", null, false, true));
+                menuSetting.Add(new SubItem("Respaldo", null, true, false, false, false));
+                menuSetting.Add(new SubItem("Restauración", null, false, true, false, false));
             }
-                menuSetting.Add(new SubItem("Ayuda", null, false, false, true));
+                menuSetting.Add(new SubItem("Ayuda", null, false, false, true, false));
             var item4 = new ItemMenu("Opciones", menuSetting, PackIconKind.Settings);
 
-            var item5 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
+            var item5 = new ItemMenu("Cerrar Sesión", new AuditoriaDG(this), PackIconKind.Logout);
 
             Menu.Children.Add(new MenuItemX(item1, this));
             Menu.Children.Add(new MenuItemX(item2, this));
@@ -106,12 +95,6 @@ namespace ProyectoMagicolor
             Menu.Children.Add(new MenuItemX(item4, this));
 
             Menu.Children.Add(new MenuItemX(item5, this));
-
-
-            int stock = new LArticulo().NotificacionStock();
-
-            //if (stock > 0)
-            //    LFunction.MessageExecutor("Information", LoggedTrabajador.usuario + " existen " + stock + " Productos sin Stock!" + Environment.NewLine + Environment.NewLine + "Por favor Ingrese a la sección de Inventario para Consultarlo");
         }
 
         public static DTrabajador LoggedTrabajador;
@@ -168,7 +151,26 @@ namespace ProyectoMagicolor
             }
         }
 
-		private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
+        public void AbrirManual()
+        {
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            process.StartInfo = startInfo;
+
+            startInfo.FileName = @"C:\manual\manual-3.pdf";
+
+
+            if (Globals.ACCESO_SISTEMA == 0)
+                startInfo.FileName = @"C:\manual-raimon\Manual_1.pdf";
+            if (Globals.ACCESO_SISTEMA == 1)
+                startInfo.FileName = @"C:\manual-raimon\Manual_2.pdf";
+            if (Globals.ACCESO_SISTEMA == 2)
+                startInfo.FileName = @"C:\manual-raimon\Manual_3.pdf";
+
+            process.Start();
+        }
+
+        private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
         }
@@ -224,12 +226,13 @@ namespace ProyectoMagicolor
 
 	public class SubItem
     {
-        public SubItem(string name, Page screen = null, bool backup = false, bool restore = false, bool help = false)
+        public SubItem(string name, Page screen = null, bool backup = false, bool restore = false, bool help = false, bool iva = false)
         {
             Name = name;
             Screen = screen;
             Backup = backup;
             Restore = restore;
+            IVA = iva;
             Help = help;
         }
 
@@ -239,6 +242,8 @@ namespace ProyectoMagicolor
         public bool Backup { get; private set; }
 
         public bool Restore { get; private set; }
+
+        public bool IVA { get; private set; }
 
         public bool Help { get; private set; }
     }

@@ -42,6 +42,13 @@ namespace Datos
             set { _Fecha = value; }
         }
 
+        private string _Motivo;
+        public string motivo
+        {
+            get { return _Motivo; }
+            set { _Motivo = value; }
+        }
+
         private int _Cantidad;
         public int cantidad
         {
@@ -61,6 +68,13 @@ namespace Datos
         {
             get { return _NombreCliente; }
             set { _NombreCliente = value; }
+        }
+
+        private string _NombreArticulo;
+        public string nombreArticulo
+        {
+            get { return _NombreArticulo; }
+            set { _NombreArticulo = value; }
         }
 
         private double _MontoDevolucion;
@@ -112,18 +126,26 @@ namespace Datos
             set { _FechaVentaString = value; }
         }
 
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
+        }
+
         public DDevolucion()
         {
 
         }
 
-        public DDevolucion(int IdDevolucion, int IdCliente, int IdTrabajador, int IdVenta, DateTime Fecha)
+        public DDevolucion(int IdDevolucion, int IdCliente, int IdTrabajador, int IdVenta, DateTime Fecha, string Motivo)
         {
             this.idDevolucion = IdDevolucion;
             this.idCliente = IdCliente;
             this.idTrabajador = IdTrabajador;
             this.idVenta = IdVenta;
             this.fecha = Fecha;
+            this.motivo = Motivo;
         }
     }
 }

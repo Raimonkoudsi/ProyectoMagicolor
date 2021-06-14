@@ -3,45 +3,65 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="InventarioVista" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Height="600" Width="800">
+        Title="Variedades Magicolor (Vista Artículo)" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Height="675" Width="800">
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border BorderThickness="0 0 0 .5" BorderBrush="Gray">
-                <Grid Margin="10">
+            <Border BorderThickness="0 0 0 .5" BorderBrush="Black">
+                <Grid Grid.Row="0" Background="#3194F7" Height="100">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="9*"/>
                         <ColumnDefinition Width="4*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock x:Name="txtNombreArticulo" Text="Lapices" FontWeight="Bold" FontSize="25" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="73"/>
-                        <TextBlock x:Name="txtCodigoArticulo" Text="23EOM98377" FontSize="13" FontWeight="Light" />
-                        <TextBlock x:Name="txtDescripcionArticulo" Text="Lapiz Mongol, Caja de 17 Unidades " FontSize="10" FontWeight="Light" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="15"/>
+                    
+                    <Image Width="40" Margin="30 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Source="..\Imagenes\icon-bag.png"/>
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20 0 0 0" Grid.Column="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock x:Name="txtNombreArticulo" Text="Lapices" FontWeight="Bold" FontSize="25" TextWrapping="Wrap" 
+                                   TextTrimming="CharacterEllipsis" MaxHeight="73" Foreground="White"/>
+
+                            <TextBlock x:Name="txtCantidadArticulo" Text="(50 Unidades Restantes)" FontWeight="SemiBold" FontSize="13" Margin="5 0 0 4"
+                                   TextTrimming="CharacterEllipsis" MaxHeight="73" Foreground="White" Grid.Column="1" VerticalAlignment="Bottom"
+                                   FontStyle="Italic"/>
+                        </Grid>
+                        <TextBlock x:Name="txtCodigoArticulo" Text="23EOM98377" FontSize="13" FontWeight="Light" Foreground="White" />
+                        <TextBlock x:Name="txtDescripcionArticulo" Text="Lapiz Mongol, Caja de 17 Unidades " FontSize="10" FontStyle="Italic" 
+                                   FontWeight="Light" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Foreground="White" MaxHeight="15"/>
                     </StackPanel>
-                    <Grid Grid.Column="1" Margin="0 10">
+                    
+                    <Grid Grid.Column="2" Margin="0 15 25 10" HorizontalAlignment="Right">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 3">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 10 3">
                             <StackPanel HorizontalAlignment="Center" Margin="0 0 5 0">
-                                <TextBlock Text="Stock Mínimo" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="txtStockMinArticulo" Text="50" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Stock Mínimo" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="txtStockMinArticulo" Text="50" Foreground="White" HorizontalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Center" Margin="5 0 0 0">
-                                <TextBlock Text="Stock Máximo" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock Name="txtStockMaxArticulo" Text="1000" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Stock Máximo" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                <TextBlock Name="txtStockMaxArticulo" Text="1000" Foreground="White" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
                             <StackPanel HorizontalAlignment="Center">
-                                <TextBlock Text="Categoría" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="txtCategoriaArticulo" Text="Materiales Escolares" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Categoría" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="txtCategoriaArticulo" Text="Materiales Escolares" 
+                                           Foreground="White" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -50,97 +70,306 @@
             <ScrollViewer Grid.Row="1" Background="WhiteSmoke">
                 <StackPanel Margin="15">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Grid Background="ForestGreen" Height="100" Margin="5">
-                            <StackPanel Margin="10 5">
-                                <TextBlock Text="Ventas" Foreground="WhiteSmoke" FontSize="22" FontWeight="Bold"/>
-                                <TextBlock Text="Unidades" Foreground="WhiteSmoke" FontSize="11" FontWeight="Light" Margin="3 -3 0 0"/>
-                                <TextBlock x:Name="txtUnidadesVentas" Text="1000" Foreground="WhiteSmoke" FontSize="20" FontWeight="Light"  Margin="10 0 0 0"/>
-                            </StackPanel>
-                        </Grid>
-                        <Grid Background="#3194F7" Height="100" Grid.Column="1" Margin="5">
-                            <StackPanel Margin="10 5">
-                                <TextBlock Text="Compras" Foreground="WhiteSmoke" FontSize="22" FontWeight="Bold"/>
-                                <TextBlock Text="Unidades" Foreground="WhiteSmoke" FontSize="11" FontWeight="Light" Margin="3 -3 0 0"/>
-                                <TextBlock Name="txtUnidadesCompras" Text="1000" Foreground="WhiteSmoke" FontSize="20" FontWeight="Light"  Margin="10 0 0 0"/>
-                            </StackPanel>
-                        </Grid>
-                        <Grid Background="OrangeRed" Height="100" Grid.Column="0" Grid.Row="1" Margin="5">
-                            <StackPanel Margin="10 5">
-                                <TextBlock Text="Devoluciones" Foreground="WhiteSmoke" FontSize="22" FontWeight="Bold"/>
-                                <TextBlock Text="Unidades" Foreground="WhiteSmoke" FontSize="11" FontWeight="Light" Margin="3 -3 0 0"/>
-                                <TextBlock Name="txtUnidadesDevoluciones" Text="1000" Foreground="WhiteSmoke" FontSize="20" FontWeight="Light"  Margin="10 0 0 0"/>
-                            </StackPanel>
-                        </Grid>
-                        <Grid Background="#C732C7" Height="100" Grid.Column="1" Grid.Row="1" Margin="5">
-                            <StackPanel Margin="10 5">
-                                <TextBlock Text="Clientes" Foreground="WhiteSmoke" FontSize="22" FontWeight="Bold"/>
-                                <TextBlock Text="Que lo han Comprado" Foreground="WhiteSmoke" FontSize="11" FontWeight="Light" Margin="3 -3 0 0"/>
-                                <TextBlock Name="txtClientes" Text="50" Foreground="WhiteSmoke" FontSize="20" FontWeight="Light"  Margin="10 0 0 0"/>
-                            </StackPanel>
-                        </Grid>
-                     </Grid>
-                    <StackPanel Margin="5">
-                        <Grid Background="#f2b900">
-                            <TextBlock Text="Esta Semana" Foreground="WhiteSmoke" FontWeight="Bold" FontSize="23" Margin="5"/>
-                        </Grid>
-                        <StackPanel Background="#FFE8E8E8">
-                            <StackPanel Margin="10">
-                                <StackPanel Margin="0 10">
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Ventas" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                        <TextBlock x:Name="txtVentasMonto" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Background="ForestGreen" Height="104" Margin="5">
+                                    <StackPanel Margin="10 5">
+                                        <TextBlock Text="Ventas" Foreground="WhiteSmoke" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="Unidades" Foreground="WhiteSmoke" FontSize="14" FontWeight="Light" Margin="3 -3 0 0"/>
+                                        <TextBlock x:Name="txtUnidadesVentas" Text="1000" Foreground="WhiteSmoke" FontSize="28" FontWeight="Light"  Margin="10 0 0 0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Background="#3194F7" Height="104" Grid.Column="1" Margin="5">
+                                    <StackPanel Margin="10 5">
+                                        <TextBlock Text="Compras" Foreground="WhiteSmoke" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="Unidades" Foreground="WhiteSmoke" FontSize="14" FontWeight="Light" Margin="3 -3 0 0"/>
+                                        <TextBlock Name="txtUnidadesCompras" Text="1000" Foreground="WhiteSmoke" FontSize="28" FontWeight="Light"  Margin="10 0 0 0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Background="OrangeRed" Height="104" Grid.Column="0" Grid.Row="1" Margin="5">
+                                    <StackPanel Margin="10 5">
+                                        <TextBlock Text="Devoluciones" Foreground="WhiteSmoke" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="Unidades" Foreground="WhiteSmoke" FontSize="14" FontWeight="Light" Margin="3 -3 0 0"/>
+                                        <TextBlock Name="txtUnidadesDevoluciones" Text="1000" Foreground="WhiteSmoke" FontSize="28" FontWeight="Light"  Margin="10 0 0 0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Background="#C732C7" Height="104" Grid.Column="1" Grid.Row="1" Margin="5">
+                                    <StackPanel Margin="10 5">
+                                        <TextBlock Text="Clientes" Foreground="WhiteSmoke" FontSize="24" FontWeight="Bold"/>
+                                        <TextBlock Text="Que lo han Comprado" Foreground="WhiteSmoke" FontSize="14" FontWeight="Light" Margin="3 -3 0 0"/>
+                                        <TextBlock Name="txtClientes" Text="50" Foreground="WhiteSmoke" FontSize="28" FontWeight="Light"  Margin="10 0 0 0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+
+                            <ScrollViewer Grid.Column="2" Height="228" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" 
+                                          VerticalScrollBarVisibility="Auto">
+                                <StackPanel Grid.Column="2">
+                                    <Grid Background="#f2b900">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Este Mes" Foreground="WhiteSmoke"
+                                       FontWeight="Bold" FontSize="20" Margin="5 5 0 5"/>
+                                        <TextBlock Text="(Desde el Principio del Mes)" Foreground="WhiteSmoke" VerticalAlignment="Bottom"
+                                       FontWeight="Bold" FontSize="12" Margin="5 5 5 8" Grid.Column="1" FontStyle="Italic"/>
                                     </Grid>
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Impuestos" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                        <TextBlock x:Name="txtImpuestoVentas" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                    </Grid>
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Monto Total Ventas" FontSize="16" FontWeight="Bold" />
-                                        <TextBlock x:Name="txtVentasTotal" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold"/>
-                                    </Grid>
+                                    <StackPanel Background="#FFE8E8E8">
+                                        <StackPanel Margin="10">
+                                            <StackPanel Margin="0 0">
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Ventas" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                    <TextBlock x:Name="txtVentasMonto" HorizontalAlignment="Right" Text="$3.780.37" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                </Grid>
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Impuestos" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                    <TextBlock x:Name="txtImpuestoVentas" HorizontalAlignment="Right" Text="$3.780.37" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                </Grid>
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Monto Total Ventas" FontSize="16" FontWeight="Bold" />
+                                                    <TextBlock x:Name="txtVentasTotal" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <Separator Margin="0 0"/>
+                                            <StackPanel Margin="0 0">
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Compra por Venta" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                    <TextBlock x:Name="txtComprasMonto" HorizontalAlignment="Right" Text="$3.780.37" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                </Grid>
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Impuestos" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                    <TextBlock x:Name="txtImpuestoCompras" HorizontalAlignment="Right" Text="$3.780.37" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                </Grid>
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Monto Total Compras" FontSize="16" FontWeight="Bold" />
+                                                    <TextBlock x:Name="txtComprasTotal" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <Separator Margin="0 0"/>
+                                            <StackPanel Margin="0 0">
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Devoluciones" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                    <TextBlock x:Name="txtDevolucionesMonto" HorizontalAlignment="Right" Text="$3.780.37" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                </Grid>
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Impuestos" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                    <TextBlock x:Name="txtImpuestoDevoluciones" HorizontalAlignment="Right" Text="$3.780.37" FontSize="14" FontWeight="Bold" Foreground="#616060"/>
+                                                </Grid>
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Monto Total Devoluciones" FontSize="16" FontWeight="Bold" />
+                                                    <TextBlock x:Name="txtDevolucionesTotal" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <Separator Margin="0 0"/>
+                                            <StackPanel Margin="0 0">
+                                                <Grid Margin="0 3">
+                                                    <TextBlock Text="Ganancias Netas" FontSize="18" FontWeight="Bold" />
+                                                    <TextBlock x:Name="txtGananciasNetas" HorizontalAlignment="Right" Text="$3.780.37" FontSize="18" FontWeight="Bold"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
                                 </StackPanel>
-                                <Separator Margin="0 5"/>
-                                <StackPanel Margin="0 10">
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Devoluciones" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                        <TextBlock x:Name="txtDevolucionesMonto" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                    </Grid>
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Impuestos" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                        <TextBlock x:Name="txtImpuestosDevoluciones" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                    </Grid>
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Monto Total Devoluciones" FontSize="16" FontWeight="Bold" />
-                                        <TextBlock x:Name="txtDevolucionesTotal" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold"/>
-                                    </Grid>
-                                </StackPanel>
-                                <Separator Margin="0 5"/>
-                                <StackPanel Margin="0 10">
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Costo Compra Unitaria" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                        <TextBlock x:Name="txtCompraUnitaria" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                    </Grid>
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Monto Comprado Vendido" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                        <TextBlock x:Name="txtCompraVendido" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold" Foreground="#616060"/>
-                                    </Grid>
-                                    <Grid Margin="0 3">
-                                        <TextBlock Text="Ganancias Netas" FontSize="16" FontWeight="Bold" />
-                                        <TextBlock x:Name="txtGananciasNetas" HorizontalAlignment="Right" Text="$3.780.37" FontSize="16" FontWeight="Bold"/>
-                                    </Grid>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                    
+                            </ScrollViewer>
+                        </Grid>
+
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="300" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Margin="10 20 10 10"  HorizontalAlignment="Center" FontWeight="Light"
+                                       Text="Proveedores Directos del Artículo" FontSize="18" FontStyle="Italic"/>
+
+
+                            <Grid Grid.Column="0" Margin="5" Height="200" Grid.Row="1">
+
+                                <DataGrid x:Name="dgOperaciones" 
+                                  AutoGenerateColumns="false" 
+                                  IsReadOnly="true" 
+                                  ColumnWidth="*"
+                                  FontSize="11"
+                                  BorderThickness="1 1 1 1"
+                                  BorderBrush="#3194F7"
+                                  Background="White"
+                                  CanUserResizeColumns="False" 
+                                  CanUserResizeRows="False">
+                                    <DataGrid.Resources>
+                                        <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                                            <Setter Property="Background" Value="#3194F7" />
+                                            <Setter Property="Foreground" Value="white" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGrid.Resources>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Razón Social" Binding="{Binding razonSocial}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="ToolTip">
+                                                        <Setter.Value>
+                                                            <TextBlock FontSize='10' Text='{Binding razonSocial}' />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Width="auto" Header="Últ. Compra" Binding="{Binding ultimaCompra}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="ToolTip">
+                                                        <Setter.Value>
+                                                            <TextBlock FontSize='10' Text='{Binding ultimaCompra}' />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Width="auto" Header="Últ. Precio" Binding="{Binding ultimoPrecio}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="ToolTip">
+                                                        <Setter.Value>
+                                                            <TextBlock FontSize='10' Text='{Binding ultimoPrecio}' />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTemplateColumn Width="auto" Header="Acciones">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" Width="auto" HorizontalAlignment="Center">
+                                                        <Button x:Name="btnVer"
+                                                            CommandParameter="{Binding idProveedor}"
+                                                            Click="btnVer_Click"
+                                                            Margin="5 0" Background="Green"
+                                                            Padding="5" ToolTip="Mostrar Artículo">
+                                                            <materialDesign:PackIcon Kind="Magnify" Foreground="White" 
+                                                                Width="20" Height="20" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+
+
+                            <TextBlock Grid.Column="2" Grid.Row="0" Margin="10 20 10 10"  HorizontalAlignment="Center" FontWeight="Light"
+                                       Text="Proveedores con la Categoría" FontSize="18" FontStyle="Italic"/>
+
+                            <Grid Grid.Column="2" Margin="5" Height="200" Grid.Row="1">
+
+                                <DataGrid x:Name="dgOperaciones2" 
+                                  AutoGenerateColumns="false" 
+                                  IsReadOnly="true" 
+                                  ColumnWidth="*"
+                                  FontSize="11"
+                                  BorderThickness="1 1 1 1"
+                                  BorderBrush="#3194F7"
+                                  Background="White"
+                                  CanUserResizeColumns="False"  
+                                  CanUserResizeRows="False">
+                                    <DataGrid.Resources>
+                                        <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                                            <Setter Property="Background" Value="#3194F7" />
+                                            <Setter Property="Foreground" Value="white" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        </Style>
+                                    </DataGrid.Resources>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="*" Header="Razón Social" Binding="{Binding razonSocial}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="ToolTip">
+                                                        <Setter.Value>
+                                                            <TextBlock FontSize='10' Text='{Binding razonSocial}' />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Width="auto" Header="Categoría" Binding="{Binding sectorComercial}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                    <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="ToolTip">
+                                                        <Setter.Value>
+                                                            <TextBlock FontSize='10' Text='{Binding sectorComercial}' />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTemplateColumn Width="auto" Header="Acciones">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" Width="auto" HorizontalAlignment="Center">
+                                                        <Button x:Name="btnVer"
+                                                        CommandParameter="{Binding idProveedor}"
+                                                        Click="btnVer_Click"
+                                                        Margin="5 0" Background="Green"
+                                                        Padding="5" ToolTip="Mostrar Artículo">
+                                                            <materialDesign:PackIcon Kind="Magnify" Foreground="White" 
+                                                                                     Width="20" Height="20" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+
+                        </Grid>
+
+
+                    </Grid>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

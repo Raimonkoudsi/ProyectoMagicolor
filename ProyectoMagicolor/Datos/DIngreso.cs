@@ -42,8 +42,8 @@ namespace Datos
             set { _Factura = value; }
         }
 
-        private double _Impuesto;
-        public double impuesto
+        private int _Impuesto;
+        public int impuesto
         {
             get { return _Impuesto; }
             set { _Impuesto = value; }
@@ -147,12 +147,19 @@ namespace Datos
             set { _EmailProveedor = value; }
         }
 
+        private string _NombreTrabajadorIngresado;
+        public string nombreTrabajadorIngresado
+        {
+            get { return _NombreTrabajadorIngresado; }
+            set { _NombreTrabajadorIngresado = value; }
+        }
+
         public DIngreso()
         {
 
         }
 
-        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, double Impuesto, int MetodoPago, int Estado)
+        public DIngreso(int IdIngreso, int IdTrabajador, int IdProveedor, DateTime Fecha, string Factura, int Impuesto, int MetodoPago, int Estado)
         {
             this.idIngreso = IdIngreso;
             this.idTrabajador = IdTrabajador;

@@ -45,10 +45,6 @@
                                 <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtProvDoc" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
-                            <!--<StackPanel Margin="7 10 0 0">
-                                <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
-                                <TextBlock x:Name="TxtProvDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
-                            </StackPanel>-->
                             <StackPanel Margin="7 7 0 0">
                                 <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtProvTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
@@ -69,6 +65,7 @@
                                     <ComboBoxItem>V</ComboBoxItem>
                                     <ComboBoxItem>E</ComboBoxItem>
                                     <ComboBoxItem>J</ComboBoxItem>
+                                    <ComboBoxItem>G</ComboBoxItem>
                                 </ComboBox>
                             </Grid>
                             <Grid Grid.Column="1">

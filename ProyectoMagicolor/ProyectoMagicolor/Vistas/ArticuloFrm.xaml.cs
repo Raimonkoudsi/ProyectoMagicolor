@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,6 +22,7 @@ namespace ProyectoMagicolor.Vistas
     public partial class ArticuloFrm : Window
     {
         public CompraFrm ParentFrm;
+        public DetalleIngresoFrm SecondParentFrm;
 
         public TypeForm Type;
 
@@ -37,11 +37,12 @@ namespace ProyectoMagicolor.Vistas
         public string codigoParaEnviarCompra = "";
 
 
-        public ArticuloFrm(CompraFrm parent = null, string codigo = "")
+        public ArticuloFrm(CompraFrm parent = null, string codigo = "", DetalleIngresoFrm secondParent = null)
         {
             InitializeComponent();
 
             ParentFrm = parent;
+            SecondParentFrm = secondParent;
             codigoParaEnviarCompra = codigo;
 
             txtCodigo.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
@@ -147,6 +148,9 @@ namespace ProyectoMagicolor.Vistas
 
                     if (ParentFrm != null)
                         ParentFrm.SetNuevoArticulo(UForm.codigo);
+
+                    if (SecondParentFrm != null)
+                        SecondParentFrm.AgregarArticulo(UForm);
 
                     this.DialogResult = true;
                     this.Close();
@@ -328,6 +332,21 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
+            if (Type != TypeForm.Update)
+            {
+                if (ActivarAnulado())
+                {
+                    return true;
+                }
+
+                if (Metodos.CodigoRepetido(txtCodigo.Text))
+                {
+                    LFunction.MessageExecutor("Error", "El artículo ya está registrado en el sistema");
+                    txtCodigo.Focus();
+                    return true;
+                }
+            }
+
             return false;
         }
         #endregion
@@ -345,5 +364,56 @@ namespace ProyectoMagicolor.Vistas
             else
                 Create();
         }
+
+        private void txtCodigo_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtCodigo.Text != "")
+                if (!ActivarAnulado())
+                    if (Metodos.CodigoRepetido(txtCodigo.Text))
+                    {
+                        LFunction.MessageExecutor("Error", "El Artículo ya está Registrado en el Sistema");
+                        txtCodigo.Focus();
+                    }
+        }
+
+
+        private bool ActivarAnulado()
+        {
+            List<DArticulo> response = Metodos.CodigoRepetidoAnulado(txtCodigo.Text);
+
+            if (response.Count > 0)
+            {
+                if (Globals.ACCESO_SISTEMA == 0 || Globals.ACCESO_SISTEMA == 1)
+                {
+                    MessageBoxResult Resp = MessageBox.Show("El Artículo está Deshabilitado" + Environment.NewLine + "¿Desea reactivarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (Resp == MessageBoxResult.Yes)
+                    {
+                        Type = TypeForm.Read;
+
+                        txtTitulo.Text = "Editar Artículo";
+                        txtCodigo.IsEnabled = false;
+                        fillForm(response[0]);
+
+                        txtNombre.Focus();
+                    }
+                    else
+                    {
+                        txtCodigo.Text = "";
+                        txtCodigo.Focus();
+                    }
+                }
+                else
+                {
+                    LFunction.MessageExecutor("Error", "El Artículo está Deshabilitado" + Environment.NewLine + "Sólo el Administrador o Encargado pueden reactivarlo");
+
+                    txtCodigo.Text = "";
+                    txtCodigo.Focus();
+                }
+
+                return true;
+            }
+            return false;
+        }
+
     }
 }

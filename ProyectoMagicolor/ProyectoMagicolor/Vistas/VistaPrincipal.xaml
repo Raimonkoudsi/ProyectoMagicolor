@@ -1,0 +1,300 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.VistaPrincipal"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      mc:Ignorable="d" 
+      Background="White"
+      Loaded="Window_Loaded"
+      d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+      Title="Articulos">
+    <Page.Resources>
+        <local:DesactivateButtonNullArticlee x:Key="DesactivateButtonNullArticlee"/>
+        <local:ChangeRedColorRowNull x:Key="ChangeRedColorRowNull"/>
+        <local:ChangeEditButtonNull x:Key="ChangeEditButtonNull"/>
+        <local:ChangeEditTextButtonNull x:Key="ChangeEditTextButtonNull"/>
+        <local:ChangeEditAccessButtonNullArticlee x:Key="ChangeEditAccessButtonNullArticlee"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid Margin="10 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Foreground="Black" Grid.Row="0" TextWrapping="Wrap" FontSize="30"
+                               Text="BIENVENIDO" Background="Transparent" VerticalAlignment="Top" FontWeight="Bold"/>
+                    <TextBlock Foreground="Black" x:Name="txtUsuario" Grid.Row="1" TextWrapping="Wrap" FontSize="24"
+                               Text="raimonkoudsi" Background="Transparent" VerticalAlignment="Top" FontWeight="SemiBold"/>
+                    <TextBlock Foreground="Black" Grid.Row="2" TextWrapping="Wrap" FontSize="16" FontStyle="Italic"
+                               Text="Administrador" x:Name="txtAcceso" Background="Transparent" VerticalAlignment="Top" FontWeight="Light"/>
+                </Grid>
+                <Image Grid.Column="2" Margin="20 10 10 40" Source="..\Imagenes\LogoReport.png"/>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="0"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10 10 10 15"
+                            FontSize="14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="ARTÍCULOS DISPONIBLES" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="BoxCheck" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <TextBlock Foreground="Black" x:Name="txtConStock" HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="30" 
+                                   FontWeight="Bold"  Text=" 5 " Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" 
+                                   FontSize="14" VerticalAlignment="Center"  
+                                   Text="Artículos dentro de la Cantidad Mínima Recomendada" Background="Transparent" />
+                    </Grid>
+                    <Button Grid.Column="2" Foreground="white" Content="Ver en Listado" FontSize="12" BorderBrush="{x:Null}" Click="ArticulosDisponibles_Click" Margin="5 0 0 0"/>
+                </Grid>
+            </GroupBox>
+            
+            
+            <GroupBox Grid.Column="2"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10 10 10 15"
+                            FontSize="14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="ARTÍCULOS FALTANTES" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="BoxAlert" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <TextBlock Foreground="Red" x:Name="txtSinStock" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" 
+                                   TextWrapping="Wrap" FontSize="30" FontWeight="Bold"  Text=" 5 " 
+                                   Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" 
+                                   FontSize="14" VerticalAlignment="Center"  
+                                   Text="Artículos Faltantes de Cantidad Mínima Recomendada" Background="Transparent" />
+                    </Grid>
+                    <Button Grid.Column="2" Foreground="white" Content="Ver en Listado" FontSize="12" BorderBrush="{x:Null}" Click="ArticulosFaltantes_Click" Margin="5 0 0 0"/>
+                </Grid>
+            </GroupBox>
+
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+                <TextBlock Foreground="Black" HorizontalAlignment="Center" Grid.Column="0" FontStyle="Italic" 
+                           TextWrapping="Wrap" FontSize="18" VerticalAlignment="Center"  Text="Cuentas por Cobrar" 
+                           Background="Transparent" />
+
+            <TextBlock Foreground="Black" HorizontalAlignment="Center" Grid.Column="3" FontStyle="Italic" 
+                           TextWrapping="Wrap" FontSize="18" VerticalAlignment="Center"  Text="Cuentas por Pagar" 
+                           Background="Transparent" />
+        </Grid>
+        
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="0"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10"
+                            FontSize="14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="EN TIEMPO" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="CreditCard" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Existen" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <TextBlock Foreground="Black" x:Name="txtCxCConTiempo" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="34" FontWeight="Bold"  Text="5" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Cuentas por Cobrar en Tiempo Establecido" Background="Transparent" />
+                    </Grid>
+                    <Button Grid.Row="3" Foreground="white" Content="Ver en Listado" FontSize="12" BorderBrush="{x:Null}" Click="CuentasCobrar_Click" Margin="5 10 5 0"/>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10"
+                            FontSize="14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="VENCIDOS" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="CreditCardClock" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Existen" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <TextBlock Foreground="Red" x:Name="txtCxCSinTiempo" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="34" FontWeight="Bold"  Text="5" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Cuentas por Cobrar Vencidos en Tiempo" Background="Transparent" />
+                    </Grid>
+                    <Button Grid.Row="3" Foreground="white" Content="Ver en Listado" FontSize="12" BorderBrush="{x:Null}" Click="CuentasCobrarFaltantes_Click" Margin="5 10 5 0"/>
+                </Grid>
+            </GroupBox>
+
+
+            <GroupBox Grid.Column="3"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10"
+                            FontSize="14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="EN TIEMPO" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="CreditCard" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Existen" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <TextBlock Foreground="Black" x:Name="txtCxPConTiempo" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="34" FontWeight="Bold"  Text="5" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Cuentas por Pagar en Tiempo Establecido" Background="Transparent" />
+                    </Grid>
+                    <Button Grid.Row="3" Foreground="white" Content="Ver en Listado" FontSize="12" BorderBrush="{x:Null}" Click="CuentasPagar_Click" Margin="5 10 5 0"/>
+                </Grid>
+            </GroupBox>
+
+
+            <GroupBox Grid.Column="4"
+                            Style="{DynamicResource MaterialDesignCardGroupBox}"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            Margin="10 10 10 10"
+                            FontSize="14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="VENCIDOS" Background="Transparent" />
+                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="CreditCardClock" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                    </Grid>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Existen" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <TextBlock Foreground="Red" x:Name="txtCxPSinTiempo" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="34" FontWeight="Bold"  Text="5" Background="Transparent" />
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <TextBlock Foreground="Black" TextAlignment="Center" Grid.Column="1" TextWrapping="Wrap" FontSize="14" VerticalAlignment="Center"  Text="Cuentas por Pagar Vencidos en Tiempo" Background="Transparent" />
+                    </Grid>
+                    <Button Grid.Row="3" Foreground="white" Content="Ver en Listado" FontSize="12" BorderBrush="{x:Null}" Click="CuentasPagarFaltantes_Click" Margin="5 10 5 0"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+    </Grid>
+</Page>

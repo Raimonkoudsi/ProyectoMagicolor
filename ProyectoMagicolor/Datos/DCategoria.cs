@@ -28,6 +28,13 @@ namespace Datos
             set { _Descripcion = value; }
         }
 
+        private int _Estado;
+        public int estado
+        {
+            get { return _Estado; }
+            set { _Estado = value; }
+        }
+
 
         public DCategoria()
         {
