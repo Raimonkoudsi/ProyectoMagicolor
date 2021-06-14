@@ -257,9 +257,23 @@ namespace Logica
         public string Anular(int IdCompra, List<DDetalle_Ingreso> Detalle)
         {
             string respuesta = "";
-            int i = 0;
+            int i = 0, j = 0;
+            string fueraStock = "";
             Action action = () =>
             {
+                foreach (DDetalle_Ingreso det in Detalle)
+                {
+                    string fueraStockFunction = ComprobarCantidadDisponibleParaRestock(Detalle[j].idArticulo, Detalle[j].cantidad);
+
+                    if (!fueraStockFunction.Equals(""))
+                        fueraStock += fueraStockFunction + Environment.NewLine;
+
+                    j++;
+                }
+
+                if(fueraStock != "")
+                    throw new Exception("La Compra no puede ser Anulada, existen Artículos sin Disponibilidad para la Devolución. Los cuales son:" + Environment.NewLine + Environment.NewLine + fueraStock);
+
                 foreach (DDetalle_Ingreso det in Detalle)
                 {
                     if (!RestockIngreso(Detalle[i].idArticulo, Detalle[i].cantidad).Equals("OK"))

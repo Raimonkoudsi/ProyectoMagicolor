@@ -85,6 +85,21 @@ namespace Logica
         ";
 
         //COMPRAS
+        private string queryComprobarStock = @"
+			SELECT a.nombre
+			FROM [detalleIngreso] di
+				INNER JOIN [articulo] a ON a.idArticulo = di.idArticulo
+			INNER JOIN (
+				SELECT detalleIngreso.idDetalleIngreso 
+				FROM detalleIngreso 
+				GROUP BY detalleIngreso.idDetalleIngreso, detalleIngreso.cantidadActual
+				HAVING @cantidad > detalleIngreso.cantidadActual
+			) x
+            ON x.idDetalleIngreso = di.idDetalleIngreso
+            WHERE di.idArticulo = @idArticulo
+            AND di.idDetalleIngreso = (SELECT MAX(di.idDetalleIngreso) FROM [detalleIngreso] di WHERE di.idArticulo = @idArticulo)
+        ";
+
         private string queryRestockBuy = @"
             UPDATE [detalleIngreso] SET 
                 detalleIngreso.cantidadActual = detalleIngreso.cantidadActual - @cantidad
@@ -209,7 +224,7 @@ namespace Logica
             return respuesta;
         }
 
-        //VENTAS
+        #region Anulación Venta
         protected string RestockVenta(int IdArticulo, int Cantidad)
         {
             using SqlCommand comm = new SqlCommand(queryRestockSale, Conexion.ConexionSql);
@@ -245,9 +260,26 @@ namespace Logica
 
             return comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
         }
+        #endregion
 
 
         //COMPRAS
+
+        protected string ComprobarCantidadDisponibleParaRestock(int IdArticulo, int Cantidad)
+        {
+            string Articulo = "";
+
+            using SqlCommand comm = new SqlCommand(queryComprobarStock, Conexion.ConexionSql);
+            comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+            comm.Parameters.AddWithValue("@cantidad", Cantidad);
+
+            using SqlDataReader reader = comm.ExecuteReader();
+            if (reader.Read())
+                Articulo = reader.GetString(0);
+
+            return Articulo;
+        }
+
         protected string RestockIngreso(int IdArticulo, int Cantidad)
         {
             using SqlCommand comm = new SqlCommand(queryRestockBuy, Conexion.ConexionSql);
@@ -293,7 +325,7 @@ namespace Logica
 					d.idDevolucion,
                     d.idVenta,
                     CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    c.nombre,
                     SUM(dd.cantidad * dd.precio) AS montoDevolucion,
 					SUM(dd.cantidad) AS cantidadArticulos,
                     v.fecha
@@ -302,14 +334,13 @@ namespace Logica
                     INNER JOIN [detalleDevolucion] dd ON d.idDevolucion = dd.idDevolucion
                     INNER JOIN [venta] v ON v.idVenta = d.idVenta
 				WHERE v.fecha = @fecha 
-                    AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
+                    AND c.nombre LIKE @nombre + '%'
 			    GROUP BY 
 					d.idDevolucion,
 					d.idVenta,
 					c.tipoDocumento,
 					c.numeroDocumento,
 					c.nombre,
-					c.apellidos,
                     v.fecha;
             ";
 
@@ -350,7 +381,7 @@ namespace Logica
 					d.idDevolucion,
                     d.idVenta,
                     CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    c.nombre AS nombreCliente,
                     SUM(dd.cantidad * dd.precio) AS montoDevolucion,
 					SUM(dd.cantidad) AS cantidadArticulos,
                     CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
@@ -371,7 +402,6 @@ namespace Logica
 					c.tipoDocumento,
 					c.numeroDocumento,
 					c.nombre,
-					c.apellidos,
                     t.nombre,
                     t.apellidos,
                     v.fecha,

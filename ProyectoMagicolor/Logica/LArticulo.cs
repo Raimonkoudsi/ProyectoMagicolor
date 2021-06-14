@@ -332,8 +332,12 @@ namespace Logica
                             SELECT TOP 1 
                                 di.cantidadActual 
                             FROM [detalleIngreso] di 
-                            WHERE a.idArticulo = di.idArticulo
-                            ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
+                            WHERE a.idArticulo = di.idArticulo 
+                                AND di.estado <> 0 
+                                AND di.cantidadActual <> 0
+                                AND di.cantidadInicial <> 0
+                                OR a.idArticulo <> 0 
+                            ORDER BY di.idDetalleIngreso DESC), -1) AS cantidad, 
                         ISNULL((
                             SELECT 
                                 SUM(dv.cantidad) 
@@ -352,7 +356,7 @@ namespace Logica
                             SELECT TOP 1 
                                 di.precioVenta 
                             FROM [detalleIngreso] di 
-                            WHERE a.idArticulo = di.idArticulo 
+                            WHERE a.idArticulo = di.idArticulo
                             ORDER BY di.idDetalleIngreso DESC), 0) AS precio
                     FROM [articulo] a 
 	                    INNER JOIN [categoria] c ON a.idCategoria=c.idCategoria
@@ -372,6 +376,8 @@ namespace Logica
 
                         int CantidadActual = reader.GetInt32(4);
                         int StockMinimo = reader.GetInt32(7);
+                        if (CantidadActual == -1)
+                            continue;
                         if ((typeStock == 2 && CantidadActual < StockMinimo) || (typeStock == 3 && CantidadActual >= StockMinimo))
                             continue;
                         ListaGenerica.Add(new DArticulo
@@ -1005,7 +1011,11 @@ namespace Logica
                                 di.cantidadActual 
                             FROM [detalleIngreso] di 
                             WHERE a.idArticulo = di.idArticulo 
-                            ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad, 
+                                AND di.estado <> 0 
+                                AND di.cantidadActual <> 0
+                                AND di.cantidadInicial <> 0
+                                OR a.idArticulo <> 0 
+                            ORDER BY di.idDetalleIngreso DESC), -1) AS cantidad, 
                         a.stockMinimo
                     FROM [articulo] a 
 					WHERE a.estado <> 0
@@ -1018,10 +1028,13 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (reader.GetInt32(0) < reader.GetInt32(1))
-                        CantidadSinStock++;
-                    else
-                        CantidadConStock++;
+                    if(reader.GetInt32(0) != -1)
+                    {
+                        if (reader.GetInt32(0) < reader.GetInt32(1))
+                            CantidadSinStock++;
+                        else
+                            CantidadConStock++;
+                    }
                 }
             };
             LFunction.SafeExecutor(action);
@@ -1034,7 +1047,7 @@ namespace Logica
             int CantidadConTiempo = 0;
             int CantidadSinTiempo = 0;
 
-            string queryList = @"
+            string queryListCCIncomplete = @"
 					SELECT 
 						cc.fechaLimite
                     FROM [cuentaCobrar] cc
@@ -1044,7 +1057,7 @@ namespace Logica
 
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                using SqlCommand comm = new SqlCommand(queryListCCIncomplete, Conexion.ConexionSql);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
@@ -1065,7 +1078,7 @@ namespace Logica
             int CantidadConTiempo = 0;
             int CantidadSinTiempo = 0;
 
-            string queryList = @"
+            string queryListCPIncomplete = @"
 					SELECT 
 						cp.fechaLimite
                     FROM [cuentaPagar] cp
@@ -1075,7 +1088,7 @@ namespace Logica
 
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
+                using SqlCommand comm = new SqlCommand(queryListCPIncomplete, Conexion.ConexionSql);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())

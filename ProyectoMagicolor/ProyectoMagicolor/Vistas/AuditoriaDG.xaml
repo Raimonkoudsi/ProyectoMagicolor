@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       Background="WhiteSmoke"
       Loaded="Window_Loaded"
@@ -15,32 +16,43 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="120 10">
+        <Grid Grid.Row="0" Margin="70 20 70 20">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Margin="0 0 20 0" Width="140">
-                <TextBlock x:Name="PlaceFecha" Text="Fecha Auditoria" FontSize="14" VerticalAlignment="Center" Foreground="Gray"/>
-                <DatePicker x:Name="dpFecha" IsTodayHighlighted="True" FontSize="15" Focusable="False" SelectedDateChanged="dpFecha_SelectedDateChanged"/>
+            <Grid Grid.Column="0" Margin="0 0 5 0" Width="140">
+                <DatePicker x:Name="dpDesde" IsTodayHighlighted="True" FontSize="12" Focusable="False" 
+                            materialDesign:HintAssist.Hint="Desde"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                            SelectedDateChanged="dpDesde_SelectedDateChanged"/>
             </Grid>
-            <Grid Grid.Column="1" Margin="0 0 20 0" Width="180">
-                <TextBlock x:Name="PlaceAcciones" Text="Acciones del Sistema" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <ComboBox x:Name="CbAcciones" FontSize="15" SelectionChanged="CbAcciones_SelectionChanged" >
+            <Grid Grid.Column="1" Margin="5 0 5 0" Width="140">
+                <DatePicker x:Name="dpHasta" IsTodayHighlighted="True" FontSize="12" Focusable="False" 
+                            materialDesign:HintAssist.Hint="Hasta"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                            SelectedDateChanged="dpHasta_SelectedDateChanged"/>
+            </Grid>
+            <Grid Grid.Column="2" Margin="5 0 5 0" Width="180">
+                <ComboBox x:Name="CbAcciones" FontSize="12" SelectionChanged="CbAcciones_SelectionChanged" 
+                            materialDesign:HintAssist.Hint="Acciones"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
                     <ComboBoxItem>Ingresar</ComboBoxItem>
                     <ComboBoxItem>Registrar</ComboBoxItem>
                     <ComboBoxItem>Mostrar</ComboBoxItem>
                     <ComboBoxItem>Editar</ComboBoxItem>
-                    <ComboBoxItem>Eliminar</ComboBoxItem>
+                    <ComboBoxItem>Deshabilitar</ComboBoxItem>
                     <ComboBoxItem>Generar</ComboBoxItem>
                     <ComboBoxItem>Salir</ComboBoxItem>
                     <ComboBoxItem>Todas las Acciones</ComboBoxItem>
                 </ComboBox>
             </Grid>
-            <Grid Grid.Column="2" Margin="0 0 0 0">
-                <TextBlock x:Name="PlaceUsuario" Text="Usuario del Sistema" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                <ComboBox x:Name="CbUsuario" FontSize="15" SelectionChanged="CbUsuario_SelectionChanged">
+            <Grid Grid.Column="3" Margin="5 0 0 0">
+                <ComboBox x:Name="CbUsuario" FontSize="12" SelectionChanged="CbUsuario_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Usuario"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
                 </ComboBox>
             </Grid>
         </Grid>
@@ -50,27 +62,55 @@
                   AutoGenerateColumns="false" 
                   IsReadOnly="true" 
                   ColumnWidth="*" 
-                  Margin="30 0"
-                  BorderThickness="0 1 0 1"
-                  BorderBrush="LightGray"
-                  Background="WhiteSmoke">
+                  Margin="30 0 30 30"
+                  Background="White">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#f0f0f0" />
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Hora" Binding="{Binding fechaTime}">
+                <DataGridTextColumn Width="auto" Header="Fecha" Binding="{Binding fecha}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding fecha}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Accion" Binding="{Binding accion}">
+                <DataGridTextColumn Width="auto" Header="Hora" Binding="{Binding fechaTime}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding fechaTime}' />
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="auto" Header="Accion" Binding="{Binding accion}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding accion}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -78,6 +118,12 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding descripcion}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -85,6 +131,13 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding usuario}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -92,6 +145,13 @@
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding acceso}' />
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>

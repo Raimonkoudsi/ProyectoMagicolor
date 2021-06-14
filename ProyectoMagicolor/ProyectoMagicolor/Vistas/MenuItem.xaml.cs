@@ -58,9 +58,9 @@ namespace ProyectoMagicolor.Vistas
             {
                 _context.Restore();
             }
-            else if (SI.IVA)
+            else if (SI.Help)
             {
-                _context.ChangeIVA();
+                _context.AbrirManual();
             }
             else
             {

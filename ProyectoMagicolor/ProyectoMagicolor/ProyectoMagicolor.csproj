@@ -168,8 +168,8 @@
     </Compile>
     <Compile Include="Reports\Reporte.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
-    <Compile Include="Vistas\CambiarIVA.xaml.cs">
-      <DependentUpon>CambiarIVA.xaml</DependentUpon>
+    <Compile Include="Vistas\ProveedorArticuloDG.xaml.cs">
+      <DependentUpon>ProveedorArticuloDG.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\VistaPrincipal.xaml.cs">
       <DependentUpon>VistaPrincipal.xaml</DependentUpon>
@@ -191,9 +191,6 @@
     </Compile>
     <Compile Include="Vistas\InventarioDG.xaml.cs">
       <DependentUpon>InventarioDG.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Vistas\ArticuloDG.xaml.cs">
-      <DependentUpon>ArticuloDG.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vistas\DevolucionDetalleFrm.xaml.cs">
       <DependentUpon>DevolucionDetalleFrm.xaml</DependentUpon>
@@ -279,7 +276,7 @@
     <Compile Include="Vistas\VentaVista.xaml.cs">
       <DependentUpon>VentaVista.xaml</DependentUpon>
     </Compile>
-    <Page Include="Vistas\CambiarIVA.xaml">
+    <Page Include="Vistas\ProveedorArticuloDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -308,10 +305,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Vistas\InventarioDG.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Vistas\ArticuloDG.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

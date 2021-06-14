@@ -57,16 +57,22 @@ namespace ProyectoMagicolor.Vistas
                 txtContraseña.Focus();
                 return true;
             }
+
+            if (StrongPassword())
+            {
+                return true;
+            }
+
             if (txtConfirmar.Password == "")
             {
-                LFunction.MessageExecutor("Information", "Debe confirmar la contraseña");
+                LFunction.MessageExecutor("Error", "Debe confirmar la contraseña");
                 txtConfirmar.Focus();
                 return true;
             }
 
             if(txtContraseña.Password.Length <= 5)
             {
-                LFunction.MessageExecutor("Information", "La contraseña debe ser mínino 6 dígitos");
+                LFunction.MessageExecutor("Error", "La contraseña debe ser mínino 6 carácteres");
                 txtContraseña.Focus();
                 return true;
             }
@@ -78,6 +84,48 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
+            return false;
+        }
+
+
+        private bool StrongPassword()
+        {
+            if (txtContraseña.Password.Length < 6)
+            {
+                MessageBox.Show("La contraseña no puede ser menor de 6 carácteres!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtContraseña.Focus();
+                return true;
+            }
+            if (txtContraseña.Password.Length > 24)
+            {
+                MessageBox.Show("La contraseña no puede ser mayor de 24 carácteres!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtContraseña.Focus();
+                return true;
+            }
+            if (!txtContraseña.Password.Any(char.IsUpper))
+            {
+                MessageBox.Show("La contraseña debe contener al menos una mayúscula!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtContraseña.Focus();
+                return true;
+            }
+            if (!txtContraseña.Password.Any(char.IsLower))
+            {
+                MessageBox.Show("La contraseña debe contener al menos una minúscula!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtContraseña.Focus();
+                return true;
+            }
+            if (!txtContraseña.Password.Any(char.IsDigit))
+            {
+                MessageBox.Show("La contraseña debe contener al menos un digito!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtContraseña.Focus();
+                return true;
+            }
+            if (txtContraseña.Password.Contains(" "))
+            {
+                MessageBox.Show("La contraseña no debe contener espacios en blanco!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                txtContraseña.Focus();
+                return true;
+            }
             return false;
         }
 

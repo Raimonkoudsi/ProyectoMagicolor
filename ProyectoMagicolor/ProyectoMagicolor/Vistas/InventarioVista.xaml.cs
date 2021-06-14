@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Logica;
 using Datos;
 
@@ -19,14 +8,17 @@ namespace ProyectoMagicolor.Vistas
 {
     public partial class InventarioVista : Window
     {
-        public InventarioVista(DArticulo Datos)
+        public InventarioVista(MainWindow parent, DArticulo Datos)
         {
             InitializeComponent();
 
             InventarioDatos = Datos;
+            Parent = parent;
         }
 
-        DArticulo InventarioDatos;
+        private DArticulo InventarioDatos;
+
+        public new MainWindow Parent;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -78,7 +70,12 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnVer_Click(object sender, RoutedEventArgs e)
         {
+            int id = (int)((Button)sender).CommandParameter;
 
+
+            ProveedorArticuloDG DG = new ProveedorArticuloDG(Parent, id);
+            Parent.SwitchScreen(DG);
+            this.Hide();
         }
     }
 }

@@ -499,6 +499,11 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
+            if (StrongPassword())
+            {
+                return true;
+            }
+
             if (txtCPassword.Password == "")
             {
                 LFunction.MessageExecutor("Error", "Debe confirmar la contraseña");
@@ -590,6 +595,48 @@ namespace ProyectoMagicolor.Vistas
         #endregion
 
 
+        private bool StrongPassword()
+        {
+            if (txtPassword.Password.Length < 6)
+            {
+                MessageBox.Show("La contraseña no puede ser menor de 6 carácteres!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPassword.Focus();
+                return true;
+            }
+            if (txtPassword.Password.Length > 24)
+            {
+                MessageBox.Show("La contraseña no puede ser mayor de 24 carácteres!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPassword.Focus();
+                return true;
+            }
+            if (!txtPassword.Password.Any(char.IsUpper))
+            {
+                MessageBox.Show("La contraseña debe contener al menos una mayúscula!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPassword.Focus();
+                return true;
+            }
+            if (!txtPassword.Password.Any(char.IsLower))
+            {
+                MessageBox.Show("La contraseña debe contener al menos una minúscula!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPassword.Focus();
+                return true;
+            }
+            if (!txtPassword.Password.Any(char.IsDigit))
+            {
+                MessageBox.Show("La contraseña debe contener al menos un digito!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPassword.Focus();
+                return true;
+            }
+            if (txtPassword.Password.Contains(" "))
+            {
+                MessageBox.Show("La contraseña no debe contener espacios en blanco!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtPassword.Focus();
+                return true;
+            }
+
+            return false;
+        }
+
         private bool ActivarAnulado()
         {
             List<DTrabajador> response = MetodosUsuario.CedulaRepetidaAnulada((CbTipoDocumento.Text + "-" + txtDocumento.Text));
@@ -613,8 +660,6 @@ namespace ProyectoMagicolor.Vistas
                 {
                     txtDocumento.Text = "";
                     CbTipoDocumento.Text = "";
-
-                    CbTipoDocumento.Focus();
                 }
 
                 return true;
@@ -630,6 +675,8 @@ namespace ProyectoMagicolor.Vistas
                     if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                     {
                         LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+
+                        txtDocumento.Text = "";
                         txtDocumento.Focus();
                     }
         }
@@ -641,7 +688,9 @@ namespace ProyectoMagicolor.Vistas
                     if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                     {
                         LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
-                        txtDocumento.Focus();
+
+                        txtDocumento.Text = "";
+                        CbTipoDocumento.Focus();
                     }
         }
 
@@ -652,6 +701,8 @@ namespace ProyectoMagicolor.Vistas
                 if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
                 {
                     LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
+
+                    txtUsuario.Text = "";
                     txtUsuario.Focus();
                 }
             }

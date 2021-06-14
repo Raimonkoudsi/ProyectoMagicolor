@@ -2,19 +2,10 @@
 using ProyectoMagicolor.Vistas;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Datos;
 using Logica;
 
@@ -68,7 +59,7 @@ namespace ProyectoMagicolor
             if (LoggedTrabajador.acceso == 0)
             {
                 menuActions.Add(new SubItem("Devolución", new DevolucionInicio(this)));
-                menuActions.Add(new SubItem("Inventario", new InventarioDG()));
+                menuActions.Add(new SubItem("Inventario", new InventarioDG(this)));
             }
             var item2 = new ItemMenu("Acciones", menuActions, PackIconKind.PointOfSale);
 
@@ -80,20 +71,20 @@ namespace ProyectoMagicolor
             {
                 menuList.Add(new SubItem("Devoluciones", new DevolucionDG(this)));
             }
+            menuList.Add(new SubItem("Articulos por Proveedor", new ProveedorArticuloDG(this)));
             var item3 = new ItemMenu("Listados", menuList, PackIconKind.AccountBoxes);
 
             var menuSetting = new List<SubItem>();
             if (LoggedTrabajador.acceso == 0)
             {
                 menuSetting.Add(new SubItem("Auditoria", new AuditoriaDG(this)));
-                menuSetting.Add(new SubItem("Cambiar IVA", null, false, false, false, true));
                 menuSetting.Add(new SubItem("Respaldo", null, true, false, false, false));
                 menuSetting.Add(new SubItem("Restauración", null, false, true, false, false));
             }
                 menuSetting.Add(new SubItem("Ayuda", null, false, false, true, false));
             var item4 = new ItemMenu("Opciones", menuSetting, PackIconKind.Settings);
 
-            var item5 = new ItemMenu("Cerrar Sesión", new ArticuloDG(), PackIconKind.Logout);
+            var item5 = new ItemMenu("Cerrar Sesión", new AuditoriaDG(this), PackIconKind.Logout);
 
             Menu.Children.Add(new MenuItemX(item1, this));
             Menu.Children.Add(new MenuItemX(item2, this));
@@ -160,13 +151,26 @@ namespace ProyectoMagicolor
             }
         }
 
-        public void ChangeIVA()
+        public void AbrirManual()
         {
-            CambiarIVA frmIVA = new CambiarIVA();
-            frmIVA.ShowDialog();
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            process.StartInfo = startInfo;
+
+            startInfo.FileName = @"C:\manual\manual-3.pdf";
+
+
+            if (Globals.ACCESO_SISTEMA == 0)
+                startInfo.FileName = @"C:\manual-raimon\Manual_1.pdf";
+            if (Globals.ACCESO_SISTEMA == 1)
+                startInfo.FileName = @"C:\manual-raimon\Manual_2.pdf";
+            if (Globals.ACCESO_SISTEMA == 2)
+                startInfo.FileName = @"C:\manual-raimon\Manual_3.pdf";
+
+            process.Start();
         }
 
-		private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
+        private void ButtonPopUpLogout_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
         }

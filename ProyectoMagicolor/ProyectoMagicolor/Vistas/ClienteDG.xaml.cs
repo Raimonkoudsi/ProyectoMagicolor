@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -19,7 +10,6 @@ namespace ProyectoMagicolor.Vistas
 {
     public partial class ClienteDG : Page
     {
-
         public LCliente Metodos = new LCliente();
 
         List<DCliente> items = new List<DCliente>();
@@ -53,16 +43,19 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+
+            CbTipoDocumento.SelectedIndex = 0;
+            txtDocumento.Focus();
+
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
+
+
             if (Globals.ACCESO_SISTEMA != 0)
             {
                 btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
                 btnReport.IsEnabled = false;
             }
-
-            CbTipoDocumento.SelectedIndex = 0;
-            txtDocumento.Focus();
-
-            Refresh(CbTipoDocumento.Text ,txtDocumento.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -104,7 +97,7 @@ namespace ProyectoMagicolor.Vistas
 
             DAuditoria auditoria = new DAuditoria(
                     Globals.ID_SISTEMA,
-                    "Eliminar",
+                    "Deshabilitar",
                     "Ha Deshabilitado el Cliente " + cedula
                 );
             new LAuditoria().Insertar(auditoria);

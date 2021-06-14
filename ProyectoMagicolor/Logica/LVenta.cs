@@ -89,7 +89,7 @@ namespace Logica
                 v.idCliente,
                 CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
                 CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                c.nombre,
                 c.telefono,
                 c.email,
                 (SUM(dv.precioVenta * dv.cantidad) - v.descuento) AS montoTotal,
@@ -110,7 +110,6 @@ namespace Logica
                 c.tipoDocumento, 
                 c.numeroDocumento, 
                 c.nombre, 
-                c.apellidos, 
                 c.telefono, 
                 c.email, 
                 v.descuento,
@@ -331,7 +330,7 @@ namespace Logica
                 SELECT 
                     v.idVenta,
                     CONCAT(c.tipoDocumento, '-', c.numeroDocumento) AS cedulaCliente,
-                    CONCAT(c.nombre, ' ', c.apellidos) AS nombreCliente,
+                    c.nombre,
                     SUM(dv.precioVenta * dv.cantidad) AS montoTotal,
                     v.descuento,
                     v.impuesto,
@@ -344,9 +343,9 @@ namespace Logica
                     INNER JOIN [detalleVenta] dv ON v.idVenta = dv.idVenta
                     INNER JOIN [trabajador] t ON v.idTrabajador = t.idTrabajador
                 WHERE v.fecha = @fecha 
-                    AND CONCAT(c.nombre, ' ', c.apellidos) LIKE @nombre + '%'
+                    AND c.nombre LIKE @nombre + '%'
                     " + QueryMetodoPago(MetodoPago) + @"
-			    GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, c.apellidos, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto, t.nombre, t.apellidos;
+			    GROUP BY v.idVenta, c.tipoDocumento, c.numeroDocumento, c.nombre, v.fecha, v.metodoPago, v.estado, v.descuento, v.impuesto, t.nombre, t.apellidos;
             ";
 
             Action action = () =>

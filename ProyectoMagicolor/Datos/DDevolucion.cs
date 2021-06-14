@@ -70,6 +70,13 @@ namespace Datos
             set { _NombreCliente = value; }
         }
 
+        private string _NombreArticulo;
+        public string nombreArticulo
+        {
+            get { return _NombreArticulo; }
+            set { _NombreArticulo = value; }
+        }
+
         private double _MontoDevolucion;
         public double montoDevolucion
         {

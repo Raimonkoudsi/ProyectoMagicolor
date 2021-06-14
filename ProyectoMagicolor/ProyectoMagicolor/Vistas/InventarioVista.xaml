@@ -278,7 +278,7 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" Width="auto" HorizontalAlignment="Center">
                                                         <Button x:Name="btnVer"
-                                                            CommandParameter="{Binding razonSocial}"
+                                                            CommandParameter="{Binding idProveedor}"
                                                             Click="btnVer_Click"
                                                             Margin="5 0" Background="Green"
                                                             Padding="5" ToolTip="Mostrar Artículo">
@@ -351,7 +351,7 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" Width="auto" HorizontalAlignment="Center">
                                                         <Button x:Name="btnVer"
-                                                        CommandParameter="{Binding razonSocial}"
+                                                        CommandParameter="{Binding idProveedor}"
                                                         Click="btnVer_Click"
                                                         Margin="5 0" Background="Green"
                                                         Padding="5" ToolTip="Mostrar Artículo">

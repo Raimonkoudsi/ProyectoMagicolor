@@ -32,7 +32,7 @@ namespace ProyectoMagicolor.Vistas
             txtDescuento.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
-        public MainWindow Parent;
+        public new MainWindow Parent;
 
         public DCliente Cliente;
 

@@ -201,6 +201,7 @@
                             <Grid Margin="0 10" Grid.Row="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid x:Name="Password" Grid.Column="0">
@@ -208,7 +209,10 @@
                                         materialDesign:HintAssist.Hint="Contraseña"
                                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"/>
                                 </Grid>
-                                <Grid x:Name="CPassword" Grid.Column="1">
+                                <materialDesign:PackIcon Grid.Column="1" Kind="PasswordQuestion" Background="Transparent" 
+                                                         HorizontalAlignment="Center" Foreground="Gray" Width="22" Height="22" FontStyle="Italic"
+                                                         VerticalAlignment="Center" ToolTip="La contraseña debe contener al menos una minúscula, una mayúscula, un dígito y no debe contener espacios en blanco"/>
+                                <Grid x:Name="CPassword" Grid.Column="2">
                                     <PasswordBox x:Name="txtCPassword" MaxLength="50" Height="49" FontSize="12" Margin="5 0 0 0"
                                         materialDesign:HintAssist.Hint="Confirmar Contraseña"
                                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"/>

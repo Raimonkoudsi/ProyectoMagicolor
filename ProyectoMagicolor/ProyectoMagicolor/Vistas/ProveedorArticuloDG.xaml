@@ -1,0 +1,195 @@
+﻿<Page x:Class="ProyectoMagicolor.Vistas.ProveedorArticuloDG"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      mc:Ignorable="d" 
+      Background="White"
+      Loaded="Window_Loaded"
+      d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+      Title="ProveedorArticuloDG">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="70 20 70 20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Margin="5 0 5 0" Grid.Column="1">
+                <ComboBox x:Name="CbCategoria" FontSize="12" SelectionChanged="CbCategoria_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Categoría"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+            </Grid>
+            <Grid Grid.Column="0" Margin="0 0 5 0">
+                <ComboBox x:Name="CbProveedor" FontSize="12" SelectionChanged="CbProveedor_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Proveedor"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+            </Grid>
+            <Grid Grid.Column="2" Margin="5 0 0 0">
+                <TextBox Name="txtNombre" Text="" FontSize="12" Margin="0" KeyUp="txtNombre_KeyUp"
+                            materialDesign:HintAssist.Hint="Nombre del Artículo"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
+            </Grid>
+        </Grid>
+
+        <DataGrid x:Name="dgOperaciones" 
+                  Grid.Row="1"
+                  AutoGenerateColumns="false" 
+                  IsReadOnly="true" 
+                  ColumnWidth="*" 
+                  Margin="30 0 30 0"
+                  Background="White"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False">
+            <DataGrid.Resources>
+                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="#3194F7" />
+                    <Setter Property="Foreground" Value="white" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="2*" Header="Código" Binding="{Binding codigo}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding codigo}' />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="2*" Header="Nombre" Binding="{Binding nombre}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding nombre}' />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Categoria" Binding="{Binding categoria}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding categoria}' />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Cant. Actual" Binding="{Binding cantidadActual}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding cantidadActual}' />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Ult. Compra" Binding="{Binding ultimaActualizacion}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding ultimaActualizacion}' />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="auto" Header="Ult. Precio" Binding="{Binding precioCompra}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <TextBlock FontSize='16' Text='{Binding precioCompra}' />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Center" x:Name="SinRegistro">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Búsqueda sin Registros" 
+                          Margin="0 0 0 0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="24"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
+                          HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="30" Height="30"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0 10" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="1" Text="Correo Electrónico" 
+                          Margin="0 0 10 0"
+                          VerticalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="14"
+                          Name="txtEmail"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="Email" HorizontalAlignment="Center" Foreground="#3194F7" ToolTip="Correo Electrónico"
+                                     Width="22" Height="22" Grid.Column="0"  VerticalAlignment="Center" Margin="30 0 10 0"/>
+
+            
+            <TextBlock Grid.Column="3" Text="Teléfono" 
+                          Margin="0 0 30 0"
+                          VerticalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="14"
+                          Name="txtTelefono"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+            <materialDesign:PackIcon Kind="Phone" HorizontalAlignment="Center" Foreground="#3194F7" ToolTip="Teléfono"
+                                     Width="22" Height="22" Grid.Column="2"  VerticalAlignment="Center" Margin="0 0 10 0"/>
+        </Grid>
+    </Grid>
+</Page>

@@ -51,11 +51,13 @@ namespace Logica
         }
 
 
-        public List<DAuditoria> Mostrar(DateTime? Fecha, string Accion, string Usuario)
+        public List<DAuditoria> Mostrar(DateTime? Fecha, DateTime? Fecha2, string Accion, string Usuario)
         {
             List<DAuditoria> ListaGenerica = new List<DAuditoria>();
 
             DateTime? fecha = Fecha.HasValue ? Fecha : DateTime.Now;
+            DateTime? fecha2 = Fecha2.HasValue ? Fecha2 : fecha.Value.AddDays(1).AddTicks(-1);
+
             string stringUsuario = Usuario == "" ? "" :
                                    Usuario == "Todos los Usuarios" ? "" :
                                    " AND t.usuario = '" + Encripter.Encrypt(Usuario) + "'";
@@ -81,7 +83,7 @@ namespace Logica
 
                     using SqlCommand comm = new SqlCommand(queryList, Conexion.ConexionSql);
                     comm.Parameters.AddWithValue("@desde", fecha);
-                    comm.Parameters.AddWithValue("@hasta", fecha.Value.AddDays(1).AddTicks(-1));
+                    comm.Parameters.AddWithValue("@hasta", fecha2.Value.AddDays(1).AddTicks(-1));
                     comm.Parameters.AddWithValue("@accion", Accion);
 
                     using SqlDataReader reader = comm.ExecuteReader();
@@ -90,6 +92,7 @@ namespace Logica
                         ListaGenerica.Add(new DAuditoria
                         {
                             idAuditoria = reader.GetInt32(0),
+                            fechaString = reader.GetDateTime(1).TimeOfDay.ToString("dd/MM/yyyy"),
                             fechaTime = reader.GetDateTime(1).TimeOfDay.ToString(@"hh\:mm\:ss"),
                             accion = reader.GetString(2),
                             descripcion = reader.GetString(3),

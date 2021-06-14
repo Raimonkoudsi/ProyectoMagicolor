@@ -39,6 +39,8 @@ namespace ProyectoMagicolor.Vistas
         public List<DDetalle_Devolucion> Devoluciones = new List<DDetalle_Devolucion>();
 
 
+        double MontoDevolverFormatted = 0;
+
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             DetalleVentas = new LVenta().MostrarDetalleVenta(Venta.idVenta);
@@ -105,7 +107,7 @@ namespace ProyectoMagicolor.Vistas
             double MontoTotalFormatted = Math.Truncate(MontoTotal * 100) / 100;
             txtTotal.Text = "Bs.S " + MontoTotalFormatted.ToString("0.00");
 
-            double MontoDevolverFormatted = Math.Truncate(MontoDevolver * 100) / 100;
+            MontoDevolverFormatted = Math.Truncate(MontoDevolver * 100) / 100;
             txtMontoDevolucion.Text = "Bs.S " + MontoDevolverFormatted.ToString("0.00");
 
             dgOperaciones.ItemsSource = null;
@@ -151,6 +153,9 @@ namespace ProyectoMagicolor.Vistas
                 }
                 Refresh();
             }
+
+            MessageBox.Show("La cantidad a Devolver al Cliente es el de " + MontoDevolverFormatted.ToString("0.00") + " Bs S", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+            ParentFrm.GetBack();
         }
 
         private void BtnDevolver_Click(object sender, RoutedEventArgs e)

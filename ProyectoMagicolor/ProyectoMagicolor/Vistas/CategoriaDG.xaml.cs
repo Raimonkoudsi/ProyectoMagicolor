@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -73,7 +63,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quieres Eliminar esta Categoría?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult Resp = MessageBox.Show("¿Seguro que quiere deshabilitar esta Categoría?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
@@ -83,8 +73,8 @@ namespace ProyectoMagicolor.Vistas
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
-                "Eliminar",
-                "Ha Eliminado la Categoría " + codigo
+                "Deshabilitar",
+                "Ha Deshabilitado la Categoría " + codigo
             );
             new LAuditoria().Insertar(auditoria);
         }

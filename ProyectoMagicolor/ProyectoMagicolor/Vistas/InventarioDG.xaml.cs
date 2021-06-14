@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 
 using Datos;
@@ -52,21 +46,27 @@ namespace ProyectoMagicolor.Vistas
 
         public LArticulo Metodos = new LArticulo();
 
-        public InventarioDG()
-        {
-            InitializeComponent();
-
-            ChBAlfabeticoOrdenar.IsChecked = true;
-            CbColumnas.SelectedIndex = 0;
-        }
+        public new MainWindow Parent;
 
         private int TipoBuscarPor = 1;
         private DateTime FechaInicio = DateTime.Now;
         private DateTime FechaFinal = DateTime.Now;
         private int TipoMostrar = 1;
         private int TipoOrdenar = 1;
+        private int TipoStock;
 
         private bool SinVentas = false;
+
+        public InventarioDG(MainWindow parent, int tipoStock = 0)
+        {
+            InitializeComponent();
+
+            ChBAlfabeticoOrdenar.IsChecked = true;
+            CbColumnas.SelectedIndex = 0;
+
+            Parent = parent;
+            TipoStock = tipoStock;
+        }
 
         public void Refresh()
         {
@@ -157,6 +157,17 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (TipoStock == 1)
+            {
+                RBStockMostrar.IsChecked = true;
+                RBSinVentas.IsChecked = true;
+            }
+            if (TipoStock == 2)
+            {
+                RBSinStockMostrar.IsChecked = true;
+                RBSinVentas.IsChecked = true;
+            }
+
             Refresh();
         }
 
@@ -166,7 +177,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             var response = Metodos.DetalleInventario(id)[0];
 
-            InventarioVista vista = new InventarioVista(response);
+            InventarioVista vista = new InventarioVista(Parent, response);
             vista.ShowDialog();
         }
 

@@ -52,41 +52,43 @@ namespace ProyectoMagicolor.Vistas
 
             Tuple<int, int> CxP = Metodos.ContadorCxPVistaPrincipal();
             txtCxPConTiempo.Text = CxP.Item1.ToString();
-            txtCxPConTiempo.Text = CxP.Item2.ToString();
+            txtCxPSinTiempo.Text = CxP.Item2.ToString();
         }
 
 
         private void ArticulosDisponibles_Click(object sender, RoutedEventArgs e)
         {
-
+            InventarioDG Frm = new InventarioDG(Parent, 1);
+            Parent.SwitchScreen(Frm);
         }
 
         private void ArticulosFaltantes_Click(object sender, RoutedEventArgs e)
         {
-
+            InventarioDG Frm = new InventarioDG(Parent, 2);
+            Parent.SwitchScreen(Frm);
         }
 
         private void CuentasCobrar_Click(object sender, RoutedEventArgs e)
         {
-            CuentaCobrarDG Frm = new CuentaCobrarDG(null, 1);
+            CuentaCobrarDG Frm = new CuentaCobrarDG(Parent, 1);
             Parent.SwitchScreen(Frm);
         }
 
         private void CuentasCobrarFaltantes_Click(object sender, RoutedEventArgs e)
         {
-            CuentaCobrarDG Frm = new CuentaCobrarDG(null, 2);
+            CuentaCobrarDG Frm = new CuentaCobrarDG(Parent, 2);
             Parent.SwitchScreen(Frm);
         }
 
         private void CuentasPagar_Click(object sender, RoutedEventArgs e)
         {
-            CuentaPagarDG Frm = new CuentaPagarDG(null, 1);
+            CuentaPagarDG Frm = new CuentaPagarDG(Parent, 1);
             Parent.SwitchScreen(Frm);
         }
 
         private void CuentasPagarFaltantes_Click(object sender, RoutedEventArgs e)
         {
-            CuentaPagarDG Frm = new CuentaPagarDG(null, 2);
+            CuentaPagarDG Frm = new CuentaPagarDG(Parent, 2);
             Parent.SwitchScreen(Frm);
         }
     }

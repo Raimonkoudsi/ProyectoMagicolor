@@ -57,8 +57,8 @@
                   IsReadOnly="true" 
                   ColumnWidth="*" 
                   Margin="30 0"
-                  BorderThickness="0 1 0 1"
-                  BorderBrush="LightGray"
+                  BorderThickness="1"
+                  BorderBrush="Black"
                   Background="White"
                   CanUserResizeColumns="False" 
                   CanUserResizeRows="False">

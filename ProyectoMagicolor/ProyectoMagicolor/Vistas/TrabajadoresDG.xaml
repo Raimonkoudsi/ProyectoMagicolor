@@ -14,8 +14,14 @@
         <local:ChangeRedColorRowNull x:Key="ChangeRedColorRowNull"/>
         <local:ChangeEditButtonNull x:Key="ChangeEditButtonNull"/>
         <local:ChangeEditTextButtonNull x:Key="ChangeEditTextButtonNull"/>
+
+        <ResourceDictionary x:Key="aa">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Page.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -53,9 +59,8 @@
                   IsReadOnly="true" 
                   ColumnWidth="*" 
                   Margin="30 0"
-                  BorderThickness="0 1 0 1"
-                  BorderBrush="LightGray"
                   Background="White"
+                  Style="{StaticResource MaterialDesignDataGrid}"
                   CanUserResizeColumns="False" 
                   CanUserResizeRows="False">
             <DataGrid.Resources>

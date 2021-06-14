@@ -108,7 +108,7 @@ namespace Logica
 
         private string queryListEmployeeNull = @"
             SELECT * FROM [trabajador] 
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND idTrabajador <> 0 AND estado = 0;
+            WHERE cedula = @cedula AND idTrabajador <> 0 AND estado = 0;
         ";
 
         private string queryListSecurity = @"

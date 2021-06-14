@@ -154,7 +154,9 @@ namespace Logica
 
             string queryListGeneral = @"
                 SELECT * FROM [proveedor] 
-                WHERE tipoDocumento = @tipoDocumento AND numeroDocumento LIKE @numeroDocumento + '%' " + BuscarEstado(Estado) + @"
+                WHERE tipoDocumento LIKE  @tipoDocumento + '%' 
+                    AND razonSocial <> '0'
+                    AND numeroDocumento LIKE @numeroDocumento + '%' " + BuscarEstado(Estado) + @"
                 ORDER BY numeroDocumento
             ";
 
@@ -326,6 +328,7 @@ namespace Logica
 
             string queryListArticlee = @"
                 SELECT 
+                    p.idProveedor,
 	                p.razonSocial,
 	                (ISNULL((
                         SELECT TOP 1
@@ -362,13 +365,14 @@ namespace Logica
                 using SqlDataReader reader = comm.ExecuteReader();
                 while (reader.Read())
                 {
-                    if(reader.GetDecimal(2) != 0)
+                    if(reader.GetDecimal(3) != 0)
                     {
                         ListaGenerica.Add(new DProveedor
                         {
-                            razonSocial = reader.GetString(0),
-                            ultimaCompra = reader.GetDateTime(1).ToString("dd/MM/yyyy"),
-                            ultimoPrecio = (double)reader.GetDecimal(2)
+                            idProveedor = reader.GetInt32(0),
+                            razonSocial = reader.GetString(1),
+                            ultimaCompra = reader.GetDateTime(2).ToString("dd/MM/yyyy"),
+                            ultimoPrecio = (double)reader.GetDecimal(3)
                         });
                     }
                 }
@@ -385,6 +389,7 @@ namespace Logica
 
             string queryListArticlee = @"
                 SELECT 
+                    p.idProveedor,
 	                p.razonSocial,
 	                p.sectorComercial
                 FROM [proveedor] p
@@ -403,8 +408,124 @@ namespace Logica
                 {
                     ListaGenerica.Add(new DProveedor
                     {
-                        razonSocial = reader.GetString(0),
-                        sectorComercial = reader.GetString(1)
+                        idProveedor = reader.GetInt32(0),
+                        razonSocial = reader.GetString(1),
+                        sectorComercial = reader.GetString(2)
+                    });
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+
+        public List<DArticulo> ListadoArticuloPorProveedor(int IdProveedor, string Categoria, string Nombre)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            string queryListArticlee = @"
+                SELECT
+					a.codigo,
+					a.nombre,
+                    c.nombre,
+					ISNULL((
+						SELECT TOP 1 
+							di.cantidadActual 
+						FROM [detalleIngreso] di 
+						WHERE a.idArticulo = di.idArticulo
+						ORDER BY di.idDetalleIngreso DESC
+					), 0) AS cantidadActual, 
+					(ISNULL((
+                        SELECT TOP 1
+                            i.fecha
+                        FROM [ingreso] i 
+			                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+		                WHERE di.idArticulo = a.idArticulo
+			                AND i.idProveedor = @idProveedor
+                            AND i.estado <> 0
+                        ORDER BY di.idDetalleIngreso DESC
+                    ), '01/01/2000')) AS ultimaCompra,
+	                (ISNULL((
+                        SELECT TOP 1
+                            di.precioCompra
+                        FROM [ingreso] i 
+			                INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+		                WHERE di.idArticulo = a.idArticulo
+			                AND i.idProveedor = @idProveedor
+                            AND i.estado <> 0
+                        ORDER BY di.idDetalleIngreso DESC
+                    ), 0)) AS ultimoPrecio
+					FROM [articulo] a
+                        INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria
+					WHERE a.estado <> 0 
+                        AND c.nombre LIKE @categoria + '%'
+                        AND a.nombre LIKE @nombre + '%'
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListArticlee, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idProveedor", IdProveedor);
+                comm.Parameters.AddWithValue("@categoria", Categoria == null ? "" : Categoria);
+                comm.Parameters.AddWithValue("@nombre", Nombre);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (reader.GetDecimal(5) != 0)
+                    {
+                        ListaGenerica.Add(new DArticulo
+                        {
+                            codigo = reader.GetString(0),
+                            nombre = reader.GetString(1),
+                            categoria = reader.GetString(2),
+                            cantidadActual = reader.GetInt32(3),
+                            ultimaActualizacion = reader.GetDateTime(4).ToString("dd/MM/yyyy"),
+                            precioCompra = (double)reader.GetDecimal(5)
+                        });
+                    }
+                }
+            };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+
+        public List<DArticulo> CategoriasPorProveedor(int IdProveedor)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            string queryListArticlee = @"
+                SELECT DISTINCT
+	                c.nombre
+                FROM [proveedor] p
+	                INNER JOIN [ingreso] i ON i.idProveedor = p.idProveedor
+	                INNER JOIN [detalleIngreso] di ON di.idIngreso = i.idIngreso
+	                INNER JOIN [articulo] a ON a.idArticulo = di.idArticulo
+	                INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria
+                WHERE p.idProveedor = @idProveedor
+	                AND i.estado <> 0
+	                AND di.estado <> 0
+	                AND a.estado <> 0
+	                AND p.estado <> 0
+	                AND c.estado <> 0
+                    AND p.estado <> 0
+            ";
+
+            Action action = () =>
+            {
+                using SqlCommand comm = new SqlCommand(queryListArticlee, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@idProveedor", IdProveedor);
+
+                using SqlDataReader reader = comm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ListaGenerica.Add(new DArticulo
+                    {
+                        categoria = reader.GetString(0)
                     });
                 }
             };

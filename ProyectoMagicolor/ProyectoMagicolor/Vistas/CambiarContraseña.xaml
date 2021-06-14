@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Cambiar Contraseña" Height="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Width="380" Loaded="Window_Loaded">
+        Title="Cambiar Contraseña" Height="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Width="380" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -63,7 +63,9 @@
                         </materialDesign:HintAssist.Hint>
                     </PasswordBox>
                 </Grid>
-
+                <TextBlock Margin="0 -5 0 0" FontSize="14" VerticalAlignment="Center"  TextWrapping="Wrap" TextAlignment="Center"
+                                           Text="La contraseña debe contener al menos una minúscula, una mayúscula, un dígito y no debe contener espacios en blanco" 
+                                           FontStyle="Italic" Background="Transparent" />
                 <Grid Margin="0 20 0 0">
                     <Button Name="btnEnviar" Width="150" Background="#3194F7" Content="Enviar" Click="Button_Click"/>
                 </Grid>
