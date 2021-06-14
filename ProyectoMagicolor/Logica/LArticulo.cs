@@ -61,8 +61,22 @@ namespace Logica
 
 
         private string queryListCode = @"
-            SELECT * FROM [articulo] 
-            WHERE codigo = @codigo
+            SELECT
+                    a.idArticulo,
+                    a.codigo,
+                    a.nombre,
+                    a.descripcion,
+                    a.stockMinimo,
+                    a.stockMaximo,
+                    a.idCategoria,
+                    ISNULL((
+		                SELECT TOP 1 
+			                di.cantidadActual 
+		                FROM [detalleIngreso] di 
+		                WHERE a.idArticulo = di.idArticulo 
+		                ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
+            FROM [articulo] a
+            WHERE a.codigo = @codigo
         ";
 
         private string queryInventaryArticle = @"
@@ -299,7 +313,8 @@ namespace Logica
                         descripcion = reader.GetString(3),
                         stockMinimo = reader.GetInt32(4),
                         stockMaximo = reader.GetInt32(5),
-                        idCategoria = reader.GetInt32(6)
+                        idCategoria = reader.GetInt32(6),
+                        cantidadActual = reader.GetInt32(7)
                     });
                 }
             };

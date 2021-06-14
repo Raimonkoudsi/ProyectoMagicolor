@@ -353,6 +353,7 @@ namespace ProyectoMagicolor.Vistas
             DisplayData[ind] = MCN;
 
             ListaVenta[ind] = DDV;
+
             Refresh();
 
         }
@@ -389,7 +390,19 @@ namespace ProyectoMagicolor.Vistas
                 {
                     DA = response[0];
                     DDI = Resp2[0];
-                    WillInclude = true;
+                    var SearchId = ListaVenta.FindIndex((vent) => vent.idDetalleIngreso == Resp2[0].idDetalleIngreso);
+                    if(SearchId != -1)
+                    {
+                        OpenToEdit(DisplayData[SearchId].id);
+                        txtBuscar.Text = "";
+                        txtBuscar.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        WillInclude = true;
+                    }
+                    
                 }
                 else
                 {
@@ -408,6 +421,31 @@ namespace ProyectoMagicolor.Vistas
                 DVFrm.AgregarArticulo(DDI, DA);
             }
             DVFrm.ShowDialog();
+        }
+
+
+        void OpenToEdit(int id)
+        {
+            int ind = DisplayData.FindIndex((Modelo) => Modelo.id == id);
+
+
+            DetalleVentaFrm DIFrm = new DetalleVentaFrm(this, ListaVenta);
+            DIFrm.Type = TypeForm.Update;
+            DIFrm.idEdit = id;
+
+            DIFrm.DataFill = ListaVenta[ind];
+
+            LArticulo Metodo = new LArticulo();
+            LIngreso MetIng = new LIngreso();
+
+            var Resp = MetIng.Encontrar(ListaVenta[ind].idDetalleIngreso);
+
+            var response = Metodo.Encontrar(Resp[0].idArticulo);
+
+            DIFrm.DataArticulo = response[0];
+            DIFrm.DataDIngreso = Resp[0];
+
+            DIFrm.ShowDialog();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
