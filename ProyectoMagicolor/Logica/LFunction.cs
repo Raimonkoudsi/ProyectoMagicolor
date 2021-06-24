@@ -9,6 +9,7 @@ using System.Windows;
 using System.Security.Cryptography;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Logica
 {
@@ -107,7 +108,7 @@ namespace Logica
         {
             try
             {
-                if(Conexion.ConexionSql.State != ConnectionState.Open)
+                if (Conexion.ConexionSql.State != ConnectionState.Open)
                     Conexion.ConexionSql.Open();
 
                 return action();

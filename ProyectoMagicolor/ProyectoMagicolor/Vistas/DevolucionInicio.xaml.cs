@@ -1,26 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Logica;
 using Datos;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for DevolucionInicio.xaml
-    /// </summary>
     public partial class DevolucionInicio : Page
     {
         public DevolucionInicio(MainWindow parent)
@@ -28,26 +13,27 @@ namespace ProyectoMagicolor.Vistas
             InitializeComponent();
 
             this.ParentMenu = parent;
-            txtFactura.txt.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+            txtFactura.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
 
         MainWindow ParentMenu;
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            txtFactura.txt.Focus();
+            txtFactura.Text = "";
+            txtFactura.Focus();
         }
 
         void GetVentas()
         {
-            if(!txtFactura.Changed)
+            if(txtFactura.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Numero de Factura!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtFactura.txt.Focus();
+                MessageBox.Show("Debe ingresar el número de factura de la venta", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtFactura.Focus();
                 return;
             }
 
-            int FrmIdVentas = int.Parse(txtFactura.txt.Text);
+            int FrmIdVentas = int.Parse(txtFactura.Text);
 
             var VentaResp = new LVenta().MostrarVenta(FrmIdVentas);
             
@@ -58,7 +44,7 @@ namespace ProyectoMagicolor.Vistas
                 int Devuelto = 3;
                 if (Venta.estado == Devuelto)
                 {
-                    MessageBox.Show("La venta que está buscando ya se ha devuelto!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("La venta que está buscando ya se ha devuelto", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 DevolucionFrm Frm = new DevolucionFrm(Venta, this);
@@ -67,18 +53,13 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                MessageBox.Show("La venta que está buscando no se encuentra!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("La venta que está buscando no se encuentra", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         public void GetBack()
         {
             ParentMenu.SwitchScreen(this);
-        }
-
-        public void Limpiar()
-        {
-            txtFactura.SetText("");
         }
 
         private void StackPanel_KeyDown(object sender, KeyEventArgs e)

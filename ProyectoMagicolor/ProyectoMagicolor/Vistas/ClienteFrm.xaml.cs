@@ -1,20 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -163,8 +150,8 @@ namespace ProyectoMagicolor.Vistas
         void SetEnable(bool Enable)
         {
             txtNombre.IsEnabled = Enable;
-            CbTipoDocumento.IsEnabled = Enable;
-            txtDocumento.IsEnabled = Enable;
+            CbTipoDocumento.IsEnabled = false;
+            txtDocumento.IsEnabled = false;
             txtDireccion.IsEnabled = Enable;
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
@@ -243,6 +230,7 @@ namespace ProyectoMagicolor.Vistas
                 if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                 {
                     LFunction.MessageExecutor("Error", "El Documento ya está registrado en el sistema");
+                    txtDocumento.Text = "";
                     txtDocumento.Focus();
                     return true;
                 }
@@ -262,6 +250,7 @@ namespace ProyectoMagicolor.Vistas
                     if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                     {
                         LFunction.MessageExecutor("Error", "El Cliente ya está Registrado en el Sistema");
+                        txtDocumento.Text = "";
                         txtDocumento.Focus();
                     }
         }
@@ -273,6 +262,7 @@ namespace ProyectoMagicolor.Vistas
                     if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                     {
                         LFunction.MessageExecutor("Error", "El Cliente ya está Registrado en el Sistema");
+                        txtDocumento.Text = "";
                         txtDocumento.Focus();
                     }
         }

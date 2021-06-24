@@ -127,7 +127,9 @@ namespace Logica
                             cedulaProveedor = reader.GetString(2),
                             factura = reader.GetString(3),
                             fecha = reader.GetDateTime(4),
+                            fechaString = reader.GetDateTime(4).ToString("dd-MM-yyyy"),
                             montoTotal = (double)reader.GetDecimal(5),
+                            montoTotalString = ((double)reader.GetDecimal(5)).ToString() + " Bs S",
                             cedulaTrabajador = reader.GetString(6)
                         });
                     }

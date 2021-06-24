@@ -39,7 +39,7 @@
                 </ComboBox>
             </Grid>
             <Grid Grid.Column="1" Margin="10 5 0 0">
-                <TextBox Name="txtBusqueda" Text="" FontSize="12" Margin="0" KeyDown="txtBusqueda_KeyDown" 
+                <TextBox Name="txtBusqueda" Text="" FontSize="12" Margin="0" KeyUp="txtBusqueda_KeyDown" 
                             materialDesign:HintAssist.Hint="Búsqueda"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                 <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
@@ -74,7 +74,7 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="    Código    " Binding="{Binding codigo}">
+                <DataGridTextColumn Width="*" Header="Código" Binding="{Binding codigo}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -88,7 +88,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Nombre Artículo" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="2*" Header="Nombre Artículo" Binding="{Binding nombre}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -101,15 +101,15 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="P. Venta" Binding="{Binding precioVenta}">
+                <DataGridTextColumn Width="1.4*" Header="P. Venta" Binding="{Binding precioVentaString}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
                             <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding precioVenta}' />
+                                    <TextBlock FontSize='16' Text='{Binding precioVentaString}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>

@@ -577,6 +577,7 @@ namespace ProyectoMagicolor.Vistas
                 if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
                 {
                     LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+                    txtDocumento.Text = "";
                     txtDocumento.Focus();
                     return true;
                 }
@@ -584,6 +585,7 @@ namespace ProyectoMagicolor.Vistas
                 if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
                 {
                     LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
+                    txtUsuario.Text = "";
                     txtUsuario.Focus();
                     return true;
                 }
@@ -690,7 +692,7 @@ namespace ProyectoMagicolor.Vistas
                         LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
 
                         txtDocumento.Text = "";
-                        CbTipoDocumento.Focus();
+                        txtDocumento.Focus();
                     }
         }
 

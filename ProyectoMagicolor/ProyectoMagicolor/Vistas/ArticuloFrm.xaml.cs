@@ -1,19 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -146,11 +134,19 @@ namespace ProyectoMagicolor.Vistas
                     );
                     new LAuditoria().Insertar(auditoria);
 
-                    if (ParentFrm != null)
-                        ParentFrm.SetNuevoArticulo(UForm.codigo);
-
                     if (SecondParentFrm != null)
                         SecondParentFrm.AgregarArticulo(UForm);
+
+                    if (ParentFrm != null || SecondParentFrm != null)
+                    {
+                        DetalleIngresoFrm.PrecioCompra = precioCompra;
+                        DetalleIngresoFrm.PrecioVenta = precioVenta;
+                    }
+                    else
+                    {
+                        DetalleIngresoFrm.PrecioCompra = 0;
+                        DetalleIngresoFrm.PrecioVenta = 0;
+                    }
 
                     this.DialogResult = true;
                     this.Close();
@@ -186,6 +182,17 @@ namespace ProyectoMagicolor.Vistas
                             "Ha Editado el Artículo Código " + codigo
                      );
                     new LAuditoria().Insertar(auditoria);
+
+                    if (ParentFrm != null || SecondParentFrm != null)
+                    {
+                        DetalleIngresoFrm.PrecioCompra = precioCompra;
+                        DetalleIngresoFrm.PrecioVenta = precioVenta;
+                    }
+                    else
+                    {
+                        DetalleIngresoFrm.PrecioCompra = 0;
+                        DetalleIngresoFrm.PrecioVenta = 0;
+                    }
 
                     this.DialogResult = true;
                     this.Close();

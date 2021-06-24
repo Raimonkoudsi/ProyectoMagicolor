@@ -97,7 +97,13 @@ namespace Logica
                 v.impuesto,
                 v.fecha,
                 v.metodoPago,
-                v.estado
+                v.estado,
+				ISNULL((
+                    SELECT TOP 1 
+                        cc.montoIngresado 
+                    FROM [cuentaCobrar] cc
+                    WHERE cc.idVenta = v.idVenta
+                    ORDER BY v.idVenta DESC), -1) AS cuentaCobrar
             FROM [venta] v
                 INNER JOIN [cliente] c ON v.idCliente = c.idCliente
                 INNER JOIN [trabajador] t ON t.idTrabajador = v.idTrabajador
@@ -118,22 +124,6 @@ namespace Logica
                 v.metodoPago,
                 v.estado,
                 v.idCliente
-        ";
-
-        private string queryListDetail = @"
-            SELECT 
-                dv.idDetalleVenta, 
-                dv.idVenta, 
-                a.idArticulo, 
-                a.codigo, 
-                a.nombre, 
-                dv.cantidad, 
-                dv.precioVenta 
-            FROM [detalleVenta] dv 
-                INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso 
-                INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo 
-                INNER JOIN [venta] v ON v.idVenta = dv.idVenta
-            WHERE dv.idVenta = @idVenta AND dv.estado <> 0 AND dv.cantidad <> 0;
         ";
 
         #endregion
@@ -282,6 +272,7 @@ namespace Logica
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(11)),
                         estado = reader.GetInt32(12),
                         estadoString = EstadoToString(reader.GetInt32(12)),
+                        montoIngresado = (double)reader.GetDecimal(13),
                         nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                     });
                 }
@@ -296,26 +287,42 @@ namespace Logica
         {
             List<DDetalle_Venta> ListaGenerica = new List<DDetalle_Venta>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryListDetail, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idVenta", IdVenta);
+            string queryListDetail = @"
+                SELECT 
+                    dv.idDetalleVenta, 
+                    dv.idVenta, 
+                    a.idArticulo, 
+                    a.codigo, 
+                    a.nombre, 
+                    dv.cantidad, 
+                    dv.precioVenta 
+                FROM [detalleVenta] dv 
+                    INNER JOIN [detalleIngreso] di ON di.idDetalleIngreso = dv.idDetalleIngreso 
+                    INNER JOIN [articulo] a ON di.idArticulo = a.idArticulo 
+                    INNER JOIN [venta] v ON v.idVenta = dv.idVenta
+                WHERE dv.idVenta = @idVenta AND dv.estado <> 0 AND dv.cantidad <> 0;
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            Action action = () =>
                 {
-                    ListaGenerica.Add(new DDetalle_Venta
+                    using SqlCommand comm = new SqlCommand(queryListDetail, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@idVenta", IdVenta);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        idDetalleVenta = reader.GetInt32(0),
-                        idVenta = reader.GetInt32(1),
-                        idArticulo = reader.GetInt32(2),
-                        codigo = reader.GetString(3),
-                        nombre = reader.GetString(4),
-                        cantidad = reader.GetInt32(5),
-                        precioVenta = (double)reader.GetDecimal(6)
-                    });
-                }
-            };
+                        ListaGenerica.Add(new DDetalle_Venta
+                        {
+                            idDetalleVenta = reader.GetInt32(0),
+                            idVenta = reader.GetInt32(1),
+                            idArticulo = reader.GetInt32(2),
+                            codigo = reader.GetString(3),
+                            nombre = reader.GetString(4),
+                            cantidad = reader.GetInt32(5),
+                            precioVenta = (double)reader.GetDecimal(6)
+                        });
+                    }
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
@@ -363,13 +370,16 @@ namespace Logica
                         cedulaCliente = reader.GetString(1),
                         cliente = reader.GetString(2),
                         montoTotal = (double)reader.GetDecimal(3),
+                        montoTotalString = (double)reader.GetDecimal(3) == 0 ? "S/M" : ((double)reader.GetDecimal(3)).ToString() + " Bs S",
                         descuento = (double)reader.GetDecimal(4),
                         impuesto = reader.GetInt32(5),
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = MetodoPagoToString(reader.GetInt32(7)),
+                        estado = reader.GetInt32(8),
                         estadoString = EstadoToString(reader.GetInt32(8)),
                         trabajador = reader.GetString(9),
-                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA,
+                        accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA
                     });
                 }
             };
@@ -400,8 +410,10 @@ namespace Logica
                 return "Completada";
             else if (Estado == 2)
                 return "Faltante";
-            else
+            else if (Estado == 0)
                 return "Anulada";
+
+            return "";
         }
 
     }

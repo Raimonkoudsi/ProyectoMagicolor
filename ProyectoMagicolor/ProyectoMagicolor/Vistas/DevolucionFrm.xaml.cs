@@ -11,6 +11,16 @@ namespace ProyectoMagicolor.Vistas
     {
         DevolucionInicio ParentFrm;
 
+        public DVenta Venta;
+        public List<DDetalle_Venta> DetalleVentas = new List<DDetalle_Venta>();
+
+        public List<ModeloDevolucion> ArticulosaDevolver = new List<ModeloDevolucion>();
+        public List<DDetalle_Devolucion> Devoluciones = new List<DDetalle_Devolucion>();
+
+        double MontoDevolverFormatted = 0;
+
+        bool ProcessAll = false;
+
         public DevolucionFrm(DVenta venta, DevolucionInicio par)
         {
             InitializeComponent();
@@ -20,27 +30,20 @@ namespace ProyectoMagicolor.Vistas
             this.Venta = venta;
         }
 
-        public DVenta Venta;
-        public List<DDetalle_Venta> DetalleVentas = new List<DDetalle_Venta>();
-
-        public List<ModeloDevolucion> ArticulosaDevolver = new List<ModeloDevolucion>();
-        public List<DDetalle_Devolucion> Devoluciones = new List<DDetalle_Devolucion>();
-
-
-        double MontoDevolverFormatted = 0;
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            txtMotivo.Text = "";
+
             DetalleVentas = new LVenta().MostrarDetalleVenta(Venta.idVenta);
             //factura
             txtFactura.Text = "#" + Venta.idVenta;
-            txtFecha.Text = Venta.fecha.ToShortDateString();
+            txtFecha.Text = Venta.fechaString;
             //trabajador
             txtVendedor.Text = Venta.trabajador;
             //cliente
             txtCliName.Text = Venta.cliente;
             TxtCliDoc.Text = Venta.cedulaCliente;
-            TxtCliTelf.Text = Venta.telefonoCliente;
+            TxtCliTelf.Text = Venta.telefonoCliente == "" ? "Sin Teléfono" : Venta.telefonoCliente;
 
             CbMetodoPago.SelectedIndex = Venta.metodoPago - 1;
             int MetodoCredito = 2;
@@ -102,16 +105,10 @@ namespace ProyectoMagicolor.Vistas
             dgOperaciones.ItemsSource = ArticulosaDevolver;
 
             if(Devoluciones.Count <= 0)
-            {
                 BtnProcesarDevolucion.IsEnabled = false;
-            }
             else
-            {
                 BtnProcesarDevolucion.IsEnabled = true;
-            }
         }
-
-        bool ProcessAll = false;
 
         private void BtnProcesarTodo_Click(object sender, RoutedEventArgs e)
         {
@@ -231,9 +228,8 @@ namespace ProyectoMagicolor.Vistas
                 );
                 new LAuditoria().Insertar(auditoria);
 
-                MessageBox.Show("La cantidad a Devolver al Cliente es el de " + MontoDevolverFormatted.ToString("0.00") + " Bs S", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("La cantidad a devolver al cliente es el de " + MontoDevolverFormatted.ToString("0.00") + " Bs S", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                ParentFrm.Limpiar();
                 ParentFrm.GetBack();
             }
         }

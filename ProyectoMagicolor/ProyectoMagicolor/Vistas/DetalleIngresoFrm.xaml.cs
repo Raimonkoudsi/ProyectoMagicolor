@@ -10,7 +10,6 @@ namespace ProyectoMagicolor.Vistas
 {
     public partial class DetalleIngresoFrm : Window
     {
-
         CompraFrm ParentForm;
 
         public TypeForm Type;
@@ -23,6 +22,8 @@ namespace ProyectoMagicolor.Vistas
 
         public int idEdit;
         public List<DDetalle_Ingreso> ActualDetalle;
+
+        public static double PrecioCompra, PrecioVenta;
 
         public DetalleIngresoFrm(CompraFrm parentfrm, List<DDetalle_Ingreso> actualDetalle)
         {
@@ -129,6 +130,12 @@ namespace ProyectoMagicolor.Vistas
                 txtCantidadActual.Text = Articulo.cantidadActual.ToString();
                 txtCantidadMaxima.Text = Articulo.stockMaximo.ToString();
 
+                if (PrecioCompra != 0 && PrecioVenta != 0)
+                {
+                    txtPrecioCompra.Text = PrecioCompra.ToString();
+                    txtPrecioVenta.Text = PrecioVenta.ToString();
+                }
+
                 BtnAgregarArticulo.Background = System.Windows.Media.Brushes.OrangeRed;
                 BtnAgregarArticulo.BorderBrush = System.Windows.Media.Brushes.OrangeRed;
 
@@ -171,9 +178,12 @@ namespace ProyectoMagicolor.Vistas
             {
                 List<int> intentnt = new List<int>();
 
-                foreach(DDetalle_Ingreso item in ActualDetalle)
+                if (ActualDetalle != null)
                 {
-                    intentnt.Add(item.idArticulo);
+                    foreach (DDetalle_Ingreso item in ActualDetalle)
+                    {
+                        intentnt.Add(item.idArticulo);
+                    }
                 }
 
                 ArticuloVista AVFrm = new ArticuloVista(intentnt, Type == TypeForm.Create);
@@ -263,7 +273,7 @@ namespace ProyectoMagicolor.Vistas
 
             if ((Int32.Parse(txtCantidad.Text) + Int32.Parse(txtCantidadActual.Text)) > Int32.Parse(txtCantidadMaxima.Text))
             {
-                LFunction.MessageExecutor("Error", "El artículo no puede sobrepasarse d ela cantidad máxima");
+                LFunction.MessageExecutor("Error", "El artículo no puede sobrepasarse de la cantidad máxima");
                 txtCantidad.Focus();
                 return true;
             }

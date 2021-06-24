@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -21,6 +9,14 @@ namespace ProyectoMagicolor.Vistas
     public partial class VentaVista : Page
     {
         VentaDG ParentFrm;
+
+        public DVenta Venta;
+        private LVenta Metodos = new LVenta();
+
+        public List<DDetalle_Venta> DetalleVentas = new List<DDetalle_Venta>();
+
+        public List<ModeloFactura> ArticulosADevolver = new List<ModeloFactura>();
+
 
         public VentaVista(DVenta venta, VentaDG par)
         {
@@ -31,23 +27,28 @@ namespace ProyectoMagicolor.Vistas
             this.Venta = venta;
         }
 
-        public DVenta Venta;
-        private LVenta Metodos = new LVenta();
-
-        public List<DDetalle_Venta> DetalleVentas = new List<DDetalle_Venta>();
-
-        public List<ModeloFactura> ArticulosADevolver = new List<ModeloFactura>();
-
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            DAuditoria auditoria = new DAuditoria(
+                Globals.ID_SISTEMA,
+                "Mostrar",
+                "Ha Visto la Venta N° " + Venta.idVenta
+             );
+            new LAuditoria().Insertar(auditoria);
+
             if (Globals.ACCESO_SISTEMA != 0)
             {
                 BtnFactura.ToolTip = "Sólo el Administrador puede reimprimir Facturas";
                 BtnFactura.IsEnabled = false;
 
                 BtnAnular.ToolTip = "Sólo el Administrador puede Anular Ventas";
+                BtnAnular.IsEnabled = false;
+            }
+
+            if(Venta.estado == 2)
+            {
+                BtnFactura.IsEnabled = false;
                 BtnAnular.IsEnabled = false;
             }
 
@@ -74,6 +75,22 @@ namespace ProyectoMagicolor.Vistas
             TxtCliDoc.Text = Venta.cedulaCliente;
             TxtCliTelf.Text = Venta.telefonoCliente;
             TxtCliEmail.Text = Venta.emailCliente;
+
+
+
+
+            //cc
+            txtTipoPago.Text = Venta.metodoPagoString;
+
+            if (Venta.montoIngresado > -1)
+            {
+                double montoIngresado = (Venta.montoIngresado);
+                txtMontoIngresado.Text = "Bs.S " + montoIngresado.ToString("0.00");
+            }
+            else
+            {
+                txtMontoIngresado.Text = "Bs.S " + total.ToString("0.00");
+            }
 
             int i = 0;
             foreach (DDetalle_Venta item in DetalleVentas)

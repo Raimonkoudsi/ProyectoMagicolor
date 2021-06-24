@@ -91,6 +91,13 @@ namespace Datos
             set { _MontoTotal = value; }
         }
 
+        private string _MontoTotalString;
+        public string montoTotalString
+        {
+            get { return _MontoTotalString; }
+            set { _MontoTotalString = value; }
+        }
+
         private int _IdCuentaPagar;
         public int idCuentaPagar
         {
@@ -152,6 +159,20 @@ namespace Datos
         {
             get { return _NombreTrabajadorIngresado; }
             set { _NombreTrabajadorIngresado = value; }
+        }
+
+        private int _AccesoTrabajadorIngresado;
+        public int accesoTrabajadorIngresado
+        {
+            get { return _AccesoTrabajadorIngresado; }
+            set { _AccesoTrabajadorIngresado = value; }
+        }
+
+        private double _MontoIngresado;
+        public double montoIngresado
+        {
+            get { return _MontoIngresado; }
+            set { _MontoIngresado = value; }
         }
 
         public DIngreso()

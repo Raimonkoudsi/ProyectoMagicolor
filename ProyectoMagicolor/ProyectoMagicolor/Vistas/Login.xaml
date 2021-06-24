@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="Login" Height="380" Width="380"
         AllowsTransparency="True" Background="Transparent"
@@ -24,8 +25,9 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" HorizontalAlignment="Center" Margin="320 5 0 0" Click="cerrar_Click" Background="Transparent" BorderBrush="Transparent">
-                <materialDesign:PackIcon Kind="Power" Foreground="White" Width="30" Height="30" />
+            <Button Grid.Column="0" HorizontalAlignment="Center" Margin="320 5 0 0" Click="cerrar_Click" 
+                    Background="Transparent" BorderBrush="Transparent" x:Name="BotonCerrar">
+                <materialDesign:PackIcon Kind="Power" Foreground="White" Width="30" Height="30" x:Name="ColorBoton" />
             </Button>
             <Grid Grid.Row="1">
                 <Grid Margin="0 0 0 0">
@@ -37,7 +39,11 @@
                     <Image Grid.Column="1" Margin="0 0 0 0" Source="..\Imagenes\LogoMagicolor.png"/>
                 </Grid>
             </Grid>
-            <StackPanel Grid.Row="2" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown">
+            
+            <fa:ImageAwesome Icon="CircleOutlineNotch" Grid.Row="2" Foreground="white" Spin="True" Height="48" 
+                             Width="48" x:Name="Loading" Visibility="Collapsed"/>
+
+            <StackPanel Grid.Row="2" VerticalAlignment="Center" KeyDown="StackPanel_KeyDown" x:Name="PanelLogin">
                 <Grid Margin="50 10">
                     <TextBox x:Name="txtUsuario" FontSize="14" Background="Transparent" BorderBrush="White"
                              Foreground="White" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
@@ -57,6 +63,7 @@
                     </TextBox>
                     
                 </Grid>
+
                 <Grid Margin="50 10">
                     <PasswordBox x:Name="txtContraseña" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
                                  FontSize="14" BorderBrush="White">

@@ -56,8 +56,6 @@
                   IsReadOnly="true" 
                   ColumnWidth="*" 
                   Margin="30 0"
-                  BorderThickness="1"
-                  BorderBrush="Black"
                   Background="White"
                   CanUserResizeColumns="False" 
                   CanUserResizeRows="False">
@@ -78,7 +76,7 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Documento" Binding="{Binding numeroDocumento}">
+                <DataGridTextColumn Width="*" Header="Documento" Binding="{Binding numeroDocumento}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -92,7 +90,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="1.7*" Header="Nombre" Binding="{Binding nombre}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -105,7 +103,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Teléfono" Binding="{Binding telefono}">
+                <DataGridTextColumn Width="1.2*" Header="Teléfono" Binding="{Binding telefono}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -119,7 +117,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Correo Electrónico" Binding="{Binding email}">
+                <DataGridTextColumn Width="1.5*" Header="Correo Electrónico" Binding="{Binding email}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -132,10 +130,10 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn Width="auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Width="auto">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                                 <Button CommandParameter="{Binding idCliente}"
                                         x:Name="btnEditar"
                                         Click="Button_Click_1"

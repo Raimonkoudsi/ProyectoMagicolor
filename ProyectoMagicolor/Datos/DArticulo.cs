@@ -218,6 +218,13 @@ namespace Datos
             set { _NombreTrabajadorIngresado = value; }
         }
 
+        private string _PrecioVentaString;
+        public string precioVentaString
+        {
+            get { return _PrecioVentaString; }
+            set { _PrecioVentaString = value; }
+        }
+
 
         public DArticulo()
         {

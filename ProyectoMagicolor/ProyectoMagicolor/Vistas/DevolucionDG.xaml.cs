@@ -1,18 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -21,7 +11,6 @@ namespace ProyectoMagicolor.Vistas
     public partial class DevolucionDG : Page
     {
         public LDevolucion Metodos = new LDevolucion();
-
 
         public new MainWindow Parent;
 
@@ -43,10 +32,34 @@ namespace ProyectoMagicolor.Vistas
             List<DDevolucion> items = Metodos.MostrarDevolucionesGenerales(Fecha, Nombre);
 
             dgOperaciones.ItemsSource = items;
+
+            if (items.Count == 0)
+            {
+                btnReport.IsEnabled = false;
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
+
+            if (Globals.ACCESO_SISTEMA == 0 && items.Count != 0)
+            {
+                btnReport.IsEnabled = true;
+            }
+            else if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.IsEnabled = false;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            txtNombre.Text = "";
+            txtNombre.Focus();
+
+            dpFecha.DisplayDateEnd = DateTime.Today;
+
             Refresh(dpFecha.SelectedDate, txtNombre.Text);
         }
 
@@ -76,31 +89,9 @@ namespace ProyectoMagicolor.Vistas
             Refresh(dpFecha.SelectedDate, txtNombre.Text);
         }
 
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtNombre.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
-        }
-
         private void dpFecha_SelectedDateChanged(object sender, RoutedEventArgs e)
         {
-            if (PlaceFecha.Text != "")
-            {
-                PlaceFecha.Text = "";
-            }
-
             Refresh(dpFecha.SelectedDate, txtNombre.Text);
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtNombre.Text == "")
-            {
-                txtBucarPlaceH.Text = "Buscar...";
-            }
-
         }
 
         private void txtVer_Click(object sender, RoutedEventArgs e)

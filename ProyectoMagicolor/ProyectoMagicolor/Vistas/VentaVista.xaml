@@ -20,6 +20,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Visibility="Visible">
                     <StackPanel Margin="10">
@@ -40,7 +41,7 @@
                     <Separator Margin="0 5"/>
                 </StackPanel>
                 <Grid Grid.Row="1" >
-                    <StackPanel  Margin="7 10 7 7">
+                    <StackPanel  Margin="7 5 7 7">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -70,7 +71,19 @@
                     </StackPanel>
                     <Separator Margin="0 5" VerticalAlignment="Bottom"/>
                 </Grid>
-                <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
+                <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Grid.Row="2">
+                    <StackPanel Margin="7 4 7 4" VerticalAlignment="Bottom">
+                        <StackPanel>
+                            <TextBlock Text="Tipo de Pago" FontSize="10" FontWeight="Bold" Margin="0 "/>
+                            <TextBlock Name="txtTipoPago" Text="Crédito" FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Monto Ingresado" FontSize="15" FontWeight="Bold" Margin="0 "/>
+                            <TextBlock Name="txtMontoIngresado" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Row="3" Margin="7 7 7 10" VerticalAlignment="Bottom">
                     <StackPanel>
                         <TextBlock Text="Subtotal" FontSize="10" FontWeight="Bold" Margin="0 "/>
                         <TextBlock Name="txtSubtotal" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
@@ -116,10 +129,12 @@
                   FontSize="11"
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
-                  Background="LightGray">
+                  Background="White">
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="#f0f0f0" />
+                        <Setter Property="Background" Value="#3194F7" />
+                        <Setter Property="Foreground" Value="white" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
@@ -127,6 +142,12 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding NombreArticulo}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -134,6 +155,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding PrecioUnitario}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -141,6 +169,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding Cantidad}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -148,6 +183,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding PrecioTotal}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

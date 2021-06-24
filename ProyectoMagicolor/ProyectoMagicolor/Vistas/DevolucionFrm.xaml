@@ -10,7 +10,7 @@
       Loaded="Page_Loaded"
       Title="CompraFrm">
 
-    <Grid Background="WhiteSmoke">
+    <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -19,8 +19,8 @@
             <Grid Width="200">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Visibility="Visible">
                     <StackPanel Margin="10">
@@ -41,7 +41,7 @@
                     <Separator Margin="0 5"/>
                 </StackPanel>
                 <Grid Grid.Row="1" >
-                    <StackPanel  Margin="7 10 7 7">
+                    <StackPanel  Margin="7 5 7 15">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -67,8 +67,8 @@
                     </StackPanel>
                     <Separator Margin="0 5" VerticalAlignment="Bottom"/>
                 </Grid>
-                <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Bottom">
-                    <Grid Margin="0 10">
+                <StackPanel Grid.Row="2" Margin="7 7 7 10" VerticalAlignment="Center">
+                    <Grid Margin="0 0 0 10">
                         <TextBox x:Name="txtMotivo" FontSize="12" Text="" 
                              Height="80" TextWrapping="Wrap"
                              AcceptsReturn="True"
@@ -126,17 +126,27 @@
                   FontSize="11"
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
-                  Background="LightGray">
+                  Background="White"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False">
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="#f0f0f0" />
+                        <Setter Property="Background" Value="#3194F7" />
+                        <Setter Property="Foreground" Value="white" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Articulo" Binding="{Binding NombreArticulo}">
+                    <DataGridTextColumn Width="2*" Header="Articulo" Binding="{Binding NombreArticulo}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding NombreArticulo}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -144,6 +154,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding Precio}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -151,6 +168,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding CantidadComprada}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -158,6 +182,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding CantidadDevuelta}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -165,21 +196,40 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding CantidadRestante}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridCheckBoxColumn Width="auto" Header="Dañado" Binding="{Binding Dañado}">
-                        
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding Dañado}' />
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
                     </DataGridCheckBoxColumn>
-                    <DataGridTemplateColumn Width="auto">
+                    <DataGridTemplateColumn Width="auto" Header="Acciones">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Width="auto">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                                     <Button CommandParameter="{Binding Id}"
                                             Name="BtnDevolver"
                                         Click="BtnDevolver_Click"
                                         Margin="0 0 5 0"
-                                        Padding="5">Devolver</Button>
+                                        Padding="5" ToolTip="Seleccionar para Devolver">
+                                        <materialDesign:PackIcon Kind="AssignmentReturn" Foreground="White" Width="20" Height="20" />
+                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

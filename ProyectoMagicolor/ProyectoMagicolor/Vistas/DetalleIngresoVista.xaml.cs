@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace ProyectoMagicolor.Vistas
 {
@@ -83,7 +77,7 @@ namespace ProyectoMagicolor.Vistas
             var resp = new LArticulo().SacarArticulo(id)[0];
             if(resp.cantidadActual == 0)
             {
-                MessageBox.Show("El Producto que has seleccionado tiene un stock de 0!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("El Producto que has seleccionado tiene un stock de 0", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             var response = Metodos.Encontrar(id);
@@ -99,6 +93,58 @@ namespace ProyectoMagicolor.Vistas
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             Refresh(txtNombre.Text);
+        }
+    }
+
+
+
+
+
+
+    public class DesactivateButtonNoStock : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            int cantidadActual = int.Parse(values[0].ToString());
+
+            if (cantidadActual == 0)
+                return false;
+            if (cantidadActual > 0)
+                return true;
+
+            return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class ChangeRedColorRowNoStock : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return Brushes.Transparent;
+
+            int cantidadActual = int.Parse(value.ToString());
+
+            if (cantidadActual == 0)
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("Red"));
+            }
+            else
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("Black"));
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 

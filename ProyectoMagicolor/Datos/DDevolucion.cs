@@ -133,6 +133,13 @@ namespace Datos
             set { _NombreTrabajadorIngresado = value; }
         }
 
+        private string _MontoDevolucionString;
+        public string montoDevolucionString
+        {
+            get { return _MontoDevolucionString; }
+            set { _MontoDevolucionString = value; }
+        }
+
         public DDevolucion()
         {
 

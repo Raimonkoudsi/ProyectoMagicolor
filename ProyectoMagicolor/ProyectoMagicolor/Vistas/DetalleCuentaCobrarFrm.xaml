@@ -6,7 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         mc:Ignorable="d"
-        Title="Variedades Magicolor (Agregar Pago)" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Height="370" Width="450" Loaded="Window_Loaded">
+        Title="Variedades Magicolor (Agregar Pago)" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Height="407" Width="450" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -26,7 +26,7 @@
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" CanContentScroll="True" >
             <StackPanel Width="450" Margin="0 10 0 0">
                 <Border BorderBrush="Black" Margin="20 0 25 0" BorderThickness="0">
-                    <Grid HorizontalAlignment="Center" Background="WhiteSmoke">
+                    <Grid HorizontalAlignment="Center" Background="White">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
@@ -36,46 +36,71 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" BorderBrush="Black" Margin="0" BorderThickness="1">
-                                <Grid Width="240" Height="145" Margin="0,0,0,0" VerticalAlignment="Bottom">
+                            <GroupBox Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                Margin="1 1 10 1" Width="220"
+                                FontSize="18" Visibility="Visible">
+                                <GroupBox.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="White" Grid.Column="1" FontSize="16" VerticalAlignment="Center"  Text="DATOS DEL CLIENTE" Background="Transparent" />
+                                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="Account" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                                    </Grid>
+                                </GroupBox.Header>
+                                <Grid Width="auto" Height="auto" VerticalAlignment="Bottom">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
-                                    <Border BorderThickness="0 0 0 1" BorderBrush="#3094f7">
-                                        <TextBlock HorizontalAlignment="Center"  Grid.Column="0" Grid.Row="0" FontFamily="Nirmala UI" Text="Datos del Cliente" FontSize="18" VerticalAlignment="Center"/>
-                                    </Border>
-                                    
-                                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="5 5 0 0" Text="Documento de Identidad: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBlock  x:Name="txtCedula" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Margin="5 0 0 0" Text=" V-26038078" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
 
-                                    <TextBlock Grid.Row="3" TextWrapping="Wrap" Margin="5 5 0 0" Text="Nombre o Razón Social: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBlock  x:Name="txtCliente" VerticalAlignment="Center" Margin="5 0 0 5" Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="Raimon Samir Koudsi Chad Chad" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0 0 0 0" Text="Documento de Identidad: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock  x:Name="txtCedula" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" 
+                                                Margin="5 0 0 0" Text=" V-26038078" FontWeight="Bold" FontSize="16" 
+                                                VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Row="2" TextWrapping="Wrap" Margin="0 5 0 0" Text="Nombre o Razón Social: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock  x:Name="txtCliente" VerticalAlignment="Center" Margin="5 0 0 5" Grid.Row="3" 
+                                                TextWrapping="Wrap" Text="Raimon Samir Koudsi Chad Chad" FontWeight="Bold" 
+                                                FontSize="16"/>
                                 </Grid>
-                            </Border>
-                            <Border Grid.Column="1" BorderBrush="Black" Margin="0" BorderThickness="1">
-                                <Grid Width="150" Height="145">
+                            </GroupBox>
+
+                            <GroupBox Grid.Column="1"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                Margin="0 1 10 1" Width="168"
+                                FontSize="18" Visibility="Visible">
+                                <GroupBox.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="White" Grid.Column="1" FontSize="16" VerticalAlignment="Center"  Text="MONTO" Background="Transparent" />
+                                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 10 0" Kind="Money" Background="Transparent" HorizontalAlignment="Left" Foreground="White" Width="22" Height="22" />
+                                    </Grid>
+                                </GroupBox.Header>
+                                <Grid Width="150" Height="auto">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
-                                    <Border BorderThickness="0 0 0 1" BorderBrush="#3094f7">
-                                        <TextBlock HorizontalAlignment="Center"  Grid.Column="0" Grid.Row="0" FontFamily="Nirmala UI" Text="Monto" FontSize="18" VerticalAlignment="Center"/>
-                                    </Border>
 
-                                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Margin="5 5 0 0" Text="Monto Total:" FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="txtMontoRestante" Margin="5 0 0 5" Grid.Row="2" Text="1000,00 Bs S" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0 0 0 0" Text="Monto Total:" FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtMontoRestante" Margin="5 0 0 5" Grid.Row="1" Text="1000,00 Bs S" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
 
-                                    <TextBlock Grid.Row="3" TextWrapping="Wrap" Margin="5 5 0 0" Text="Monto Restante: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="txtMontoTotal" Margin="5 0 0 5" Grid.Row="4" Text="800,00 Bs S" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="2" TextWrapping="Wrap" Margin="0 5 0 0" Text="Monto Restante: " FontStyle="Italic" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtMontoTotal" Margin="5 0 0 5" Grid.Row="3" Text="800,00 Bs S" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                                 </Grid>
-                            </Border>
+                            </GroupBox>
                         </Grid>
                     </Grid>
                 </Border>

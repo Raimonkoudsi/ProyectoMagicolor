@@ -34,6 +34,9 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            txtBuscar.Text = "";
+            txtBuscar.Focus();
+
             Refresh(txtBuscar.Text);
         }
 

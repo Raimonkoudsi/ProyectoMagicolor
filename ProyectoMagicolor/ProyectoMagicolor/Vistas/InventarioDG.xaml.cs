@@ -6,7 +6,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-
 using Datos;
 using Logica;
 using System.Globalization;
@@ -153,6 +152,26 @@ namespace ProyectoMagicolor.Vistas
             List<DArticulo> items = Metodos.Inventario(TipoBuscarPor, FechaInicio, FechaFinal, TipoMostrar, TipoOrdenar, SinVentas);
 
             dgOperaciones.ItemsSource = items;
+
+
+            if (items.Count == 0)
+            {
+                btnReport.IsEnabled = false;
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
+
+            if (Globals.ACCESO_SISTEMA == 0 && items.Count != 0)
+            {
+                btnReport.IsEnabled = true;
+            }
+            else if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.IsEnabled = false;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -374,6 +393,32 @@ namespace ProyectoMagicolor.Vistas
         private void RBSinVentas_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+    }
+
+
+    public class ChangeRedColorRowMinimunStock : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            int cantidadActual = int.Parse(values[0].ToString());
+
+            int stockMinimo = int.Parse(values[1].ToString());
+
+            if (cantidadActual < stockMinimo)
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("Red"));
+            }
+            else
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("Black"));
+            }
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 

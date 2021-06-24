@@ -4,7 +4,6 @@ using System.Text;
 using Datos;
 using System.Data;
 using System.Data.SqlClient;
-using System.Windows;
 
 namespace Logica
 {
@@ -51,10 +50,12 @@ namespace Logica
                 a.codigo, 
                 a.nombre, 
                 c.nombre,
-                a.stockMinimo
+                a.stockMinimo,
+                a.stockMaximo
             FROM [articulo] a 
                 INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria 
             WHERE a.nombre LIKE @nombre + '%' 
+                AND a.estado <> 0
             ORDER BY a.nombre ASC
         ";
 
@@ -73,10 +74,25 @@ namespace Logica
 		                SELECT TOP 1 
 			                di.cantidadActual 
 		                FROM [detalleIngreso] di 
-		                WHERE a.idArticulo = di.idArticulo 
-		                ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
+		                WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
+		                ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad,
+                    ISNULL((
+                        SELECT TOP 1
+                            di.precioCompra
+                        FROM [detalleIngreso] di
+                        WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
+                        ORDER BY idDetalleIngreso DESC
+                    ),0) AS precioCompra,
+                    ISNULL((
+                        SELECT TOP 1
+                            di.precioVenta
+                        FROM [detalleIngreso] di
+                        WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
+                        ORDER BY idDetalleIngreso DESC
+                    ),0) AS precioVenta
             FROM [articulo] a
             WHERE a.codigo = @codigo
+                AND a.estado <> 0
         ";
 
         private string queryInventaryArticle = @"
@@ -86,7 +102,7 @@ namespace Logica
                     SELECT TOP 1 
                         di.cantidadActual 
                     FROM [detalleIngreso] di 
-                    WHERE a.idArticulo = di.idArticulo 
+                    WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
                     ORDER BY di.idDetalleIngreso DESC)
                 , 0) AS cantidad 
             FROM [articulo] a 
@@ -100,7 +116,7 @@ namespace Logica
 		            SELECT TOP 1 
 			            di.cantidadActual 
 		            FROM [detalleIngreso] di 
-		            WHERE a.idArticulo = di.idArticulo 
+		            WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
 		            ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
             FROM [articulo] a
         ";
@@ -142,20 +158,20 @@ namespace Logica
                 (ISNULL((
                     SELECT TOP 1
                         precioCompra
-                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo
+                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo AND estado <> 0
                     ORDER BY idDetalleIngreso DESC
                 ),0)),
                 (ISNULL((
                     SELECT TOP 1
                         precioVenta
-                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo
+                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo AND estado <> 0
                     ORDER BY idDetalleIngreso DESC
                 ),0)),
                 0,
                 (ISNULL((
                     SELECT TOP 1
                         cantidadActual
-                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo
+                    FROM [detalleIngreso] WHERE idArticulo = @idArticulo AND estado <> 0
                     ORDER BY idDetalleIngreso DESC
                 ),0)),
                 1,
@@ -261,7 +277,13 @@ namespace Logica
 			                di.cantidadActual 
 		                FROM [detalleIngreso] di 
 		                WHERE a.idArticulo = di.idArticulo 
-		                ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
+		                ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad,
+                    ISNULL((
+                        SELECT TOP 1
+                            precioVenta
+                        FROM [detalleIngreso] WHERE idArticulo = @idArticulo AND estado <> 0
+                        ORDER BY idDetalleIngreso DESC
+                    ),0) AS precioVenta
                 FROM [articulo] a
                 WHERE a.idArticulo = @idArticulo
             ";
@@ -283,7 +305,8 @@ namespace Logica
                             stockMinimo = reader.GetInt32(4),
                             stockMaximo = reader.GetInt32(5),
                             idCategoria = reader.GetInt32(6),
-                            cantidadActual = reader.GetInt32(7)
+                            cantidadActual = reader.GetInt32(7),
+                            precioVenta = (double)reader.GetDecimal(8)
                         });
                     }
                 };
@@ -314,7 +337,9 @@ namespace Logica
                         stockMinimo = reader.GetInt32(4),
                         stockMaximo = reader.GetInt32(5),
                         idCategoria = reader.GetInt32(6),
-                        cantidadActual = reader.GetInt32(7)
+                        cantidadActual = reader.GetInt32(7),
+                        precioCompra = (double)reader.GetDecimal(8),
+                        precioVenta = (double)reader.GetDecimal(9)
                     });
                 }
             };
@@ -585,7 +610,7 @@ namespace Logica
                         ORDER BY di.idDetalleIngreso DESC), 0) AS cantidadActual
                 FROM [articulo] a
                     INNER JOIN[categoria] c ON a.idCategoria=c.idCategoria
-                WHERE a.idArticulo = @idArticulo AND di.estado <> 0;
+                WHERE a.idArticulo = @idArticulo;
             ";
 
             Action action = () =>
@@ -812,6 +837,7 @@ namespace Logica
                             nombre = reader.GetString(2),
                             categoria = reader.GetString(3),
                             precioVenta = (double)reader.GetDecimal(4),
+                            precioVentaString = ((double)reader.GetDecimal(4)).ToString() + " Bs S",
                             cantidadActual = cantidadActual,
                             ultimaActualizacion = reader.GetDateTime(6) == null ? "Sin Actualización" : reader.GetDateTime(6).ToString("dd-MM-yyyy"),
                             estado = estado,

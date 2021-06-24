@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -36,32 +27,46 @@ namespace ProyectoMagicolor.Vistas
 
         public DCliente Cliente;
 
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            Limpiar();
+
+            Refresh();
+            txtDocumento.Focus();
+            dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
+
+            CbTipoDocumento.SelectedIndex = 0;
+
+            txtImpuesto.IsEnabled = false;
+            txtImpuesto.Text = LFunction.MostrarIVA().ToString();
+        }
+
         private bool Validate()
         {
             if (!ClienteSetted)
             {
-                MessageBox.Show("Debes Seleccionar un Cliente!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debe Seleccionar un Cliente", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtDocumento.Focus();
                 return true;
             }
 
             if(ListaVenta.Count == 0)
             {
-                MessageBox.Show("Debes Agregar Articulos!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debe Agregar Articulos", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtBuscar.Focus();
                 return true;
             }
 
             if(CbMetodoPago.SelectedIndex == -1)
             {
-                MessageBox.Show("Debes Seleccionar un Metodo de Pago!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debe Seleccionar un Metodo de Pago", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 CbMetodoPago.Focus();
                 return true;
             }
 
             if(CbMetodoPago.SelectedIndex == 1 && dpFechaLimite.SelectedDate == null)
             {
-                MessageBox.Show("Debes Seleccionar una Fecha Limite!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Debe Seleccionar una Fecha Limite", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 dpFechaLimite.Focus();
                 return true;
             }
@@ -74,18 +79,14 @@ namespace ProyectoMagicolor.Vistas
         private void Limpiar()
         {
             QuitarCliente();
-            double Monto = 0;
             subtotal = 0;
             impuestos = 0;
             total = 0;
             descuento = 0;
-            txtDescuento.Text = Monto.ToString("0.00");
             CbMetodoPago.SelectedIndex = -1;
             dpFechaLimite.SelectedDate = null;
-            txtImpuesto.Text = "15";
             txtBuscar.Text = "";
             txtDocumento.Text = "";
-            txtDescuento.Text = "0,00";
 
             DisplayData.Clear();
             ListaVenta.Clear();
@@ -128,19 +129,27 @@ namespace ProyectoMagicolor.Vistas
                 );
                 new LAuditoria().Insertar(auditoria);
 
-                var resp = MessageBox.Show("¡Venta Completada!" + Environment.NewLine + "¿Desea Mostrar la Factura de la Venta?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (resp == MessageBoxResult.Yes)
+                if (dVenta.estado == 2)
                 {
-                    Reports.Reporte reporte = new Reports.Reporte();
-                    reporte.ExportPDFTwoArguments(Metodo.MostrarDetalleVenta(dVenta.idVenta), "Venta", Metodo.MostrarVenta(dVenta.idVenta), "VentaGeneral", false, dVenta.idVenta.ToString());
-
-                    auditoria = new DAuditoria(
-                        Globals.ID_SISTEMA,
-                        "Generar",
-                        "Ha Impreso la Factura de la Venta N° " + dVenta.idVenta
-                    );
-                    new LAuditoria().Insertar(auditoria);
+                    var resp = MessageBox.Show("¡Venta a Crédito Ingresada!", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
                 }
+                else
+                {
+                    var resp = MessageBox.Show("¡Venta Completada!" + Environment.NewLine + "¿Desea Mostrar la Factura de la Venta?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (resp == MessageBoxResult.Yes)
+                    {
+                        Reports.Reporte reporte = new Reports.Reporte();
+                        reporte.ExportPDFTwoArguments(Metodo.MostrarDetalleVenta(dVenta.idVenta), "Venta", Metodo.MostrarVenta(dVenta.idVenta), "VentaGeneral", false, dVenta.idVenta.ToString());
+
+                        auditoria = new DAuditoria(
+                            Globals.ID_SISTEMA,
+                            "Generar",
+                            "Ha Impreso la Factura de la Venta N° " + dVenta.idVenta
+                        );
+                        new LAuditoria().Insertar(auditoria);
+                    }
+                }
+
                 Limpiar();
             }
         }
@@ -149,34 +158,6 @@ namespace ProyectoMagicolor.Vistas
         {
             GrdFechaLimite.Visibility = CbMetodoPago.SelectedIndex == 1 ?
                                             Visibility.Visible : Visibility.Collapsed;
-            if (CbMetodoPago.SelectedIndex > -1)
-                PlaceMetodoPago.Text = "";
-            else
-                PlaceMetodoPago.Text = "Método de pago";
-        }
-
-        private void CbTipoDocumento_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbTipoDocumento.SelectedIndex > -1)
-                PlaceTipoDocumento.Text = "";
-            else
-                PlaceTipoDocumento.Text = "Tipo";
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtDocumento.Text == "")
-            {
-                PlaceDocumento.Text = "";
-            }
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtDocumento.Text == "")
-            {
-                PlaceDocumento.Text = "Buscar...";
-            }
         }
 
         private void txtDocumento_KeyDown(object sender, KeyEventArgs e)
@@ -184,22 +165,6 @@ namespace ProyectoMagicolor.Vistas
             if(e.Key == Key.Enter)
             {
                 setCliente();
-            }
-        }
-
-        private void txtBuscar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtBuscar.Text == "")
-            {
-                txtBucarPlaceH.Text = "";
-            }
-        }
-
-        private void txtBuscar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtBuscar.Text == "")
-            {
-                PlaceDocumento.Text = "Codigo de Articulo";
             }
         }
 
@@ -319,6 +284,15 @@ namespace ProyectoMagicolor.Vistas
             dgOperaciones.ItemsSource = null;
             dgOperaciones.ItemsSource = DisplayData;
             RefreshMoney();
+
+            if (DisplayData.Count == 0)
+            {
+                SinRegistro.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SinRegistro.Visibility = Visibility.Collapsed;
+            }
         }
 
         public List<ModeloVenta> DisplayData = new List<ModeloVenta>();
@@ -381,7 +355,25 @@ namespace ProyectoMagicolor.Vistas
                 var response = Metodo.EncontrarConCodigo(txtBuscar.Text);
                 List<DDetalle_Ingreso> Resp2 = new List<DDetalle_Ingreso>();
 
-                if(response.Count > 0)
+                if (response.Count == 0)
+                {
+                    MessageBox.Show("El artículo no existe o esta deshabilitado", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    txtBuscar.Text = "";
+                    txtBuscar.Focus();
+
+                    return;
+                }
+
+                if(response[0].cantidadActual <= 0)
+                {
+                    MessageBox.Show("El artículo no posee disponibilidad", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    txtBuscar.Text = "";
+                    txtBuscar.Focus();
+
+                    return;
+                }
+
+                if (response.Count > 0)
                 {
                     Resp2 = MEt.EncontrarByArticulo(response[0].idArticulo);
                 }
@@ -406,21 +398,39 @@ namespace ProyectoMagicolor.Vistas
                 }
                 else
                 {
-                    var resp = MessageBox.Show("El Codigo que ingresó no se encuentra! ¿Deseas buscarlo manualmente?", "Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                    if (resp == MessageBoxResult.No)
+                    LIngreso MetodoIngreso = new LIngreso();
+                    var responseIngreso = MetodoIngreso.EncontrarByArticuloAnulado(txtBuscar.Text);
+
+                    if (responseIngreso.Count > 0)
+                    {
+                        MessageBox.Show("El artículo está deshabilitado, no se puede realizar ventas", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                        txtBuscar.Text = "";
+                        txtBuscar.Focus();
                         return;
+                    }
                     else
-                        OpenProducts = true;
+                    {
+                        var resp = MessageBox.Show("El Codigo que ingresó no se encuentra ¿Desea buscarlo manualmente?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        if (resp == MessageBoxResult.No)
+                            return;
+                        else
+                            OpenProducts = true;
+                    }
                 }
             }
             DetalleVentaFrm DVFrm = new DetalleVentaFrm(this, ListaVenta);
             DVFrm.Type = TypeForm.Create;
             DVFrm.OpenProducts = OpenProducts;
-            if(WillInclude)
+            if (WillInclude)
             {
                 DVFrm.AgregarArticulo(DDI, DA);
+                DVFrm.ShowDialog();
             }
-            DVFrm.ShowDialog();
+            else
+            {
+                DVFrm.AgregarArticulo(DDI, null);
+                DVFrm.ShowDialog();
+            }
         }
 
 
@@ -450,9 +460,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            DetalleVentaFrm DVFrm = new DetalleVentaFrm(this, ListaVenta);
-            DVFrm.Type = TypeForm.Create;
-            DVFrm.ShowDialog();
+            SetArticulo();
         }
 
         private void BtnEditar_Click(object sender, RoutedEventArgs e)
@@ -551,7 +559,7 @@ namespace ProyectoMagicolor.Vistas
 
             if(Monto > subtotal)
             {
-                MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 Monto = 0;
                 subtotal = 0;
                 impuestos = 0;
@@ -565,30 +573,6 @@ namespace ProyectoMagicolor.Vistas
             txtDescuento.Text = Monto.ToString("0.00");
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            Refresh();
-            txtDocumento.Focus();
-            dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
-
-            CbTipoDocumento.SelectedIndex = 0;
-
-            txtImpuesto.IsEnabled = false;
-            txtImpuesto.Text = LFunction.MostrarIVA().ToString();
-        }
-
-        private void dpFechaLimite_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dpFechaLimite.SelectedDate != null)
-            {
-                PlaceFechaLimite.Text = "";
-            }
-            else
-            {
-                PlaceFechaLimite.Text = "Fecha Limite";
-            }
-        }
-
         private void txtDescuento_KeyUp(object sender, KeyEventArgs e)
         {
             double Monto = 0;
@@ -598,7 +582,7 @@ namespace ProyectoMagicolor.Vistas
 
             if(Monto > subtotal)
             {
-                MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("El Monto de descuento no puede ser mayor al subtotal!", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                 Monto = 0;
                 subtotal = 0;
                 impuestos = 0;

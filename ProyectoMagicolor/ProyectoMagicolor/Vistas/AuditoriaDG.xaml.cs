@@ -62,6 +62,9 @@ namespace ProyectoMagicolor.Vistas
             CbUsuario.Text = "";
 
             dpDesde.Focus();
+
+            dpDesde.DisplayDateEnd = DateTime.Today;
+            dpHasta.DisplayDateEnd = DateTime.Today;
         }
 
 
@@ -77,7 +80,7 @@ namespace ProyectoMagicolor.Vistas
             dpHasta.Focus();
 
 
-            dpHasta.DisplayDateStart = dpDesde.SelectedDate.Value.AddDays(-1);
+            dpHasta.DisplayDateStart = dpDesde.SelectedDate.Value.AddDays(0);
         }
 
 
@@ -89,7 +92,7 @@ namespace ProyectoMagicolor.Vistas
             CbUsuario.IsEnabled = true;
             CbAcciones.Focus();
 
-            dpDesde.DisplayDateEnd = dpHasta.SelectedDate.Value.AddDays(1);
+            dpDesde.DisplayDateEnd = dpHasta.SelectedDate.Value.AddDays(0);
         }
 
 

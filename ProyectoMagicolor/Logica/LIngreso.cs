@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Datos;
-
-using System.Data;
 using System.Data.SqlClient;
-using System.Windows;
-
-//estado 1=activo, 2=cuentaxcobrar, 3=anulado
 
 namespace Logica
 {
@@ -81,41 +75,6 @@ namespace Logica
             );
 	    ";
 
-        private string queryListActive = @"
-                SELECT 
-                    i.idIngreso,
-				    i.factura,
-                    CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
-                    CONCAT(p.tipoDocumento, '-', p.numeroDocumento) AS cedulaProveedor,
-                    p.razonSocial,
-                    p.telefono,
-                    p.email,
-                    SUM(di.precioCompra * di.cantidadInicial) AS montoTotal,
-                    i.impuesto,
-                    i.fecha,
-                    i.metodoPago,
-                    i.estado
-                FROM [ingreso] i
-                    INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor
-                    INNER JOIN [trabajador] t ON t.idTrabajador = i.idTrabajador
-                    INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
-                WHERE i.idIngreso = @idIngreso AND di.cantidadInicial <> 0
-                GROUP BY 
-                    i.idIngreso, 
-                    i.factura,
-                    t.nombre, 
-                    t.apellidos, 
-                    p.tipoDocumento, 
-                    p.numeroDocumento, 
-                    p.razonSocial, 
-                    p.telefono, 
-                    p.email, 
-                    i.impuesto,
-                    i.fecha,
-                    i.metodoPago,
-                    i.estado
-            ";
-
         private string queryListDetail = @"
             SELECT 
                 di.idDetalleIngreso, 
@@ -131,47 +90,10 @@ namespace Logica
             WHERE di.idIngreso = @idIngreso AND i.estado <> 3 AND di.cantidadInicial <> 0;
         ";
 
-        private string queryListStockName = @"
-            SELECT 
-                a.idArticulo,
-				a.codigo,
-				a.nombre,
-				c.nombre,
-				ISNULL((
-                    SELECT TOP 1 
-                        di.precioVenta 
-                    FROM [detalleIngreso] di 
-                    WHERE a.idArticulo = di.idArticulo
-                    ORDER BY di.idDetalleIngreso DESC), 0) AS PrecioVenta,
-				ISNULL((
-                    SELECT TOP 1 
-                        di.cantidadActual 
-                    FROM [detalleIngreso] di 
-                    WHERE a.idArticulo = di.idArticulo AND di.cantidadInicial <> 0
-                    ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
-            FROM [articulo] a  
-                INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria
-			WHERE a.nombre LIKE @nombre + '%'
-            ORDER BY a.nombre;
-        ";
-
-        private string queryListID = @"
-            SELECT 
-                idDetalleIngreso, 
-                idIngreso, 
-                idArticulo, 
-                precioCompra, 
-                precioVenta, 
-                cantidadInicial, 
-                cantidadActual 
-            FROM [detalleIngreso] 
-            WHERE idArticulo = @idArticulo AND cantidadActual > 0
-            ORDER BY idDetalleIngreso DESC;
-        ";
 
         private string queryListDetailID = @"
             SELECT * FROM [detalleIngreso] 
-            WHERE idDetalleIngreso = @idDetalleIngreso AND cantidadInicial <> 0
+            WHERE idDetalleIngreso = @idDetalleIngreso AND estado <> 0
             ORDER BY idDetalleIngreso DESC
         ";
         #endregion
@@ -302,7 +224,48 @@ namespace Logica
         {
             List<DIngreso> ListaGenerica = new List<DIngreso>();
 
-            Action action = () =>
+            string queryListActive = @"
+                SELECT 
+                    i.idIngreso,
+				    i.factura,
+                    CONCAT(t.nombre, ' ', t.apellidos) AS nombreTrabajador,
+                    CONCAT(p.tipoDocumento, '-', p.numeroDocumento) AS cedulaProveedor,
+                    p.razonSocial,
+                    p.telefono,
+                    p.email,
+                    SUM(di.precioCompra * di.cantidadInicial) AS montoTotal,
+                    i.impuesto,
+                    i.fecha,
+                    i.metodoPago,
+                    i.estado,
+				    ISNULL((
+                        SELECT TOP 1 
+                            cp.montoIngresado 
+                        FROM [cuentaPagar] cp
+                        WHERE cp.idIngreso = i.idIngreso
+                        ORDER BY i.idIngreso DESC), -1) AS cuentaPagar
+                FROM [ingreso] i
+                    INNER JOIN [proveedor] p ON i.idProveedor = p.idProveedor
+                    INNER JOIN [trabajador] t ON t.idTrabajador = i.idTrabajador
+                    INNER JOIN [detalleIngreso] di ON i.idIngreso = di.idIngreso
+                WHERE i.idIngreso = @idIngreso AND di.cantidadInicial <> 0
+                GROUP BY 
+                    i.idIngreso, 
+                    i.factura,
+                    t.nombre, 
+                    t.apellidos, 
+                    p.tipoDocumento, 
+                    p.numeroDocumento, 
+                    p.razonSocial, 
+                    p.telefono, 
+                    p.email, 
+                    i.impuesto,
+                    i.fecha,
+                    i.metodoPago,
+                    i.estado
+            ";
+
+        Action action = () =>
                 {
                     using SqlCommand comm = new SqlCommand(queryListActive, Conexion.ConexionSql);
                     comm.Parameters.AddWithValue("@idIngreso", IdIngreso);
@@ -326,6 +289,7 @@ namespace Logica
                             metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(10)),
                             estado = reader.GetInt32(11),
                             estadoString = new LVenta().EstadoToString(reader.GetInt32(11)),
+                            montoIngresado = (double)reader.GetDecimal(12),
                             nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
                         });
                     }
@@ -370,28 +334,54 @@ namespace Logica
         {
             List<DArticulo> ListaGenerica = new List<DArticulo>();
 
-            Action action = () =>
-            {
-                using SqlCommand comm = new SqlCommand(queryListStockName, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@nombre", Nombre);
+            string queryListStockName = @"
+                SELECT 
+                    a.idArticulo,
+				    a.codigo,
+				    a.nombre,
+				    c.nombre,
+				    ISNULL((
+                        SELECT TOP 1 
+                            di.precioVenta 
+                        FROM [detalleIngreso] di 
+                        WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
+                        ORDER BY di.idDetalleIngreso DESC), 0) AS precioVenta,
+				    ISNULL((
+                        SELECT TOP 1 
+                            di.cantidadActual 
+                        FROM [detalleIngreso] di 
+                        WHERE a.idArticulo = di.idArticulo AND di.estado <> 0
+                        ORDER BY di.idDetalleIngreso DESC), 0) AS cantidad
+                FROM [articulo] a  
+                    INNER JOIN [categoria] c ON a.idCategoria = c.idCategoria
+			    WHERE a.nombre LIKE @nombre + '%'
+                    AND a.estado <> 0
+                ORDER BY a.nombre;
+            ";
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+            Action action = () =>
                 {
-                    if (reader.GetDecimal(4) != 0)
+                    using SqlCommand comm = new SqlCommand(queryListStockName, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@nombre", Nombre);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
                     {
-                        ListaGenerica.Add(new DArticulo
+                        if (reader.GetDecimal(4) != 0)
                         {
-                            idArticulo = reader.GetInt32(0),
-                            codigo = reader.GetString(1),
-                            nombre = reader.GetString(2),
-                            categoria = reader.GetString(3),
-                            precioVenta = (double)reader.GetDecimal(4),
-                            cantidadActual = reader.GetInt32(5)
-                        });
+                            ListaGenerica.Add(new DArticulo
+                            {
+                                idArticulo = reader.GetInt32(0),
+                                codigo = reader.GetString(1),
+                                nombre = reader.GetString(2),
+                                categoria = reader.GetString(3),
+                                precioVenta = (double)reader.GetDecimal(4),
+                                precioVentaString = ((double)reader.GetDecimal(4)).ToString() + " Bs S",
+                                cantidadActual = reader.GetInt32(5)
+                            });
+                        }
                     }
-                }
-            };
+                };
             LFunction.SafeExecutor(action);
 
             return ListaGenerica;
@@ -402,23 +392,100 @@ namespace Logica
         {
             List<DDetalle_Ingreso> ListaGenerica = new List<DDetalle_Ingreso>();
 
+            string queryListID = @"
+                SELECT 
+                    di.idDetalleIngreso, 
+                    di.idIngreso, 
+                    di.idArticulo, 
+                    di.precioCompra, 
+                    di.precioVenta, 
+                    di.cantidadInicial, 
+                    di.cantidadActual
+                FROM [detalleIngreso] di
+					INNER JOIN [articulo] a ON a.idArticulo = di.idArticulo
+                WHERE di.idArticulo = @idArticulo 
+					AND a.estado <> 0
+                    AND di.estado <> 0
+                ORDER BY idDetalleIngreso DESC;
+            ";
+
+            Action action = () =>
+                {
+                    using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
+                    comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+
+                    using SqlDataReader reader = comm.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        ListaGenerica.Add(new DDetalle_Ingreso
+                        {
+                            idDetalleIngreso = reader.GetInt32(0),
+                            idIngreso = reader.GetInt32(1),
+                            idArticulo = reader.GetInt32(2),
+                            precioCompra = (double)reader.GetDecimal(3),
+                            precioVenta = (double)reader.GetDecimal(4),
+                            cantidadInicial = reader.GetInt32(5),
+                            cantidadActual = reader.GetInt32(6)
+                        });
+                    }
+                };
+            LFunction.SafeExecutor(action);
+
+            return ListaGenerica;
+        }
+
+        public List<DArticulo> EncontrarByArticuloAnulado(string Codigo)
+        {
+            List<DArticulo> ListaGenerica = new List<DArticulo>();
+
+            string queryIDCardRepeatedNull = @"
+                    SELECT 
+                        a.idArticulo,
+                        a.codigo, 
+                        a.nombre,
+                        c.nombre,
+						a.stockMinimo,
+						a.stockMaximo,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioVenta 
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioVenta,
+                        ISNULL((
+                            SELECT TOP 1 
+                                di.precioCompra
+                            FROM [detalleIngreso] di 
+                            WHERE a.idArticulo = di.idArticulo 
+                            ORDER BY di.idDetalleIngreso DESC), 0) AS precioCompra,
+                        a.descripcion,
+                        a.estado
+					FROM [articulo] a
+                        INNER JOIN [categoria] c ON c.idCategoria=a.idCategoria
+					WHERE a.codigo = @codigo
+                        AND a.estado = 0
+            ";
+
             Action action = () =>
             {
-                using SqlCommand comm = new SqlCommand(queryListID, Conexion.ConexionSql);
-                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
+                using SqlCommand comm = new SqlCommand(queryIDCardRepeatedNull, Conexion.ConexionSql);
+                comm.Parameters.AddWithValue("@codigo", Codigo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    ListaGenerica.Add(new DDetalle_Ingreso
+                    ListaGenerica.Add(new DArticulo
                     {
-                        idDetalleIngreso = reader.GetInt32(0),
-                        idIngreso = reader.GetInt32(1),
-                        idArticulo = reader.GetInt32(2),
-                        precioCompra = (double)reader.GetDecimal(3),
-                        precioVenta = (double)reader.GetDecimal(4),
-                        cantidadInicial = reader.GetInt32(5),
-                        cantidadActual = reader.GetInt32(6)
+                        idArticulo = reader.GetInt32(0),
+                        codigo = reader.GetString(1),
+                        nombre = reader.GetString(2),
+                        categoria = reader.GetString(3),
+                        stockMinimo = reader.GetInt32(4),
+                        stockMaximo = reader.GetInt32(5),
+                        precioVenta = (double)reader.GetDecimal(6),
+                        precioCompra = (double)reader.GetDecimal(7),
+                        descripcion = reader.GetString(8),
+                        estado = reader.GetInt32(9)
                     });
                 }
             };
@@ -509,11 +576,14 @@ namespace Logica
                         cedulaProveedor = reader.GetString(2),
                         razonSocial = reader.GetString(3),
                         montoTotal = (double)reader.GetDecimal(4),
+                        montoTotalString = (double)reader.GetDecimal(4) == 0 ? "S/M" : ((double)reader.GetDecimal(4)).ToString() + " Bs S",
                         impuesto = reader.GetInt32(5),
                         fechaString = reader.GetDateTime(6).ToShortDateString(),
                         metodoPagoString = new LVenta().MetodoPagoToString(reader.GetInt32(7)),
+                        estado = reader.GetInt32(8),
                         estadoString = new LVenta().EstadoToString(reader.GetInt32(8)),
-                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
+                        nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA,
+                        accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA
                     });
                 }
             };

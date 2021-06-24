@@ -39,8 +39,16 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                btnReport.IsEnabled = true;
                 SinRegistro.Visibility = Visibility.Collapsed;
+            }
+
+            if (Globals.ACCESO_SISTEMA == 0 && items.Count != 0)
+            {
+                btnReport.IsEnabled = true;
+            }
+            else if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.IsEnabled = false;
             }
         }
 
@@ -52,12 +60,6 @@ namespace ProyectoMagicolor.Vistas
             CbTipoDocumento.SelectedIndex = 2;
 
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
-
-            if (Globals.ACCESO_SISTEMA != 0)
-            {
-                btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
-                btnReport.IsEnabled = false;
-            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -184,7 +186,7 @@ namespace ProyectoMagicolor.Vistas
 
             if (estado == 0)
                 return false;
-            if (estado == 1 && acceso == 0)
+            if (estado != 0 && acceso == 0)
                 return true;
 
             return false;

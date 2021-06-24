@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Globalization;
-
 using Datos;
 using Logica;
 
@@ -36,6 +28,8 @@ namespace ProyectoMagicolor.Vistas
 
             Parent = parent;
             TipoFecha = tipoFecha;
+
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
         }
 
 
@@ -82,6 +76,8 @@ namespace ProyectoMagicolor.Vistas
             }
 
             CbTipoDocumento.SelectedIndex = 4;
+            txtDocumento.Text = "";
+            txtDocumento.Focus();
 
             Refresh(tipoDoc, txtDocumento.Text);
         }

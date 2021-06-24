@@ -81,8 +81,7 @@ namespace Logica
                 cc.idCuentaCobrar, 
                 cc.montoIngresado, 
                 c.tipoDocumento, 
-                c.numeroDocumento, 
-                c.apellidos, 
+                c.numeroDocumento,
                 c.nombre, 
                 v.fecha, 
                 v.descuento 
@@ -134,7 +133,9 @@ namespace Logica
                                 cedulaCliente = reader.GetString(1),
                                 cliente = reader.GetString(2),
                                 fecha = fecha,
-                                montoTotal = (double)reader.GetDecimal(4)
+                                fechaString = fecha.ToString("dd-MM-yyyy"),
+                                montoTotal = (double)reader.GetDecimal(4),
+                                montoTotalString = ((double)reader.GetDecimal(4)).ToString() + " Bs S"
                             });
                         }
                     }

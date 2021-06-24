@@ -86,6 +86,9 @@ namespace ProyectoMagicolor
 
             var item5 = new ItemMenu("Cerrar Sesión", new AuditoriaDG(this), PackIconKind.Logout);
 
+            var item0 = new ItemMenu("Menú Principal", new AuditoriaDG(this), PackIconKind.Home, true);
+
+            Menu.Children.Add(new MenuItemX(item0, this));
             Menu.Children.Add(new MenuItemX(item1, this));
             Menu.Children.Add(new MenuItemX(item2, this));
             if (LoggedTrabajador.acceso == 0 || LoggedTrabajador.acceso == 1)
@@ -127,6 +130,12 @@ namespace ProyectoMagicolor
                 login.Show();
                 this.Close();
             }
+        }
+
+        public void Home()
+        {
+            VistaPrincipal Frm = new VistaPrincipal(this);
+            this.SwitchScreen(Frm);
         }
 
         public void Backup()
@@ -198,8 +207,6 @@ namespace ProyectoMagicolor
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Dashboard dashboard = new Dashboard();
-            ContentFrame.Content = dashboard;
         }
     }
     public class ItemMenu
@@ -211,17 +218,20 @@ namespace ProyectoMagicolor
             SubItems = subItems;
         }
         
-        public ItemMenu(string header, Page screen, PackIconKind icon)
+        public ItemMenu(string header, Page screen, PackIconKind icon, bool principal = false)
         {
             Header = header;
             Icon = icon;
             Screen = screen;
+            Principal = principal;
         }
 
         public string Header { get; private set; }
 		public PackIconKind Icon { get; private set; }
 		public List<SubItem> SubItems { get; private set; }
 		public Page Screen { get; private set; }
+
+        public Boolean Principal { get; private set; }
     }
 
 	public class SubItem

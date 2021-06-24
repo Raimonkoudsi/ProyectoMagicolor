@@ -37,16 +37,26 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                btnReport.IsEnabled = true;
                 SinRegistro.Visibility = Visibility.Collapsed;
+            }
+
+            if (Globals.ACCESO_SISTEMA == 0 && items.Count != 0)
+            {
+                btnReport.IsEnabled = true;
+            }
+            else if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.IsEnabled = false;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
-
             CbTipoDocumento.SelectedIndex = 0;
+            txtDocumento.Text = "";
+            txtDocumento.Focus();
+
+            Refresh(CbTipoDocumento.Text, txtDocumento.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

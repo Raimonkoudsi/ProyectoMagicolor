@@ -1,22 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Datos;
-using Logica;
-using System.Data;
-using System.Data.SqlClient;
-using System.Windows.Forms;
 
 namespace ProyectoMagicolor.Vistas
 {
@@ -34,11 +17,18 @@ namespace ProyectoMagicolor.Vistas
             ListViewItemMenu.Content = itemMenu.Header;
 
 
-            if (itemMenu.SubItems == null)
+            if (itemMenu.SubItems == null && itemMenu.Principal == false)
             {
                 ListViewItemMenu.Click += (s, r) =>
                 {
                     _context.LogOut();
+                };
+            }
+            else if (itemMenu.SubItems == null && itemMenu.Principal == true)
+            {
+                ListViewItemMenu.Click += (s, r) =>
+                {
+                    _context.Home();
                 };
             }
 

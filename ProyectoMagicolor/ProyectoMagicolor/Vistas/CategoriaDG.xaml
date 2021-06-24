@@ -17,7 +17,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="70 20 70 20">
-            <TextBox Name="txtBuscar" Text="" FontSize="12" Margin="0" KeyDown="TextBox_KeyDown"
+            <TextBox Name="txtBuscar" Text="" FontSize="12" Margin="0" KeyUp="TextBox_KeyDown"
                             materialDesign:HintAssist.Hint="Búsqueda de Nombre de Categoría"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
             <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
@@ -42,7 +42,7 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="*" Header="Nombre" Binding="{Binding nombre}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -56,7 +56,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Descripción" Binding="{Binding descripcion}">
+                <DataGridTextColumn Width="2*" Header="Descripción" Binding="{Binding descripcion}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -118,6 +118,8 @@
             <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
                           HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="30" Height="30"/>
         </Grid>
-        <Button Grid.Row="2" Content="Agregar Nueva Categoría" FontSize="12" Height="35" Padding="30 0" HorizontalAlignment="Center" Margin="0 10" Click="Button_Click" Background="ForestGreen" BorderBrush="ForestGreen"/>
+        <Button Grid.Row="2" Content="Agregar Nueva Categoría" FontSize="12" Height="35" Padding="30 0" 
+                HorizontalAlignment="Left" Margin="30 10 0 10" Click="Button_Click" Background="ForestGreen" 
+                BorderBrush="ForestGreen"/>
     </Grid>
 </Page>

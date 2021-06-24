@@ -77,7 +77,7 @@ namespace Logica
         ";
 
         private string queryNullSale = @"
-            UPDATE [venta] SET estado = 3
+            UPDATE [venta] SET estado = 0
 			WHERE idVenta = @idVenta
 			AND (SELECT SUM(cantidad)
 				FROM detalleVenta
@@ -133,7 +133,7 @@ namespace Logica
         ";
 
         private string queryNullBuy = @"
-            UPDATE [ingreso] SET estado = 3
+            UPDATE [ingreso] SET estado = 0
 			WHERE idIngreso = @idIngreso
 			AND (SELECT SUM(cantidadInicial)
 				FROM detalleIngreso
@@ -301,7 +301,7 @@ namespace Logica
         protected string EliminarDetalleIngreso(int IdDetalleIngreso, int IdArticulo)
         {
             using SqlCommand comm = new SqlCommand(queryDeleteBuyDetail, Conexion.ConexionSql);
-            comm.Parameters.AddWithValue("@idDetalleVenta", IdDetalleIngreso);
+            comm.Parameters.AddWithValue("@idDetalleIngreso", IdDetalleIngreso);
             comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
             return comm.ExecuteNonQuery() == 1 ? "OK" : "OK";
@@ -360,6 +360,7 @@ namespace Logica
                         cedulaCliente = reader.GetString(2),
                         nombreCliente = reader.GetString(3),
                         montoDevolucion = (double)reader.GetDecimal(4),
+                        montoDevolucionString = ((double)reader.GetDecimal(4)).ToString() + " Bs S",
                         cantidad = reader.GetInt32(5),
                         fechaVentaString = reader.GetDateTime(6).ToString("MM/dd/yyyy"),
                         nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA

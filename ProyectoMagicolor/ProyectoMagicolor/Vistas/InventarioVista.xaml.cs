@@ -47,13 +47,13 @@ namespace ProyectoMagicolor.Vistas
             txtImpuestoVentas.Text = (InventarioDatos.total - InventarioDatos.subtotal).ToString() + bs;
             txtVentasTotal.Text = InventarioDatos.subtotal.ToString() + bs;
 
-            txtComprasMonto.Text = InventarioDatos.subtotalCompra.ToString() + bs;
+            txtComprasMonto.Text = InventarioDatos.totalCompra.ToString() + bs;
             txtImpuestoCompras.Text = (InventarioDatos.totalCompra - InventarioDatos.subtotalCompra).ToString() + bs;
-            txtComprasTotal.Text = InventarioDatos.totalCompra.ToString() + bs;
+            txtComprasTotal.Text = InventarioDatos.subtotalCompra.ToString() + bs;
 
-            txtDevolucionesMonto.Text = InventarioDatos.subtotalDevolucion.ToString() + bs;
+            txtDevolucionesMonto.Text = InventarioDatos.totalDevolucion.ToString() + bs;
             txtImpuestoDevoluciones.Text = (InventarioDatos.totalDevolucion - InventarioDatos.subtotalDevolucion).ToString() + bs;
-            txtDevolucionesTotal.Text = InventarioDatos.totalDevolucion.ToString() + bs;
+            txtDevolucionesTotal.Text = InventarioDatos.subtotalDevolucion.ToString() + bs;
 
             double total = InventarioDatos.subtotal - InventarioDatos.subtotalCompra - InventarioDatos.subtotalDevolucion + (InventarioDatos.totalDevolucion - InventarioDatos.subtotalDevolucion);
 

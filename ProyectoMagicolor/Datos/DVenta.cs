@@ -146,6 +146,14 @@ namespace Datos
             set { _EmailCliente = value; }
         }
 
+
+        private string _MontoTotalString;
+        public string montoTotalString
+        {
+            get { return _MontoTotalString; }
+            set { _MontoTotalString = value; }
+        }
+
         private string _NombreTrabajadorIngresado;
         public string nombreTrabajadorIngresado
         {
@@ -153,6 +161,19 @@ namespace Datos
             set { _NombreTrabajadorIngresado = value; }
         }
 
+        private int _AccesoTrabajadorIngresado;
+        public int accesoTrabajadorIngresado
+        {
+            get { return _AccesoTrabajadorIngresado; }
+            set { _AccesoTrabajadorIngresado = value; }
+        }
+
+        private double _MontoIngresado;
+        public double montoIngresado
+        {
+            get { return _MontoIngresado; }
+            set { _MontoIngresado = value; }
+        }
 
         public DVenta()
         {

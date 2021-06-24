@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Globalization;
 using Datos;
 using Logica;
@@ -46,21 +38,24 @@ namespace ProyectoMagicolor.Vistas
             }
             else
             {
-                btnReport.IsEnabled = true;
                 SinRegistro.Visibility = Visibility.Collapsed;
+            }
+
+            if (Globals.ACCESO_SISTEMA == 0 && items.Count != 0)
+            {
+                btnReport.IsEnabled = true;
+            }
+            else if (Globals.ACCESO_SISTEMA != 0)
+            {
+                btnReport.IsEnabled = false;
             }
         }
 
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Globals.ACCESO_SISTEMA != 0)
-            {
-                btnReport.ToolTip = "Sólo el Administrador puede Generar Reportes";
-                btnReport.IsEnabled = false;
-            }
-
             CbTipoBusqueda.SelectedIndex = 0;
+            txtBusqueda.Text = "";
             txtBusqueda.Focus();
 
             Refresh(txtBusqueda.Text, CbTipoBusqueda.SelectedIndex);
@@ -98,13 +93,7 @@ namespace ProyectoMagicolor.Vistas
             int id = (int)((Button)sender).CommandParameter;
             string codigo = dgOperaciones.Items[1].ToString();
 
-            Resp = MessageBox.Show("¿Quiere borrar las cantidades actuales del artículo en el inventario?", "Variedades Magicolor", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-            if (Resp != MessageBoxResult.Yes)
-                respuesta = Metodos.DeshabilitarArticulo(id, "Completo");
-            else if (Resp != MessageBoxResult.No)
-                respuesta = Metodos.DeshabilitarArticulo(id, "Parcial");
-            else
-                return;
+            respuesta = Metodos.DeshabilitarArticulo(id, "Parcial");
 
             if (respuesta.Equals("OK"))
             {
@@ -199,7 +188,7 @@ namespace ProyectoMagicolor.Vistas
 
             if (estado == 0)
                 return false;
-            if (estado == 1 && (acceso == 0 || acceso == 1))
+            if (estado == 1 && acceso == 0)
                 return true;
 
             return false;
@@ -221,11 +210,11 @@ namespace ProyectoMagicolor.Vistas
 
             int acceso = int.Parse(values[1].ToString());
 
-            if (estado == 0 && (acceso == 0 || acceso == 1))
+            if (estado == 0 && acceso == 0)
             {
                 return true;
             }
-            else if (estado == 0 && acceso == 2)
+            else if (estado == 0 && acceso != 0)
             {
                 return false;
             }

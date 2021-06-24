@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Datos;
 using Logica;
 
@@ -22,6 +10,13 @@ namespace ProyectoMagicolor.Vistas
     {
         CompraDG ParentFrm;
 
+        public DIngreso Compra;
+        private LIngreso Metodos = new LIngreso();
+
+        public List<DDetalle_Ingreso> DetalleCompras = new List<DDetalle_Ingreso>();
+
+        public List<ModeloFactura> ArticulosADevolver = new List<ModeloFactura>();
+
         public CompraVista(DIngreso compra, CompraDG par)
         {
             InitializeComponent();
@@ -30,15 +25,6 @@ namespace ProyectoMagicolor.Vistas
 
             this.Compra = compra;
         }
-
-        public DIngreso Compra;
-        private LIngreso Metodos = new LIngreso();
-
-        public List<DDetalle_Ingreso> DetalleCompras = new List<DDetalle_Ingreso>();
-
-        public List<ModeloFactura> ArticulosADevolver = new List<ModeloFactura>();
-
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -70,6 +56,19 @@ namespace ProyectoMagicolor.Vistas
             txtImpuesto.Text = "Bs.S " + impuesto.ToString("0.00");
             double total = (Compra.montoTotal);
             txtTotal.Text = "Bs.S " + total.ToString("0.00");
+
+            //cp
+            txtTipoPago.Text = Compra.metodoPagoString;
+
+            if(Compra.montoIngresado > -1)
+            {
+                double montoIngresado = (Compra.montoIngresado);
+                txtMontoIngresado.Text = "Bs.S " + montoIngresado.ToString("0.00");
+            } 
+            else
+            {
+                txtMontoIngresado.Text = "Bs.S " + total.ToString("0.00");
+            }
 
             //trabajador
             txtVendedor.Text = Compra.trabajador;

@@ -1,19 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Globalization;
-using Datos;
 using Logica;
 
 namespace ProyectoMagicolor.Vistas
@@ -36,11 +23,30 @@ namespace ProyectoMagicolor.Vistas
         {
             txtUsuario.Text = Globals.USUARIO_SISTEMA;
             if (Globals.ACCESO_SISTEMA == 0)
+            {
                 txtAcceso.Text = "Administrador";
+
+                PrimeraFila.Visibility = Visibility.Visible;
+                SegundaFila.Visibility = Visibility.Visible;
+                TerceraFila.Visibility = Visibility.Visible;
+            }
             else if (Globals.ACCESO_SISTEMA == 1)
+            {
                 txtAcceso.Text = "Encargado";
+
+                PrimeraFila.Visibility = Visibility.Visible;
+                SegundaFila.Visibility = Visibility.Visible;
+                TerceraFila.Visibility = Visibility.Visible;
+            }
             else if (Globals.ACCESO_SISTEMA == 2)
+            {
                 txtAcceso.Text = "Vendedor";
+
+                PrimeraFila.Visibility = Visibility.Collapsed;
+                SegundaFila.Visibility = Visibility.Collapsed;
+                TerceraFila.Visibility = Visibility.Collapsed;
+            }
+
 
             Tuple<int, int> Stocks = Metodos.ContadorStockVistaPrincipal();
             txtConStock.Text = Stocks.Item1.ToString();

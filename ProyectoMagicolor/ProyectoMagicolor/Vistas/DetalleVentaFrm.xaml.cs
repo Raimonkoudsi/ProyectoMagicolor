@@ -21,26 +21,10 @@ using Microsoft.Win32;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class DetalleVentaFrm : Window
     {
 
         VentaFrm ParentForm;
-
-        public DetalleVentaFrm(VentaFrm parentfrm, List<DDetalle_Venta> actualDetalle)
-        {
-            InitializeComponent();
-
-            ParentForm = parentfrm;
-
-            ActualDetalle = actualDetalle;
-
-            txtCantidad.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
-        }
-
-        
 
         public TypeForm Type;
         public DDetalle_Venta DataFill;
@@ -57,6 +41,41 @@ namespace ProyectoMagicolor.Vistas
         public int idEdit;
         public List<DDetalle_Venta> ActualDetalle;
 
+        public DetalleVentaFrm(VentaFrm parentfrm, List<DDetalle_Venta> actualDetalle)
+        {
+            InitializeComponent();
+
+            ParentForm = parentfrm;
+
+            ActualDetalle = actualDetalle;
+
+            txtCantidad.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+        }
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Type == TypeForm.Read)
+            {
+                txtTitulo.Text = "Leer Articulo";
+                fillForm(DataFill, DataArticulo);
+                SetEnable(false);
+                btnEnviar.Visibility = Visibility.Collapsed;
+            }
+            else if (Type == TypeForm.Update)
+            {
+                txtTitulo.Text = "Editar Articulo";
+                fillForm(DataFill, DataArticulo);
+            }
+
+            txtCantidad.Focus();
+
+            if (OpenProducts)
+            {
+                AbrirIngresos();
+            }
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Send();
@@ -70,29 +89,6 @@ namespace ProyectoMagicolor.Vistas
                 Create();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if(Type == TypeForm.Read)
-            {
-                txtTitulo.Text = "Leer Articulo";
-                fillForm(DataFill, DataArticulo);
-                SetEnable(false);
-                btnEnviar.Visibility = Visibility.Collapsed;
-            }
-            else if(Type == TypeForm.Update)
-            {
-                txtTitulo.Text = "Editar Articulo";
-                fillForm(DataFill, DataArticulo);
-            }
-
-            txtCantidad.txt.Focus();
-
-            if (OpenProducts)
-            {
-                AbrirIngresos();
-            }
-        }
-
        
 
         void fillData()
@@ -104,7 +100,7 @@ namespace ProyectoMagicolor.Vistas
             }
 
             int id = DataDIngreso.idDetalleIngreso;
-            int Cantidad = int.Parse(txtCantidad.txt.Text);
+            int Cantidad = int.Parse(txtCantidad.Text);
 
 
             UForm = new DDetalle_Venta( 0,
@@ -140,31 +136,50 @@ namespace ProyectoMagicolor.Vistas
 
         public void AgregarArticulo(DDetalle_Ingreso DDI,DArticulo Articulo)
         {
-            ArticuloSetted = true;
-            DataDIngreso = DDI;
-            DataArticulo = Articulo;
+            if (Articulo != null)
+            {
+                ArticuloSetted = true;
+                DataDIngreso = DDI;
+                DataArticulo = Articulo;
 
-            GridArticulo.Visibility = Visibility.Visible;
-            txtArticulo.Text = Articulo.nombre;
-            txtArtPrecio.Text = DDI.precioVenta.ToString("0.00");
-            txtStock.Text = "En Stock: " + DDI.cantidadActual;
+                gridArticuloLleno.Visibility = Visibility.Visible;
+                gridArticuloVacio.Visibility = Visibility.Collapsed;
+                txtArticulo.Text = Articulo.nombre;
+                txtArticuloCod.Text = Articulo.codigo;
+                txtCantidadActual.Text = Articulo.cantidadActual.ToString();
+                txtPrecio.Text = Articulo.precioVenta.ToString() + " Bs S";
 
+                BtnAgregarArticulo.Background = System.Windows.Media.Brushes.OrangeRed;
+                BtnAgregarArticulo.BorderBrush = System.Windows.Media.Brushes.OrangeRed;
 
-            BtnAgregarArticulo.Content = "Cambiar";
+                IconoBoton.Visibility = Visibility.Collapsed;
+
+                NombreBoton.Text = "Cancelar Selección";
+                IconoBoton.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
+            }
+            else
+            {
+                QuitarArticulo();
+            }
         }
 
         public void QuitarArticulo()
         {
             ArticuloSetted = false;
-            DataDIngreso = null;
             DataArticulo = null;
 
-            GridArticulo.Visibility = Visibility.Collapsed;
+            gridArticuloLleno.Visibility = Visibility.Collapsed;
+            gridArticuloVacio.Visibility = Visibility.Visible;
             txtArticulo.Text = "";
-            txtArtPrecio.Text = "";
-            txtStock.Text = "";
+            txtArticuloCod.Text = "";
 
-            BtnAgregarArticulo.Content = "Buscar Artículo";
+            BtnAgregarArticulo.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3194F7"));
+            BtnAgregarArticulo.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3194F7"));
+
+            IconoBoton.Visibility = Visibility.Visible;
+
+            NombreBoton.Text = "  Buscar Artículo  ";
+            IconoBoton.Kind = MaterialDesignThemes.Wpf.PackIconKind.Search;
         }
 
         public void AbrirIngresos()
@@ -209,30 +224,30 @@ namespace ProyectoMagicolor.Vistas
             if(Data != null)
             {
                 AgregarArticulo(DataDIngreso, DataArticulo);
-                txtCantidad.SetText(Data.cantidad.ToString());
+                txtCantidad.Text = Data.cantidad.ToString();
             }
         }
         #region Validation
         bool Validate()
         {
-            if (!txtCantidad.Changed)
+            if (txtCantidad.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Cantidad!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtCantidad.txt.Focus();
+                LFunction.MessageExecutor("Error", "Debe ingresar la cantidad de la compra");
+                txtCantidad.Focus();
                 return true;
             }
 
             if (!ArticuloSetted)
             {
-                MessageBox.Show("Debes seleccionar un Articulo!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                LFunction.MessageExecutor("Error", "Debe seleccionar un articulo");
                 txtArticulo.Focus();
                 return true;
             }
 
-            if(DataDIngreso.cantidadActual < int.Parse(txtCantidad.txt.Text))
+            if(DataDIngreso.cantidadActual < int.Parse(txtCantidad.Text))
             {
-                MessageBox.Show("No puedes superar la cantidad que hay en Stock!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtCantidad.txt.Focus();
+                LFunction.MessageExecutor("Error", "La cantidad de venta no puede superar la cantidad que hay disponible");
+                txtCantidad.Focus();
                 return true;
             }
 

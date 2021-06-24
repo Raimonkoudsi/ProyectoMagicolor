@@ -9,10 +9,11 @@
         Loaded="Window_Loaded"
         Background="White"
         Title="Variedades Magicolor (Seleccionar Artículo)" WindowStartupLocation="CenterScreen" 
-        ResizeMode="NoResize" Height="500" Width="700" HorizontalAlignment="Stretch" 
+        ResizeMode="NoResize" Height="500" Width="800" HorizontalAlignment="Stretch" 
         VerticalAlignment="Stretch">
     <Window.Resources>
-        <local:ChangeRedColorRowDate x:Key="ChangeRedColorRowDate"/>
+        <local:ChangeRedColorRowNoStock x:Key="ChangeRedColorRowNoStock"/>
+        <local:DesactivateButtonNoStock x:Key="DesactivateButtonNoStock"/>
     </Window.Resources>
 
     <Grid>
@@ -52,7 +53,7 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="Foreground">
                         <Setter.Value>
-                            <Binding Path="fecha" Converter="{StaticResource ChangeRedColorRowDate}" />
+                            <Binding Path="cantidadActual" Converter="{StaticResource ChangeRedColorRowNoStock}" />
                         </Setter.Value>
                     </Setter>
                 </Style>
@@ -72,7 +73,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Nombre" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="2*" Header="Nombre" Binding="{Binding nombre}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -85,7 +86,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Categoria" Binding="{Binding categoria}">
+                <DataGridTextColumn Width="auto" Header="Categoria" Binding="{Binding categoria}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -99,7 +100,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Precio" Binding="{Binding precioVenta}">
+                <DataGridTextColumn Width="*" Header="Precio" Binding="{Binding precioVentaString}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -107,13 +108,13 @@
                             <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding precioVenta}' />
+                                    <TextBlock FontSize='16' Text='{Binding precioVentaString}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="0.5*" Header="Disponible" Binding="{Binding cantidadActual}">
+                <DataGridTextColumn Width="auto" Header="Disponible" Binding="{Binding cantidadActual}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -127,16 +128,21 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Width="*" Header="Acciones">
+                <DataGridTemplateColumn Width="auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Width="auto">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                                 <Button x:Name="btnSeleccionar"
                                         CommandParameter="{Binding idArticulo}" 
                                         Click="Button_Click_1"
                                         Background="ForestGreen" BorderBrush="ForestGreen"
                                         Margin="5 0 0 0"
                                         Padding="5" ToolTip="Seleccionar Artículo">
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource DesactivateButtonNoStock}">
+                                            <Binding Path="cantidadActual"/>
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
                                     <materialDesign:PackIcon Kind="ClipboardTextPlay" Foreground="White" Width="20" Height="20" />
                                 </Button>
                             </StackPanel>

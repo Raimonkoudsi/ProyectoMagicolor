@@ -4,12 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="820"
       Loaded="Page_Loaded"
       Title="CompraFrm">
 
-    <Grid Background="WhiteSmoke">
+    <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -45,10 +46,6 @@
                                 <TextBlock Text="Documento" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliDoc" Text="J-123123198123" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
                             </StackPanel>
-                            <!--<StackPanel Margin="7 10 0 0">
-                                <TextBlock Text="Direccion" FontSize="13" Foreground="Gray" />
-                                <TextBlock x:Name="TxtCliDir" Text="Calle Julio Verne 12 Palma de Mallorca" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="7 0 0 0"/>
-                            </StackPanel>-->
                             <StackPanel Margin="7 5 0 0">
                                 <TextBlock Text="Telefono" FontSize="13" Foreground="Gray" />
                                 <TextBlock x:Name="TxtCliTelf" Text="0424-309-4204" FontSize="12" FontWeight="Bold" TextWrapping="Wrap" Margin="7 0 0 0"/>
@@ -64,8 +61,9 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Margin="0 0 5 0">
-                                <TextBlock x:Name="PlaceTipoDocumento" Text="" VerticalAlignment="Center" Foreground="Gray"/>
-                                <ComboBox x:Name="CbTipoDocumento" Width="40" SelectedIndex="0" SelectionChanged="CbTipoDocumento_SelectionChanged">
+                                <ComboBox x:Name="CbTipoDocumento" Padding="10"
+                                        materialDesign:HintAssist.Hint="Tipo"
+                                        Style="{StaticResource MaterialDesignOutlinedComboBox}">
                                     <ComboBoxItem>V</ComboBoxItem>
                                     <ComboBoxItem>E</ComboBoxItem>
                                     <ComboBoxItem>J</ComboBoxItem>
@@ -73,8 +71,9 @@
                                 </ComboBox>
                             </Grid>
                             <Grid Grid.Column="1">
-                                <TextBlock Name="PlaceDocumento" Text="Documento" Foreground="Gray" VerticalAlignment="Center" Margin="1 0 0 0"/>
-                                <TextBox x:Name="txtDocumento" MaxLength="10" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" KeyDown="txtDocumento_KeyDown"/>
+                                <TextBox x:Name="txtDocumento" MaxLength="10" KeyDown="txtDocumento_KeyDown"
+                                        materialDesign:HintAssist.Hint="Documento" FontSize="12" Padding="10"
+                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                             </Grid>
                         </Grid>
                         <Grid Margin="10 18">
@@ -97,43 +96,47 @@
                         <TextBlock Text="Impuesto" FontSize="10" FontWeight="Bold" Foreground="Gray" Margin="0"/>
                         <Grid>
                             <TextBlock Name="txtImpuestoP" Text="Bs.S 0,00" FontSize="15" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Left" Margin="0 0 0 5"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBox x:Name="txtImpuesto" Text="15" Width="40" FontWeight="Bold" FontSize="15" KeyUp="txtImpuesto_KeyUp" HorizontalAlignment="Right"/>
-                                <TextBlock Text="%" FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <TextBlock x:Name="txtImpuesto" Text="15" FontSize="15" Margin="0 0 5 0" FontWeight="Bold" VerticalAlignment="Top"/>
+                                <TextBlock Text="%" FontSize="15" FontWeight="Bold" VerticalAlignment="Top"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
                     <StackPanel>
-                        <TextBlock Text="Descuento" FontSize="10" FontWeight="Bold" Foreground="Gray" Margin="0"/>
                         <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Bs.S" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" Foreground="Black" Margin="0 0 0 5"/>
+                            <TextBlock Grid.Column="0" Text="Bs.S" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" 
+                                       Foreground="Black" Margin="0 5 5 5"/>
                             <TextBox Grid.Column="1" 
                                      x:Name="txtDescuento" Text="0,00" 
                                      LostFocus="txtDescuento_LostFocus"
                                      KeyUp="txtDescuento_KeyUp"
                                      FontSize="15" FontWeight="Bold" 
-                                     Foreground="Black" 
-                                     VerticalAlignment="Center" Margin="5 0 0 0"/>
+                                     Foreground="Black" Padding="5"
+                                     VerticalAlignment="Center" Margin="0 2 0 0"
+                                     materialDesign:HintAssist.Hint="Descuento" 
+                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                         </Grid>
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="Total" FontSize="15" FontWeight="Bold" Margin="0 "/>
                         <TextBlock Name="txtTotal" Text="Bs.S 0,00" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 0 0 5"/>
                     </StackPanel>
-                    <Grid  Margin="10 10 10 0">
-                        <TextBlock x:Name="PlaceMetodoPago" Text="Método de pago" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
-                        <ComboBox x:Name="CbMetodoPago" FontSize="13" SelectionChanged="CbMetodoPago_SelectionChanged">
+                    <Grid  Margin="0 2 0 0">
+                        <ComboBox x:Name="CbMetodoPago" FontSize="12" SelectionChanged="CbMetodoPago_SelectionChanged"
+                            materialDesign:HintAssist.Hint="Método de Pago" Padding="10"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}">
                             <ComboBoxItem>Contado</ComboBoxItem>
                             <ComboBoxItem>Credito</ComboBoxItem>
                         </ComboBox>
                     </Grid>
-                    <Grid Name="GrdFechaLimite" Margin="30 10 30 0" Visibility="Collapsed">
-                        <TextBlock x:Name="PlaceFechaLimite" Text="Fecha Limite" FontSize="13" VerticalAlignment="Center" Foreground="Gray"/>
-                        <DatePicker x:Name="dpFechaLimite" FontSize="13" Focusable="False" SelectedDateChanged="dpFechaLimite_SelectedDateChanged"/>
+                    <Grid Name="GrdFechaLimite" Margin="0 5 0 0" Visibility="Collapsed">
+                        <DatePicker x:Name="dpFechaLimite" FontSize="12" Focusable="False" 
+                                    materialDesign:HintAssist.Hint="Factura de Compra" Padding="10"
+                                    Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
                     </Grid>
                     <Button Content="Procesar" Name="BtnProcesar" FontSize="17" Background="ForestGreen" BorderBrush="ForestGreen" Click="BtnProcesar_Click" FontWeight="Bold" Margin="0 20"/>
                 </StackPanel>
@@ -151,11 +154,14 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Row="0" Margin="0 10 5 10">
-                    <TextBlock Name="txtBucarPlaceH" Text="Codigo de Articulo" FontSize="15" VerticalAlignment="Center" Foreground="Gray"/>
-                    <TextBox Name="txtBuscar" MaxLength="16" Text="" FontSize="15" Margin="0" KeyDown="txtBuscar_KeyDown" GotFocus="txtBuscar_GotFocus" LostFocus="txtBuscar_LostFocus"/>
-                    <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+                    <TextBox Name="txtBuscar" MaxLength="16" Text="" FontSize="12" Margin="0" KeyDown="txtBuscar_KeyDown" 
+                             materialDesign:HintAssist.Hint="Código del Artículo"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                    <Image Source="/ProyectoMagicolor;component/Imagenes/loupe.png" Height="16" HorizontalAlignment="Right" Margin="0 0 15 0"/>
                 </Grid>
-                <Button Grid.Column="1" HorizontalAlignment="Right" Content="Agregar Articulo" Click="Button_Click_1" Background="ForestGreen" BorderBrush="ForestGreen" Margin="10 0"/>
+                <Button Grid.Column="1"  Width="52" Height="46" ToolTip="Agregar Artículo"  HorizontalAlignment="Center" Margin="10 0 0 0" Click="Button_Click_1" Background="ForestGreen" BorderBrush="ForestGreen">
+                    <materialDesign:PackIcon Kind="PlusBold" HorizontalAlignment="Center" Foreground="White" Width="20" Height="20" />
+                </Button>
             </Grid>
 
             <DataGrid x:Name="dgOperaciones" 
@@ -167,10 +173,14 @@
                   FontSize="12"
                   BorderThickness="0 1 0 1"
                   BorderBrush="LightGray"
-                  Background="LightGray">
+                  Background="White"
+                  CanUserResizeColumns="False" 
+                  CanUserResizeRows="False" >
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="#f0f0f0" />
+                        <Setter Property="Background" Value="#3194F7" />
+                        <Setter Property="Foreground" Value="white" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
@@ -178,6 +188,12 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding NombreArticulo}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -185,6 +201,13 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding Precio}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -192,30 +215,57 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                                <Setter Property="ToolTip">
+                                    <Setter.Value>
+                                        <TextBlock FontSize='16' Text='{Binding Cantidad}' />
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTemplateColumn Width="auto">
+                    <DataGridTemplateColumn Width="auto" Header="Acciones">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Width="auto">
+                                <StackPanel Orientation="Horizontal" Width="auto" HorizontalAlignment="Center">
                                     <Button CommandParameter="{Binding id}"
                                             Name="BtnEditar"
                                         Click="BtnEditar_Click"
                                         Margin="0 0 5 0"
-                                        Padding="5">Editar</Button>
+                                        Padding="5" ToolTip="Edtar Artículo">
+                                        <materialDesign:PackIcon Kind="Edit" Foreground="White" Width="20" Height="20" />
+                                    </Button>
                                     <Button x:Name="btnEliminar"
                                         CommandParameter="{Binding id}" 
                                         Click="btnEliminar_Click"
                                         Background="OrangeRed" BorderBrush="OrangeRed"
                                         Margin="5 0 0 0"
-                                        Padding="5">Eliminar</Button>
+                                        Padding="5" ToolTip="Cancelar Artículo">
+                                        <materialDesign:PackIcon Kind="Cancel" Foreground="White" Width="20" Height="20" />
+                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <Grid Grid.Row="1" HorizontalAlignment="Center" x:Name="SinRegistro">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Listado sin Artículos" 
+                          Margin="0 0 0 0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          FontStyle="Italic"
+                          FontSize="24"
+                          Style="{StaticResource MaterialDesignTextBlock}" />
+                <materialDesign:PackIcon Kind="CircleArrows" VerticalAlignment="Center"  Margin="5 8 0 0"
+                          HorizontalAlignment="Center" Grid.Column="1" Foreground="#3194F7" Width="30" Height="30"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

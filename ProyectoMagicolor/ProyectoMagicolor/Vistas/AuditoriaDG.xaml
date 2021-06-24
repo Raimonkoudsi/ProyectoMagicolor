@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      Background="WhiteSmoke"
+      Background="White"
       Loaded="Window_Loaded"
       Title="CuentaPagar" d:DesignHeight="500" d:DesignWidth="800" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
@@ -72,7 +72,7 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Fecha" Binding="{Binding fecha}">
+                <DataGridTextColumn Width="auto" Header="Fecha" Binding="{Binding fechaString}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -80,7 +80,7 @@
                             <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding fecha}' />
+                                    <TextBlock FontSize='16' Text='{Binding fechaString}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>
@@ -100,7 +100,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="auto" Header="Accion" Binding="{Binding accion}">
+                    <DataGridTextColumn Width="*" Header="Accion" Binding="{Binding accion}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -114,7 +114,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Descripción" Binding="{Binding descripcion}">
+                <DataGridTextColumn Width="0.7*" Header="Descripción" Binding="{Binding descripcion}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -127,7 +127,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Usuario" Binding="{Binding usuario}">
+                <DataGridTextColumn Width="*" Header="Usuario" Binding="{Binding usuario}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -141,7 +141,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Acceso" Binding="{Binding accesoString}">
+                <DataGridTextColumn Width="*" Header="Acceso" Binding="{Binding accesoString}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -149,7 +149,7 @@
                             <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding acceso}' />
+                                    <TextBlock FontSize='16' Text='{Binding accesoString}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>

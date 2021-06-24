@@ -1,28 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
-using Datos;
-using Logica;
 
 namespace ProyectoMagicolor.Vistas
 {
-    /// <summary>
-    /// Interaction logic for FormTrabajadores.xaml
-    /// </summary>
     public partial class DevolucionDetalleFrm : Window
     {
 
@@ -31,7 +11,7 @@ namespace ProyectoMagicolor.Vistas
         {
             InitializeComponent();
 
-            txtcantidad.txt.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
+            txtCantidad.KeyDown += new KeyEventHandler(Validaciones.TextBox_KeyDown);
 
             ParentFrm = par;
             DataFill = modelo;
@@ -53,9 +33,9 @@ namespace ProyectoMagicolor.Vistas
             fillForm(DataFill);
 
             int CantidadDevolver = 0;
-            if (txtcantidad.txt.Text != "")
+            if (txtCantidad.Text != "")
             {
-                CantidadDevolver = int.Parse(txtcantidad.txt.Text);
+                CantidadDevolver = int.Parse(txtCantidad.Text);
                 if (CantidadDevolver <= 0)
                     CantidadDevolver = 0;
             }
@@ -72,7 +52,7 @@ namespace ProyectoMagicolor.Vistas
                 return;
             }
 
-            int CantidadDevuelta = int.Parse(txtcantidad.txt.Text);
+            int CantidadDevuelta = int.Parse(txtCantidad.Text);
             int CantidadRestante = DataFill.CantidadComprada - CantidadDevuelta;
             bool Dañado = RBDamaged.IsChecked ?? false;
 
@@ -97,7 +77,7 @@ namespace ProyectoMagicolor.Vistas
 
         void SetEnable(bool Enable)
         {
-            txtcantidad.IsEnabled = Enable;
+            txtCantidad.IsEnabled = Enable;
             RBDamaged.IsEnabled = Enable;
         }
         void fillForm(ModeloDevolucion Data)
@@ -107,29 +87,30 @@ namespace ProyectoMagicolor.Vistas
                 txtNombreArticulo.Text = Data.NombreArticulo;
                 txtCantidadComprada.Text = Data.CantidadComprada.ToString();
                 int CantidadDevolver = Data.CantidadDevuelta;
-                txtcantidad.SetText(CantidadDevolver > 0 ? CantidadDevolver.ToString() : "");
+                txtCantidad.Text = (CantidadDevolver > 0 ? CantidadDevolver.ToString() : "");
                 RBDamaged.IsChecked = Data.Dañado;
             }
         }
+
         #region Validation
         bool Validate()
         {
-            if (!txtcantidad.Changed)
+            if (txtCantidad.Text == "")
             {
-                MessageBox.Show("Debes llenar el campo Cantidad!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtcantidad.txt.Focus();
+                MessageBox.Show("Debe ingresar la cantidad", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtCantidad.Focus();
                 return true;
             }
-            if (int.Parse(txtcantidad.txt.Text) <= 0)
+            if (int.Parse(txtCantidad.Text) <= 0)
             {
-                MessageBox.Show("El campo Cantidad no puede ser cero ni negativo!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtcantidad.txt.Focus();
+                MessageBox.Show("La cantidad no puede ser 0", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtCantidad.Focus();
                 return true;
             }
-            if (int.Parse(txtcantidad.txt.Text) > DataFill.CantidadComprada)
+            if (int.Parse(txtCantidad.Text) > DataFill.CantidadComprada)
             {
-                MessageBox.Show("El campo Cantidad a Devolver no puede ser mayor a la Cantidad Comprada!", "Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
-                txtcantidad.txt.Focus();
+                MessageBox.Show("La cantidad a devolver no puede ser mayor a la comprada", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtCantidad.Focus();
                 return true;
             }
 
@@ -148,9 +129,9 @@ namespace ProyectoMagicolor.Vistas
         private void txtcantidad_KeyUp(object sender, KeyEventArgs e)
         {
             int CantidadDevolver = 0;
-            if(txtcantidad.txt.Text != "")
+            if(txtCantidad.Text != "")
             {
-                CantidadDevolver = int.Parse(txtcantidad.txt.Text);
+                CantidadDevolver = int.Parse(txtCantidad.Text);
                 if (CantidadDevolver <= 0)
                     CantidadDevolver = 0;
             }

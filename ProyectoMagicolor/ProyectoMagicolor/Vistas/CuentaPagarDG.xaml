@@ -71,7 +71,7 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="auto" Header="Factura" Binding="{Binding factura}">
+                <DataGridTextColumn Width="*" Header="Factura" Binding="{Binding factura}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -85,7 +85,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Razón Social" Binding="{Binding cedulaProveedor}">
+                <DataGridTextColumn Width="*" Header="Documento" Binding="{Binding cedulaProveedor}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -98,11 +98,11 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Factura" Binding="{Binding razonSocial}">
+                <DataGridTextColumn Width="2*" Header="Razón Social" Binding="{Binding razonSocial}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
                             <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
@@ -112,7 +112,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="auto" Header="Fecha Límite" Binding="{Binding fecha}">
+                <DataGridTextColumn Width="auto" Header="Fecha Límite" Binding="{Binding fechaString}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -120,13 +120,13 @@
                             <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding fecha}' />
+                                    <TextBlock FontSize='16' Text='{Binding fechaString}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Monto Restante" Binding="{Binding montoTotal}">
+                <DataGridTextColumn Width="auto" Header="Monto Restante" Binding="{Binding montoTotalString}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -134,7 +134,7 @@
                             <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding montoTotal}' />
+                                    <TextBlock FontSize='16' Text='{Binding montoTotalString}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>
@@ -143,7 +143,7 @@
                 <DataGridTemplateColumn Width="auto" Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Width="auto">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                                 <Button x:Name="btnAgregarPago"
                                         CommandParameter="{Binding idIngreso}" 
                                         Click="btnAgregarPago_Click"

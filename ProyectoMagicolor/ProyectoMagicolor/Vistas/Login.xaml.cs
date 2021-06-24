@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 using Datos;
 using Logica;
 
@@ -32,46 +25,48 @@ namespace ProyectoMagicolor.Vistas
 
         private void Loging()
         {
-
-            if (txtUsuario.Text == "")
+            Dispatcher.Invoke(new Action(() =>
             {
-                LFunction.MessageExecutor("Error", "Debe ingresar un nombre de Usuario");
-                txtUsuario.Focus();
-                return;
-            }
-            if (txtContraseña.Password == "")
-            {
-                LFunction.MessageExecutor("Error", "Debe ingresar la Contraseña");
-                txtContraseña.Focus();
-                return;
-            }
-
-            if (metodosUsuario.UsuarioAnulado(txtUsuario.Text, txtContraseña.Password))
-            {
-                LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
-                Environment.Exit(0);
-            } 
-            else
-            {
-                respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
-
-                if (respuesta.Count > 0)
+                if (txtUsuario.Text == "")
                 {
-                    var MainFrm = new MainWindow(respuesta[0]);
-                    intentos = 0;
-                    this.Hide();
-                    MainFrm.Show();
+                    LFunction.MessageExecutor("Error", "Debe ingresar un nombre de Usuario");
+                    txtUsuario.Focus();
+                    return;
+                }
+                if (txtContraseña.Password == "")
+                {
+                    LFunction.MessageExecutor("Error", "Debe ingresar la Contraseña");
+                    txtContraseña.Focus();
+                    return;
+                }
 
-                    VistaPrincipal Frm = new VistaPrincipal(MainFrm);
-                    MainFrm.SwitchScreen(Frm);
-
-                    MainFrm.Closing += (s, r) => { this.Close(); };
+                if (metodosUsuario.UsuarioAnulado(txtUsuario.Text, txtContraseña.Password))
+                {
+                    LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
+                    Environment.Exit(0);
                 }
                 else
                 {
-                    ContadorIntentos();
+                    respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
+
+                    if (respuesta.Count > 0)
+                    {
+                        var MainFrm = new MainWindow(respuesta[0]);
+                        intentos = 0;
+                        this.Hide();
+                        MainFrm.Show();
+
+                        VistaPrincipal Frm = new VistaPrincipal(MainFrm);
+                        MainFrm.SwitchScreen(Frm);
+
+                        MainFrm.Closing += (s, r) => { this.Close(); };
+                    }
+                    else
+                    {
+                        ContadorIntentos();
+                    }
                 }
-            }
+            }), DispatcherPriority.ContextIdle);
         }
 
         private static int intentos;
@@ -90,9 +85,19 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-        private void login_Click(object sender, RoutedEventArgs e)
+        private async void login_Click(object sender, RoutedEventArgs e)
         {
-            Loging();
+            Loading.Visibility = Visibility.Visible;
+            PanelLogin.Visibility = Visibility.Collapsed;
+            BotonCerrar.IsEnabled = false;
+            ColorBoton.Foreground = System.Windows.Media.Brushes.Gray;
+
+            await Task.Run(() => Loging());
+
+            Loading.Visibility = Visibility.Collapsed;
+            PanelLogin.Visibility = Visibility.Visible;
+            BotonCerrar.IsEnabled = true;
+            ColorBoton.Foreground = System.Windows.Media.Brushes.White;
         }
 
         private void cerrar_Click(object sender, RoutedEventArgs e)

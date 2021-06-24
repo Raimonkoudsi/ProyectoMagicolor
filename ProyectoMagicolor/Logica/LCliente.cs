@@ -65,11 +65,6 @@ namespace Logica
             SELECT idCliente FROM [cliente] 
             WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado <> 0;
         ";
-
-        private string queryIDCardRepeatedNull = @"
-            SELECT * FROM [cliente]
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado = 0;
-        ";
         #endregion
 
 
@@ -261,6 +256,12 @@ namespace Logica
         public List<DCliente> CedulaRepetidaAnulada(string Cedula)
         {
             List<DCliente> ListaGenerica = new List<DCliente>();
+
+            string queryIDCardRepeatedNull = @"
+                SELECT * FROM [cliente]
+                WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula 
+                    AND estado = 0;
+            ";
 
             Action action = () =>
             {

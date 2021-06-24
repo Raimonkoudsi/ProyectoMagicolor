@@ -73,7 +73,7 @@ namespace Logica
 			    FROM [auditoria] a
 				    INNER JOIN [trabajador] t ON t.idTrabajador=a.idTrabajador
                 WHERE a.accion LIKE @accion + '%'
-                    AND a.fecha BETWEEN @desde AND @hasta
+                    AND a.fecha BETWEEN (@desde) AND (@hasta)
                     " + stringUsuario + @"
                 ORDER BY a.fecha DESC;
             ";
@@ -89,10 +89,11 @@ namespace Logica
                     using SqlDataReader reader = comm.ExecuteReader();
                     while (reader.Read())
                     {
+
                         ListaGenerica.Add(new DAuditoria
                         {
                             idAuditoria = reader.GetInt32(0),
-                            fechaString = reader.GetDateTime(1).TimeOfDay.ToString("dd/MM/yyyy"),
+                            fechaString = reader.GetDateTime(1).ToString("dd-MM-yyyy"),
                             fechaTime = reader.GetDateTime(1).TimeOfDay.ToString(@"hh\:mm\:ss"),
                             accion = reader.GetString(2),
                             descripcion = reader.GetString(3),
