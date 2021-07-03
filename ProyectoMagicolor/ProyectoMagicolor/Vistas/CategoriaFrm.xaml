@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" Height="355" Width="390" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded">
+        Title="Variedades Magicolor" Height="355" Width="390" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -29,7 +29,8 @@
                 <Grid Margin="0 10">
                     <TextBox x:Name="txtNombre" MaxLength="50" FontSize="12"
                             materialDesign:HintAssist.Hint="Nombre de la Categoría"
-                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             LostFocus="txtNombre_LostFocus"/>
                 </Grid>
                 <Grid Margin="0 10">
                     <TextBox x:Name="txtDescripcion" FontSize="12" 

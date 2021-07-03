@@ -206,6 +206,7 @@ namespace Logica
 
                 i++;
             }
+            if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Ingresado Correctamente");
             return respuesta;
         }
 
@@ -249,6 +250,7 @@ namespace Logica
             };
             LFunction.SafeExecutor(action);
 
+            if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Actualizado Correctamente");
             return respuesta;
         }
 
@@ -263,6 +265,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Deshabilitó el Trabajador";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Deshabilitado Correctamente");
             };
             LFunction.SafeExecutor(action);
 

@@ -539,14 +539,30 @@ namespace ProyectoMagicolor.Vistas
             total = Total;
 
 
-            double x = Math.Truncate(Subtotal * 100) / 100;
-            txtSubtotal.Text = "Bs.S " + x.ToString("0.00");
+            NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 
-            double y = Math.Truncate(imp * 100) / 100;
-            txtImpuestoP.Text = "Bs.S " + y.ToString("0.00");
+            nfi.CurrencyDecimalSeparator = ",";
+            nfi.CurrencyGroupSeparator = ".";
+            nfi.CurrencySymbol = "";
 
-            double z = Math.Truncate(Total * 100) / 100;
-            txtTotal.Text = "Bs.S " + z.ToString("0.00");
+
+            //double x = Math.Truncate(Subtotal * 100) / 100;
+
+            string x = Convert.ToDecimal(Subtotal).ToString("C3", nfi);
+            txtSubtotal.Text = "Bs.S " + x;
+
+
+            //double y = Math.Truncate(imp * 100) / 100;
+
+            string y = Convert.ToDecimal(imp).ToString("C3", nfi);
+            txtImpuestoP.Text = "Bs.S " + y;
+
+
+
+            //double z = Math.Truncate(Total * 100) / 100;
+
+            string z = Convert.ToDecimal(Total).ToString("C3", nfi);
+            txtTotal.Text = "Bs.S " + z;
 
         }
 

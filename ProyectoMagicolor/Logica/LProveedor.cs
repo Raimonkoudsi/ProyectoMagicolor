@@ -98,6 +98,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@url", Proveedor.url);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Registró el Proveedor";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Proveedor Ingresado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -141,6 +142,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idProveedor", IdProveedor);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Deshabilitó el Proveedor";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Proveedor Deshabilitado Correctamente");
             };
             LFunction.SafeExecutor(action);
 

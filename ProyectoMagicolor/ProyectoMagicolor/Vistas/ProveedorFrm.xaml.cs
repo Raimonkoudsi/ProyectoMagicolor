@@ -74,6 +74,7 @@ namespace ProyectoMagicolor.Vistas
             else if(Type == TypeForm.Update)
             {
                 txtTitulo.Text = "Editar Proveedor";
+                SetEnable(true);
                 fillForm(DataFill);
             }
             if (ParentFrm != null)

@@ -134,6 +134,11 @@ namespace ProyectoMagicolor.Vistas
                 {
                     txtPrecioCompra.Text = PrecioCompra.ToString();
                     txtPrecioVenta.Text = PrecioVenta.ToString();
+
+                    PrecioCompra = 0;
+                    PrecioVenta = 0;
+
+                    txtCantidad.Focus();
                 }
 
                 BtnAgregarArticulo.Background = System.Windows.Media.Brushes.OrangeRed;

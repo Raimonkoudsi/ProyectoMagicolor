@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -25,8 +25,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Loging()
         {
-            Dispatcher.Invoke(new Action(() =>
-            {
+
                 if (txtUsuario.Text == "")
                 {
                     LFunction.MessageExecutor("Error", "Debe ingresar un nombre de Usuario");
@@ -66,7 +65,6 @@ namespace ProyectoMagicolor.Vistas
                         ContadorIntentos();
                     }
                 }
-            }), DispatcherPriority.ContextIdle);
         }
 
         private static int intentos;
@@ -85,19 +83,9 @@ namespace ProyectoMagicolor.Vistas
             }
         }
 
-        private async void login_Click(object sender, RoutedEventArgs e)
+        private void login_Click(object sender, RoutedEventArgs e)
         {
-            Loading.Visibility = Visibility.Visible;
-            PanelLogin.Visibility = Visibility.Collapsed;
-            BotonCerrar.IsEnabled = false;
-            ColorBoton.Foreground = System.Windows.Media.Brushes.Gray;
-
-            await Task.Run(() => Loging());
-
-            Loading.Visibility = Visibility.Collapsed;
-            PanelLogin.Visibility = Visibility.Visible;
-            BotonCerrar.IsEnabled = true;
-            ColorBoton.Foreground = System.Windows.Media.Brushes.White;
+             Loging();
         }
 
         private void cerrar_Click(object sender, RoutedEventArgs e)

@@ -90,7 +90,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="1.7*" Header="Nombre" Binding="{Binding nombre}">
+                <DataGridTextColumn Width="1.3*" Header="Nombre" Binding="{Binding nombre}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -103,7 +103,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="1.2*" Header="Teléfono" Binding="{Binding telefono}">
+                <DataGridTextColumn Width="*" Header="Teléfono" Binding="{Binding telefono}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -117,7 +117,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Width="1.5*" Header="Correo Electrónico" Binding="{Binding email}">
+                <DataGridTextColumn Width="*" Header="Correo Electrónico" Binding="{Binding email}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>

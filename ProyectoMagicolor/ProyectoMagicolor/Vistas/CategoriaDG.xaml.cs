@@ -70,7 +70,10 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            string codigo = dgOperaciones.Items[1].ToString();
+            var response = Metodos.Encontrar(id);
+
+            string codigo = response[0].nombre;
+
             Metodos.Eliminar(id);
             Refresh(txtBuscar.Text);
 

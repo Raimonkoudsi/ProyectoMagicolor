@@ -19,6 +19,7 @@ namespace ProyectoMagicolor.Vistas
             Parent = parent;
 
             txtImpuesto.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
+            txtFactura.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -31,6 +32,7 @@ namespace ProyectoMagicolor.Vistas
             txtImpuesto.Text = LFunction.MostrarIVA().ToString();
 
             CbTipoDocumento.SelectedIndex = 2;
+            txtDocumento.Text = "";
             dpFechaLimite.DisplayDateStart = DateTime.Now.Date.AddDays(1);
         }
 
@@ -173,6 +175,10 @@ namespace ProyectoMagicolor.Vistas
             ProveedorSetted = false;
 
             Proveedor = null;
+
+            txtDocumento.Text = "";
+            CbTipoDocumento.SelectedIndex = 2;
+            txtDocumento.Focus();
 
             ProveedorBuscar.Visibility = Visibility.Visible;
             txtProvName.Visibility = Visibility.Collapsed;
@@ -384,7 +390,7 @@ namespace ProyectoMagicolor.Vistas
                             }
                             else
                             {
-                                MessageBox.Show("El artículo está deshabilitado, debe contactar al administrador para reactivarlo", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("El artículo está deshabilitado, debe contactar al Administrador para reactivarlo", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                                 txtBuscar.Text = "";
                                 txtBuscar.Focus();
                                 return;
@@ -509,16 +515,30 @@ namespace ProyectoMagicolor.Vistas
             impuestos = int.Parse(txtImpuesto.Text);
             total = Total;
 
+            NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+
+            nfi.CurrencyDecimalSeparator = ",";
+            nfi.CurrencyGroupSeparator = ".";
+            nfi.CurrencySymbol = "";
 
 
-            double x = Math.Truncate(Subtotal * 100) / 100;
-            txtSubtotal.Text = "Bs.S " + x.ToString("0.00");
+            //double x = Math.Truncate(Subtotal * 100) / 100;
 
-            double y = Math.Truncate(imp * 100) / 100;
-            txtImpuestoP.Text = "Bs.S " + y.ToString("0.00");
+            string x = Convert.ToDecimal(Subtotal).ToString("C3",nfi);
+            txtSubtotal.Text = "Bs.S " + x;
 
-            double z = Math.Truncate(Total * 100) / 100;
-            txtTotal.Text = "Bs.S " + z.ToString("0.00");
+
+            //double y = Math.Truncate(imp * 100) / 100;
+
+            string y = Convert.ToDecimal(imp).ToString("C3", nfi);
+            txtImpuestoP.Text = "Bs.S " + y;
+
+
+
+            //double z = Math.Truncate(Total * 100) / 100;
+
+            string z = Convert.ToDecimal(Total).ToString("C3", nfi);
+            txtTotal.Text = "Bs.S " + z;
         }
 
         private void txtBuscar_KeyDown(object sender, KeyEventArgs e)

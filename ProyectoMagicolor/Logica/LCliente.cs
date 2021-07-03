@@ -84,6 +84,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@email", Client.email);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro del Cliente";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Ingresado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -107,6 +108,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idCliente", Client.idCliente);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Cliente";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Actualizado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -124,6 +126,7 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idCliente", IdCliente);
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Deshabilitó el Registro del Cliente";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Cliente Deshabilitado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -155,9 +158,9 @@ namespace Logica
                             idCliente = reader.GetInt32(0),
                             nombre = reader.GetString(1),
                             numeroDocumento = reader.GetString(2) + "-" + reader.GetString(3),
-                            direccion = reader.GetString(4) == null ? "Sin Dirección" : reader.GetString(4),
-                            telefono = reader.GetString(5) == null ? "Sin Teléfono" : reader.GetString(5),
-                            email = reader.GetString(6) == null ? "Sin Correo" : reader.GetString(6),
+                            direccion = reader.GetString(4) == "" ? "Sin Dirección" : reader.GetString(4),
+                            telefono = reader.GetString(5) == "" ? "Sin Teléfono" : reader.GetString(5),
+                            email = reader.GetString(6) == "" ? "Sin Correo" : reader.GetString(6),
                             estado = reader.GetInt32(7),
                             accesoTrabajadorIngresado = Globals.ACCESO_SISTEMA,
                             nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA

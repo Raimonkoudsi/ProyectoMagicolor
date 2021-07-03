@@ -45,11 +45,11 @@
                     <TextBlock Foreground="Black" Grid.Row="2" TextWrapping="Wrap" FontSize="16" FontStyle="Italic"
                                Text="Administrador" x:Name="txtAcceso" Background="Transparent" VerticalAlignment="Top" FontWeight="Light"/>
                 </Grid>
-                <Image Grid.Column="2" Margin="20 10 10 40" Source="..\Imagenes\LogoReport.png"/>
+                <Image Grid.Column="2" Margin="20 10 10 40" Height="73" VerticalAlignment="Top"  Source="..\Imagenes\LogoReport.png"/>
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1" x:Name="PrimeraFila">
+        <Grid Grid.Row="1" x:Name="PrimeraFila" Visibility="Visible">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="20"/>

@@ -134,9 +134,6 @@ namespace ProyectoMagicolor.Vistas
                     );
                     new LAuditoria().Insertar(auditoria);
 
-                    if (SecondParentFrm != null)
-                        SecondParentFrm.AgregarArticulo(UForm);
-
                     if (ParentFrm != null || SecondParentFrm != null)
                     {
                         DetalleIngresoFrm.PrecioCompra = precioCompra;
@@ -147,6 +144,9 @@ namespace ProyectoMagicolor.Vistas
                         DetalleIngresoFrm.PrecioCompra = 0;
                         DetalleIngresoFrm.PrecioVenta = 0;
                     }
+
+                    if (SecondParentFrm != null)
+                        SecondParentFrm.AgregarArticulo(UForm);
 
                     this.DialogResult = true;
                     this.Close();
@@ -349,6 +349,7 @@ namespace ProyectoMagicolor.Vistas
                 if (Metodos.CodigoRepetido(txtCodigo.Text))
                 {
                     LFunction.MessageExecutor("Error", "El artículo ya está registrado en el sistema");
+                    txtCodigo.Text = "";
                     txtCodigo.Focus();
                     return true;
                 }
@@ -379,6 +380,7 @@ namespace ProyectoMagicolor.Vistas
                     if (Metodos.CodigoRepetido(txtCodigo.Text))
                     {
                         LFunction.MessageExecutor("Error", "El Artículo ya está Registrado en el Sistema");
+                        txtCodigo.Text = "";
                         txtCodigo.Focus();
                     }
         }

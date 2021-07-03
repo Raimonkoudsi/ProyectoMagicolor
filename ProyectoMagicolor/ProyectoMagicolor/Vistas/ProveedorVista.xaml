@@ -109,7 +109,7 @@
                             <Setter Property="FrameworkElement.VerticalAlignment" Value="Center"/>
                             <Setter Property="ToolTip">
                                 <Setter.Value>
-                                    <TextBlock FontSize='16' Text='{Binding sectorComercial}' />
+                                    <TextBlock FontSize='16' Text='{Binding telefono}' />
                                 </Setter.Value>
                             </Setter>
                         </Style>

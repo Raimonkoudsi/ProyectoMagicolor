@@ -159,6 +159,7 @@ namespace ProyectoMagicolor.Vistas
                 if (Metodos.CategoriaRepetida(txtNombre.Text))
                 {
                     LFunction.MessageExecutor("Error", "La categoría ya está registrada en el sistema");
+                    txtNombre.Text = ""; 
                     txtNombre.Focus();
                     return true;
                 }
@@ -175,6 +176,16 @@ namespace ProyectoMagicolor.Vistas
                 Update();
             else
                 Create();
+        }
+
+        private void txtNombre_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Metodos.CategoriaRepetida(txtNombre.Text))
+            {
+                LFunction.MessageExecutor("Error", "La categoría ya está registrada en el sistema");
+                txtNombre.Text = "";
+                txtNombre.Focus();
+            }
         }
     }
 }

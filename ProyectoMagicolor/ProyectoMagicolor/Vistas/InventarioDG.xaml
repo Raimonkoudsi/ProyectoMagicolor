@@ -29,6 +29,8 @@
                         <materialDesign:PackIcon Kind="FileChartOutline" Foreground="White" Width="20" Height="20" />
                     </Button>
                     <Grid Grid.Column="1" Margin="0 0 0 0">
+                        <TextBlock Foreground="Black" Grid.Row="0" TextWrapping="Wrap" FontSize="30" TextAlignment="Center"
+                               Text="Control de Inventario" Background="Transparent" VerticalAlignment="Center" FontWeight="Normal"/>
                     </Grid>
                     <Button Grid.Column="3" x:Name="btnOpenFilters" HorizontalAlignment="Center" ToolTip="Abrir Filtración" Margin="20 0 0 0" Width="55" Height="50" Click="btnOpenFilters_Click" Focusable="False">
                         <materialDesign:PackIcon Kind="FilterList" Foreground="White" Width="20" Height="20" />
@@ -67,7 +69,7 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="2*" Header="Código" Binding="{Binding codigo}">
+                    <DataGridTextColumn Width="*" Header="Código" Binding="{Binding codigo}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -94,7 +96,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="*" Header="Categoria" Binding="{Binding categoria}">
+                    <DataGridTextColumn Width="1.3*" Header="Categoria" Binding="{Binding categoria}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis"/>

@@ -120,7 +120,7 @@
                     </Grid>
                     <Grid Name="GrdFechaLimite" Margin="10 10 10 0" Visibility="Collapsed">
                         <DatePicker x:Name="dpFechaLimite" FontSize="12" Focusable="False" 
-                                    materialDesign:HintAssist.Hint="Factura de Compra" Padding="10"
+                                    materialDesign:HintAssist.Hint="Fecha Límite" Padding="10"
                                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
                     </Grid>
                     <Button Content="Procesar Compra" Name="BtnProcesar" FontSize="14" Background="ForestGreen" BorderBrush="ForestGreen" Click="BtnProcesar_Click" FontWeight="Bold" Margin="20 10 20 0"/>

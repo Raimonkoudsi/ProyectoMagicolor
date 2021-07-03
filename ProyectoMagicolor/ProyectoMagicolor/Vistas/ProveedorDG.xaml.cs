@@ -95,7 +95,10 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            string cedula = dgOperaciones.Items[1].ToString();
+            List<DProveedor> response = Metodos.Encontrar(id);
+
+            string cedula = response[0].tipoDocumento + "-" + response[0].numeroDocumento;
+
             Metodos.Eliminar(id);
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
 

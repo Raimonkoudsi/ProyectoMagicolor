@@ -41,12 +41,19 @@ namespace ProyectoMagicolor.Vistas
             if(VentaResp.Count > 0)
             {
                 DVenta Venta = VentaResp[0];
-                int Devuelto = 3;
-                if (Venta.estado == Devuelto)
+
+
+                if (Venta.estado == 3)
                 {
                     MessageBox.Show("La venta que está buscando ya se ha devuelto", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+                if(Venta.estado == 2)
+                {
+                    MessageBox.Show("No se puede realizar una devolución de una venta no cancelada en totalidad", "Variedades Magicolor", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 DevolucionFrm Frm = new DevolucionFrm(Venta, this);
                 ParentMenu.SwitchScreen(Frm);
                 

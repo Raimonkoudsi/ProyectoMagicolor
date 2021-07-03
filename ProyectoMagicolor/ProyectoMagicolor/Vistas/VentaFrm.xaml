@@ -8,7 +8,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="820"
       Loaded="Page_Loaded"
-      Title="CompraFrm">
+      Title="VentaFrm">
 
     <Grid Background="White">
         <Grid.ColumnDefinitions>
@@ -135,7 +135,7 @@
                     </Grid>
                     <Grid Name="GrdFechaLimite" Margin="0 5 0 0" Visibility="Collapsed">
                         <DatePicker x:Name="dpFechaLimite" FontSize="12" Focusable="False" 
-                                    materialDesign:HintAssist.Hint="Factura de Compra" Padding="10"
+                                    materialDesign:HintAssist.Hint="Fecha Límite" Padding="10"
                                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
                     </Grid>
                     <Button Content="Procesar" Name="BtnProcesar" FontSize="17" Background="ForestGreen" BorderBrush="ForestGreen" Click="BtnProcesar_Click" FontWeight="Bold" Margin="0 20"/>

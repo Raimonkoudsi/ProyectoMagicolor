@@ -99,14 +99,17 @@ namespace ProyectoMagicolor.Vistas
             if (Resp != MessageBoxResult.Yes)
                 return;
             int id = (int)((Button)sender).CommandParameter;
-            string cedula = dgOperaciones.Items[1].ToString();
+            var response = MetodosUsuario.Encontrar(id);
+
+            string cedula = response[0].cedula;
+
             MetodosUsuario.Eliminar(id);
             Refresh(CbTipoDocumento.Text, txtDocumento.Text);
 
             DAuditoria auditoria = new DAuditoria(
                 Globals.ID_SISTEMA,
                 "Deshabilitar",
-                "Ha Deshabilitado el Tarabajador " + cedula
+                "Ha Deshabilitado el Trabajador " + cedula
             );
             new LAuditoria().Insertar(auditoria);
         }

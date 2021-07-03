@@ -193,13 +193,14 @@ namespace Logica
                 comm.Parameters.AddWithValue("@idArticulo", idArticulo);
                 comm.Parameters.AddWithValue("@codigo", Articulo.codigo);
                 comm.Parameters.AddWithValue("@nombre", Articulo.nombre);
-                comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion == String.Empty ? "No Contiene una Descripción" : Articulo.descripcion);
+                comm.Parameters.AddWithValue("@descripcion", Articulo.descripcion);
                 comm.Parameters.AddWithValue("@stockMinimo", Articulo.stockMinimo);
                 comm.Parameters.AddWithValue("@stockMaximo", Articulo.stockMaximo);
                 comm.Parameters.AddWithValue("@idCategoria", Articulo.idCategoria);
                 Articulo.idArticulo = idArticulo;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Registro el Articulo";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Artículo Ingresado Correctamente");
             };
             LFunction.SafeExecutor(action);
 
@@ -224,6 +225,7 @@ namespace Logica
                 Articulo.idArticulo = idArticulo;
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Actualizó el Registro del Articulo";
+                if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Artículo Actualizado Correctamente");
             };
             LFunction.SafeExecutor(action);
 

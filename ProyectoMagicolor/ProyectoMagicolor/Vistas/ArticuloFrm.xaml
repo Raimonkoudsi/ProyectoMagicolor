@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
         xmlns:cnv="clr-namespace:System.ComponentModel;assembly=System"
         mc:Ignorable="d"
-        Title="Variedades Magicolor" Height="680" Width="490" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Loaded="Window_Loaded">
+        Title="Variedades Magicolor" Height="680" Width="490" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded">
 
     <Grid Margin="0">
         <Grid.RowDefinitions>
