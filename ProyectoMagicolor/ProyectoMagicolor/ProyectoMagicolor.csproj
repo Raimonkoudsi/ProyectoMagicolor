@@ -643,6 +643,7 @@
     <Resource Include="Imagenes\LogoReport.png" />
     <Resource Include="LogoReport.ico" />
     <Resource Include="LogoReport_1.ico" />
+    <Resource Include="Imagenes\LogoReportWhite.png" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

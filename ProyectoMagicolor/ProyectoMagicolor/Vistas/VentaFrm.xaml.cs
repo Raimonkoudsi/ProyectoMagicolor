@@ -21,6 +21,8 @@ namespace ProyectoMagicolor.Vistas
 
             txtImpuesto.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
             txtDescuento.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
+            txtBuscar.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
         public new MainWindow Parent;
@@ -180,8 +182,8 @@ namespace ProyectoMagicolor.Vistas
             txtCliName.Text = cliente.nombre;
             txtCliName.Visibility = Visibility.Visible;
             TxtCliDoc.Text = cliente.tipoDocumento + "-" + cliente.numeroDocumento;
-            TxtCliTelf.Text = cliente.telefono;
-            TxtCliEmail.Text = cliente.email;
+            TxtCliTelf.Text = cliente.telefono == "" ? "Sin Teléfono" : cliente.telefono;
+            TxtCliEmail.Text = cliente.email == "" ? "Sin Correo" : cliente.email;
             ClienteDatos.Visibility = Visibility.Visible;
 
 
@@ -256,6 +258,13 @@ namespace ProyectoMagicolor.Vistas
             ClienteVista PVFrm = new ClienteVista(this);
 
             PVFrm.ShowDialog();
+        }
+
+        public void SetNuevoCliente(string TipoDocumento, string Documento)
+        {
+            CbTipoDocumento.Text = TipoDocumento;
+            txtDocumento.Text = Documento;
+            setCliente();
         }
 
         private void BtnAbrir_Click(object sender, RoutedEventArgs e)

@@ -19,6 +19,8 @@ namespace ProyectoMagicolor.Vistas
         public TrabajadoresDG()
         {
             InitializeComponent();
+
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
         
 

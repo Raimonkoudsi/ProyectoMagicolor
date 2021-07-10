@@ -39,14 +39,14 @@ namespace ProyectoMagicolor.Vistas
                     return;
                 }
 
-                if (metodosUsuario.UsuarioAnulado(txtUsuario.Text, txtContraseña.Password))
+                if (metodosUsuario.UsuarioAnulado(txtUsuario.Text.ToLower(), txtContraseña.Password))
                 {
                     LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
                     Environment.Exit(0);
                 }
                 else
                 {
-                    respuesta = metodosUsuario.Login(txtUsuario.Text, txtContraseña.Password);
+                    respuesta = metodosUsuario.Login(txtUsuario.Text.ToLower(), txtContraseña.Password);
 
                     if (respuesta.Count > 0)
                     {

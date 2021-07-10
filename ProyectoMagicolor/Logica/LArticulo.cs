@@ -121,11 +121,6 @@ namespace Logica
             FROM [articulo] a
         ";
 
-        private string queryCodeRepeated = @"
-            SELECT idArticulo FROM [articulo] 
-            WHERE codigo = @codigo;
-        ";
-
 
         //parte de deshabilitar articulo
         private string queryDeshabilitarArticulo = @"
@@ -414,11 +409,15 @@ namespace Logica
                     {
 
                         int CantidadActual = reader.GetInt32(4);
+                        int CantidadDevuelta = reader.GetInt32(6);
                         int StockMinimo = reader.GetInt32(7);
                         if (CantidadActual == -1)
                             continue;
                         if ((typeStock == 2 && CantidadActual < StockMinimo) || (typeStock == 3 && CantidadActual >= StockMinimo))
                             continue;
+                        if (((typeOrder == 3 || typeOrder == 4) && CantidadActual == 0) || (typeOrder == 5 && CantidadDevuelta == 0))
+                            continue;
+
                         ListaGenerica.Add(new DArticulo
                         {
                             idArticulo = reader.GetInt32(0),
@@ -427,7 +426,7 @@ namespace Logica
                             categoria = reader.GetString(3),
                             cantidadActual = CantidadActual,
                             cantidadVendida = CantidadVendida,
-                            cantidadDevuelta = reader.GetInt32(6),
+                            cantidadDevuelta = CantidadDevuelta,
                             stockMinimo = StockMinimo,
                             precioVenta = (double)reader.GetDecimal(8),
                             nombreTrabajadorIngresado = Globals.TRABAJADOR_SISTEMA
@@ -697,14 +696,21 @@ namespace Logica
             return cantidad;
         }
 
-        public bool CodigoRepetido(string Codigo)
+        public bool CodigoRepetido(string Codigo, int IdArticulo)
         {
             bool respuesta = false;
+
+            string queryCodeRepeated = @"
+                SELECT idArticulo FROM [articulo] 
+                WHERE codigo = @codigo
+                    AND (idArticulo <> @idArticulo OR (idArticulo = @idArticulo AND estado = 0));
+            ";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryCodeRepeated, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@codigo", Codigo);
+                comm.Parameters.AddWithValue("@idArticulo", IdArticulo);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
@@ -745,7 +751,9 @@ namespace Logica
                         a.estado
 					FROM [articulo] a
                         INNER JOIN [categoria] c ON c.idCategoria=a.idCategoria
-                    WHERE a.codigo = @codigo AND a.estado = 0;
+                    WHERE a.codigo = @codigo 
+                        AND a.idArticulo <> 0 
+                        AND a.estado = 0;
             ";
 
             Action action = () =>

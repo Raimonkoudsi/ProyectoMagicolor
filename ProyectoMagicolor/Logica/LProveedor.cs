@@ -67,15 +67,6 @@ namespace Logica
             WHERE idProveedor = @idProveedor
         ";
 
-        private string queryIDCardRepeated = @"
-            SELECT idProveedor FROM [proveedor] 
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado <> 0;
-        ";
-
-        private string queryIDCardRepeatedNull = @"
-            SELECT * FROM [proveedor]
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado = 0;
-        ";
         #endregion
 
         public string Insertar(DProveedor Proveedor, bool ProveedorVacio = false)
@@ -273,14 +264,22 @@ namespace Logica
         }
 
 
-        public bool CedulaRepetida(string Cedula)
+        public bool CedulaRepetida(string Cedula, int IdProveedor)
         {
             bool respuesta = false;
+
+            string queryIDCardRepeated = @"
+                SELECT idProveedor FROM [proveedor] 
+                WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula 
+                    AND estado <> 0
+                    AND idProveedor <> @idProveedor;
+            ";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryIDCardRepeated, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@cedula", Cedula);
+                comm.Parameters.AddWithValue("@idProveedor", IdProveedor);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
@@ -294,6 +293,13 @@ namespace Logica
         public List<DProveedor> CedulaRepetidaAnulada(string Cedula)
         {
             List<DProveedor> ListaGenerica = new List<DProveedor>();
+
+            string queryIDCardRepeatedNull = @"
+                SELECT * FROM [proveedor]
+                WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula 
+                    AND idProveedor <> 0
+                    AND estado = 0;
+            ";
 
             Action action = () =>
             {

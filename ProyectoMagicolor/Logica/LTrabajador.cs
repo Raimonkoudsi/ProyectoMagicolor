@@ -106,11 +106,6 @@ namespace Logica
             WHERE idTrabajador = @idTrabajador;
         ";
 
-        private string queryListEmployeeNull = @"
-            SELECT * FROM [trabajador] 
-            WHERE cedula = @cedula AND idTrabajador <> 0 AND estado = 0;
-        ";
-
         private string queryListSecurity = @"
             SELECT * FROM [seguridad] 
             WHERE idTrabajador = @idTrabajador AND idTrabajador <> 0;
@@ -132,21 +127,11 @@ namespace Logica
             WHERE t.usuario = @usuario AND t.idTrabajador <> 0 AND t.estado <> 0;
         ";
 
-        string queryUpdatePassword = @"
+        private string queryUpdatePassword = @"
             UPDATE [trabajador] SET
                 contraseña = @contraseña
             WHERE usuario = @usuario;
 	    ";
-
-        private string queryUserRepeated = @"
-            SELECT idTrabajador FROM [trabajador]
-            WHERE usuario = @usuario;
-        ";
-
-        private string queryIDCardRepeated = @"
-            SELECT idTrabajador FROM [trabajador] 
-            WHERE cedula = @cedula;
-        ";
 
         private string queryUserNull = @"
             SELECT idTrabajador FROM [trabajador]
@@ -180,7 +165,10 @@ namespace Logica
 
                 respuesta = comm.ExecuteNonQuery() == 1 ? "OK" : "No se Ingresó el Trabajador";
                 if (respuesta.Equals("OK") && !TrabajadorVacio)
+                {
                     respuesta = InsertarSeguridad(idTrabajador, Seguridad);
+                    if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Ingresado Correctamente");
+                }
             };
             LFunction.SafeExecutor(action);
 
@@ -206,7 +194,7 @@ namespace Logica
 
                 i++;
             }
-            if (respuesta.Equals("OK")) LFunction.MessageExecutor("Information", "Trabajador Ingresado Correctamente");
+
             return respuesta;
         }
 
@@ -479,14 +467,21 @@ namespace Logica
         }
 
 
-        public bool UsuarioRepetido(string Usuario)
+        public bool UsuarioRepetido(string Usuario, int IdTrabajador)
         {
             bool respuesta = false;
+
+            string queryUserRepeated = @"
+                SELECT idTrabajador FROM [trabajador]
+                WHERE usuario = @usuario 
+                    AND idTrabajador <> @idTrabajador;
+            ";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryUserRepeated, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(Usuario));
+                comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
@@ -498,14 +493,21 @@ namespace Logica
         }
 
 
-        public bool CedulaRepetida(string Cedula)
+        public bool CedulaRepetida(string Cedula, int IdTrabajador)
         {
             bool respuesta = false;
+
+            string queryIDCardRepeated = @"
+                SELECT idTrabajador FROM [trabajador] 
+                WHERE cedula = @cedula
+                    AND idTrabajador <> @idTrabajador;
+            ";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryIDCardRepeated, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@cedula", Cedula);
+                comm.Parameters.AddWithValue("@idTrabajador", IdTrabajador);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
@@ -520,6 +522,13 @@ namespace Logica
         public List<DTrabajador> CedulaRepetidaAnulada(string Cedula)
         {
             List<DTrabajador> ListaGenerica = new List<DTrabajador>();
+
+            string queryListEmployeeNull = @"
+                SELECT * FROM [trabajador] 
+                WHERE cedula = @cedula 
+                    AND idTrabajador <> 0 
+                    AND estado = 0;
+            ";
 
             Action action = () =>
             {

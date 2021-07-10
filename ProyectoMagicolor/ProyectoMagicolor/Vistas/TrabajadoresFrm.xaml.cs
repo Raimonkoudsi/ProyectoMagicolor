@@ -180,6 +180,8 @@ namespace ProyectoMagicolor.Vistas
         public DTrabajador DataFill;
         public List<DSeguridad> DataFillSeguridad;
 
+        private int IdTrabajador;
+
         public DTrabajador UForm;
 
         public LTrabajador MetodosUsuario = new LTrabajador();
@@ -233,6 +235,12 @@ namespace ProyectoMagicolor.Vistas
 
                 SetEnable(true);
             }
+
+            if (DataFill == null)
+                IdTrabajador = 0;
+            else
+                IdTrabajador = DataFill.idTrabajador;
+
         } 
 
        
@@ -254,7 +262,7 @@ namespace ProyectoMagicolor.Vistas
             string telefono = txtTelefono.Text;
             string email = txtEmail.Text;
             int acceso = (CbAcceso.SelectedIndex + 1);
-            string usuario = txtUsuario.Text;
+            string usuario = txtUsuario.Text.ToLower();
             string contraseña = txtPassword.Password;
 
             UForm = new DTrabajador(0,
@@ -350,13 +358,13 @@ namespace ProyectoMagicolor.Vistas
             txtApellidos.IsEnabled = Enable;
             CbSexo.IsEnabled = Enable;
             DpNacimiento.IsEnabled = Enable;
-            txtDocumento.IsEnabled = false;
+            txtDocumento.IsEnabled = Enable;
             txtDireccion.IsEnabled = Enable;
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
             CbAcceso.IsEnabled = Enable;
-            CbTipoDocumento.IsEnabled = false;
-            txtUsuario.IsEnabled = false;
+            CbTipoDocumento.IsEnabled = Enable;
+            txtUsuario.IsEnabled = Enable;
             txtPassword.IsEnabled = Enable;
             txtCPassword.IsEnabled = Enable;
             txtPregunta.IsEnabled = Enable;
@@ -567,28 +575,26 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
-            if(Type != TypeForm.Update)
+
+            if (ActivarAnulado())
             {
-                if (ActivarAnulado())
-                {
-                    return true;
-                }
+                return true;
+            }
 
-                if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
-                {
-                    LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
-                    txtDocumento.Text = "";
-                    txtDocumento.Focus();
-                    return true;
-                }
+            if (MetodosUsuario.CedulaRepetida((CbTipoDocumento.Text + "-" + txtDocumento.Text), IdTrabajador))
+            {
+                LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
+                txtDocumento.Text = "";
+                txtDocumento.Focus();
+                return true;
+            }
 
-                if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
-                {
-                    LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
-                    txtUsuario.Text = "";
-                    txtUsuario.Focus();
-                    return true;
-                }
+            if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text.ToLower(), IdTrabajador))
+            {
+                LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
+                txtUsuario.Text = "";
+                txtUsuario.Focus();
+                return true;
             }
 
 
@@ -674,7 +680,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if(CbTipoDocumento.Text != "" && txtDocumento.Text != "")
                 if(!ActivarAnulado())
-                    if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                    if (MetodosUsuario.CedulaRepetida((CbTipoDocumento.Text + "-" + txtDocumento.Text), IdTrabajador))
                     {
                         LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
 
@@ -687,7 +693,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if (CbTipoDocumento.Text != "" && txtDocumento.Text != "")
                 if (!ActivarAnulado())
-                    if (MetodosUsuario.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                    if (MetodosUsuario.CedulaRepetida((CbTipoDocumento.Text + "-" + txtDocumento.Text), IdTrabajador))
                     {
                         LFunction.MessageExecutor("Error", "La Cédula ya está Registrada en el Sistema");
 
@@ -700,7 +706,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if (Type != TypeForm.Update)
             {
-                if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text))
+                if (MetodosUsuario.UsuarioRepetido(txtUsuario.Text.ToLower(), IdTrabajador))
                 {
                     LFunction.MessageExecutor("Error", "El Nombre de Usuario ya está Registrado en el Sistema");
 

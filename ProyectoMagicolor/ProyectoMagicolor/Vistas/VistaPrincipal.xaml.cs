@@ -21,7 +21,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            txtUsuario.Text = Globals.USUARIO_SISTEMA;
+            txtUsuario.Text = Globals.USUARIO_SISTEMA.FirstCharToUpper();
             if (Globals.ACCESO_SISTEMA == 0)
             {
                 txtAcceso.Text = "Administrador";
@@ -29,6 +29,9 @@ namespace ProyectoMagicolor.Vistas
                 PrimeraFila.Visibility = Visibility.Visible;
                 SegundaFila.Visibility = Visibility.Visible;
                 TerceraFila.Visibility = Visibility.Visible;
+
+                LogoPequeño.Visibility = Visibility.Visible;
+                LogoGrande.Visibility = Visibility.Collapsed;
             }
             else if (Globals.ACCESO_SISTEMA == 1)
             {
@@ -37,14 +40,20 @@ namespace ProyectoMagicolor.Vistas
                 PrimeraFila.Visibility = Visibility.Visible;
                 SegundaFila.Visibility = Visibility.Visible;
                 TerceraFila.Visibility = Visibility.Visible;
+
+                LogoPequeño.Visibility = Visibility.Visible;
+                LogoGrande.Visibility = Visibility.Collapsed;
             }
-            else if (Globals.ACCESO_SISTEMA == 2)
+            else
             {
                 txtAcceso.Text = "Vendedor";
 
                 PrimeraFila.Visibility = Visibility.Collapsed;
                 SegundaFila.Visibility = Visibility.Collapsed;
                 TerceraFila.Visibility = Visibility.Collapsed;
+
+                LogoPequeño.Visibility = Visibility.Visible;
+                LogoGrande.Visibility = Visibility.Visible;
             }
 
 

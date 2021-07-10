@@ -20,6 +20,8 @@ namespace ProyectoMagicolor.Vistas
 
             txtImpuesto.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
             txtFactura.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
+            txtBuscar.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
+            txtDocumento.KeyDown += new KeyEventHandler(Validaciones.TextBoxValidatePrices);
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

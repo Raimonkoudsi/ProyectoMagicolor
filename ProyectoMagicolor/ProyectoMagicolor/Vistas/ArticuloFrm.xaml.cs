@@ -14,6 +14,8 @@ namespace ProyectoMagicolor.Vistas
 
         public TypeForm Type;
 
+        private int IdArticulo;
+
         public DArticulo DataFill;
         public DArticulo UForm;
         public LArticulo Metodos = new LArticulo();
@@ -78,6 +80,11 @@ namespace ProyectoMagicolor.Vistas
                 txtCodigo.IsEnabled = false;
                 txtNombre.Focus();
             }
+
+            if (DataFill == null)
+                IdArticulo = 0;
+            else
+                IdArticulo = DataFill.idArticulo;
         }
 
 
@@ -202,7 +209,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void SetEnable(bool Enable)
         {
-            txtCodigo.IsEnabled = false;
+            txtCodigo.IsEnabled = Enable;
             txtNombre.IsEnabled = Enable;
             CbCategoria.IsEnabled = Enable;
             txtStockMinimo.IsEnabled = Enable;
@@ -257,16 +264,6 @@ namespace ProyectoMagicolor.Vistas
                 LFunction.MessageExecutor("Error", "El código debe ser mayor a 5 dígitos");
                 txtCodigo.Focus();
                 return true;
-            }
-
-            if (Type != TypeForm.Update)
-            {
-                if (Metodos.CodigoRepetido(txtCodigo.Text))
-                {
-                    LFunction.MessageExecutor("Error", "El código del artículo ya está registrado en el sistema");
-                    txtCodigo.Focus();
-                    return true;
-                }
             }
 
             if (txtNombre.Text == "")
@@ -339,20 +336,18 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
-            if (Type != TypeForm.Update)
-            {
-                if (ActivarAnulado())
-                {
-                    return true;
-                }
 
-                if (Metodos.CodigoRepetido(txtCodigo.Text))
-                {
-                    LFunction.MessageExecutor("Error", "El artículo ya está registrado en el sistema");
-                    txtCodigo.Text = "";
-                    txtCodigo.Focus();
-                    return true;
-                }
+            if (ActivarAnulado())
+            {
+                return true;
+            }
+
+            if (Metodos.CodigoRepetido(txtCodigo.Text, IdArticulo))
+            {
+                LFunction.MessageExecutor("Error", "El artículo ya está registrado en el sistema");
+                txtCodigo.Text = "";
+                txtCodigo.Focus();
+                return true;
             }
 
             return false;
@@ -377,9 +372,9 @@ namespace ProyectoMagicolor.Vistas
         {
             if (txtCodigo.Text != "")
                 if (!ActivarAnulado())
-                    if (Metodos.CodigoRepetido(txtCodigo.Text))
+                    if (Metodos.CodigoRepetido(txtCodigo.Text, IdArticulo))
                     {
-                        LFunction.MessageExecutor("Error", "El Artículo ya está Registrado en el Sistema");
+                        LFunction.MessageExecutor("Error", "El artículo ya está registrado en el sistema");
                         txtCodigo.Text = "";
                         txtCodigo.Focus();
                     }
@@ -394,7 +389,7 @@ namespace ProyectoMagicolor.Vistas
             {
                 if (Globals.ACCESO_SISTEMA == 0 || Globals.ACCESO_SISTEMA == 1)
                 {
-                    MessageBoxResult Resp = MessageBox.Show("El Artículo está Deshabilitado" + Environment.NewLine + "¿Desea reactivarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    MessageBoxResult Resp = MessageBox.Show("El artículo está deshabilitado" + Environment.NewLine + "¿Desea reactivarlo?", "Variedades Magicolor", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (Resp == MessageBoxResult.Yes)
                     {
                         Type = TypeForm.Read;

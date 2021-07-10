@@ -60,11 +60,6 @@ namespace Logica
             SELECT * FROM [cliente] 
             WHERE tipoDocumento = @tipoDocumento AND numeroDocumento = @numeroDocumento
         ";
-
-        private string queryIDCardRepeated = @"
-            SELECT idCliente FROM [cliente] 
-            WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula AND estado <> 0;
-        ";
         #endregion
 
 
@@ -236,14 +231,22 @@ namespace Logica
         }
 
 
-        public bool CedulaRepetida(string Cedula)
+        public bool CedulaRepetida(string Cedula, int IdCliente)
         {
             bool respuesta = false;
+
+            string queryIDCardRepeated = @"
+                SELECT idCliente FROM [cliente] 
+                WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula 
+                    AND estado <> 0
+                    AND idCliente <> @idCliente;
+            ";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryIDCardRepeated, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@cedula", Cedula);
+                comm.Parameters.AddWithValue("@idCliente", IdCliente);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
@@ -263,6 +266,7 @@ namespace Logica
             string queryIDCardRepeatedNull = @"
                 SELECT * FROM [cliente]
                 WHERE CONCAT(tipoDocumento , '-', numeroDocumento) = @cedula 
+                    AND idCliente <> 0
                     AND estado = 0;
             ";
 

@@ -19,6 +19,8 @@ namespace ProyectoMagicolor.Vistas
         private string tipoDocumento = "";
         private string documento = "";
 
+        private int IdCliente;
+
         public VentaFrm ParentFrm;
         public string TipoDocumento;
         public string Documento;
@@ -74,6 +76,11 @@ namespace ProyectoMagicolor.Vistas
                 txtDocumento.IsEnabled = false;
                 txtNombre.Focus();
             }
+
+            if (DataFill == null)
+                IdCliente = 0;
+            else
+                IdCliente = DataFill.idCliente;
         }
 
        
@@ -118,7 +125,7 @@ namespace ProyectoMagicolor.Vistas
                 new LAuditoria().Insertar(auditoria);
 
                 if(ParentFrm != null)
-                    ParentFrm.AgregarCliente(UForm);
+                    ParentFrm.SetNuevoCliente(UForm.tipoDocumento, UForm.numeroDocumento);
 
                 this.DialogResult = true;
                 this.Close();
@@ -151,8 +158,8 @@ namespace ProyectoMagicolor.Vistas
         void SetEnable(bool Enable)
         {
             txtNombre.IsEnabled = Enable;
-            CbTipoDocumento.IsEnabled = false;
-            txtDocumento.IsEnabled = false;
+            CbTipoDocumento.IsEnabled = Enable;
+            txtDocumento.IsEnabled = Enable;
             txtDireccion.IsEnabled = Enable;
             txtTelefono.IsEnabled = Enable;
             txtEmail.IsEnabled = Enable;
@@ -221,20 +228,18 @@ namespace ProyectoMagicolor.Vistas
                 return true;
             }
 
-            if (Type != TypeForm.Update)
-            {
-                if (ActivarAnulado())
-                {
-                    return true;
-                }
 
-                if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
-                {
-                    LFunction.MessageExecutor("Error", "El Documento ya está registrado en el sistema");
-                    txtDocumento.Text = "";
-                    txtDocumento.Focus();
-                    return true;
-                }
+            if (ActivarAnulado())
+            {
+                return true;
+            }
+
+            if (Metodos.CedulaRepetida((CbTipoDocumento.Text + "-" + txtDocumento.Text), IdCliente))
+            {
+                LFunction.MessageExecutor("Error", "El Documento ya está registrado en el sistema");
+                txtDocumento.Text = "";
+                txtDocumento.Focus();
+                return true;
             }
 
             return false;
@@ -248,7 +253,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if (CbTipoDocumento.Text != "" && txtDocumento.Text != "")
                 if (!ActivarAnulado())
-                    if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                    if (Metodos.CedulaRepetida((CbTipoDocumento.Text + "-" + txtDocumento.Text), IdCliente))
                     {
                         LFunction.MessageExecutor("Error", "El Cliente ya está Registrado en el Sistema");
                         txtDocumento.Text = "";
@@ -260,7 +265,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if (CbTipoDocumento.Text != "" && txtDocumento.Text != "")
                 if (!ActivarAnulado())
-                    if (Metodos.CedulaRepetida(CbTipoDocumento.Text + "-" + txtDocumento.Text))
+                    if (Metodos.CedulaRepetida((CbTipoDocumento.Text + "-" + txtDocumento.Text), IdCliente))
                     {
                         LFunction.MessageExecutor("Error", "El Cliente ya está Registrado en el Sistema");
                         txtDocumento.Text = "";

@@ -52,11 +52,6 @@ namespace Logica
             SELECT * FROM [categoria] 
             WHERE idCategoria = @idCategoria AND estado <> 0;
         ";
-
-        private string queryCategoryRepeated = @"
-            SELECT idCategoria FROM [categoria]
-            WHERE nombre = @nombre AND estado <> 0;
-        ";
         #endregion
 
 
@@ -169,14 +164,23 @@ namespace Logica
         }
 
 
-        public bool CategoriaRepetida(string Categoria)
+        public bool CategoriaRepetida(string Categoria, int IdCategoria)
         {
             bool respuesta = false;
+
+            string queryCategoryRepeated = @"
+                SELECT idCategoria FROM [categoria]
+                WHERE nombre = @nombre 
+                    AND estado <> 0
+                    AND idCategoria <> 0
+                    AND idCategoria <> @idCategoria;
+            ";
 
             Action action = () =>
             {
                 using SqlCommand comm = new SqlCommand(queryCategoryRepeated, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@nombre", Categoria);
+                comm.Parameters.AddWithValue("@idCategoria", IdCategoria);
 
                 using SqlDataReader reader = comm.ExecuteReader();
                 if (reader.Read()) respuesta = true;
