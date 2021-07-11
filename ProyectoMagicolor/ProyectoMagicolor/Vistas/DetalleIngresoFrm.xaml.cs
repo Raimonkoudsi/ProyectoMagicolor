@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Datos;
@@ -219,6 +220,48 @@ namespace ProyectoMagicolor.Vistas
                 txtPrecioCompra.Text = Data.precioCompra.ToString();
                 txtPrecioVenta.Text = Data.precioVenta.ToString();
                 txtCantidad.Text = Data.cantidadInicial.ToString();
+            }
+        }
+
+        private void txtPrecioCompra_LostFocus(object sender, RoutedEventArgs e)
+        {
+            string txt = ((TextBox)sender).Text;
+            if(txtPrecioCompra.Text != "" && txtPrecioVenta.Text != "")
+            {
+                double precioCompra = double.Parse(txtPrecioCompra.Text);
+                double precioVenta = double.Parse(txtPrecioVenta.Text);
+
+                double PrecioCompraLimite = Math.Ceiling(precioVenta / 1.3);
+
+                if(precioCompra < PrecioCompraLimite)
+                {
+                    txtPrecioCompra.Text = PrecioCompraLimite.ToString();
+                }
+                else if(precioCompra > precioVenta)
+                {
+                    txtPrecioCompra.Text = precioVenta.ToString();
+                }
+            }
+        }
+
+        private void txtPrecioVenta_LostFocus(object sender, RoutedEventArgs e)
+        {
+            string txt = ((TextBox)sender).Text;
+            if (txtPrecioCompra.Text != "" && txtPrecioVenta.Text != "")
+            {
+                double precioCompra = double.Parse(txtPrecioCompra.Text);
+                double precioVenta = double.Parse(txtPrecioVenta.Text);
+
+                double PrecioVentaLimite = Math.Floor(precioCompra * 1.3);
+
+                if (precioVenta > PrecioVentaLimite)
+                {
+                    txtPrecioVenta.Text = PrecioVentaLimite.ToString();
+                }
+                else if (precioVenta < precioCompra)
+                {
+                    txtPrecioVenta.Text = precioCompra.ToString();
+                }
             }
         }
 

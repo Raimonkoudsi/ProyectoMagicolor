@@ -169,10 +169,10 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Name="txtPrecioCompra" Text="" FontSize="12" Margin="0"
-                            materialDesign:HintAssist.Hint="Precio de Compra"
+                            materialDesign:HintAssist.Hint="Precio de Compra" LostFocus="txtPrecioCompra_LostFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                         <TextBox Name="txtPrecioVenta" Text="" FontSize="12" Margin="0"
-                            materialDesign:HintAssist.Hint="Precio de Venta" Grid.Column="2"
+                            materialDesign:HintAssist.Hint="Precio de Venta" Grid.Column="2" LostFocus="txtPrecioVenta_LostFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>                    
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 20 0 0">
