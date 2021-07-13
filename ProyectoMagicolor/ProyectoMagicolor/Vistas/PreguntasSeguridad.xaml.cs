@@ -30,9 +30,8 @@ namespace ProyectoMagicolor.Vistas
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             txtTitulo.Text = DataFill[0].usuario;
-            txtPregunta.Text = DataFill[0].pregunta;
-            txtPregunta2.Text = DataFill[1].pregunta;
-            txtPregunta3.Text = DataFill[2].pregunta;
+            txtPregunta.Text = DataFill[Login.idSecretQ].pregunta;
+            txtPregunta2.Text = DataFill[Login.idSecretQ2].pregunta;
         }
 
         private bool Validate()
@@ -49,12 +48,6 @@ namespace ProyectoMagicolor.Vistas
                 txtRespuesta2.Focus();
                 return true;
             }
-            if (txtRespuesta3.Password == "")
-            {
-                LFunction.MessageExecutor("Information", "Debe Responder la Tercera Pregunta");
-                txtRespuesta3.Focus();
-                return true;
-            }
 
             return false;
         }
@@ -63,7 +56,7 @@ namespace ProyectoMagicolor.Vistas
         {
             if (Validate()) return;
 
-            if ((txtRespuesta.Password == DataFill[0].respuesta) && (txtRespuesta2.Password == DataFill[1].respuesta) && (txtRespuesta3.Password == DataFill[2].respuesta))
+            if ((txtRespuesta.Password == DataFill[Login.idSecretQ].respuesta) && (txtRespuesta2.Password == DataFill[Login.idSecretQ2].respuesta))
             {
                 CambiarContraseña frmContraseña = new CambiarContraseña(this);
                 frmContraseña.DataFill = DataFill[0];

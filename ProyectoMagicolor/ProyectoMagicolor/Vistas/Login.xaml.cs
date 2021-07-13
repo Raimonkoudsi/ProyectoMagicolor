@@ -14,11 +14,25 @@ namespace ProyectoMagicolor.Vistas
         List<DTrabajador> respuesta = new List<DTrabajador>();
         LTrabajador metodosUsuario = new LTrabajador();
 
+
+        public static Random randComp;
+        public static int idSecretQ, idSecretQ2;
+
         public Login()
         {
             InitializeComponent();
 
             txtContraseña.Foreground = System.Windows.Media.Brushes.White;
+
+            if (randComp == null)
+            {
+                randComp = new Random(DateTime.Now.Second + DateTime.Now.Millisecond);
+                idSecretQ = randComp.Next(0, 3);
+                idSecretQ2 = randComp.Next(0, 3);
+
+                while(idSecretQ == idSecretQ2)
+                    idSecretQ2 = randComp.Next(0, 3);
+            }
         }
 
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProyectoMagicolor.Vistas"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Variedades Magicolor (Preguntas de Seguridad)" Height="475" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Width="450" Loaded="Window_Loaded">
+        Title="Variedades Magicolor (Preguntas de Seguridad)" Height="375" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Width="450" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -78,35 +78,6 @@
                     <Grid Margin="0 0 0 0">
                         <PasswordBox Name="txtRespuesta2" Password="" FontSize="12" Margin="0" 
                                      materialDesign:HintAssist.Hint="Segunda Respuesta Secreta"
-                                     Style="{StaticResource MaterialDesignOutlinedPasswordBox}" />
-                    </Grid>
-                </Grid>
-
-
-                <Grid HorizontalAlignment="Left" Margin="10 10 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid x:Name="GridPregunta3" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Grid.Column="0" Margin="0 0 0 0" Kind="AccountSecurity" 
-                                           Background="Transparent" HorizontalAlignment="Center" Foreground="#3194F7" 
-                                           Width="22" Height="22" VerticalAlignment="Center" />
-                        <materialDesign:PackIcon Grid.Column="1" Margin="0 0 10 0" Kind="Number3CircleOutline" 
-                                           Background="Transparent" HorizontalAlignment="Center" Foreground="#3194F7" 
-                                           Width="22" Height="22" VerticalAlignment="Center" />
-                        <TextBlock x:Name="txtPregunta3" Grid.Column="2" MaxWidth="350" HorizontalAlignment="Left" Text="Tercera Pregunta Secreta" 
-                                           FontSize="16" VerticalAlignment="Center" TextWrapping="Wrap" FontStyle="Italic"/>
-                    </Grid>
-                </Grid>
-                <Grid Margin="0 10">
-                    <Grid Margin="0 0 0 0">
-                        <PasswordBox Name="txtRespuesta3" Password="" FontSize="12" Margin="0" 
-                                     materialDesign:HintAssist.Hint="Tercera Respuesta Secreta"
                                      Style="{StaticResource MaterialDesignOutlinedPasswordBox}" />
                     </Grid>
                 </Grid>
