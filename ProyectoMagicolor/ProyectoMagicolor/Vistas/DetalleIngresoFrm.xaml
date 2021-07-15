@@ -100,7 +100,7 @@
                                         <TextBlock Text="Cantidad Máxima:" Grid.Row="0" TextWrapping="Wrap"
                                             FontWeight="Bold" FontSize="16" TextAlignment="Center"/>
                                         <TextBlock x:Name="txtCantidadMaxima" Text="123123" FontSize="15" MaxWidth="200"
-                                       VerticalAlignment="Center" TextAlignment="Center" Grid.Row="1"/>
+                                            VerticalAlignment="Center" TextAlignment="Center" Grid.Row="1"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -161,21 +161,35 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Margin="10">
+                    <Grid Grid.Row="0" Margin="10 10 10 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Name="txtPrecioCompra" Text="" FontSize="12" Margin="0"
+                        <TextBox Name="txtPrecioCompra" Text="" FontSize="12" Margin="0" KeyDown="txtPrecioCompra_KeyDown"
                             materialDesign:HintAssist.Hint="Precio de Compra" LostFocus="txtPrecioCompra_LostFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                         <TextBox Name="txtPrecioVenta" Text="" FontSize="12" Margin="0"
                             materialDesign:HintAssist.Hint="Precio de Venta" Grid.Column="2" LostFocus="txtPrecioVenta_LostFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}"/>                    
                     </Grid>
-                    <Grid Grid.Row="1" Margin="0 20 0 0">
+                    
+                    <Grid Grid.Row="1" Margin="10 0 10 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="205"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1">
+                            <TextBlock x:Name="txtMontoMaximo" Text="Precio Máximo: 0 Bs S" FontSize="12" MaxWidth="200"
+                                       VerticalAlignment="Center" TextAlignment="Center" Grid.Row="1"
+                                       TextWrapping="Wrap" FontStyle="Italic" Foreground="Gray"/>
+                        </Grid>
+                    </Grid>
+                    
+                    <Grid Grid.Row="2" Margin="0 20 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="180"/>

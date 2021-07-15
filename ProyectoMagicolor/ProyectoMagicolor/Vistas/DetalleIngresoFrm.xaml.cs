@@ -26,6 +26,8 @@ namespace ProyectoMagicolor.Vistas
 
         public static double PrecioCompra, PrecioVenta;
 
+        private double PrecioVentaLimite, PrecioCompraLimite;
+
         public DetalleIngresoFrm(CompraFrm parentfrm, List<DDetalle_Ingreso> actualDetalle)
         {
             InitializeComponent();
@@ -62,6 +64,9 @@ namespace ProyectoMagicolor.Vistas
                 txtTitulo.Text = "Editar Articulo";
                 fillForm(DataFill, DataArticulo);
             }
+
+            txtMontoMaximo.Text = "Precio Máximo: 0 Bs S";
+            txtPrecioVenta.IsEnabled = false;
         }
 
 
@@ -225,15 +230,17 @@ namespace ProyectoMagicolor.Vistas
 
         private void txtPrecioCompra_LostFocus(object sender, RoutedEventArgs e)
         {
+            double precioCompra=0, precioVenta=0;
+
             string txt = ((TextBox)sender).Text;
             if(txtPrecioCompra.Text != "" && txtPrecioVenta.Text != "")
             {
-                double precioCompra = double.Parse(txtPrecioCompra.Text);
-                double precioVenta = double.Parse(txtPrecioVenta.Text);
+                precioCompra = double.Parse(txtPrecioCompra.Text);
+                precioVenta = double.Parse(txtPrecioVenta.Text);
 
-                double PrecioCompraLimite = Math.Ceiling(precioVenta / 1.3);
+                PrecioCompraLimite = Math.Ceiling(precioVenta / 1.3);
 
-                if(precioCompra < PrecioCompraLimite)
+                if (precioCompra < PrecioCompraLimite)
                 {
                     txtPrecioCompra.Text = PrecioCompraLimite.ToString();
                 }
@@ -241,6 +248,18 @@ namespace ProyectoMagicolor.Vistas
                 {
                     txtPrecioCompra.Text = precioVenta.ToString();
                 }
+            }
+
+            if(txtPrecioCompra.Text != "")
+            {
+                precioCompra = double.Parse(txtPrecioCompra.Text);
+                PrecioVentaLimite = Math.Floor(precioCompra * 1.3);
+
+                txtMontoMaximo.Text = "Precio Máximo: " + PrecioVentaLimite.ToString() + " Bs S";
+            } 
+            else
+            {
+                txtMontoMaximo.Text = "Precio Máximo: 0 Bs S";
             }
         }
 
@@ -252,7 +271,7 @@ namespace ProyectoMagicolor.Vistas
                 double precioCompra = double.Parse(txtPrecioCompra.Text);
                 double precioVenta = double.Parse(txtPrecioVenta.Text);
 
-                double PrecioVentaLimite = Math.Floor(precioCompra * 1.3);
+                PrecioVentaLimite = Math.Floor(precioCompra * 1.3);
 
                 if (precioVenta > PrecioVentaLimite)
                 {
@@ -262,6 +281,20 @@ namespace ProyectoMagicolor.Vistas
                 {
                     txtPrecioVenta.Text = precioCompra.ToString();
                 }
+            }
+        }
+
+        private void txtPrecioCompra_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(txtPrecioCompra.Text != "")
+            {
+                txtPrecioVenta.Text = "";
+                txtPrecioVenta.IsEnabled = true;
+            } 
+            else
+            {
+                txtPrecioVenta.Text = "";
+                txtPrecioVenta.IsEnabled = false;
             }
         }
 
