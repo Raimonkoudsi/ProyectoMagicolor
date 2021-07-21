@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Datos;
-using System.Data;
 using System.Data.SqlClient;
-using System.Windows;
+using System.Threading.Tasks;
 
 namespace Logica
 {

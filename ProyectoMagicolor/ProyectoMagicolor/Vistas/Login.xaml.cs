@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -53,14 +54,19 @@ namespace ProyectoMagicolor.Vistas
                     return;
                 }
 
-                if (metodosUsuario.UsuarioAnulado(txtUsuario.Text.ToLower(), txtContraseña.Password))
+            if (metodosUsuario.UsuarioAnulado(txtUsuario.Text.ToLower(), txtContraseña.Password))
+            {
+                LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
+                Environment.Exit(0);
+            }
+            else
+            {
+                this.Dispatcher.Invoke(() =>
                 {
-                    LFunction.MessageExecutor("Error", "El Usuario está deshabilitado, cerrando el Sistema");
-                    Environment.Exit(0);
-                }
-                else
-                {
-                    respuesta = metodosUsuario.Login(txtUsuario.Text.ToLower(), txtContraseña.Password);
+                    var task = Task.Run(async () => await metodosUsuario.Login(txtUsuario.Text.ToLower(), txtContraseña.Password));
+
+                    var respuesta = (List<DTrabajador>)task.GetAwaiter().GetResult();
+                    //respuesta = metodosUsuario.Login(txtUsuario.Text.ToLower(), txtContraseña.Password);
 
                     if (respuesta.Count > 0)
                     {
@@ -78,7 +84,8 @@ namespace ProyectoMagicolor.Vistas
                     {
                         ContadorIntentos();
                     }
-                }
+                }, DispatcherPriority.ContextIdle);
+            }
         }
 
         private static int intentos;
@@ -99,7 +106,7 @@ namespace ProyectoMagicolor.Vistas
 
         private void login_Click(object sender, RoutedEventArgs e)
         {
-             Loging();
+            Loging();
         }
 
         private void cerrar_Click(object sender, RoutedEventArgs e)

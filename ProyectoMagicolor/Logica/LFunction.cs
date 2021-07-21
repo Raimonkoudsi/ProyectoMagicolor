@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Datos;
 using System.Data;
 using System.Data.SqlClient;
@@ -11,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 
 namespace Logica
 {
@@ -96,21 +96,22 @@ namespace Logica
             return MessageBox.Show(Message, "Variedades Magicolor", MessageBoxButton.OK);
         }
 
-        public static void SafeExecutor(Action action)
+        public async static void SafeExecutor(Action action)
         {
-            SafeExecutor(() =>
+            await SafeExecutor(() =>
             {
                 action();
                 return 0;
             });
         }
 
-        private static T SafeExecutor<T>(Func<T> action)
+        private async static Task<T> SafeExecutor<T>(Func<T> action)
         {
             try
             {
-                if (Conexion.ConexionSql.State != ConnectionState.Open)
-                    Conexion.ConexionSql.Open();
+                CancellationTokenSource source = new CancellationTokenSource();
+                CancellationToken token = source.Token;
+                Conexion.ConexionSql.OpenAsync(token).Wait();
 
                 return action();
             }

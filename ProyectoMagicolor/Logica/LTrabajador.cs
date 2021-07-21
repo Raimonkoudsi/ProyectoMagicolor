@@ -5,6 +5,8 @@ using Datos;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Logica
 {
@@ -403,18 +405,20 @@ namespace Logica
         }
 
 
-        public List<DTrabajador> Login(string User, string Password)
+        public async Task<IEnumerable<DTrabajador>> Login(string User, string Password)
         {
-            List<DTrabajador> ListaGenerica = new List<DTrabajador>();
+            var ListaGenerica = new List<DTrabajador>();
+            CancellationTokenSource source = new CancellationTokenSource();
+            CancellationToken token = source.Token;
 
-            Action action = () =>
+            Action action = async () =>
             {
                 using SqlCommand comm = new SqlCommand(queryLogin, Conexion.ConexionSql);
                 comm.Parameters.AddWithValue("@usuario", Encripter.Encrypt(User));
                 comm.Parameters.AddWithValue("@contraseña", Encripter.Encrypt(Password));
 
-                using SqlDataReader reader = comm.ExecuteReader();
-                if (reader.Read())
+                using SqlDataReader reader = comm.ExecuteReaderAsync(token).Result;
+                if (reader.ReadAsync(token).Result)
                 {
                     ListaGenerica.Add(new DTrabajador
                     {
@@ -436,7 +440,7 @@ namespace Logica
             };
             LFunction.SafeExecutor(action);
 
-            return ListaGenerica;
+            return await Task.WhenAll((IEnumerable<Task<DTrabajador>>)ListaGenerica);
         }
 
 
